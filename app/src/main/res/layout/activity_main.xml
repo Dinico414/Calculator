@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    >
+<LinearLayout
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@drawable/tile_background"
+    android:backgroundTint="@color/surface"
     android:orientation="vertical"
-    android:padding="15dp"
+    android:layout_marginHorizontal="15dp"
+    android:padding="10dp"
     tools:context=".MainActivity"
     tools:ignore="HardcodedText">
 
@@ -15,8 +22,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="15dp"
-        android:layout_weight="2"
-        android:background="@drawable/tile"
+        android:layout_weight="3"
+        android:background="@drawable/tile_popup"
+        android:backgroundTint="@color/primaryContainer"
         android:padding="20dp">
 
         <com.google.android.material.textview.MaterialTextView
@@ -27,8 +35,9 @@
             android:autoSizeMinTextSize="25sp"
             android:autoSizeStepGranularity="2sp"
             android:autoSizeTextType="uniform"
+            android:lines="2"
+            android:maxLines="2"
             android:padding="5dp"
-            android:singleLine="true"
             android:text=""
             android:textAlignment="viewEnd"
             android:textColor="@color/textOnPrimary"
@@ -67,21 +76,27 @@
             android:backgroundTint="@color/tertiary"
             android:onClick="allClearAction"
             android:text="AC"
-            android:textColor="@color/onTertiary" />
+            android:textColor="@color/onTertiary"
+            tools:ignore="VisualLintButtonSize" />
 
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonOpenParentheses"
             style="@style/buttonOperator"
-            android:text="( )" />
+            android:text="("
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonCloseParentheses"
             style="@style/buttonOperator"
-            android:text="( )" />
+            android:text=")"
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonDivide"
             style="@style/buttonOperator"
-            android:text="/" />
+            android:text="/"
+            tools:ignore="VisualLintButtonSize" />
 
     </LinearLayout>
 
@@ -90,22 +105,26 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button7"
             style="@style/buttonNumber"
-            android:text="7" />
+            android:text="7"
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button8"
             style="@style/buttonNumber"
-            android:text="8" />
+            android:text="8"
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button9"
             style="@style/buttonNumber"
-            android:text="9" />
+            android:text="9"
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonMultiply"
             style="@style/buttonOperator"
-            android:text="×" />
+            android:text="×"
+            tools:ignore="VisualLintButtonSize" />
 
     </LinearLayout>
 
@@ -115,22 +134,26 @@
             android:id="@+id/button4"
             style="@style/buttonNumber"
             android:layout_weight="1"
-            android:text="4" />
+            android:text="4"
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button5"
             style="@style/buttonNumber"
-            android:text="5" />
+            android:text="5"
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button6"
             style="@style/buttonNumber"
-            android:text="6" />
+            android:text="6"
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSubtract"
             style="@style/buttonOperator"
-            android:text="-" />
+            android:text="-"
+            tools:ignore="VisualLintButtonSize" />
 
     </LinearLayout>
 
@@ -139,22 +162,26 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button1"
             style="@style/buttonNumber"
-            android:text="1" />
+            android:text="1"
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button2"
             style="@style/buttonNumber"
-            android:text="2" />
+            android:text="2"
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button3"
             style="@style/buttonNumber"
-            android:text="3" />
+            android:text="3"
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonAdd"
             style="@style/buttonOperator"
-            android:text="+" />
+            android:text="+"
+            tools:ignore="VisualLintButtonSize" />
 
     </LinearLayout>
 
@@ -163,20 +190,24 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonDot"
             style="@style/buttonNumber"
-            android:text="." />
+            android:text="."
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button0"
             style="@style/buttonNumber"
-            android:text="0" />
+            android:text="0"
+
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonBackspace"
             style="@style/buttonOperator"
-            android:backgroundTint="@color/surface"
+            android:backgroundTint="@color/secondaryContainer"
             android:onClick="backSpaceAction"
             android:text="⌫"
-            android:textColor="@color/onSurface" />
+            android:textColor="@color/onSurface"
+            tools:ignore="VisualLintButtonSize" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonEqual"
@@ -184,9 +215,11 @@
             android:backgroundTint="@color/inversePrimary"
             android:onClick="equalAction"
             android:text="="
-            android:textColor="@color/textOnPrimary" />
+            android:textColor="@color/textOnPrimary"
+            tools:ignore="VisualLintButtonSize" />
 
 
     </LinearLayout>
 
 </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
