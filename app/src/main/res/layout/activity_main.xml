@@ -72,8 +72,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonClear"
-            style="@style/buttonOperator"
-            android:backgroundTint="@color/tertiary"
+            style="@style/buttonClear"
             android:onClick="allClearAction"
             android:text="AC"
             android:textColor="@color/onTertiary"
@@ -202,8 +201,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonBackspace"
-            style="@style/buttonOperator"
-            android:backgroundTint="@color/secondaryContainer"
+            style="@style/buttonNumber"
             android:onClick="backSpaceAction"
             android:text="⌫"
             android:textColor="@color/onSurface"
@@ -211,11 +209,9 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonEqual"
-            style="@style/buttonNumber"
-            android:backgroundTint="@color/inversePrimary"
+            style="@style/buttonEqual"
             android:onClick="equalAction"
             android:text="="
-            android:textColor="@color/textOnPrimary"
             tools:ignore="VisualLintButtonSize" />
 
 

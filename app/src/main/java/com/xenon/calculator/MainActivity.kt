@@ -1,24 +1,26 @@
 package com.xenon.calculator
 
+import android.animation.AnimatorInflater
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.xenon.calculator.databinding.ActivityMainBinding // Import the generated binding class
+import androidx.core.view.forEach
+import com.xenon.calculator.databinding.ActivityMainBinding
 
 @Suppress("UNUSED_CHANGED_VALUE")
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding // Declare your binding variable
+    private lateinit var binding: ActivityMainBinding
     private var canAddOperation = false
     private var canAddDecimal = true
-    private var openParentheses = true // Indicates whether to add an opening or closing parentheses
+    private var openParentheses = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater) // Inflate the layout using View Binding
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Set click listeners for buttons
+
         binding.apply {
             button0.setOnClickListener { numberAction(it) }
             button1.setOnClickListener { numberAction(it) }
@@ -41,7 +43,19 @@ class MainActivity : AppCompatActivity() {
             buttonOpenParentheses.setOnClickListener { openParenthesesAction() }
             buttonCloseParentheses.setOnClickListener { closeParenthesesAction() }
         }
+        setupButtonAnimations()
     }
+
+    private fun setupButtonAnimations() {
+        binding.root.forEach { view ->
+            if (view is Button) {
+                val stateListAnimator = AnimatorInflater.loadStateListAnimator(this, R.animator.button_pressed_anim)
+                view.stateListAnimator = stateListAnimator
+            }
+        }
+    }
+
+
 
     private fun numberAction(view: View) {
         if (view is Button) {
@@ -67,7 +81,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun openParenthesesAction() {
         if (binding.workingsTV.text.isNotEmpty() && binding.workingsTV.text.last().isDigit()) {
-            binding.workingsTV.append("×(") // Append multiplication operator before opening parenthesis
+            binding.workingsTV.append("×(")
         } else {
             binding.workingsTV.append("(")
         }
