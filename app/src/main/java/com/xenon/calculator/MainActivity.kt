@@ -1,24 +1,122 @@
 package com.xenon.calculator
 
+import android.animation.Animator
 import android.animation.AnimatorInflater
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
 import com.xenon.calculator.databinding.ActivityMainBinding
+import kotlin.math.*
 
-@Suppress("UNUSED_CHANGED_VALUE")
+@Suppress("DEPRECATION", "UNUSED_CHANGED_VALUE")
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var vibrator: Vibrator
     private var canAddOperation = false
     private var canAddDecimal = true
     private var openParentheses = true
+    private var isRadians = true
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+
+
+        val toggleScientificButton = findViewById<Button>(R.id.toggleScientificButton)
+        val scientificButtonsLayout = findViewById<LinearLayout>(R.id.scientificButtonsLayout)
+
+        toggleScientificButton.setOnClickListener {
+            if (scientificButtonsLayout.visibility == View.VISIBLE) {
+                // Fade out and slide up animation
+                val fadeOut = ObjectAnimator.ofFloat(scientificButtonsLayout, "alpha", 1f, 0f)
+                val slideUp = ObjectAnimator.ofFloat(scientificButtonsLayout, "translationY", 0f, -scientificButtonsLayout.height.toFloat())
+
+                val fadeOutDuration = 200L // Fade out faster
+                val slideUpDuration = 300L // Slide up a bit slower
+
+                fadeOut.duration = fadeOutDuration
+                slideUp.duration = slideUpDuration
+
+                val animatorSet = AnimatorSet()
+                animatorSet.playTogether(fadeOut, slideUp)
+                animatorSet.startDelay = slideUpDuration / 2 // Start fade out halfway through slide up animation
+
+                animatorSet.addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        scientificButtonsLayout.visibility = View.GONE
+                    }
+                })
+
+                animatorSet.start()
+
+                // Flip text vertically
+                val flipImageUp = ObjectAnimator.ofFloat(binding.toggleScientificButtonImageView, "rotationX", 180f, 0f)
+                flipImageUp.duration = 300 // Flip text smoothly
+                flipImageUp.start()
+
+                // Adjust other button heights
+                binding.root.forEach { view ->
+                    if (view is Button && view != toggleScientificButton) {
+                        val slideUpOther = ObjectAnimator.ofFloat(view, "translationY", 0f, -scientificButtonsLayout.height.toFloat())
+                        slideUpOther.duration = slideUpDuration
+                        slideUpOther.start()
+                    }
+                }
+            } else {
+                // Fade in and slide down animation
+                val fadeIn = ObjectAnimator.ofFloat(scientificButtonsLayout, "alpha", 0f, 1f)
+                val slideDown = ObjectAnimator.ofFloat(scientificButtonsLayout, "translationY", -scientificButtonsLayout.height.toFloat(), 0f)
+
+                val fadeInDuration = 400L // Fade in a bit slower
+                val slideDownDuration = 300L // Slide down a bit slower
+
+                fadeIn.duration = fadeInDuration
+                slideDown.duration = slideDownDuration
+
+                val animatorSet = AnimatorSet()
+                animatorSet.playTogether(fadeIn, slideDown)
+                animatorSet.startDelay = slideDownDuration / 2 // Start fade in halfway through slide down animation
+
+                scientificButtonsLayout.visibility = View.VISIBLE
+
+                // Flip text vertically
+                val flipTextDown = ObjectAnimator.ofFloat(binding.toggleScientificButtonImageView, "rotationX", 0f, 180f)
+                flipTextDown.duration = 300 // Flip text smoothly
+                flipTextDown.start()
+
+                // Adjust other button heights
+                binding.root.forEach { view ->
+                    if (view is Button && view != toggleScientificButton) {
+                        val slideDownOther = ObjectAnimator.ofFloat(view, "translationY", -scientificButtonsLayout.height.toFloat(), 0f)
+                        slideDownOther.duration = slideDownDuration
+                        slideDownOther.start()
+                    }
+                }
+
+                animatorSet.start()
+            }
+        }
+
+
+
+
+
+
+
 
 
         binding.apply {
@@ -42,6 +140,20 @@ class MainActivity : AppCompatActivity() {
             buttonBackspace.setOnClickListener { backSpaceAction() }
             buttonOpenParentheses.setOnClickListener { openParenthesesAction() }
             buttonCloseParentheses.setOnClickListener { closeParenthesesAction() }
+            buttonSin.setOnClickListener { scientificOperationAction("sin(") }
+            buttonCos.setOnClickListener { scientificOperationAction("cos(") }
+            buttonTan.setOnClickListener { scientificOperationAction("tan(") }
+            buttonSqrt.setOnClickListener { scientificOperationAction("√(") }
+            buttonPower.setOnClickListener { operationAction(Button(this@MainActivity).apply { text = "^" }) }
+            buttonPi.setOnClickListener { addPi() }
+            buttonRadDeg.setOnClickListener { switchRadDeg() }
+            buttonInverse.setOnClickListener { inverseAction() }
+            buttonPercent.setOnClickListener { scientificOperationAction("%") }
+            buttonLn.setOnClickListener { scientificOperationAction("ln(") }
+            buttonLog.setOnClickListener { scientificOperationAction("log(") }
+            buttonE.setOnClickListener { numberAction(it) }
+            buttonFactorial.setOnClickListener { scientificOperationAction("!(") }
+
         }
         setupButtonAnimations()
     }
@@ -55,8 +167,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
     private fun numberAction(view: View) {
         if (view is Button) {
             if (view.text == ".") {
@@ -67,6 +177,7 @@ class MainActivity : AppCompatActivity() {
                 binding.workingsTV.append(view.text)
             canAddOperation = true
         }
+        performHapticFeedback()
     }
 
     private fun operationAction(view: View) {
@@ -77,6 +188,7 @@ class MainActivity : AppCompatActivity() {
                 canAddDecimal = true
             }
         }
+        performHapticFeedback()
     }
 
     private fun openParenthesesAction() {
@@ -86,6 +198,7 @@ class MainActivity : AppCompatActivity() {
             binding.workingsTV.append("(")
         }
         openParentheses = false
+        performHapticFeedback()
     }
 
     private fun closeParenthesesAction() {
@@ -102,21 +215,26 @@ class MainActivity : AppCompatActivity() {
             binding.workingsTV.append(")")
             openParenthesesCount--
         }
+        performHapticFeedback()
     }
 
-    fun allClearAction() {
+    @SuppressLint("SetTextI18n")
+    private fun allClearAction() {
         binding.workingsTV.text = ""
         binding.resultsTV.text = ""
+        performHapticFeedback()
     }
 
-    fun backSpaceAction() {
+    private fun backSpaceAction() {
         val length = binding.workingsTV.length()
         if (length > 0)
             binding.workingsTV.text = binding.workingsTV.text.subSequence(0, length - 1)
+        performHapticFeedback()
     }
 
-    fun equalAction() {
+    private fun equalAction() {
         binding.resultsTV.text = calculateResults()
+        performHapticFeedback()
     }
 
     private fun calculateResults(): String {
@@ -152,6 +270,11 @@ class MainActivity : AppCompatActivity() {
                             operands.add(performOperation(operators.removeLast(), first, second))
                         }
                         operators.removeLast() // Remove '('
+                    }
+                    's', 'c', 't', '√', '^' -> {
+                        val endIndex = expression.indexOf('(', operands.size)
+                        val operation = expression.substring(expression.indexOf(char), endIndex + 1) // Include the closing parenthesis
+                        operands.add(performScientificOperation(operation))
                     }
                     else -> {
                         while (operators.isNotEmpty() && precedence(char) <= precedence(operators.last())) {
@@ -191,5 +314,69 @@ class MainActivity : AppCompatActivity() {
             '/' -> operand1 / operand2
             else -> throw IllegalArgumentException("Invalid operator")
         }
+    }
+
+    private fun performScientificOperation(operation: String): Float {
+        val operator = operation[0]
+        val operand = operation.substring(1).toFloat()
+        return when (operator) {
+            's' -> {
+                if (isInverse)
+                    asin(operand)
+                else
+                    sin(operand)
+            }
+            'c' -> {
+                if (isInverse)
+                    acos(operand)
+                else
+                    cos(operand)
+            }
+            't' -> {
+                if (isInverse)
+                    atan(operand)
+                else
+                    tan(operand)
+            }
+            '√' -> sqrt(operand)
+            '^' -> operand.pow(operand.toInt())
+            else -> throw IllegalArgumentException("Invalid scientific operation")
+        }
+    }
+
+    private fun scientificOperationAction(operation: String) {
+        binding.workingsTV.append(operation)
+        canAddDecimal = true
+        canAddOperation = false
+        performHapticFeedback()
+    }
+
+    @SuppressLint("ObsoleteSdkInt")
+    private fun performHapticFeedback() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            vibrator.vibrate(50)
+        }
+    }
+
+    private fun addPi() {
+        binding.workingsTV.append("π")
+        canAddDecimal = true
+        canAddOperation = false
+        performHapticFeedback()
+    }
+
+    private fun switchRadDeg() {
+        isRadians = !isRadians
+        binding.buttonRadDeg.text = if (isRadians) "DEG" else "RAD"
+        performHapticFeedback()
+    }
+
+    private var isInverse = false
+    private fun inverseAction() {
+        isInverse = !isInverse
+        binding.buttonInverse.text = if (isInverse) "INV" else "INV"
+        performHapticFeedback()
     }
 }
