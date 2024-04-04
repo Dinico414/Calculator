@@ -14,13 +14,16 @@
     android:backgroundTint="@color/surface"
     android:orientation="vertical"
     android:layout_marginHorizontal="15dp"
-    android:padding="10dp"
+    android:padding="5dp"
     tools:context=".MainActivity"
     tools:ignore="HardcodedText">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginBottom="15dp"
         android:layout_weight="3"
         android:background="@drawable/tile_popup"
