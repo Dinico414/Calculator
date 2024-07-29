@@ -1,6 +1,6 @@
 [versions]
 accesspoint = "1.0.4-2"
-agp = "8.5.0-alpha03"
+agp = "8.5.1"
 kotlin = "1.9.0"
 coreKtx = "1.12.0"
 junit = "4.13.2"
@@ -10,6 +10,8 @@ appcompat = "1.6.1"
 material = "1.11.0"
 activity = "1.8.2"
 constraintlayout = "2.1.4"
+mathparserOrgMxparser = "5.0.7"
+runtimeAndroid = "1.6.8"
 
 [libraries]
 accesspoint = { module = "com.xenon.commons:accesspoint", version.ref = "accesspoint" }
@@ -21,6 +23,8 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+mathparser-org-mxparser = { module = "org.mariuszgromada.math:MathParser.org-mXparser", version.ref = "mathparserOrgMxparser" }
+androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -9,14 +9,22 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
 import com.xenon.calculator.databinding.ActivityMainBinding
-import kotlin.math.*
+import kotlin.math.acos
+import kotlin.math.asin
+import kotlin.math.atan
+import kotlin.math.cos
+import kotlin.math.ln
+import kotlin.math.log10
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
+import kotlin.math.tan
 
 @Suppress("DEPRECATION", "UNUSED_CHANGED_VALUE")
 class MainActivity : AppCompatActivity() {
@@ -247,105 +255,151 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun evaluateExpression(expression: String): Float {
-        val operators = mutableListOf<Char>()
-        val operands = mutableListOf<Float>()
+    private fun evaluateExpression(expression: String): Double {
+        val numbers = java.util.Stack<Double>()
+        val operators = java.util.Stack<Char>()
         var number = ""
-        for (char in expression) {
-            if (char.isDigit() || char == '.') {
-                number += char
-            } else {
-                if (number.isNotEmpty()) {
-                    operands.add(number.toFloat())
-                    number = ""
+        var i = 0
+
+        while (i < expression.length) {
+            val c = expression[i]
+            if (c.isDigit() || c == '.') {
+                number += c
+            } else if (c == '(') {
+                operators.push(c)
+            } else if (c == ')') {
+                while (operators.peek() != '(') {
+                    numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
                 }
-                when (char) {
-                    '(' -> {
-                        operators.add(char)
-                    }
-                    ')' -> {
-                        while (operators.isNotEmpty() && operators.last() != '(') {
-                            val second = operands.removeLast()
-                            val first = operands.removeLast()
-                            operands.add(performOperation(operators.removeLast(), first, second))
-                        }
-                        operators.removeLast() // Remove '('
-                    }
-                    's', 'c', 't', '√', '^' -> {
-                        val endIndex = expression.indexOf('(', operands.size)
-                        val operation = expression.substring(expression.indexOf(char), endIndex + 1) // Include the closing parenthesis
-                        operands.add(performScientificOperation(operation))
-                    }
-                    else -> {
-                        while (operators.isNotEmpty() && precedence(char) <= precedence(operators.last())) {
-                            val second = operands.removeLast()
-                            val first = operands.removeLast()
-                            operands.add(performOperation(operators.removeLast(), first, second))
-                        }
-                        operators.add(char)
-                    }
+                operators.pop() // Remove '('
+            } else if (isOperator(c)) {
+                while (!operators.empty() && hasPrecedence(c, operators.peek())) {
+                    numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
+                }
+                operators.push(c)
+                number = "" // Reset number after an operator
+            } else if (isScientificFunction(c)) {
+                val funcEnd = findFunctionEnd(expression, i)
+                val func = expression.substring(i, funcEnd + 1)
+                val result = evaluateScientificFunction(func)
+                numbers.push(result)
+                i = funcEnd // Skip the processed function
+                number = "" // Reset number after a function
+            }
+            i++
+        }
+
+        if (number.isNotEmpty()) {
+            numbers.push(number.toDouble())
+        }
+
+        while (!operators.empty()) {
+            numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
+        }
+
+        return numbers.pop()
+    }
+
+    private fun findFunctionEnd(expression: String, startIndex: Int): Int {
+        var parenthesesCount = 0
+        for (i in startIndex until expression.length) {
+            if (expression[i] == '(') {
+                parenthesesCount++
+            } else if (expression[i] == ')') {
+                parenthesesCount--
+                if (parenthesesCount == 0) {
+                    return i
                 }
             }
         }
-        if (number.isNotEmpty()) {
-            operands.add(number.toFloat())
-        }
-        while (operators.isNotEmpty()) {
-            val second = operands.removeLast()
-            val first = operands.removeLast()
-            operands.add(performOperation(operators.removeLast(), first, second))
-        }
-        return operands.first()
+        return -1 // Error: unmatched parentheses
     }
 
-    private fun precedence(operator: Char): Int {
-        return when (operator) {
-            '+', '-' -> 1
-            '×', '/' -> 2
-            else -> 0
-        }
-    }
+    private fun evaluateScientificFunction(func: String): Double {
+        println("Evaluating function: $func") // Add this line for debugging
 
-    private fun performOperation(operator: Char, operand1: Float, operand2: Float): Float {
-        return when (operator) {
-            '+' -> operand1 + operand2
-            '-' -> operand1 - operand2
-            '×' -> operand1 * operand2
-            '/' -> operand1 / operand2
-            else -> throw IllegalArgumentException("Invalid operator")
-        }
-    }
+        val operator = func[0]
+        val operandStr = func.substring(2, func.length - 1)
+        val operand = evaluateExpression(operandStr)
 
-    private fun performScientificOperation(operation: String): Float {
-        val operator = operation[0]
-        val operand = operation.substring(1).toFloat()
+        println("Operator: $operator, Operand: $operand") // Add this line for debugging
+
         return when (operator) {
             's' -> {
-                if (isInverse)
-                    asin(operand)
-                else
-                    sin(operand)
+                val value = if (isRadians) operand else Math.toRadians(operand)
+                val result = if (isInverse) asin(value) else sin(value)
+                println("Sin result: $result") // Add this line for debugging
+                result
             }
             'c' -> {
-                if (isInverse)
-                    acos(operand)
-                else
-                    cos(operand)
+                val value = if (isRadians) operand else Math.toRadians(operand)
+                val result = if (isInverse) acos(value) else cos(value)
+                println("Cos result: $result") // Add this line for debugging
+                result
             }
             't' -> {
-                if (isInverse)
-                    atan(operand)
-                else
-                    tan(operand)
+                val value = if (isRadians) operand else Math.toRadians(operand)
+                val result = if (isInverse) atan(value) else tan(value)
+                println("Tan result: $result") // Add this line for debugging
+                result
             }
             '√' -> sqrt(operand)
-            '^' -> operand.pow(operand.toInt())
+            '!' -> factorial(operand.toInt())
+            'l' -> {
+                val result = if (func.startsWith("ln")) ln(operand) else log10(operand)
+                println("Log result: $result") // Add this line for debugging
+                result
+            }
+            '%' -> operand / 100
             else -> throw IllegalArgumentException("Invalid scientific operation")
         }
     }
 
+    private fun isScientificFunction(c: Char): Boolean = c in listOf('s', 'c', 't', '√', '!', 'l')
+
+    private fun isOperator(c: Char): Boolean = c in listOf('+', '-', '×', '/', '^')
+
+    private fun hasPrecedence(op1: Char, op2: Char): Boolean {
+        if (op2 == '(' || op2 == ')') return false
+        if ((op1 == '×' || op1 == '/') && (op2 == '+' || op2 == '-')) return false
+        return true
+    }
+
+    private fun applyOp(op: Char, b: Double, a: Double): Double {
+        return when (op) {
+            '+' -> a + b
+            '-' -> a - b
+            '×' -> a * b
+            '/' -> a / b
+            '^' -> a.pow(b)
+            else -> throw IllegalArgumentException("Invalid operator")
+        }
+    }
+
+    private fun factorial(n: Int): Double {
+        if (n < 0) throw IllegalArgumentException("Factorial is not defined for negative numbers")
+        return if (n <= 1) 1.0 else n * factorial(n - 1)
+    }
+
+
+    private fun ln(x: Float): Float {
+        return kotlin.math.ln(x)
+    }
+
+    private fun log10(x: Float): Float {
+        return kotlin.math.log10(x)
+    }
+
     private fun scientificOperationAction(operation: String) {
-        binding.workingsTV.append(operation)
+        if (operation != "%" && operation != "!(") {
+            if (binding.workingsTV.text.isNotEmpty() && binding.workingsTV.text.last() == '(') {
+                binding.workingsTV.append(operation.substring(1)) // Remove the first character (which is '(')
+            } else {
+                binding.workingsTV.append(operation)
+            }
+        } else {
+            binding.workingsTV.append(operation)
+        }
         canAddDecimal = true
         canAddOperation = false
         performHapticFeedback()
