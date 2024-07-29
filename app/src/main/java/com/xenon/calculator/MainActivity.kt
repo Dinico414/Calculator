@@ -316,41 +316,37 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun evaluateScientificFunction(func: String): Double {
-        println("Evaluating function: $func") // Add this line for debugging
 
         val operator = func[0]
         val operandStr = func.substring(2, func.length - 1)
         val operand = evaluateExpression(operandStr)
 
-        println("Operator: $operator, Operand: $operand") // Add this line for debugging
-
         return when (operator) {
             's' -> {
                 val value = if (isRadians) operand else Math.toRadians(operand)
                 val result = if (isInverse) asin(value) else sin(value)
-                println("Sin result: $result") // Add this line for debugging
                 result
             }
             'c' -> {
                 val value = if (isRadians) operand else Math.toRadians(operand)
                 val result = if (isInverse) acos(value) else cos(value)
-                println("Cos result: $result") // Add this line for debugging
                 result
             }
             't' -> {
                 val value = if (isRadians) operand else Math.toRadians(operand)
                 val result = if (isInverse) atan(value) else tan(value)
-                println("Tan result: $result") // Add this line for debugging
                 result
             }
-            '√' -> sqrt(operand)
+            '√' -> {
+                val result = if (isInverse) operand * operand else sqrt(operand)
+                result
+            }
             '!' -> factorial(operand.toInt())
             'l' -> {
                 val result = if (func.startsWith("ln")) ln(operand) else log10(operand)
-                println("Log result: $result") // Add this line for debugging
                 result
             }
-            '%' -> operand / 100
+            '%' -> operand / 100.0
             else -> throw IllegalArgumentException("Invalid scientific operation")
         }
     }
@@ -430,7 +426,7 @@ class MainActivity : AppCompatActivity() {
     private var isInverse = false
     private fun inverseAction() {
         isInverse = !isInverse
-        binding.buttonInverse.text = if (isInverse) "INV" else "INV"
+        binding.buttonInverse.text = if (isInverse) "INV'" else "INV"
         performHapticFeedback()
     }
 }
