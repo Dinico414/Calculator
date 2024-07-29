@@ -267,24 +267,41 @@ class MainActivity : AppCompatActivity() {
                 number += c
             } else if (c == '(') {
                 operators.push(c)
+                number = ""
             } else if (c == ')') {
-                while (operators.peek() != '(') {
+                while (!operators.empty() && operators.peek() != '(') {
                     numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
                 }
-                operators.pop() // Remove '('
+                if (!operators.empty()) {
+                    operators.pop() // Remove '('
+                }
+                number = ""
             } else if (isOperator(c)) {
+                if (number.isNotEmpty()) {
+                    numbers.push(number.toDouble())
+                    number = ""
+                }
                 while (!operators.empty() && hasPrecedence(c, operators.peek())) {
                     numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
                 }
                 operators.push(c)
-                number = "" // Reset number after an operator
+                number = ""
             } else if (isScientificFunction(c)) {
                 val funcEnd = findFunctionEnd(expression, i)
                 val func = expression.substring(i, funcEnd + 1)
                 val result = evaluateScientificFunction(func)
                 numbers.push(result)
-                i = funcEnd // Skip the processed function
-                number = "" // Reset number after a function
+                i = funcEnd
+                number = ""
+            } else if (c == '%') {
+                if (number.isNotEmpty()) {
+                    val num = number.toDouble()
+                    numbers.push(num / 100.0)
+                    number = ""
+                } else if (!numbers.empty()) {
+                    val num = numbers.pop()
+                    numbers.push(num / 100.0)
+                }
             }
             i++
         }
@@ -294,7 +311,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         while (!operators.empty()) {
-            numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
+            if (numbers.size > 1) {
+                numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
+            } else {
+                return Double.NaN
+            }
         }
 
         return numbers.pop()
@@ -346,7 +367,6 @@ class MainActivity : AppCompatActivity() {
                 val result = if (func.startsWith("ln")) ln(operand) else log10(operand)
                 result
             }
-            '%' -> operand / 100.0
             else -> throw IllegalArgumentException("Invalid scientific operation")
         }
     }
@@ -357,6 +377,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun hasPrecedence(op1: Char, op2: Char): Boolean {
         if (op2 == '(' || op2 == ')') return false
+        if (op1 == '%' ) return true // Percentage has highest precedence
         if ((op1 == '×' || op1 == '/') && (op2 == '+' || op2 == '-')) return false
         return true
     }
@@ -368,6 +389,7 @@ class MainActivity : AppCompatActivity() {
             '×' -> a * b
             '/' -> a / b
             '^' -> a.pow(b)
+            '%' -> a / 100.0
             else -> throw IllegalArgumentException("Invalid operator")
         }
     }
@@ -429,4 +451,5 @@ class MainActivity : AppCompatActivity() {
         binding.buttonInverse.text = if (isInverse) "INV'" else "INV"
         performHapticFeedback()
     }
+
 }
