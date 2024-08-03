@@ -26,7 +26,7 @@
             android:layout_marginBottom="0dp"
             android:layout_weight="3"
             android:background="@drawable/tile_popup"
-            android:backgroundTint="@color/primaryContainer"
+            android:backgroundTint="@color/secondaryContainer"
             android:padding="20dp">
 
             <com.google.android.material.textview.MaterialTextView
@@ -98,11 +98,10 @@
                     tools:ignore="VisualLintButtonSize" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonPercent"
+                    android:id="@+id/buttonFactorial"
                     style="@style/buttonScientific"
-                    android:text="%"
+                    android:text="!"
                     tools:ignore="VisualLintButtonSize" />
-
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -173,21 +172,18 @@
                         android:text="tan"
                         tools:ignore="VisualLintButtonSize" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonInverse"
-                        style="@style/buttonScientific"
-                        android:text="INV"
-                        tools:ignore="VisualLintButtonSize" />
+                    <Space
+                        android:layout_width="50dp"
+                        android:layout_height="50dp" />
 
                 </LinearLayout>
 
                 <LinearLayout style="@style/buttonRow">
 
-
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonFactorial"
+                        android:id="@+id/buttonInverse"
                         style="@style/buttonScientific"
-                        android:text="!"
+                        android:text="INV"
                         tools:ignore="VisualLintButtonSize" />
 
                     <com.google.android.material.button.MaterialButton
@@ -230,15 +226,15 @@
 
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonOpenParentheses"
+                android:id="@+id/buttonParentheses"
                 style="@style/buttonOperator"
-                android:text="("
+                android:text="( )"
                 tools:ignore="VisualLintButtonSize" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonCloseParentheses"
+                android:id="@+id/buttonPercent"
                 style="@style/buttonOperator"
-                android:text=")"
+                android:text="%"
                 tools:ignore="VisualLintButtonSize" />
 
             <com.google.android.material.button.MaterialButton

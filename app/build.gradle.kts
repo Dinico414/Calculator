@@ -5,13 +5,13 @@ plugins {
 
 android {
     namespace = "com.xenon.calculator"
-    compileSdk = 34
+    compileSdk = 35
 
 
     defaultConfig {
         applicationId = "com.xenon.calculator"
         minSdk = 31
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 

@@ -1,7 +1,6 @@
 package com.xenon.calculator
 
 import android.animation.Animator
-import android.animation.AnimatorInflater
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -26,7 +25,7 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.tan
 
-@Suppress("DEPRECATION", "UNUSED_CHANGED_VALUE", "unused", "UNUSED_PARAMETER")
+@Suppress("DEPRECATION", "unused", "UNUSED_PARAMETER")
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var vibrator: Vibrator
@@ -43,9 +42,10 @@ class MainActivity : AppCompatActivity() {
 
         vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
 
-
         val toggleScientificButton = findViewById<Button>(R.id.toggleScientificButton)
         val scientificButtonsLayout = findViewById<LinearLayout>(R.id.scientificButtonsLayout)
+
+        binding.toggleScientificButtonImageView.rotationX = 180f
 
         toggleScientificButton.setOnClickListener {
             if (scientificButtonsLayout.visibility == View.VISIBLE) {
@@ -152,8 +152,7 @@ class MainActivity : AppCompatActivity() {
             buttonEqual.setOnClickListener { equalAction() }
             buttonClear.setOnClickListener { allClearAction() }
             buttonBackspace.setOnClickListener { backSpaceAction() }
-            buttonOpenParentheses.setOnClickListener { openParenthesesAction() }
-            buttonCloseParentheses.setOnClickListener { closeParenthesesAction() }
+            buttonParentheses.setOnClickListener { parenthesesAction() }
             buttonSin.setOnClickListener { scientificOperationAction("sin(") }
             buttonCos.setOnClickListener { scientificOperationAction("cos(") }
             buttonTan.setOnClickListener { scientificOperationAction("tan(") }
@@ -172,18 +171,8 @@ class MainActivity : AppCompatActivity() {
             buttonE.setOnClickListener { numberAction(it) }
             buttonFactorial.setOnClickListener { scientificOperationAction("!") }
         }
-        setupButtonAnimations()
     }
 
-    private fun setupButtonAnimations() {
-        binding.root.forEach { view ->
-            if (view is Button) {
-                val stateListAnimator =
-                    AnimatorInflater.loadStateListAnimator(this, R.animator.button_pressed_anim)
-                view.stateListAnimator = stateListAnimator
-            }
-        }
-    }
 
     private fun numberAction(view: View) {
         if (view is Button) {
@@ -207,32 +196,27 @@ class MainActivity : AppCompatActivity() {
         performHapticFeedback()
     }
 
-    private fun openParenthesesAction() {
-        if (binding.workingsTV.text.isNotEmpty() && binding.workingsTV.text.last().isDigit()) {
+    private fun parenthesesAction() {
+        val workings = binding.workingsTV.text.toString()
+        var openParenthesesCount = 0
+
+        for (char in workings) {
+            if (char == '(') openParenthesesCount++
+            else if (char == ')') openParenthesesCount--
+        }
+
+        if (workings.isEmpty() || workings.last() == '(' || workings.last() in listOf('+', '-', '×', '÷', '^', '√')) {
+            binding.workingsTV.append("(")
+        } else if (openParenthesesCount > 0 && (workings.last().isDigit() || workings.last() == ')')) {
+            binding.workingsTV.append(")")
+        } else if (workings.isNotEmpty() && workings.last().isDigit()) {
             binding.workingsTV.append("×(")
         } else {
             binding.workingsTV.append("(")
         }
-        openParentheses = false
+
         performHapticFeedback()
     }
-
-    private fun closeParenthesesAction() {
-        var openParenthesesCount = 0
-        for (char in binding.workingsTV.text) {
-            if (char == '(') {
-                openParenthesesCount++
-            } else if (char == ')') {
-                openParenthesesCount--
-            }
-        }
-        if (openParenthesesCount > 0) {
-            binding.workingsTV.append(")")
-            openParenthesesCount--
-        }
-        performHapticFeedback()
-    }
-
     @SuppressLint("SetTextI18n")
     private fun allClearAction() {
         binding.workingsTV.text = ""
