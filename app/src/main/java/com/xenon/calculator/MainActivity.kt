@@ -26,7 +26,7 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.math.tan
 
-@Suppress("DEPRECATION", "UNUSED_CHANGED_VALUE")
+@Suppress("DEPRECATION", "UNUSED_CHANGED_VALUE", "unused", "UNUSED_PARAMETER")
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var vibrator: Vibrator
@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         toggleScientificButton.setOnClickListener {
             if (scientificButtonsLayout.visibility == View.VISIBLE) {
-                // Fade out and slide up animation
+
                 val fadeOut = ObjectAnimator.ofFloat(scientificButtonsLayout, "alpha", 1f, 0f)
                 val slideUp = ObjectAnimator.ofFloat(
                     scientificButtonsLayout,
@@ -58,16 +58,15 @@ class MainActivity : AppCompatActivity() {
                     -scientificButtonsLayout.height.toFloat()
                 )
 
-                val fadeOutDuration = 200L // Fade out faster
-                val slideUpDuration = 300L // Slide up a bit slower
+                val fadeOutDuration = 200L
+                val slideUpDuration = 300L
 
                 fadeOut.duration = fadeOutDuration
                 slideUp.duration = slideUpDuration
 
                 val animatorSet = AnimatorSet()
                 animatorSet.playTogether(fadeOut, slideUp)
-                animatorSet.startDelay =
-                    slideUpDuration / 2 // Start fade out halfway through slide up animation
+                animatorSet.startDelay = slideUpDuration / 2
 
                 animatorSet.addListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
@@ -77,31 +76,24 @@ class MainActivity : AppCompatActivity() {
 
                 animatorSet.start()
 
-                // Flip text vertically
                 val flipImageUp = ObjectAnimator.ofFloat(
-                    binding.toggleScientificButtonImageView,
-                    "rotationX",
-                    180f,
-                    0f
+                    binding.toggleScientificButtonImageView, "rotationX", 180f, 0f
                 )
-                flipImageUp.duration = 300 // Flip text smoothly
+                flipImageUp.duration = 300
                 flipImageUp.start()
 
-                // Adjust other button heights
+
                 binding.root.forEach { view ->
                     if (view is Button && view != toggleScientificButton) {
                         val slideUpOther = ObjectAnimator.ofFloat(
-                            view,
-                            "translationY",
-                            0f,
-                            -scientificButtonsLayout.height.toFloat()
+                            view, "translationY", 0f, -scientificButtonsLayout.height.toFloat()
                         )
                         slideUpOther.duration = slideUpDuration
                         slideUpOther.start()
                     }
                 }
             } else {
-                // Fade in and slide down animation
+
                 val fadeIn = ObjectAnimator.ofFloat(scientificButtonsLayout, "alpha", 0f, 1f)
                 val slideDown = ObjectAnimator.ofFloat(
                     scientificButtonsLayout,
@@ -110,43 +102,33 @@ class MainActivity : AppCompatActivity() {
                     0f
                 )
 
-                val fadeInDuration = 400L // Fade in a bit slower
-                val slideDownDuration = 300L // Slide down a bit slower
+                val fadeInDuration = 400L
+                val slideDownDuration = 300L
 
                 fadeIn.duration = fadeInDuration
                 slideDown.duration = slideDownDuration
 
                 val animatorSet = AnimatorSet()
                 animatorSet.playTogether(fadeIn, slideDown)
-                animatorSet.startDelay =
-                    slideDownDuration / 2 // Start fade in halfway through slide down animation
+                animatorSet.startDelay = slideDownDuration / 2
 
                 scientificButtonsLayout.visibility = View.VISIBLE
 
-                // Flip text vertically
                 val flipTextDown = ObjectAnimator.ofFloat(
-                    binding.toggleScientificButtonImageView,
-                    "rotationX",
-                    0f,
-                    180f
+                    binding.toggleScientificButtonImageView, "rotationX", 0f, 180f
                 )
-                flipTextDown.duration = 300 // Flip text smoothly
+                flipTextDown.duration = 300
                 flipTextDown.start()
 
-                // Adjust other button heights
                 binding.root.forEach { view ->
                     if (view is Button && view != toggleScientificButton) {
                         val slideDownOther = ObjectAnimator.ofFloat(
-                            view,
-                            "translationY",
-                            -scientificButtonsLayout.height.toFloat(),
-                            0f
+                            view, "translationY", -scientificButtonsLayout.height.toFloat(), 0f
                         )
                         slideDownOther.duration = slideDownDuration
                         slideDownOther.start()
                     }
                 }
-
                 animatorSet.start()
             }
         }
@@ -189,7 +171,6 @@ class MainActivity : AppCompatActivity() {
             buttonLog.setOnClickListener { scientificOperationAction("log(") }
             buttonE.setOnClickListener { numberAction(it) }
             buttonFactorial.setOnClickListener { scientificOperationAction("!") }
-
         }
         setupButtonAnimations()
     }
@@ -207,11 +188,9 @@ class MainActivity : AppCompatActivity() {
     private fun numberAction(view: View) {
         if (view is Button) {
             if (view.text == ".") {
-                if (canAddDecimal)
-                    binding.workingsTV.append(view.text)
+                if (canAddDecimal) binding.workingsTV.append(view.text)
                 canAddDecimal = false
-            } else
-                binding.workingsTV.append(view.text)
+            } else binding.workingsTV.append(view.text)
             canAddOperation = true
         }
         performHapticFeedback()
@@ -247,7 +226,6 @@ class MainActivity : AppCompatActivity() {
                 openParenthesesCount--
             }
         }
-
         if (openParenthesesCount > 0) {
             binding.workingsTV.append(")")
             openParenthesesCount--
@@ -264,8 +242,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun backSpaceAction() {
         val length = binding.workingsTV.length()
-        if (length > 0)
-            binding.workingsTV.text = binding.workingsTV.text.subSequence(0, length - 1)
+        if (length > 0) binding.workingsTV.text = binding.workingsTV.text.subSequence(0, length - 1)
         performHapticFeedback()
     }
 
@@ -302,13 +279,13 @@ class MainActivity : AppCompatActivity() {
                     numbers.push(subResult)
                     i = closingParenIndex
                 } else {
-                    // Handle unmatched parenthesis error
+
                     return Double.NaN
                 }
             } else if (c == ')') {
-                // Handle unmatched parenthesis error
+
                 return Double.NaN
-            } else if (c == '!') { // Factorial calculation moved before operators
+            } else if (c == '!') {
                 if (number.isNotEmpty()) {
                     val num = number.toDouble()
                     numbers.push(factorial(num.toInt()))
@@ -379,6 +356,7 @@ class MainActivity : AppCompatActivity() {
             Double.NaN
         }
     }
+
     private fun findClosingParenthesis(expression: String, startIndex: Int): Int {
         var count = 1
         for (i in startIndex + 1 until expression.length) {
@@ -407,7 +385,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        return -1 // Error: unmatched parentheses
+        return -1
     }
 
     private fun evaluateScientificFunction(func: String): Double {
@@ -433,7 +411,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun hasPrecedence(op1: Char, op2: Char): Boolean {
         if (op2 == '(' || op2 == ')') return false
-        if (op1 == '%') return true // Percentage has highest precedence
+        if (op1 == '%') return true
         if ((op1 == '×' || op1 == '/') && (op2 == '+' || op2 == '-')) return false
         return true
     }
@@ -455,7 +433,6 @@ class MainActivity : AppCompatActivity() {
         return if (n <= 1) 1.0 else n * factorial(n - 1)
     }
 
-
     private fun ln(x: Float): Float {
         return kotlin.math.ln(x)
     }
@@ -474,17 +451,17 @@ class MainActivity : AppCompatActivity() {
                     workings += "²"
                 }
             } else {
-                if (workings.isNotEmpty() && workings.last() == '(') {
-                    workings += operation.substring(1)
+                workings += if (workings.isNotEmpty() && workings.last() == '(') {
+                    operation.substring(1)
                 } else {
-                    workings += operation
+                    operation
                 }
             }
         } else if (operation != "%" && operation != "!") {
-            if (workings.isNotEmpty() && workings.last() == '(') {
-                workings += operation.substring(1)
+            workings += if (workings.isNotEmpty() && workings.last() == '(') {
+                operation.substring(1)
             } else {
-                workings += operation
+                operation
             }
         } else {
             workings += operation
@@ -530,5 +507,4 @@ class MainActivity : AppCompatActivity() {
 
     fun backSpaceAction(view: View) {}
     fun equalAction(view: View) {}
-
 }
