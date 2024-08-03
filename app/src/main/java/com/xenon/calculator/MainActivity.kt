@@ -188,7 +188,7 @@ class MainActivity : AppCompatActivity() {
             buttonLn.setOnClickListener { scientificOperationAction("ln(") }
             buttonLog.setOnClickListener { scientificOperationAction("log(") }
             buttonE.setOnClickListener { numberAction(it) }
-            buttonFactorial.setOnClickListener { scientificOperationAction("!(") }
+            buttonFactorial.setOnClickListener { scientificOperationAction("!") }
 
         }
         setupButtonAnimations()
@@ -308,6 +308,15 @@ class MainActivity : AppCompatActivity() {
             } else if (c == ')') {
                 // Handle unmatched parenthesis error
                 return Double.NaN
+            } else if (c == '!') { // Factorial calculation moved before operators
+                if (number.isNotEmpty()) {
+                    val num = number.toDouble()
+                    numbers.push(factorial(num.toInt()))
+                    number = ""
+                } else if (!numbers.empty()) {
+                    val num = numbers.pop()
+                    numbers.push(factorial(num.toInt()))
+                }
             } else if (isOperator(c)) {
                 if (number.isNotEmpty()) {
                     numbers.push(number.toDouble())
@@ -370,7 +379,6 @@ class MainActivity : AppCompatActivity() {
             Double.NaN
         }
     }
-
     private fun findClosingParenthesis(expression: String, startIndex: Int): Int {
         var count = 1
         for (i in startIndex + 1 until expression.length) {
@@ -472,7 +480,7 @@ class MainActivity : AppCompatActivity() {
                     workings += operation
                 }
             }
-        } else if (operation != "%" && operation != "!(") {
+        } else if (operation != "%" && operation != "!") {
             if (workings.isNotEmpty() && workings.last() == '(') {
                 workings += operation.substring(1)
             } else {
