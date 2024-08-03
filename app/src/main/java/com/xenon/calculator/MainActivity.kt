@@ -285,14 +285,12 @@ class MainActivity : AppCompatActivity() {
                     numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
                 }
                 operators.push(c)
-                number = ""
             } else if (isScientificFunction(c)) {
                 val funcEnd = findFunctionEnd(expression, i)
                 val func = expression.substring(i, funcEnd + 1)
                 val result = evaluateScientificFunction(func)
                 numbers.push(result)
                 i = funcEnd
-                number = ""
             } else if (c == '%') {
                 if (number.isNotEmpty()) {
                     val num = number.toDouble()
@@ -302,6 +300,13 @@ class MainActivity : AppCompatActivity() {
                     val num = numbers.pop()
                     numbers.push(num / 100.0)
                 }
+            } else if (c == 'π') {
+                if (number.isNotEmpty()) {
+                    numbers.push(number.toDouble() * Math.PI)
+                } else {
+                    numbers.push(Math.PI)
+                }
+                number = ""
             }
             i++
         }
@@ -311,14 +316,22 @@ class MainActivity : AppCompatActivity() {
         }
 
         while (!operators.empty()) {
-            if (numbers.size > 1) {
-                numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
-            } else {
-                return Double.NaN
-            }
+            numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
         }
 
-        return numbers.pop()
+        return if (!numbers.empty()) {
+            var result = numbers.pop()
+            if (!isRadians && isTrigonometricFunction(expression)) { // Convert result back to degrees if necessary
+                result = Math.toDegrees(result)
+            }
+            result
+        } else {
+            Double.NaN
+        }
+    }
+
+    private fun isTrigonometricFunction(expression: String): Boolean {
+        return expression.contains("sin") || expression.contains("cos") || expression.contains("tan")
     }
 
     private fun findFunctionEnd(expression: String, startIndex: Int): Int {
@@ -343,30 +356,12 @@ class MainActivity : AppCompatActivity() {
         val operand = evaluateExpression(operandStr)
 
         return when (operator) {
-            's' -> {
-                val value = if (isRadians) operand else Math.toRadians(operand)
-                val result = if (isInverse) asin(value) else sin(value)
-                result
-            }
-            'c' -> {
-                val value = if (isRadians) operand else Math.toRadians(operand)
-                val result = if (isInverse) acos(value) else cos(value)
-                result
-            }
-            't' -> {
-                val value = if (isRadians) operand else Math.toRadians(operand)
-                val result = if (isInverse) atan(value) else tan(value)
-                result
-            }
-            '√' -> {
-                val result = if (isInverse) operand * operand else sqrt(operand)
-                result
-            }
+            's' -> if (isInverse) asin(operand) else sin(operand)
+            'c' -> if (isInverse) acos(operand) else cos(operand)
+            't' -> if (isInverse) atan(operand) else tan(operand)
+            '√' -> if (isInverse) operand * operand else sqrt(operand)
             '!' -> factorial(operand.toInt())
-            'l' -> {
-                val result = if (func.startsWith("ln")) ln(operand) else log10(operand)
-                result
-            }
+            'l' -> if (func.startsWith("ln")) ln(operand) else log10(operand)
             else -> throw IllegalArgumentException("Invalid scientific operation")
         }
     }
@@ -441,7 +436,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun switchRadDeg() {
         isRadians = !isRadians
-        binding.buttonRadDeg.text = if (isRadians) "DEG" else "RAD"
+        binding.buttonRadDeg.text = if (isRadians) "RAD" else "DEG"
         performHapticFeedback()
     }
 
@@ -455,5 +450,8 @@ class MainActivity : AppCompatActivity() {
         binding.buttonTan.text = if (isInverse) "-tan" else "tan"
         performHapticFeedback()
     }
+
+    fun backSpaceAction(view: View) {}
+    fun equalAction(view: View) {}
 
 }
