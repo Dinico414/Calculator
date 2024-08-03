@@ -151,14 +151,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-
-
-
-
-
-
-
         binding.apply {
             button0.setOnClickListener { numberAction(it) }
             button1.setOnClickListener { numberAction(it) }
