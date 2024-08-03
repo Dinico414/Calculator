@@ -266,16 +266,19 @@ class MainActivity : AppCompatActivity() {
             if (c.isDigit() || c == '.') {
                 number += c
             } else if (c == '(') {
-                operators.push(c)
-                number = ""
+                val closingParenIndex = findClosingParenthesis(expression, i)
+                if (closingParenIndex != -1) {
+                    val subExpression = expression.substring(i + 1, closingParenIndex)
+                    val subResult = evaluateExpression(subExpression)
+                    numbers.push(subResult)
+                    i = closingParenIndex
+                } else {
+                    // Handle unmatched parenthesis error
+                    return Double.NaN
+                }
             } else if (c == ')') {
-                while (!operators.empty() && operators.peek() != '(') {
-                    numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
-                }
-                if (!operators.empty()) {
-                    operators.pop() // Remove '('
-                }
-                number = ""
+                // Handle unmatched parenthesis error
+                return Double.NaN
             } else if (isOperator(c)) {
                 if (number.isNotEmpty()) {
                     numbers.push(number.toDouble())
@@ -307,6 +310,15 @@ class MainActivity : AppCompatActivity() {
                     numbers.push(Math.PI)
                 }
                 number = ""
+            } else if (c == '²') {
+                if (number.isNotEmpty()) {
+                    val num = number.toDouble()
+                    numbers.push(num * num)
+                    number = ""
+                } else if (!numbers.empty()) {
+                    val num = numbers.pop()
+                    numbers.push(num * num)
+                }
             }
             i++
         }
@@ -321,7 +333,7 @@ class MainActivity : AppCompatActivity() {
 
         return if (!numbers.empty()) {
             var result = numbers.pop()
-            if (!isRadians && isTrigonometricFunction(expression)) { // Convert result back to degrees if necessary
+            if (!isRadians && isTrigonometricFunction(expression)) {
                 result = Math.toDegrees(result)
             }
             result
@@ -330,7 +342,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun isTrigonometricFunction(expression: String): Boolean {
+    private fun findClosingParenthesis(expression: String, startIndex: Int): Int {
+        var count = 1
+        for (i in startIndex + 1 until expression.length) {
+            when (expression[i]) {
+                '(' -> count++
+                ')' -> count--
+            }
+            if (count == 0) return i
+        }
+        return -1
+    }    private fun isTrigonometricFunction(expression: String): Boolean {
         return expression.contains("sin") || expression.contains("cos") || expression.contains("tan")
     }
 
@@ -404,20 +426,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun scientificOperationAction(operation: String) {
-        if (operation != "%" && operation != "!(") {
-            if (binding.workingsTV.text.isNotEmpty() && binding.workingsTV.text.last() == '(') {
-                binding.workingsTV.append(operation.substring(1)) // Remove the first character (which is '(')
+        var workings = binding.workingsTV.text.toString()
+        if (operation == "√(") {
+            if (isInverse) {
+                if (workings.isNotEmpty() && (workings.last().isDigit() || workings.last() == ')')) {
+                    workings += "²"
+                }
             } else {
-                binding.workingsTV.append(operation)
+                if (workings.isNotEmpty() && workings.last() == '(') {
+                    workings += operation.substring(1)
+                } else {
+                    workings += operation
+                }
+            }
+        } else if (operation != "%" && operation != "!(") {
+            if (workings.isNotEmpty() && workings.last() == '(') {
+                workings += operation.substring(1)
+            } else {
+                workings += operation
             }
         } else {
-            binding.workingsTV.append(operation)
+            workings += operation
         }
+        binding.workingsTV.text = workings
         canAddDecimal = true
         canAddOperation = false
         performHapticFeedback()
     }
-
     @SuppressLint("ObsoleteSdkInt")
     private fun performHapticFeedback() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
