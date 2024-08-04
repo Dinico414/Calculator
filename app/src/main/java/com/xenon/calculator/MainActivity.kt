@@ -42,6 +42,17 @@ class MainActivity : AppCompatActivity() {
 
         vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
 
+        val screenLayout = findViewById<ConstraintLayout>(R.id.screen)
+
+        screenLayout.post {
+            val screenHeight = screenLayout.rootView.height
+            val newHeight = (screenHeight * 0.3).toInt()
+
+            val params = screenLayout.layoutParams
+            params.height = newHeight
+            screenLayout.layoutParams = params
+        }
+
         val toggleScientificButton = findViewById<Button>(R.id.toggleScientificButton)
         val scientificButtonsLayout = findViewById<ConstraintLayout>(R.id.scientificButtonsLayout)
 
