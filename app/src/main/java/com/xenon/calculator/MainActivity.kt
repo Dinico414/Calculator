@@ -10,8 +10,8 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
 import android.widget.Button
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.forEach
 import com.xenon.calculator.databinding.ActivityMainBinding
 import kotlin.math.acos
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
 
         val toggleScientificButton = findViewById<Button>(R.id.toggleScientificButton)
-        val scientificButtonsLayout = findViewById<LinearLayout>(R.id.scientificButtonsLayout)
+        val scientificButtonsLayout = findViewById<ConstraintLayout>(R.id.scientificButtonsLayout)
 
         binding.toggleScientificButtonImageView.rotationX = 180f
 
