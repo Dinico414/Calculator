@@ -494,9 +494,9 @@ class MainActivity : AppCompatActivity() {
         isInverse = !isInverse
         binding.buttonInverse.text = if (isInverse) "INV'" else "INV"
         binding.buttonSqrt.text = if (isInverse) "x²" else "√"
-        binding.buttonSin.text = if (isInverse) "-sin" else "sin"
-        binding.buttonCos.text = if (isInverse) "-cos" else "cos"
-        binding.buttonTan.text = if (isInverse) "-tan" else "tan"
+        binding.buttonSin.text = if (isInverse) "sin⁻¹" else "sin"
+        binding.buttonCos.text = if (isInverse) "cos⁻¹" else "cos"
+        binding.buttonTan.text = if (isInverse) "tan⁻¹" else "tan"
         performHapticFeedback()
     }
 
