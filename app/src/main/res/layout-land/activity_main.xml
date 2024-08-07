@@ -468,7 +468,7 @@
                     style="@style/buttonNumber"
                     android:text="2"
                     app:layout_constraintBottom_toTopOf="@id/button0"
-                    app:layout_constraintEnd_toStartOf="@id/buttonBackspace"
+                    app:layout_constraintEnd_toStartOf="@id/button3"
                     app:layout_constraintStart_toEndOf="@id/button1"
                     app:layout_constraintTop_toBottomOf="@id/button5"
                     tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
