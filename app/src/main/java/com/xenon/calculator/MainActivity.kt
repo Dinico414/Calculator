@@ -185,12 +185,14 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("SetTextI18n")
     private fun numberAction(view: View) {
         if (view is Button) {
+            val currentText = binding.workingsTV.text.toString()
             if (view.text == ".") {
-                if (canAddDecimal) binding.workingsTV.append(view.text)
+                if (canAddDecimal) binding.workingsTV.text = "$currentText${view.text}"
                 canAddDecimal = false
-            } else binding.workingsTV.append(view.text)
+            } else binding.workingsTV.text = "$currentText${view.text}"
             canAddOperation = true
         }
         performHapticFeedback()
