@@ -29,6 +29,13 @@
             android:backgroundTint="@color/secondaryContainer"
             android:padding="20dp">
 
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/workingsTV"
                 android:layout_width="0dp"

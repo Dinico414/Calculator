@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Calculator</string>
+    <string name="settings">Settings</string>
+    <string name="general">General</string>
+    <string name="language">Language</string>
+    <string name="theme">Theme</string>
+    <string name="clear_data">Clear Data</string>
+    <string name="place_holder" translatable="false">place holder</string>
+    <string name="checkbox" translatable="false">CheckBox</string>
+    <string name="save">Save</string>
+    <string name="delete">delete</string>
+    <string name="undo">Undo</string>
+    <string name="search">Search</string>
+    <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="cancel">Cancel</string>
+    <string name="clear_data_dialog">Are you sure you want to clear all app data?</string>
 </resources>

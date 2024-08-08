@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -13,7 +14,10 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.forEach
+import com.google.android.material.appbar.MaterialToolbar
 import com.xenon.calculator.databinding.ActivityMainBinding
+import com.xenon.calculator.activities.SettingsActivity
+
 import kotlin.math.acos
 import kotlin.math.asin
 import kotlin.math.atan
@@ -52,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             params.height = newHeight
             screenLayout.layoutParams = params
         }
+
 
         val toggleScientificButton = findViewById<Button>(R.id.toggleScientificButton)
         val scientificButtonsLayout = findViewById<ConstraintLayout>(R.id.scientificButtonsLayout)
@@ -143,6 +148,17 @@ class MainActivity : AppCompatActivity() {
                 animatorSet.start()
             }
         }
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        toolbar.inflateMenu(R.menu.top_app_bar)
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.settings -> {
+                    startActivity(Intent(this, SettingsActivity::class.java))
+                    true
+                }
+                else -> false
+            }
+        }
 
         binding.apply {
             button0.setOnClickListener { numberAction(it) }
@@ -181,6 +197,16 @@ class MainActivity : AppCompatActivity() {
             buttonLog.setOnClickListener { scientificOperationAction("log(") }
             buttonE.setOnClickListener { numberAction(it) }
             buttonFactorial.setOnClickListener { scientificOperationAction("!") }
+
+        }
+    }
+    private fun setupToolbar() {
+        binding.toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.settings -> openSettingsActivity()
+                else -> return@setOnMenuItemClickListener false
+            }
+            return@setOnMenuItemClickListener true
         }
     }
 
@@ -218,9 +244,19 @@ class MainActivity : AppCompatActivity() {
             else if (char == ')') openParenthesesCount--
         }
 
-        if (workings.isEmpty() || workings.last() == '(' || workings.last() in listOf('+', '-', '×', '÷', '^', '√')) {
+        if (workings.isEmpty() || workings.last() == '(' || workings.last() in listOf(
+                '+',
+                '-',
+                '×',
+                '÷',
+                '^',
+                '√'
+            )
+        ) {
             binding.workingsTV.append("(")
-        } else if (openParenthesesCount > 0 && (workings.last().isDigit() || workings.last() == ')')) {
+        } else if (openParenthesesCount > 0 && (workings.last()
+                .isDigit() || workings.last() == ')')
+        ) {
             binding.workingsTV.append(")")
         } else if (workings.isNotEmpty() && workings.last().isDigit()) {
             binding.workingsTV.append("×(")
@@ -230,6 +266,7 @@ class MainActivity : AppCompatActivity() {
 
         performHapticFeedback()
     }
+
     @SuppressLint("SetTextI18n")
     private fun allClearAction() {
         binding.workingsTV.text = ""
@@ -501,6 +538,10 @@ class MainActivity : AppCompatActivity() {
         binding.buttonTan.text = if (isInverse) "tan⁻¹" else "tan"
         performHapticFeedback()
     }
+    private fun openSettingsActivity() {
+        startActivity(Intent(applicationContext, SettingsActivity::class.java))
+    }
+
 
     fun backSpaceAction(view: View) {}
     fun equalAction(view: View) {}
