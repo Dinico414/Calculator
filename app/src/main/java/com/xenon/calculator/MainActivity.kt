@@ -304,7 +304,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun formatResult(result: Double): String {
-        val parts = result.toString().split(".")
+        val formattedResult = String.format("%.2f", result) // Format with two decimal places
+        val parts = formattedResult.split(".")
         val integerPart = parts[0]
         val decimalPart = if (parts.size > 1) parts[1] else ""
 
