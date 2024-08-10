@@ -237,6 +237,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun parenthesesAction() {
+        binding.buttonParentheses.setOnLongClickListener {
+            binding.workingsTV.append(")")
+            true
+        }
         val workings = binding.workingsTV.text.toString()
         var openParenthesesCount = 0
 
@@ -424,18 +428,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun evaluateScientificFunction(func: String): Double {
-
-        val operator = func[0]
-        val operandStr = func.substring(2, func.length - 1)
+        val function = func.substring(0, 2) // Extract "sin", "cos", "tan", "√("
+        val operandStr = func.substring(function.length, func.length - 1)
         val operand = evaluateExpression(operandStr)
 
-        return when (operator) {
-            's' -> if (isInverse) asin(operand) else sin(operand)
-            'c' -> if (isInverse) acos(operand) else cos(operand)
-            't' -> if (isInverse) atan(operand) else tan(operand)
-            '√' -> if (isInverse) operand * operand else sqrt(operand)
-            '!' -> factorial(operand.toInt())
-            'l' -> if (func.startsWith("ln")) ln(operand) else log10(operand)
+        return when (function) {
+            "sin" -> if (isInverse) asin(operand) else sin(operand)
+            "cos" -> if (isInverse) acos(operand) else cos(operand)
+            "tan" -> if (isInverse) atan(operand) else tan(operand)
+            "√(" -> sqrt(operand) // isInverse is not considered here
+            "ln(" -> ln(operand)
+            "log" -> log10(operand)
             else -> throw IllegalArgumentException("Invalid scientific operation")
         }
     }
@@ -479,20 +482,16 @@ class MainActivity : AppCompatActivity() {
     private fun scientificOperationAction(operation: String) {
         var workings = binding.workingsTV.text.toString()
         if (operation == "√(") {
-            if (isInverse) {
-                if (workings.isNotEmpty() && (workings.last()
-                        .isDigit() || workings.last() == ')')
-                ) {
-                    workings += "²"
-                    canAddOperation = true
-                }
+            workings += if (isInverse) {
+                "²"
             } else {
-                workings += if (workings.isNotEmpty() && workings.last() == '(') {
+                if (workings.isNotEmpty() && workings.last() == '(') {
                     operation.substring(1)
                 } else {
                     operation
                 }
             }
+            canAddOperation = true
         } else if (operation != "%" && operation != "!") {
             workings += if (workings.isNotEmpty() && workings.last() == '(') {
                 operation.substring(1)
@@ -506,7 +505,6 @@ class MainActivity : AppCompatActivity() {
         canAddDecimal = true
         performHapticFeedback()
     }
-
     @SuppressLint("ObsoleteSdkInt")
     private fun performHapticFeedback() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
