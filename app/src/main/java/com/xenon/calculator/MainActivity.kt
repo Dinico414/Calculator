@@ -294,7 +294,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun calculateResults(): String {
-        val expression = binding.workingsTV.text.toString().replace(",", ".")
+        val expression = binding.workingsTV.text.toString()
         try {
             val result = evaluateExpression(expression)
             return formatResult(result)
@@ -303,9 +303,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private fun formatResult(result: Double): String {
-        val formattedResult = String.format("%.2f", result) // Format with two decimal places
-        val parts = formattedResult.split(".")
+        val parts = result.toString().split(".")
         val integerPart = parts[0]
         val decimalPart = if (parts.size > 1) parts[1] else ""
 
@@ -313,14 +313,15 @@ class MainActivity : AppCompatActivity() {
         for (i in integerPart.indices.reversed()) {
             formattedInteger.insert(0, integerPart[i])
             if ((integerPart.length - i) % 3 == 0 && i != 0) {
-                formattedInteger.insert(0, ".") // Use dot as grouping separator
+                formattedInteger.insert(0, ".")
             }
         }
 
         return if (decimalPart.isNotEmpty()) {
-            "${formattedInteger},${decimalPart}" // Use comma as decimal separator
+            val formattedDecimal = if (decimalPart.length >= 2) decimalPart else decimalPart.padEnd(2, '0')
+            "${formattedInteger},${formattedDecimal}"
         } else {
-            formattedInteger.toString()
+            "${formattedInteger},00"
         }
     }
 
@@ -452,7 +453,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun evaluateScientificFunction(func: String): Double {
-        val function = func.substring(0, 2) // Extract "sin", "cos", "tan", "√("
+        val function = func.substring(0, 2)
         val operandStr = func.substring(function.length, func.length - 1)
         val operand = evaluateExpression(operandStr)
 
@@ -460,7 +461,7 @@ class MainActivity : AppCompatActivity() {
             "sin" -> if (isInverse) asin(operand) else sin(operand)
             "cos" -> if (isInverse) acos(operand) else cos(operand)
             "tan" -> if (isInverse) atan(operand) else tan(operand)
-            "√(" -> sqrt(operand) // isInverse is not considered here
+            "√(" -> sqrt(operand)
             "ln(" -> ln(operand)
             "log" -> log10(operand)
             else -> throw IllegalArgumentException("Invalid scientific operation")
