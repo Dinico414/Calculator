@@ -160,6 +160,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
         binding.apply {
             button0.setOnClickListener { numberAction(it) }
             button1.setOnClickListener { numberAction(it) }
@@ -172,6 +173,7 @@ class MainActivity : AppCompatActivity() {
             button8.setOnClickListener { numberAction(it) }
             button9.setOnClickListener { numberAction(it) }
             buttonDot.setOnClickListener { numberAction(it) }
+            buttonDot.text = ","
             buttonAdd.setOnClickListener { operationAction(it) }
             buttonSubtract.setOnClickListener { operationAction(it) }
             buttonMultiply.setOnClickListener { operationAction(it) }
@@ -214,9 +216,10 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun numberAction(view: View) {
+
         if (view is Button) {
             val currentText = binding.workingsTV.text.toString()
-            if (view.text == ".") {
+            if (view.text == ",") {
                 if (canAddDecimal) binding.workingsTV.text = "$currentText${view.text}"
                 canAddDecimal = false
             } else binding.workingsTV.text = "$currentText${view.text}"
@@ -291,12 +294,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun calculateResults(): String {
-        val expression = binding.workingsTV.text.toString()
+        val expression = binding.workingsTV.text.toString().replace(",", ".")
         try {
             val result = evaluateExpression(expression)
-            return result.toString()
+            return formatResult(result)
         } catch (e: Exception) {
             return "Error"
+        }
+    }
+
+    private fun formatResult(result: Double): String {
+        val parts = result.toString().split(".")
+        val integerPart = parts[0]
+        val decimalPart = if (parts.size > 1) parts[1] else ""
+
+        val formattedInteger = StringBuilder()
+        for (i in integerPart.indices.reversed()) {
+            formattedInteger.insert(0, integerPart[i])
+            if ((integerPart.length - i) % 3 == 0 && i != 0) {
+                formattedInteger.insert(0, ".") // Use dot as grouping separator
+            }
+        }
+
+        return if (decimalPart.isNotEmpty()) {
+            "${formattedInteger},${decimalPart}" // Use comma as decimal separator
+        } else {
+            formattedInteger.toString()
         }
     }
 
@@ -505,6 +528,7 @@ class MainActivity : AppCompatActivity() {
         canAddDecimal = true
         performHapticFeedback()
     }
+
     @SuppressLint("ObsoleteSdkInt")
     private fun performHapticFeedback() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -545,4 +569,5 @@ class MainActivity : AppCompatActivity() {
 
     fun backSpaceAction(view: View) {}
     fun equalAction(view: View) {}
+
 }
