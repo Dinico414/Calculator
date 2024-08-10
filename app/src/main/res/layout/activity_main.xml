@@ -475,7 +475,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonDot"
                 style="@style/buttonNumber"
-                android:text="."
+                android:text=","
                 app:layout_constraintBottom_toBottomOf="@id/mainKeyboard"
                 app:layout_constraintEnd_toStartOf="@id/button0"
                 app:layout_constraintStart_toStartOf="@id/mainKeyboard"
