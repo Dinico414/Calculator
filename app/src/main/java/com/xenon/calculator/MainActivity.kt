@@ -15,9 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.forEach
 import com.google.android.material.appbar.MaterialToolbar
-import com.xenon.calculator.databinding.ActivityMainBinding
 import com.xenon.calculator.activities.SettingsActivity
-
+import com.xenon.calculator.databinding.ActivityMainBinding
 import kotlin.math.acos
 import kotlin.math.asin
 import kotlin.math.atan
@@ -156,6 +155,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent(this, SettingsActivity::class.java))
                     true
                 }
+
                 else -> false
             }
         }
@@ -200,6 +200,7 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
     private fun setupToolbar() {
         binding.toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -483,6 +484,7 @@ class MainActivity : AppCompatActivity() {
                         .isDigit() || workings.last() == ')')
                 ) {
                     workings += "²"
+                    canAddOperation = true
                 }
             } else {
                 workings += if (workings.isNotEmpty() && workings.last() == '(') {
@@ -502,7 +504,6 @@ class MainActivity : AppCompatActivity() {
         }
         binding.workingsTV.text = workings
         canAddDecimal = true
-        canAddOperation = false
         performHapticFeedback()
     }
 
@@ -538,6 +539,7 @@ class MainActivity : AppCompatActivity() {
         binding.buttonTan.text = if (isInverse) "tan⁻¹" else "tan"
         performHapticFeedback()
     }
+
     private fun openSettingsActivity() {
         startActivity(Intent(applicationContext, SettingsActivity::class.java))
     }
