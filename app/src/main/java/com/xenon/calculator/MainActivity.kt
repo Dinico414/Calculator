@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -343,11 +344,9 @@ class MainActivity : AppCompatActivity() {
                     numbers.push(subResult)
                     i = closingParenIndex
                 } else {
-
                     return Double.NaN
                 }
             } else if (c == ')') {
-
                 return Double.NaN
             } else if (c == '!') {
                 if (number.isNotEmpty()) {
@@ -363,6 +362,9 @@ class MainActivity : AppCompatActivity() {
                     numbers.push(number.toDouble())
                     number = ""
                 }
+
+                Log.d("Calculator", "Operator: $c") // Log the operator
+
                 while (!operators.empty() && hasPrecedence(c, operators.peek())) {
                     numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
                 }
@@ -370,18 +372,12 @@ class MainActivity : AppCompatActivity() {
             } else if (isScientificFunction(c)) {
                 val funcEnd = findFunctionEnd(expression, i)
                 val func = expression.substring(i, funcEnd + 1)
+
+                Log.d("Calculator", "Function: $func") // Log the function
+
                 val result = evaluateScientificFunction(func)
                 numbers.push(result)
                 i = funcEnd
-            } else if (c == '%') {
-                if (number.isNotEmpty()) {
-                    val num = number.toDouble()
-                    numbers.push(num / 100.0)
-                    number = ""
-                } else if (!numbers.empty()) {
-                    val num = numbers.pop()
-                    numbers.push(num / 100.0)
-                }
             } else if (c == 'π') {
                 if (number.isNotEmpty()) {
                     numbers.push(number.toDouble() * Math.PI)
@@ -410,17 +406,16 @@ class MainActivity : AppCompatActivity() {
             numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
         }
 
-        return if (!numbers.empty()) {
-            var result = numbers.pop()
-            if (!isRadians && isTrigonometricFunction(expression)) {
-                result = Math.toDegrees(result)
-            }
-            result
+        val result = if (!numbers.empty()) {
+            numbers.pop()
         } else {
             Double.NaN
         }
-    }
 
+        Log.d("Calculator", "Result: $result") // Log the result
+
+        return result
+    }
     private fun findClosingParenthesis(expression: String, startIndex: Int): Int {
         var count = 1
         for (i in startIndex + 1 until expression.length) {
@@ -453,20 +448,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun evaluateScientificFunction(func: String): Double {
-        val function = func.substring(0, 2)
-        val operandStr = func.substring(function.length, func.length - 1)
-        val operand = evaluateExpression(operandStr)
+        val function = func.substring(0, func.length - 1)
+        val operandStr = func.substring(function.length + 1, func.length - 1)
 
-        return when (function) {
-            "sin" -> if (isInverse) asin(operand) else sin(operand)
-            "cos" -> if (isInverse) acos(operand) else cos(operand)
-            "tan" -> if (isInverse) atan(operand) else tan(operand)
-            "√(" -> sqrt(operand)
-            "ln(" -> ln(operand)
-            "log" -> log10(operand)
-            else -> throw IllegalArgumentException("Invalid scientific operation")
+        try {
+            var operand = evaluateExpression(operandStr)
+
+            if (!isRadians && (function == "sin" || function == "cos" || function == "tan")) {
+                operand = Math.toRadians(operand)
+            }
+
+            return when (function) {
+                "sin" -> if (isInverse) asin(operand) else sin(operand)
+                "cos" -> if (isInverse) acos(operand) else cos(operand)
+                "tan" -> if (isInverse) atan(operand) else tan(operand)
+                "√" -> sqrt(operand)
+                "ln" -> ln(operand)
+                "log" -> log10(operand)
+                else -> throw IllegalArgumentException("Invalid scientific operation")
+            }
+        } catch (e: NumberFormatException) {
+            Log.e("Calculator", "Error parsing operand: ${e.message}")
+            return Double.NaN
         }
     }
+
 
     private fun isScientificFunction(c: Char): Boolean = c in listOf('s', 'c', 't', '√', '!', 'l')
 
