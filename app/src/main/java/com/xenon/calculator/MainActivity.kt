@@ -17,15 +17,15 @@ import com.xenon.calculator.databinding.ActivityMainBinding
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 import kotlin.math.acos
-import kotlin.math.acosh
 import kotlin.math.asin
-import kotlin.math.asinh
 import kotlin.math.atan
-import kotlin.math.atanh
+import kotlin.math.cos
 import kotlin.math.ln
 import kotlin.math.log10
 import kotlin.math.pow
+import kotlin.math.sin
 import kotlin.math.sqrt
+import kotlin.math.tan
 
 
 class MainActivity : AppCompatActivity() {
@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
     private var canAddOperation = false
     private var canAddDecimal = true
     private var isRadians = true
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,13 +125,13 @@ class MainActivity : AppCompatActivity() {
             buttonClear.setOnClickListener { allClearAction() }
             buttonBackspace.setOnClickListener { backSpaceAction() }
             buttonParentheses.setOnClickListener { parenthesesAction() }
-            buttonSin.setOnClickListener { scientificOperationAction("sin(") }
-            buttonCos.setOnClickListener { scientificOperationAction("cos(") }
-            buttonTan.setOnClickListener { scientificOperationAction("tan(") }
-            buttonSqrt.setOnClickListener { scientificOperationAction("√(") }
+            buttonSin.setOnClickListener { scientificOperationAction("sin") }
+            buttonCos.setOnClickListener { scientificOperationAction("cos") }
+            buttonTan.setOnClickListener { scientificOperationAction("tan") }
+            buttonSqrt.setOnClickListener { scientificOperationAction("√") }
             buttonPercent.setOnClickListener { scientificOperationAction("%") }
-            buttonLn.setOnClickListener { scientificOperationAction("ln(") }
-            buttonLog.setOnClickListener { scientificOperationAction("log(") }
+            buttonLn.setOnClickListener { scientificOperationAction("ln") }
+            buttonLog.setOnClickListener { scientificOperationAction("log") }
             buttonFactorial.setOnClickListener { scientificOperationAction("!") }
             buttonPower.setOnClickListener {
                 operationAction(Button(this@MainActivity).apply {
@@ -165,7 +164,6 @@ class MainActivity : AppCompatActivity() {
         performHapticFeedback()
     }
 
-
     private fun operationAction(view: View) {
         if (view is Button && canAddOperation) {
             binding.workingsTV.append(view.text)
@@ -175,19 +173,23 @@ class MainActivity : AppCompatActivity() {
         performHapticFeedback()
     }
 
-
     private fun scientificOperationAction(operation: String) {
         val workings = binding.workingsTV.text.toString()
-        binding.workingsTV.text = when (operation) {
-            "√(" -> workings + if (isInverse) "²" else if (workings.isNotEmpty() && workings.last() == '(') operation.substring(
+        val newOperation = if (isInverse && operation in listOf("sin(", "cos(", "tan(")) {
+            operation.replace("(", "⁻¹(")
+        } else {
+            operation
+        }
+        binding.workingsTV.text = when (newOperation) {
+            "√(" -> workings + if (isInverse) "²" else if (workings.isNotEmpty() && workings.last() == '(') newOperation.substring(
                 1
-            ) else operation
+            ) else "$newOperation("
 
-            "%", "!" -> workings + operation
-            else -> workings + if (workings.isNotEmpty() && workings.last() == '(' && operation.endsWith(
+            "%", "!" -> workings + newOperation
+            else -> workings + if (workings.isNotEmpty() && workings.last() == '(' && newOperation.endsWith(
                     "("
                 )
-            ) operation.substring(1) else operation
+            ) newOperation.substring(1) else "$newOperation("
         }
         canAddDecimal = true
         performHapticFeedback()
@@ -239,7 +241,6 @@ class MainActivity : AppCompatActivity() {
         }
         return -1
     }
-
 
     private fun allClearAction() {
         binding.workingsTV.text = ""
@@ -381,25 +382,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun evaluateScientificFunction(func: String): Double {
-        val function = func.substring(0, func.length - 1)
+        val function = func.substring(0, func.indexOf('('))
         val operandStr = func.substring(function.length + 1, func.length - 1)
 
         try {
             var operand = evaluateExpression(operandStr)
 
-            if (!isRadians && (function == "sin" || function == "cos" || function == "tan")) {
+            if (!isRadians && (function == "sin" || function == "cos" || function == "tan") && !isInverse) {
                 operand = Math.toRadians(operand)
             }
 
-            return when (function) {
-                "sin" -> if (isInverse) asinh(operand) else asin(operand)
-                "cos" -> if (isInverse) acosh(operand) else acos(operand)
-                "tan" -> if (isInverse) atanh(operand) else atan(operand)
+            var result = when (function) {
+                "sin" -> if (isInverse) asin(operand) else sin(operand)
+                "cos" -> if (isInverse) acos(operand) else cos(operand)
+                "tan" -> if (isInverse) atan(operand) else tan(operand)
                 "√" -> sqrt(operand)
                 "ln" -> ln(operand)
                 "log" -> log10(operand)
                 else -> throw IllegalArgumentException("Invalid scientific operation")
             }
+
+            if (!isRadians && isInverse && (function == "sin" || function == "cos" || function == "tan")) {
+                result = Math.toDegrees(result)
+            }
+
+            return result
         } catch (e: NumberFormatException) {
             Log.e("Calculator", "Error parsing operand: ${e.message}")
             return Double.NaN
@@ -412,7 +419,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun hasPrecedence(op1: Char, op2: Char): Boolean {
         if (op2 == '(' || op2 == ')') return false
-        if (op1 == '%') return true
         if ((op1 == '×' || op1 == '/') && (op2 == '+' || op2 == '-')) return false
         return true
     }
