@@ -13,6 +13,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.appbar.MaterialToolbar
 import com.xenon.calculator.activities.SettingsActivity
 import com.xenon.calculator.databinding.ActivityMainBinding
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 import kotlin.math.acos
 import kotlin.math.acosh
 import kotlin.math.asin
@@ -24,24 +26,24 @@ import kotlin.math.log10
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-@Suppress("DEPRECATION", "unused")
+
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var vibrator: Vibrator
     private var canAddOperation = false
     private var canAddDecimal = true
-    private var openParentheses = true
     private var isRadians = true
 
-    @SuppressLint("SetTextI18n")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
+        vibrator = getSystemService(Vibrator::class.java)
 
         val screenLayout = findViewById<ConstraintLayout>(R.id.screen)
+
 
         screenLayout.post {
             val screenHeight = screenLayout.rootView.height
@@ -78,21 +80,15 @@ class MainActivity : AppCompatActivity() {
                 scientificButtonsLayout.visibility = View.VISIBLE
             }
 
-            scientificButtonsLayout.animate()
-                .alpha(if (isVisible) 0f else 1f)
-                .translationY(translationY)
-                .setDuration(300)
-                .withEndAction {
+            scientificButtonsLayout.animate().alpha(if (isVisible) 0f else 1f)
+                .translationY(translationY).setDuration(300).withEndAction {
                     if (isVisible) {
                         scientificButtonsLayout.visibility = View.GONE
                     }
-                }
-                .start()
+                }.start()
 
-            binding.toggleScientificButtonImageView.animate()
-                .rotationX(if (isVisible) 0f else 180f)
-                .setDuration(300)
-                .start()
+            binding.toggleScientificButtonImageView.animate().rotationX(if (isVisible) 0f else 180f)
+                .setDuration(300).start()
         }
 
 
@@ -109,37 +105,19 @@ class MainActivity : AppCompatActivity() {
                 button7,
                 button8,
                 button9,
-                buttonDot
+                buttonDot,
+                buttonE
             )
             numberButtons.forEach { button ->
                 button.setOnClickListener { numberAction(it) }
             }
 
             val operationButtons = listOf(
-                buttonAdd,
-                buttonSubtract,
-                buttonMultiply,
-                buttonDivide
+                buttonAdd, buttonSubtract, buttonMultiply, buttonDivide
             )
             operationButtons.forEach { button ->
                 button.setOnClickListener { operationAction(it) }
             }
-//            button0.setOnClickListener { numberAction(it) }
-//            button1.setOnClickListener { numberAction(it) }
-//            button2.setOnClickListener { numberAction(it) }
-//            button3.setOnClickListener { numberAction(it) }
-//            button4.setOnClickListener { numberAction(it) }
-//            button5.setOnClickListener { numberAction(it) }
-//            button6.setOnClickListener { numberAction(it) }
-//            button7.setOnClickListener { numberAction(it) }
-//            button8.setOnClickListener { numberAction(it) }
-//            button9.setOnClickListener { numberAction(it) }
-//            buttonDot.setOnClickListener { numberAction(it) }
-//            buttonDot.text = ","
-//            buttonAdd.setOnClickListener { operationAction(it) }
-//            buttonSubtract.setOnClickListener { operationAction(it) }
-//            buttonMultiply.setOnClickListener { operationAction(it) }
-//            buttonDivide.setOnClickListener { operationAction(it) }
             buttonEqual.setOnClickListener { equalAction() }
             buttonClear.setOnClickListener { allClearAction() }
             buttonBackspace.setOnClickListener { backSpaceAction() }
@@ -148,6 +126,10 @@ class MainActivity : AppCompatActivity() {
             buttonCos.setOnClickListener { scientificOperationAction("cos(") }
             buttonTan.setOnClickListener { scientificOperationAction("tan(") }
             buttonSqrt.setOnClickListener { scientificOperationAction("√(") }
+            buttonPercent.setOnClickListener { scientificOperationAction("%") }
+            buttonLn.setOnClickListener { scientificOperationAction("ln(") }
+            buttonLog.setOnClickListener { scientificOperationAction("log(") }
+            buttonFactorial.setOnClickListener { scientificOperationAction("!") }
             buttonPower.setOnClickListener {
                 operationAction(Button(this@MainActivity).apply {
                     text = "^"
@@ -156,35 +138,23 @@ class MainActivity : AppCompatActivity() {
             buttonPi.setOnClickListener { addPi() }
             buttonRadDeg.setOnClickListener { switchRadDeg() }
             buttonInverse.setOnClickListener { inverseAction() }
-            buttonPercent.setOnClickListener { scientificOperationAction("%") }
-            buttonLn.setOnClickListener { scientificOperationAction("ln(") }
-            buttonLog.setOnClickListener { scientificOperationAction("log(") }
-            buttonE.setOnClickListener { numberAction(it) }
-            buttonFactorial.setOnClickListener { scientificOperationAction("!") }
-
         }
     }
 
-    private fun setupToolbar() {
-        binding.toolbar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.settings -> openSettingsActivity()
-                else -> return@setOnMenuItemClickListener false
-            }
-            return@setOnMenuItemClickListener true
-        }
-    }
-
+    private val locale = Locale.getDefault()
+    private val decimalSeparator = DecimalFormatSymbols.getInstance(locale).decimalSeparator
 
     @SuppressLint("SetTextI18n")
     private fun numberAction(view: View) {
         if (view is Button) {
             val currentText = binding.workingsTV.text.toString()
-            if (view.text == ",") {
-                if (canAddDecimal) binding.workingsTV.text = "$currentText${view.text}"
-                canAddDecimal = false
+            if (view.text == ".") {
+                if (canAddDecimal) {
+                    binding.workingsTV.text = currentText + decimalSeparator
+                    canAddDecimal = false
+                }
             } else {
-                binding.workingsTV.text = "$currentText${view.text}"
+                binding.workingsTV.text = currentText + view.text
                 canAddOperation = true
             }
         }
@@ -225,12 +195,7 @@ class MainActivity : AppCompatActivity() {
 
         when {
             workings.isEmpty() || lastChar == '(' || lastChar in listOf(
-                '+',
-                '-',
-                '×',
-                '÷',
-                '^',
-                '√'
+                '+', '-', '×', '÷', '^', '√'
             ) -> binding.workingsTV.append("(")
 
             workings.count { it == '(' } > workings.count { it == ')' } -> binding.workingsTV.append(
@@ -271,7 +236,7 @@ class MainActivity : AppCompatActivity() {
         return -1
     }
 
-    @SuppressLint("SetTextI18n")
+
     private fun allClearAction() {
         binding.workingsTV.text = ""
         binding.resultsTV.text = ""
@@ -299,9 +264,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("DefaultLocale")
     private fun formatResult(result: Double): String {
-        return String.format("%.2f", result).replace(".", ",")
+        val formattedResult = String.format(Locale.getDefault(), "%.10f", result)
+        val parts = formattedResult.split(decimalSeparator)
+        val integerPart = parts[0].reversed().chunked(3).joinToString(".").reversed()
+        val decimalPart = parts[1].trimEnd('0')
+        return if (decimalPart.isEmpty()) {
+            integerPart
+        } else {
+            "$integerPart,$decimalPart"
+        }
     }
 
     private fun evaluateExpression(expression: String): Double {
@@ -312,8 +284,8 @@ class MainActivity : AppCompatActivity() {
 
         while (i < expression.length) {
             val c = expression[i]
-            if (c.isDigit() || c == '.') {
-                number += c
+            if (c.isDigit() || c == ',' || c == '.') {
+                number += if (c == ',') decimalSeparator else c
             } else if (c == '(') {
                 val closingParenIndex = findClosingParenthesis(expression, i)
                 if (closingParenIndex != -1) {
@@ -474,16 +446,7 @@ class MainActivity : AppCompatActivity() {
         performHapticFeedback()
     }
 
-    private fun openSettingsActivity() {
-        startActivity(Intent(applicationContext, SettingsActivity::class.java))
-    }
-
-    @SuppressLint("ObsoleteSdkInt")
     private fun performHapticFeedback() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            vibrator.vibrate(50)
-        }
+        vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 }

@@ -4,7 +4,10 @@
     <string name="settings">Einstellungen</string>
     <string name="general">Allgemein</string>
     <string name="language">Sprache</string>
+    <string name="theme">Theme</string>
     <string name="clear_data">Daten zurücksetzen</string>
+    <string name="place_holder">Platzhalter</string>
+    <string name="checkbox">Checkbox</string>
     <string name="save">Speichern</string>
     <string name="delete">löschen</string>
     <string name="undo">Rückgangig</string>
