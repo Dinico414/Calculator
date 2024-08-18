@@ -311,6 +311,15 @@ class MainActivity : AppCompatActivity() {
                     val num = numbers.pop()
                     numbers.push(factorial(num.toInt()))
                 }
+            } else if (c == '%') {
+                if (number.isNotEmpty()) {
+                    val num = number.toDouble()
+                    numbers.push(num / 100.0)
+                    number = ""
+                } else if (!numbers.empty()) {
+                    val num = numbers.pop()
+                    numbers.push(num / 100.0)
+                }
             } else if (isOperator(c)) {
                 if (number.isNotEmpty()) {
                     numbers.push(number.toDouble())
@@ -458,6 +467,6 @@ class MainActivity : AppCompatActivity() {
         vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 
-    fun backSpaceAction(view: View) {}
-    fun equalAction(view: View) {}
+    fun backSpaceAction(@Suppress("UNUSED_PARAMETER") view: View) {}
+    fun equalAction(@Suppress("UNUSED_PARAMETER") view: View) {}
 }
