@@ -1,9 +1,5 @@
 package com.xenon.calculator
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -14,22 +10,21 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.forEach
 import com.google.android.material.appbar.MaterialToolbar
 import com.xenon.calculator.activities.SettingsActivity
 import com.xenon.calculator.databinding.ActivityMainBinding
 import kotlin.math.acos
+import kotlin.math.acosh
 import kotlin.math.asin
+import kotlin.math.asinh
 import kotlin.math.atan
-import kotlin.math.cos
+import kotlin.math.atanh
 import kotlin.math.ln
 import kotlin.math.log10
 import kotlin.math.pow
-import kotlin.math.sin
 import kotlin.math.sqrt
-import kotlin.math.tan
 
-@Suppress("DEPRECATION", "unused", "UNUSED_PARAMETER")
+@Suppress("DEPRECATION", "unused")
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var vibrator: Vibrator
@@ -56,98 +51,6 @@ class MainActivity : AppCompatActivity() {
             params.height = newHeight
             screenLayout.layoutParams = params
         }
-
-
-        val toggleScientificButton = findViewById<Button>(R.id.toggleScientificButton)
-        val scientificButtonsLayout = findViewById<ConstraintLayout>(R.id.scientificButtonsLayout)
-
-        binding.toggleScientificButtonImageView.rotationX = 180f
-
-        toggleScientificButton.setOnClickListener {
-            if (scientificButtonsLayout.visibility == View.VISIBLE) {
-
-                val fadeOut = ObjectAnimator.ofFloat(scientificButtonsLayout, "alpha", 1f, 0f)
-                val slideUp = ObjectAnimator.ofFloat(
-                    scientificButtonsLayout,
-                    "translationY",
-                    0f,
-                    -scientificButtonsLayout.height.toFloat()
-                )
-
-                val fadeOutDuration = 200L
-                val slideUpDuration = 300L
-
-                fadeOut.duration = fadeOutDuration
-                slideUp.duration = slideUpDuration
-
-                val animatorSet = AnimatorSet()
-                animatorSet.playTogether(fadeOut, slideUp)
-                animatorSet.startDelay = slideUpDuration / 2
-
-                animatorSet.addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        scientificButtonsLayout.visibility = View.GONE
-                    }
-                })
-
-                animatorSet.start()
-
-                val flipImageUp = ObjectAnimator.ofFloat(
-                    binding.toggleScientificButtonImageView, "rotationX", 180f, 0f
-                )
-                flipImageUp.duration = 300
-                flipImageUp.start()
-
-
-                binding.root.forEach { view ->
-                    if (view is Button && view != toggleScientificButton) {
-                        val slideUpOther = ObjectAnimator.ofFloat(
-                            view, "translationY", 0f, -scientificButtonsLayout.height.toFloat()
-                        )
-                        slideUpOther.duration = slideUpDuration
-                        slideUpOther.start()
-                    }
-                }
-            } else {
-
-                val fadeIn = ObjectAnimator.ofFloat(scientificButtonsLayout, "alpha", 0f, 1f)
-                val slideDown = ObjectAnimator.ofFloat(
-                    scientificButtonsLayout,
-                    "translationY",
-                    -scientificButtonsLayout.height.toFloat(),
-                    0f
-                )
-
-                val fadeInDuration = 400L
-                val slideDownDuration = 300L
-
-                fadeIn.duration = fadeInDuration
-                slideDown.duration = slideDownDuration
-
-                val animatorSet = AnimatorSet()
-                animatorSet.playTogether(fadeIn, slideDown)
-                animatorSet.startDelay = slideDownDuration / 2
-
-                scientificButtonsLayout.visibility = View.VISIBLE
-
-                val flipTextDown = ObjectAnimator.ofFloat(
-                    binding.toggleScientificButtonImageView, "rotationX", 0f, 180f
-                )
-                flipTextDown.duration = 300
-                flipTextDown.start()
-
-                binding.root.forEach { view ->
-                    if (view is Button && view != toggleScientificButton) {
-                        val slideDownOther = ObjectAnimator.ofFloat(
-                            view, "translationY", -scientificButtonsLayout.height.toFloat(), 0f
-                        )
-                        slideDownOther.duration = slideDownDuration
-                        slideDownOther.start()
-                    }
-                }
-                animatorSet.start()
-            }
-        }
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         toolbar.inflateMenu(R.menu.top_app_bar)
         toolbar.setOnMenuItemClickListener { menuItem ->
@@ -162,23 +65,81 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        val toggleScientificButton = findViewById<Button>(R.id.toggleScientificButton)
+        val scientificButtonsLayout = findViewById<ConstraintLayout>(R.id.scientificButtonsLayout)
+
+        binding.toggleScientificButtonImageView.rotationX = 180f
+
+        toggleScientificButton.setOnClickListener {
+            val isVisible = scientificButtonsLayout.visibility == View.VISIBLE
+            val translationY = if (isVisible) -scientificButtonsLayout.height.toFloat() else 0f
+
+            if (!isVisible) {
+                scientificButtonsLayout.visibility = View.VISIBLE
+            }
+
+            scientificButtonsLayout.animate()
+                .alpha(if (isVisible) 0f else 1f)
+                .translationY(translationY)
+                .setDuration(300)
+                .withEndAction {
+                    if (isVisible) {
+                        scientificButtonsLayout.visibility = View.GONE
+                    }
+                }
+                .start()
+
+            binding.toggleScientificButtonImageView.animate()
+                .rotationX(if (isVisible) 0f else 180f)
+                .setDuration(300)
+                .start()
+        }
+
+
         binding.apply {
-            button0.setOnClickListener { numberAction(it) }
-            button1.setOnClickListener { numberAction(it) }
-            button2.setOnClickListener { numberAction(it) }
-            button3.setOnClickListener { numberAction(it) }
-            button4.setOnClickListener { numberAction(it) }
-            button5.setOnClickListener { numberAction(it) }
-            button6.setOnClickListener { numberAction(it) }
-            button7.setOnClickListener { numberAction(it) }
-            button8.setOnClickListener { numberAction(it) }
-            button9.setOnClickListener { numberAction(it) }
-            buttonDot.setOnClickListener { numberAction(it) }
-            buttonDot.text = ","
-            buttonAdd.setOnClickListener { operationAction(it) }
-            buttonSubtract.setOnClickListener { operationAction(it) }
-            buttonMultiply.setOnClickListener { operationAction(it) }
-            buttonDivide.setOnClickListener { operationAction(it) }
+
+            val numberButtons = listOf(
+                button0,
+                button1,
+                button2,
+                button3,
+                button4,
+                button5,
+                button6,
+                button7,
+                button8,
+                button9,
+                buttonDot
+            )
+            numberButtons.forEach { button ->
+                button.setOnClickListener { numberAction(it) }
+            }
+
+            val operationButtons = listOf(
+                buttonAdd,
+                buttonSubtract,
+                buttonMultiply,
+                buttonDivide
+            )
+            operationButtons.forEach { button ->
+                button.setOnClickListener { operationAction(it) }
+            }
+//            button0.setOnClickListener { numberAction(it) }
+//            button1.setOnClickListener { numberAction(it) }
+//            button2.setOnClickListener { numberAction(it) }
+//            button3.setOnClickListener { numberAction(it) }
+//            button4.setOnClickListener { numberAction(it) }
+//            button5.setOnClickListener { numberAction(it) }
+//            button6.setOnClickListener { numberAction(it) }
+//            button7.setOnClickListener { numberAction(it) }
+//            button8.setOnClickListener { numberAction(it) }
+//            button9.setOnClickListener { numberAction(it) }
+//            buttonDot.setOnClickListener { numberAction(it) }
+//            buttonDot.text = ","
+//            buttonAdd.setOnClickListener { operationAction(it) }
+//            buttonSubtract.setOnClickListener { operationAction(it) }
+//            buttonMultiply.setOnClickListener { operationAction(it) }
+//            buttonDivide.setOnClickListener { operationAction(it) }
             buttonEqual.setOnClickListener { equalAction() }
             buttonClear.setOnClickListener { allClearAction() }
             buttonBackspace.setOnClickListener { backSpaceAction() }
@@ -229,6 +190,7 @@ class MainActivity : AppCompatActivity() {
         performHapticFeedback()
     }
 
+
     private fun operationAction(view: View) {
         if (view is Button) {
             if (canAddOperation) {
@@ -240,40 +202,62 @@ class MainActivity : AppCompatActivity() {
         performHapticFeedback()
     }
 
-    private fun parenthesesAction() {
-        binding.buttonParentheses.setOnLongClickListener {
-            binding.workingsTV.append(")")
-            true
-        }
+    private fun scientificOperationAction(operation: String) {
         val workings = binding.workingsTV.text.toString()
-        var openParenthesesCount = 0
+        binding.workingsTV.text = when (operation) {
+            "√(" -> workings + if (isInverse) "²" else if (workings.isNotEmpty() && workings.last() == '(') operation.substring(
+                1
+            ) else operation
 
-        for (char in workings) {
-            if (char == '(') openParenthesesCount++
-            else if (char == ')') openParenthesesCount--
+            "%", "!" -> workings + operation
+            else -> workings + if (workings.isNotEmpty() && workings.last() == '(' && operation.endsWith(
+                    "("
+                )
+            ) operation.substring(1) else operation
         }
+        canAddDecimal = true
+        performHapticFeedback()
+    }
 
-        if (workings.isEmpty() || workings.last() == '(' || workings.last() in listOf(
-                '+',
-                '-',
-                '×',
-                '÷',
-                '^',
-                '√'
-            )
-        ) {
-            binding.workingsTV.append("(")
-        } else if (openParenthesesCount > 0 && (workings.last()
-                .isDigit() || workings.last() == ')')
-        ) {
-            binding.workingsTV.append(")")
-        } else if (workings.isNotEmpty() && workings.last().isDigit()) {
-            binding.workingsTV.append("×(")
-        } else {
-            binding.workingsTV.append("(")
+    private fun parenthesesAction() {
+        val workings = binding.workingsTV.text.toString()
+        val lastChar = workings.lastOrNull()
+
+        when {
+            workings.isEmpty() || lastChar == '(' || lastChar in listOf('+', '-', '×', '÷', '^', '√') -> binding.workingsTV.append("(")
+            workings.count { it == '(' } > workings.count { it == ')' } -> binding.workingsTV.append(")")
+            lastChar?.isDigit() == true -> binding.workingsTV.append("×(")
+            else -> binding.workingsTV.append("(")
         }
 
         performHapticFeedback()
+    }
+
+    private fun findClosingParenthesis(expression: String, startIndex: Int): Int {
+        var count = 1
+        for (i in startIndex + 1 until expression.length) {
+            when (expression[i]) {
+                '(' -> count++
+                ')' -> count--
+            }
+            if (count == 0) return i
+        }
+        return -1
+    }
+
+    private fun findFunctionEnd(expression: String, startIndex: Int): Int {
+        var parenthesesCount = 0
+        for (i in startIndex until expression.length) {
+            if (expression[i] == '(') {
+                parenthesesCount++
+            } else if (expression[i] == ')') {
+                parenthesesCount--
+                if (parenthesesCount == 0) {
+                    return i
+                }
+            }
+        }
+        return -1
     }
 
     @SuppressLint("SetTextI18n")
@@ -306,24 +290,7 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("DefaultLocale")
     private fun formatResult(result: Double): String {
-        val parts = result.toString().split(".")
-        val integerPart = parts[0]
-        val decimalPart = if (parts.size > 1) parts[1] else ""
-
-        val formattedInteger = StringBuilder()
-        for (i in integerPart.indices.reversed()) {
-            formattedInteger.insert(0, integerPart[i])
-            if ((integerPart.length - i) % 3 == 0 && i != 0) {
-                formattedInteger.insert(0, ".")
-            }
-        }
-
-        return if (decimalPart.isNotEmpty()) {
-            val formattedDecimal = if (decimalPart.length >= 2) decimalPart else decimalPart.padEnd(2, '0')
-            "${formattedInteger},${formattedDecimal}"
-        } else {
-            "${formattedInteger},00"
-        }
+        return String.format("%.2f", result).replace(".", ",")
     }
 
     private fun evaluateExpression(expression: String): Double {
@@ -363,7 +330,7 @@ class MainActivity : AppCompatActivity() {
                     number = ""
                 }
 
-                Log.d("Calculator", "Operator: $c") // Log the operator
+                Log.d("Calculator", "Operator: $c")
 
                 while (!operators.empty() && hasPrecedence(c, operators.peek())) {
                     numbers.push(applyOp(operators.pop(), numbers.pop(), numbers.pop()))
@@ -373,7 +340,7 @@ class MainActivity : AppCompatActivity() {
                 val funcEnd = findFunctionEnd(expression, i)
                 val func = expression.substring(i, funcEnd + 1)
 
-                Log.d("Calculator", "Function: $func") // Log the function
+                Log.d("Calculator", "Function: $func")
 
                 val result = evaluateScientificFunction(func)
                 numbers.push(result)
@@ -412,40 +379,11 @@ class MainActivity : AppCompatActivity() {
             Double.NaN
         }
 
-        Log.d("Calculator", "Result: $result") // Log the result
+        Log.d("Calculator", "Result: $result")
 
         return result
     }
-    private fun findClosingParenthesis(expression: String, startIndex: Int): Int {
-        var count = 1
-        for (i in startIndex + 1 until expression.length) {
-            when (expression[i]) {
-                '(' -> count++
-                ')' -> count--
-            }
-            if (count == 0) return i
-        }
-        return -1
-    }
 
-    private fun isTrigonometricFunction(expression: String): Boolean {
-        return expression.contains("sin") || expression.contains("cos") || expression.contains("tan")
-    }
-
-    private fun findFunctionEnd(expression: String, startIndex: Int): Int {
-        var parenthesesCount = 0
-        for (i in startIndex until expression.length) {
-            if (expression[i] == '(') {
-                parenthesesCount++
-            } else if (expression[i] == ')') {
-                parenthesesCount--
-                if (parenthesesCount == 0) {
-                    return i
-                }
-            }
-        }
-        return -1
-    }
 
     private fun evaluateScientificFunction(func: String): Double {
         val function = func.substring(0, func.length - 1)
@@ -459,9 +397,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             return when (function) {
-                "sin" -> if (isInverse) asin(operand) else sin(operand)
-                "cos" -> if (isInverse) acos(operand) else cos(operand)
-                "tan" -> if (isInverse) atan(operand) else tan(operand)
+                "sin" -> if (isInverse) asinh(operand) else asin(operand)
+                "cos" -> if (isInverse) acosh(operand) else acos(operand)
+                "tan" -> if (isInverse) atanh(operand) else atan(operand)
                 "√" -> sqrt(operand)
                 "ln" -> ln(operand)
                 "log" -> log10(operand)
@@ -472,7 +410,6 @@ class MainActivity : AppCompatActivity() {
             return Double.NaN
         }
     }
-
 
     private fun isScientificFunction(c: Char): Boolean = c in listOf('s', 'c', 't', '√', '!', 'l')
 
@@ -500,50 +437,6 @@ class MainActivity : AppCompatActivity() {
     private fun factorial(n: Int): Double {
         if (n < 0) throw IllegalArgumentException("Factorial is not defined for negative numbers")
         return if (n <= 1) 1.0 else n * factorial(n - 1)
-    }
-
-    private fun ln(x: Float): Float {
-        return kotlin.math.ln(x)
-    }
-
-    private fun log10(x: Float): Float {
-        return kotlin.math.log10(x)
-    }
-
-    private fun scientificOperationAction(operation: String) {
-        var workings = binding.workingsTV.text.toString()
-        if (operation == "√(") {
-            workings += if (isInverse) {
-                "²"
-            } else {
-                if (workings.isNotEmpty() && workings.last() == '(') {
-                    operation.substring(1)
-                } else {
-                    operation
-                }
-            }
-            canAddOperation = true
-        } else if (operation != "%" && operation != "!") {
-            workings += if (workings.isNotEmpty() && workings.last() == '(') {
-                operation.substring(1)
-            } else {
-                operation
-            }
-        } else {
-            workings += operation
-        }
-        binding.workingsTV.text = workings
-        canAddDecimal = true
-        performHapticFeedback()
-    }
-
-    @SuppressLint("ObsoleteSdkInt")
-    private fun performHapticFeedback() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            vibrator.vibrate(50)
-        }
     }
 
     private fun addPi() {
@@ -574,8 +467,12 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(applicationContext, SettingsActivity::class.java))
     }
 
-
-    fun backSpaceAction(view: View) {}
-    fun equalAction(view: View) {}
-
+    @SuppressLint("ObsoleteSdkInt")
+    private fun performHapticFeedback() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            vibrator.vibrate(50)
+        }
+    }
 }
