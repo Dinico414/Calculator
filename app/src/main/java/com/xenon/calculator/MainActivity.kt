@@ -178,29 +178,29 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun numberAction(view: View) {
-
         if (view is Button) {
             val currentText = binding.workingsTV.text.toString()
             if (view.text == ",") {
                 if (canAddDecimal) binding.workingsTV.text = "$currentText${view.text}"
                 canAddDecimal = false
-            } else binding.workingsTV.text = "$currentText${view.text}"
-            canAddOperation = true
+            } else {
+                binding.workingsTV.text = "$currentText${view.text}"
+                canAddOperation = true
+            }
         }
         performHapticFeedback()
     }
 
 
     private fun operationAction(view: View) {
-        if (view is Button) {
-            if (canAddOperation) {
-                binding.workingsTV.append(view.text)
-                canAddOperation = false
-                canAddDecimal = true
-            }
+        if (view is Button && canAddOperation) {
+            binding.workingsTV.append(view.text)
+            canAddOperation = false
+            canAddDecimal = true
         }
         performHapticFeedback()
     }
+
 
     private fun scientificOperationAction(operation: String) {
         val workings = binding.workingsTV.text.toString()
@@ -224,8 +224,19 @@ class MainActivity : AppCompatActivity() {
         val lastChar = workings.lastOrNull()
 
         when {
-            workings.isEmpty() || lastChar == '(' || lastChar in listOf('+', '-', '×', '÷', '^', '√') -> binding.workingsTV.append("(")
-            workings.count { it == '(' } > workings.count { it == ')' } -> binding.workingsTV.append(")")
+            workings.isEmpty() || lastChar == '(' || lastChar in listOf(
+                '+',
+                '-',
+                '×',
+                '÷',
+                '^',
+                '√'
+            ) -> binding.workingsTV.append("(")
+
+            workings.count { it == '(' } > workings.count { it == ')' } -> binding.workingsTV.append(
+                ")"
+            )
+
             lastChar?.isDigit() == true -> binding.workingsTV.append("×(")
             else -> binding.workingsTV.append("(")
         }
