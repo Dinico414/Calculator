@@ -289,7 +289,7 @@ class MainActivity : AppCompatActivity() {
         while (i < expression.length) {
             val c = expression[i]
             if (c.isDigit() || c == ',' || c == '.') {
-                number += if (c == ',') decimalSeparator else c
+                number += if (c == ',') '.' else c // Replacing comma with dot
             } else if (c == '(') {
                 val closingParenIndex = findClosingParenthesis(expression, i)
                 if (closingParenIndex != -1) {
@@ -370,7 +370,6 @@ class MainActivity : AppCompatActivity() {
 
         return result
     }
-
 
     private fun evaluateScientificFunction(func: String): Double {
         val function = func.substring(0, func.length - 1)
@@ -458,4 +457,7 @@ class MainActivity : AppCompatActivity() {
     private fun performHapticFeedback() {
         vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
     }
+
+    fun backSpaceAction(view: View) {}
+    fun equalAction(view: View) {}
 }
