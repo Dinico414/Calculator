@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.MaterialToolbar
 import com.xenon.calculator.activities.SettingsActivity
 import com.xenon.calculator.databinding.ActivityMainBinding
@@ -113,7 +114,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             val operationButtons = listOf(
-                buttonAdd, buttonSubtract, buttonMultiply, buttonDivide
+                buttonAdd,
+                buttonSubtract,
+                buttonMultiply,
+                buttonDivide
             )
             operationButtons.forEach { button ->
                 button.setOnClickListener { operationAction(it) }
@@ -438,11 +442,16 @@ class MainActivity : AppCompatActivity() {
     private var isInverse = false
     private fun inverseAction() {
         isInverse = !isInverse
-        binding.buttonInverse.text = if (isInverse) "INV'" else "INV"
         binding.buttonSqrt.text = if (isInverse) "x²" else "√"
         binding.buttonSin.text = if (isInverse) "sin⁻¹" else "sin"
         binding.buttonCos.text = if (isInverse) "cos⁻¹" else "cos"
         binding.buttonTan.text = if (isInverse) "tan⁻¹" else "tan"
+        binding.buttonInverse.setTextColor(
+            ContextCompat.getColorStateList(
+                this,
+                if (isInverse) com.xenon.commons.accesspoint.R.color.error else com.xenon.commons.accesspoint.R.color.textOnPrimary
+            )
+        )
         performHapticFeedback()
     }
 
