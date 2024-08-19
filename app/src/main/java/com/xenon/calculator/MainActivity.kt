@@ -175,22 +175,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun scientificOperationAction(operation: String) {
         val workings = binding.workingsTV.text.toString()
-        val newOperation = if (isInverse && operation in listOf("sin(", "cos(", "tan(")) {
-            operation.replace("(", "⁻¹(")
+        val newOperation = if (isInverse && operation in listOf("sin(", "cos(", "tan(", "√(")) {
+            when (operation) {
+                "√(" -> "²"
+                else -> operation.replace("(", "⁻¹(")
+            }
         } else {
             operation
         }
-        binding.workingsTV.text = when (newOperation) {
-            "√(" -> workings + if (isInverse) "²" else if (workings.isNotEmpty() && workings.last() == '(') newOperation.substring(
-                1
-            ) else "$newOperation("
 
+        // This is where the fix is
+        binding.workingsTV.text = when (newOperation) {
+            "²" -> workings + newOperation
             "%", "!" -> workings + newOperation
-            else -> workings + if (workings.isNotEmpty() && workings.last() == '(' && newOperation.endsWith(
-                    "("
-                )
-            ) newOperation.substring(1) else "$newOperation("
+            else -> workings + if (workings.isNotEmpty() && workings.last() == '(' && newOperation.endsWith("(")) newOperation.substring(1) else "$newOperation("
         }
+
         canAddDecimal = true
         performHapticFeedback()
     }
@@ -396,7 +396,7 @@ class MainActivity : AppCompatActivity() {
                 "sin" -> if (isInverse) asin(operand) else sin(operand)
                 "cos" -> if (isInverse) acos(operand) else cos(operand)
                 "tan" -> if (isInverse) atan(operand) else tan(operand)
-                "√" -> sqrt(operand)
+                "√" -> if (isInverse) operand * operand else sqrt(operand) // Calculate square if isInverse is true
                 "ln" -> ln(operand)
                 "log" -> log10(operand)
                 else -> throw IllegalArgumentException("Invalid scientific operation")
