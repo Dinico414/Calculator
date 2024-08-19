@@ -24,6 +24,16 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activities.ConverterActivity"
+            android:exported="true"
+            android:label="@string/converter"
+            android:parentActivityName=".activities.ConverterActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".activities.SettingsActivity"
             android:configChanges="orientation"
             android:exported="true"

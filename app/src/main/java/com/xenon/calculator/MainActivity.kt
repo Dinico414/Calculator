@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.MaterialToolbar
+import ConverterActivity
 import com.xenon.calculator.activities.SettingsActivity
 import com.xenon.calculator.databinding.ActivityMainBinding
 import java.text.DecimalFormatSymbols
@@ -57,6 +58,11 @@ class MainActivity : AppCompatActivity() {
         toolbar.inflateMenu(R.menu.top_app_bar)
         toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
+                R.id.converter -> {
+                    startActivity(Intent(this, ConverterActivity::class.java))
+                    true
+                }
+
                 R.id.settings -> {
                     startActivity(Intent(this, SettingsActivity::class.java))
                     true
@@ -188,7 +194,10 @@ class MainActivity : AppCompatActivity() {
         binding.workingsTV.text = when (newOperation) {
             "²" -> workings + newOperation
             "%", "!" -> workings + newOperation
-            else -> workings + if (workings.isNotEmpty() && workings.last() == '(' && newOperation.endsWith("(")) newOperation.substring(1) else "$newOperation("
+            else -> workings + if (workings.isNotEmpty() && workings.last() == '(' && newOperation.endsWith(
+                    "("
+                )
+            ) newOperation.substring(1) else "$newOperation("
         }
 
         canAddDecimal = true
