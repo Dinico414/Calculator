@@ -27,43 +27,41 @@
     <string name="mass">Mass</string>
     <string name="volume">Volume</string>
     <string name="temperature">Temperature</string>
+    <string name="area">Area</string>
 
     <string name="euro">€ - Euro</string>
     <string name="dollar">$ - Dollar</string>
     <string name="yen">¥ - Yen</string>
     <string name="pound">£ - Pound</string>
     <string name="yuan">¥ - Yuan</string>
-    <string name="won">₩ - Won</string>
-    <string name="rupee">₹ - Rupee</string>
-    <string name="rial">﷼ - Rial</string>
-    <string name="franc">₣ - Franc</string>
-    <string name="dinar">د.إ - Dinar</string>
-    <string name="leu">L - Leu</string>
-    <string name="zloty">zł - Zloty</string>
 
-    <string name="nautical_mile">NM - Nautical mile</string>
-    <string name="mil">mil - Mil</string>
-    <string name="angstrom">Å - Angstrom</string>
+
     <string name="nanometer">nm - Nanometer</string>
     <string name="micrometer">µm - Micrometer</string>
     <string name="millimeter">mm - Millimeter</string>
     <string name="centimeter">cm - Centimeter</string>
     <string name="meter">m - Meter</string>
     <string name="kilometer">km - Kilometer</string>
-    <string name="league">lea - League</string>
-    <string name="mile">mi - Mile</string>
     <string name="inch">in - Inch</string>
     <string name="foot">ft - Foot</string>
     <string name="yard">yd - Yard</string>
-    <string name="furlong">fur - Furlong</string>
-    <string name="rod">rd - Rod</string>
-    <string name="chain">ch - Chain</string>
+    <string name="mile">mi - Mile</string>
 
     <string name="ton">t - Ton</string>
     <string name="kilogram">kg - Kilogram</string>
     <string name="gram">g - Gram</string>
+    <string name="milligram">mg - Milligram</string>
     <string name="pound_mass">lb - Pound</string>
     <string name="ounce">oz - Ounce</string>
+
+    <string name="square_millimeter">mm² - Square millimeter</string>
+    <string name="square_centimeter">cm² - Square centimeter</string>
+    <string name="square_meter">m² - Square meter</string>
+    <string name="square_kilometer">km² - Square kilometer</string>
+    <string name="square_inch">in² - Square inch</string>
+    <string name="square_foot">ft² - Square foot</string>
+    <string name="square_yard">yd² - Square yard</string>
+    <string name="square_mile">mi² - Square mile</string>
 
     <string name="cubic_meter">m³ - Cubic meter</string>
     <string name="cubic_decimeter">dm³ - Cubic decimeter</string>

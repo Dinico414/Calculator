@@ -3,9 +3,11 @@
     <string-array name="spinner_items">
         <item>@string/currency</item>
         <item>@string/length</item>
-        <item>@string/mass</item>
+        <item>@string/area</item>
         <item>@string/volume</item>
+        <item>@string/mass</item>
         <item>@string/temperature</item>
+
     </string-array>
 
     <string-array name="currency_units">
@@ -14,64 +16,52 @@
         <item>@string/yen</item>
         <item>@string/pound</item>
         <item>@string/yuan</item>
-        <item>@string/won</item>
-        <item>@string/rupee</item>
-        <item>@string/rial</item>
-        <item>@string/franc</item>
-        <item>@string/dinar</item>
-        <item>@string/leu</item>
-        <item>@string/zloty</item>
+
     </string-array>
     <string-array name="length_units">
-        <item>@string/nautical_mile</item>
-        <item>@string/mil</item>
-        <item>@string/angstrom</item>
         <item>@string/nanometer</item>
         <item>@string/micrometer</item>
         <item>@string/millimeter</item>
         <item>@string/centimeter</item>
         <item>@string/meter</item>
         <item>@string/kilometer</item>
-        <item>@string/league</item>
         <item>@string/mile</item>
         <item>@string/inch</item>
         <item>@string/foot</item>
         <item>@string/yard</item>
-        <item>@string/furlong</item>
-        <item>@string/rod</item>
-        <item>@string/chain</item>
     </string-array>
+
     <string-array name="mass_units">
-        <item>@string/ton</item>
-        <item>@string/kilogram</item>
+        <item>@string/milligram</item>
         <item>@string/gram</item>
+        <item>@string/kilogram</item>
+        <item>@string/ton</item>
         <item>@string/pound_mass</item>
         <item>@string/ounce</item>
     </string-array>
 
+    <string-array name="area_units">
+        <item>@string/square_millimeter</item>
+        <item>@string/square_centimeter</item>
+        <item>@string/square_meter</item>
+        <item>@string/square_kilometer</item>
+        <item>@string/square_inch</item>
+        <item>@string/square_foot</item>
+        <item>@string/square_yard</item>
+        <item>@string/square_mile</item>
+    </string-array>
+
     <string-array name="volume_units">
-        <item>@string/cubic_meter</item>
-        <item>@string/cubic_decimeter</item>
-        <item>@string/cubic_centimeter</item>
         <item>@string/cubic_millimeter</item>
+        <item>@string/cubic_centimeter</item>
+        <item>@string/cubic_decimeter</item>
+        <item>@string/cubic_meter</item>
         <item>@string/cubic_inch</item>
         <item>@string/cubic_foot</item>
-        <item>@string/liter</item>
         <item>@string/milliliter</item>
-        <item>@string/imperial_gallon</item>
-        <item>@string/imperial_quart</item>
-        <item>@string/imperial_pint</item>
-        <item>@string/imperial_cup</item>
-        <item>@string/imperial_fluid_ounce</item>
-        <item>@string/imperial_tablespoon</item>
-        <item>@string/imperial_teaspoon</item>
+        <item>@string/liter</item>
         <item>@string/us_liquid_gallon</item>
-        <item>@string/us_liquid_quart</item>
-        <item>@string/us_liquid_pint</item>
-        <item>@string/us_legal_cup</item>
         <item>@string/us_fluid_ounce</item>
-        <item>@string/us_tablespoon</item>
-        <item>@string/us_teaspoon</item>
     </string-array>
 
     <string-array name="temperature_units">
@@ -79,4 +69,5 @@
         <item>@string/fahrenheit</item>
         <item>@string/kelvin</item>
     </string-array>
+
 </resources>

@@ -46,7 +46,12 @@ class ConverterActivity : BaseActivity() {
         }
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long,
+            ) {
                 updateSpinners(position)
             }
 
@@ -56,7 +61,12 @@ class ConverterActivity : BaseActivity() {
         }
 
         spinner1.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long,
+            ) {
                 convertValue()
             }
 
@@ -66,7 +76,12 @@ class ConverterActivity : BaseActivity() {
         }
 
         spinner2.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long,
+            ) {
                 convertValue()
             }
 
@@ -92,19 +107,28 @@ class ConverterActivity : BaseActivity() {
                 setSpinnerAdapter(spinner1, R.array.currency_units)
                 setSpinnerAdapter(spinner2, R.array.currency_units)
             }
+
             1 -> { // Length
                 setSpinnerAdapter(spinner1, R.array.length_units)
                 setSpinnerAdapter(spinner2, R.array.length_units)
             }
-            2 -> { // Mass
-                setSpinnerAdapter(spinner1, R.array.mass_units)
-                setSpinnerAdapter(spinner2, R.array.mass_units)
+
+            2 -> { // Area
+                setSpinnerAdapter(spinner1, R.array.area_units)
+                setSpinnerAdapter(spinner2, R.array.area_units)
             }
+
             3 -> { // Volume
                 setSpinnerAdapter(spinner1, R.array.volume_units)
                 setSpinnerAdapter(spinner2, R.array.volume_units)
             }
-            4 -> { // Temperature
+
+            4 -> { // Mass
+                setSpinnerAdapter(spinner1, R.array.mass_units)
+                setSpinnerAdapter(spinner2, R.array.mass_units)
+            }
+
+            5 -> { // Temperature
                 setSpinnerAdapter(spinner1, R.array.temperature_units)
                 setSpinnerAdapter(spinner2, R.array.temperature_units)
             }
@@ -170,6 +194,7 @@ class ConverterActivity : BaseActivity() {
         })
         return 1.0 // Return a default value while waiting for data
     }
+
     private fun getLengthConversionFactor(fromUnit: Int, toUnit: Int): Double {
         val factors = arrayOf(1.0, 100.0, 0.001) // Meter, Centimeter, Kilometer
         return factors[toUnit] / factors[fromUnit]
@@ -186,32 +211,35 @@ class ConverterActivity : BaseActivity() {
     }
 
     private fun getTemperatureConversionFactor(fromUnit: Int, toUnit: Int): Double {
-            return when (fromUnit) {
-                0 -> { // Celsius
-                    when (toUnit) {
-                        0 -> 1.0 // Celsius
-                        1 -> (9.0 / 5.0)   + 32.0 // Fahrenheit
-                        2 ->  + 273.15 // Kelvin
-                        else -> 1.0
-                    }
+        return when (fromUnit) {
+            0 -> { // Celsius
+                when (toUnit) {
+                    0 -> 1.0 // Celsius
+                    1 -> (9.0 / 5.0) + 32.0 // Fahrenheit
+                    2 -> +273.15 // Kelvin
+                    else -> 1.0
                 }
-                1 -> { // Fahrenheit
-                    when (toUnit) {
-                        0 -> (5.0 / 9.0) * ( - 32.0) // Celsius
-                        1 -> 1.0 // Fahrenheit
-                        2 -> (5.0 / 9.0) * ( - 32.0) + 273.15 // Kelvin
-                        else -> 1.0
-                    }
-                }
-                2 -> { // Kelvin
-                    when (toUnit) {
-                        0 ->  - 273.15 // Celsius
-                        1 -> (9.0 / 5.0) * ( - 273.15) + 32.0 // Fahrenheit
-                        2 -> 1.0 // Kelvin
-                        else -> 1.0
-                    }
-                }
-                else -> 1.0
             }
+
+            1 -> { // Fahrenheit
+                when (toUnit) {
+                    0 -> (5.0 / 9.0) * (-32.0) // Celsius
+                    1 -> 1.0 // Fahrenheit
+                    2 -> (5.0 / 9.0) * (-32.0) + 273.15 // Kelvin
+                    else -> 1.0
+                }
+            }
+
+            2 -> { // Kelvin
+                when (toUnit) {
+                    0 -> -273.15 // Celsius
+                    1 -> (9.0 / 5.0) * (-273.15) + 32.0 // Fahrenheit
+                    2 -> 1.0 // Kelvin
+                    else -> 1.0
+                }
+            }
+
+            else -> 1.0
         }
+    }
 }

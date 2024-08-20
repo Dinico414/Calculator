@@ -23,10 +23,12 @@
     <string name="category">Kategorie</string>
     <string name="unit1">1. Einheit</string>
     <string name="unit2">2. Einheit</string>
+
     <string name="currency">Währung</string>
     <string name="length">Länge</string>
     <string name="mass">Gewicht</string>
     <string name="volume">Volumen</string>
+    <string name="area">Fläche</string>
     <string name="temperature">Temperatur</string>
 
     <string name="euro">€ - Euro</string>
@@ -34,37 +36,34 @@
     <string name="yen">¥ - Yen</string>
     <string name="pound">£ - Pfund</string>
     <string name="yuan">¥ - Yuan</string>
-    <string name="won">₩ - Won</string>
-    <string name="rupee">₹ - Rupie</string>
-    <string name="rial">﷼ - Rial</string>
-    <string name="franc">₣ - Franc</string>
-    <string name="dinar">د.إ - Dinar</string>
-    <string name="leu">L - Leu</string>
-    <string name="zloty">zł - Złoty</string>
 
-    <string name="nautical_mile">NM - Seemeile</string>
-    <string name="mil">mil - Mil</string>
-    <string name="angstrom">Å - Ångström</string>
+
     <string name="nanometer">nm - Nanometer</string>
     <string name="micrometer">µm - Mikrometer</string>
     <string name="millimeter">mm - Millimeter</string>
     <string name="centimeter">cm - Zentimeter</string>
     <string name="meter">m - Meter</string>
     <string name="kilometer">km - Kilometer</string>
-    <string name="league">lea - Liga</string>
-    <string name="mile">mi - Meile</string>
     <string name="inch">in - Zoll</string>
     <string name="foot">ft - Fuß</string>
     <string name="yard">yd - Yard</string>
-    <string name="furlong">fur - Furlong</string>
-    <string name="rod">rd - Rute</string>
-    <string name="chain">ch - Kette</string>
+    <string name="mile">mi - Meile">Area</string>
 
     <string name="ton">t - Tonne</string>
     <string name="kilogram">kg - Kilogramm</string>
     <string name="gram">g - Gramm</string>
+    <string name="milligram">mg - Milligram</string>
     <string name="pound_mass">lb - Pfund</string>
     <string name="ounce">oz - Unze</string>
+
+    <string name="square_millimeter">mm² - Quadratkilometer</string>
+    <string name="square_centimeter">cm² - Quadratmeter</string>
+    <string name="square_meter">m² - Quadratkilometer</string>
+    <string name="square_kilometer">km² - Quadratkilometer</string>
+    <string name="square_inch">in² - Quadratmeilen</string>
+    <string name="square_foot">ft² - Quadratfuß</string>
+    <string name="square_yard">yd² - Quadratyard</string>
+    <string name="square_mile">mi² - Quadratmeile</string>
 
     <string name="cubic_meter">m³ - Kubikmeter</string>
     <string name="cubic_decimeter">dm³ - Kubikdezimeter</string>
