@@ -59,4 +59,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.mathparser.org.mxparser)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.database.ktx)
 }
