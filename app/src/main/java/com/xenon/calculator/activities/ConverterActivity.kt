@@ -149,13 +149,22 @@ class ConverterActivity : BaseActivity() {
     private fun convertValue() {
         val inputValue = text1.text.toString().toDoubleOrNull() ?: return
 
-        val conversionFactor = getConversionFactor(
-            spinner.selectedItemPosition,
-            spinner1.selectedItemPosition,
-            spinner2.selectedItemPosition
-        )
+        val convertedValue = when (spinner.selectedItemPosition) {
+            5 -> { // Temperature
+                val fromUnit = spinner1.selectedItemPosition
+                val toUnit = spinner2.selectedItemPosition
+                getTemperatureConversionFactor(inputValue, fromUnit, toUnit)
+            }
+            else -> {
+                val conversionFactor = getConversionFactor(
+                    spinner.selectedItemPosition,
+                    spinner1.selectedItemPosition,
+                    spinner2.selectedItemPosition
+                )
+                inputValue * conversionFactor
+            }
+        }
 
-        val convertedValue = inputValue * conversionFactor
         text2.setText(convertedValue.toString())
     }
 
@@ -170,20 +179,19 @@ class ConverterActivity : BaseActivity() {
             2 -> getAreaConversionFactor(fromUnit, toUnit)
             3 -> getVolumeConversionFactor(fromUnit, toUnit)
             4 -> getMassConversionFactor(fromUnit, toUnit)
-            5 -> getTemperatureConversionFactor(fromUnit, toUnit)
+            5 -> getTemperatureConversionFactor(0.0, fromUnit, toUnit)
             else -> 1.0
         }
     }
 
     private fun getCurrencyConversionFactor(fromUnit: String, toUnit: String): Double {
         val database = Firebase.database
-        val ratesRef = database.getReference("currencies") // Adjust the path if needed
+        val ratesRef = database.getReference("currencies")
 
         ratesRef.addValueEventListener(object : com.google.firebase.database.ValueEventListener {
             override fun onDataChange(dataSnapshot: com.google.firebase.database.DataSnapshot) {
                 val rates = dataSnapshot.value as? Map<String, Map<String, Double>>
                 val conversionFactor = rates?.get(fromUnit)?.get(toUnit) ?: 1.0
-                // Use conversionFactor to update the UI or perform calculations
                 val inputValue = text1.text.toString().toDoubleOrNull() ?: return
                 val convertedValue = inputValue * conversionFactor
                 text2.setText(convertedValue.toString())
@@ -193,7 +201,7 @@ class ConverterActivity : BaseActivity() {
                 // Handle errors
             }
         })
-        return 1.0 // Return a default value while waiting for data
+        return 1.0
     }
 
     private fun getLengthConversionFactor(fromUnit: Int, toUnit: Int): Double {
@@ -216,36 +224,33 @@ class ConverterActivity : BaseActivity() {
         return factors[toUnit] / factors[fromUnit]
     }
 
-    private fun getTemperatureConversionFactor(fromUnit: Int, toUnit: Int): Double {
+    private fun getTemperatureConversionFactor(value: Double, fromUnit: Int, toUnit: Int): Double {
         return when (fromUnit) {
             0 -> { // Celsius
                 when (toUnit) {
-                    0 -> 1.0 // Celsius
-                    1 -> (9.0 / 5.0) + 32.0 // Fahrenheit
-                    2 -> +273.15 // Kelvin
-                    else -> 1.0
+                    0 -> value // Celsius
+                    1 -> (9.0 / 5.0) * value + 32.0 // Fahrenheit
+                    2 -> value + 273.15 // Kelvin
+                    else -> value
                 }
             }
-
             1 -> { // Fahrenheit
                 when (toUnit) {
-                    0 -> (5.0 / 9.0) * (-32.0) // Celsius
-                    1 -> 1.0 // Fahrenheit
-                    2 -> (5.0 / 9.0) * (-32.0) + 273.15 // Kelvin
-                    else -> 1.0
+                    0 -> (value - 32.0) * (5.0 / 9.0) // Celsius
+                    1 -> value // Fahrenheit
+                    2 -> (value - 32.0) * (5.0 / 9.0) + 273.15 // Kelvin
+                    else -> value
                 }
             }
-
             2 -> { // Kelvin
                 when (toUnit) {
-                    0 -> -273.15 // Celsius
-                    1 -> (9.0 / 5.0) * (-273.15) + 32.0 // Fahrenheit
-                    2 -> 1.0 // Kelvin
-                    else -> 1.0
+                    0 -> value - 273.15 // Celsius
+                    1 -> (value - 273.15) * (9.0 / 5.0) + 32.0 // Fahrenheit
+                    2 -> value // Kelvin
+                    else -> value
                 }
             }
-
-            else -> 1.0
+            else -> value
         }
     }
 }
