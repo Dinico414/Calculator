@@ -167,9 +167,10 @@ class ConverterActivity : BaseActivity() {
         return when (conversionType) {
             0 -> getCurrencyConversionFactor(fromUnit.toString(), toUnit.toString())
             1 -> getLengthConversionFactor(fromUnit, toUnit)
-            2 -> getMassConversionFactor(fromUnit, toUnit)
+            2 -> getAreaConversionFactor(fromUnit, toUnit)
             3 -> getVolumeConversionFactor(fromUnit, toUnit)
-            4 -> getTemperatureConversionFactor(fromUnit, toUnit)
+            4 -> getMassConversionFactor(fromUnit, toUnit)
+            5 -> getTemperatureConversionFactor(fromUnit, toUnit)
             else -> 1.0
         }
     }
@@ -199,14 +200,19 @@ class ConverterActivity : BaseActivity() {
         val factors = arrayOf(1.0, 100.0, 0.001) // Meter, Centimeter, Kilometer
         return factors[toUnit] / factors[fromUnit]
     }
-
-    private fun getMassConversionFactor(fromUnit: Int, toUnit: Int): Double {
-        val factors = arrayOf(1.0, 1000.0, 0.001) // Kilogram, Gram, Tonne
+    private fun getAreaConversionFactor(fromUnit: Int, toUnit: Int): Double {
+        val factors = arrayOf(1.0, 10000.0, 0.0001) // Square Meter, Square Centimeter, Square Kilometer
         return factors[toUnit] / factors[fromUnit]
     }
 
+
     private fun getVolumeConversionFactor(fromUnit: Int, toUnit: Int): Double {
         val factors = arrayOf(1.0, 1000.0, 0.001) // Liter, Milliliter, Cubic Meter
+        return factors[toUnit] / factors[fromUnit]
+    }
+
+    private fun getMassConversionFactor(fromUnit: Int, toUnit: Int): Double {
+        val factors = arrayOf(1.0, 1000.0, 0.001) // Kilogram, Gram, Tonne
         return factors[toUnit] / factors[fromUnit]
     }
 
