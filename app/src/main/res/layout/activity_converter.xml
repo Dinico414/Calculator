@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/surfaceContainerLowest">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/layout_main"
@@ -56,8 +56,8 @@
             android:id="@+id/nestView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/tile_background"
-            android:backgroundTint="@color/surface"
+            android:background="@drawable/tile_background_100"
+            android:backgroundTint="@color/surfaceContainer"
             android:clipToOutline="true"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
@@ -88,7 +88,8 @@
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@drawable/tile"
+                    android:background="@drawable/tile_100"
+                    android:backgroundTint="@color/secondaryContainer"
                     android:paddingStart="5dp"
                     android:paddingTop="5dp"
                     android:paddingEnd="5dp"
@@ -154,7 +155,8 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="5dp"
                     android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/tile"
+                    android:background="@drawable/tile_100"
+                    android:backgroundTint="@color/secondaryContainer"
                     android:paddingStart="5dp"
                     android:paddingTop="5dp"
                     android:paddingEnd="5dp"

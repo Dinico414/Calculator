@@ -3,15 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/surfaceContainerLowest">
 
     <LinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="15dp"
-        android:background="@drawable/tile_background"
-        android:backgroundTint="@color/surface"
+        android:background="@drawable/tile_background_100"
+        android:backgroundTint="@color/surfaceContainer"
         android:orientation="vertical"
         android:padding="5dp"
         tools:context=".MainActivity"
@@ -34,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/workingsTV"
