@@ -1,6 +1,6 @@
 [versions]
 accesspoint = "1.0.6.2"
-agp = "8.5.2"
+agp = "8.6.0"
 firebaseBom = "33.2.0"
 kotlin = "1.9.10"
 coreKtx = "1.13.1"
