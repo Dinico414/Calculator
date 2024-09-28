@@ -13,30 +13,9 @@
       android:fillType="evenOdd"
       android:strokeLineCap="round"/>
   <path
-      android:pathData="m20.038,9.862l0,1.85l1.85,0l0,0.925l-1.85,0l0,1.85l-0.925,0l0,-1.85l-1.85,0l0,-0.925l1.85,0l0,-1.85z"
+      android:pathData="m18.969,9.804l0,1.8l-1.825,0l0,0.9l1.825,0l0,1.8l0.912,0l0,-1.8l1.825,0l0,-0.9l-1.825,0l0,-1.8zM9.845,11.784l0,0.9l4.562,0l0,-0.9zM17.965,16.193c-1.011,0 -1.825,0.803 -1.825,1.8l0,3.24c0,0.997 0.814,1.8 1.825,1.8l3.284,0c1.011,0 1.825,-0.803 1.825,-1.8l0,-3.24c0,-0.997 -0.814,-1.8 -1.825,-1.8zM10.653,17.524 L10.008,18.161 11.299,19.433 10.008,20.706 10.653,21.343 11.944,20.07 13.234,21.343 13.879,20.706 12.589,19.433 13.879,18.161 13.234,17.524 11.944,18.797zM17.326,18.263l4.562,0l0,0.9l-4.562,0zM17.326,20.063l4.562,0l0,0.9l-4.562,0z"
       android:strokeLineJoin="round"
-      android:strokeWidth="0.07"
-      android:fillColor="#ffffff"
-      android:strokeColor="#00000000"
-      android:fillType="evenOdd"/>
-  <path
-      android:pathData="M14.487,11.712l-4.626,0l-0,0.925l4.626,0z"
-      android:strokeLineJoin="round"
-      android:strokeWidth="0.063"
-      android:fillColor="#ffffff"
-      android:strokeColor="#00000000"
-      android:fillType="evenOdd"/>
-  <path
-      android:pathData="m13.483,17.613 l-1.308,1.308 -1.308,-1.308 -0.654,0.654 1.308,1.308 -1.308,1.308 0.654,0.654 1.308,-1.308 1.308,1.308 0.654,-0.654 -1.308,-1.308 1.308,-1.308z"
-      android:strokeLineJoin="round"
-      android:strokeWidth="0.07"
-      android:fillColor="#ffffff"
-      android:strokeColor="#00000000"
-      android:fillType="evenOdd"/>
-  <path
-      android:pathData="m19.575,16.06a3.515,3.515 66.834,0 0,-3.515 3.515,3.515 3.515,66.834 0,0 3.515,3.515 3.515,3.515 66.834,0 0,3.515 -3.515,3.515 3.515,66.834 0,0 -3.515,-3.515zM17.263,18.188l4.626,0l0,0.925l-4.626,0zM17.263,20.038l4.626,0l0,0.925l-4.626,0z"
-      android:strokeLineJoin="round"
-      android:strokeWidth="0.087"
+      android:strokeWidth="0.1"
       android:fillColor="#ffffff"
       android:strokeColor="#00000000"
       android:fillType="evenOdd"/>
