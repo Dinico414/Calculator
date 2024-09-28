@@ -1,19 +1,19 @@
 [versions]
-accesspoint = "1.0.6.2"
-agp = "8.6.0"
-firebaseBom = "33.2.0"
-kotlin = "1.9.10"
+accesspoint = "1.0.7-1"
+agp = "8.6.1"
+firebaseBom = "33.3.0"
+kotlin = "1.9.24"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
-activity = "1.9.1"
+activity = "1.9.2"
 constraintlayout = "2.1.4"
 mathparserOrgMxparser = "5.0.7"
-runtimeAndroid = "1.6.8"
-uiTextAndroid = "1.6.8"
+runtimeAndroid = "1.7.2"
+uiTextAndroid = "1.7.2"
 
 [libraries]
 accesspoint = { module = "com.xenon.commons:accesspoint", version.ref = "accesspoint" }

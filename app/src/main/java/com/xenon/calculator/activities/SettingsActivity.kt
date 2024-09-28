@@ -32,7 +32,7 @@ class SettingsActivity : BaseActivity() {
         var checkedTheme = sharedPreferenceManager.theme
         themeSelectionValue.text = themeTitleList[sharedPreferenceManager.theme]
 
-        val themeDialog = MaterialAlertDialogBuilder(this, R.style.XenonAlertDialogTheme)
+        val themeDialog = MaterialAlertDialogBuilder(this)
             .setTitle("Select Theme")
             .setPositiveButton("OK") { _, _ ->
                 sharedPreferenceManager.theme = checkedTheme
