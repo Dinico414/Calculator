@@ -80,18 +80,12 @@ class MainActivity : AppCompatActivity() {
 
         toggleScientificButton.setOnClickListener {
             val isVisible = scientificButtonsLayout.visibility == View.VISIBLE
-            val translationY = if (isVisible) -scientificButtonsLayout.height.toFloat() else 0f
 
             if (!isVisible) {
                 scientificButtonsLayout.visibility = View.VISIBLE
+            } else {
+                scientificButtonsLayout.visibility = View.GONE
             }
-
-            scientificButtonsLayout.animate().alpha(if (isVisible) 0f else 1f)
-                .translationY(translationY).setDuration(300).withEndAction {
-                    if (isVisible) {
-                        scientificButtonsLayout.visibility = View.GONE
-                    }
-                }.start()
 
             binding.toggleScientificButtonImageView.animate().rotationX(if (isVisible) 0f else 180f)
                 .setDuration(300).start()
