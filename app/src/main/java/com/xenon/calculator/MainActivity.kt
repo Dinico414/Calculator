@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.MaterialToolbar
@@ -37,9 +38,12 @@ class MainActivity : AppCompatActivity() {
     private var isRadians = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val sharedPreferenceManager = SharedPreferenceManager(this)
+        AppCompatDelegate.setDefaultNightMode(sharedPreferenceManager.themeFlag[sharedPreferenceManager.theme])
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         vibrator = getSystemService(Vibrator::class.java)
 
