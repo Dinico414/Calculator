@@ -8,6 +8,7 @@ import android.os.Vibrator
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -79,19 +80,16 @@ class MainActivity : AppCompatActivity() {
 
         val toggleScientificButton = findViewById<Button>(R.id.toggleScientificButton)
         val scientificButtonsLayout = findViewById<ConstraintLayout>(R.id.scientificButtonsLayout)
+        val toggleScientificButtonImageView = findViewById<ImageView>(R.id.toggleScientificButtonImageView)
 
-        binding.toggleScientificButtonImageView.rotationX = 180f
+        toggleScientificButtonImageView.rotationX = 180f
 
         toggleScientificButton.setOnClickListener {
             val isVisible = scientificButtonsLayout.visibility == View.VISIBLE
+            scientificButtonsLayout.visibility = if (isVisible) View.GONE else View.VISIBLE
+            onScientificButtonLayoutVisibilityChanged(!isVisible)
 
-            if (!isVisible) {
-                scientificButtonsLayout.visibility = View.VISIBLE
-            } else {
-                scientificButtonsLayout.visibility = View.GONE
-            }
-
-            binding.toggleScientificButtonImageView.animate().rotationX(if (isVisible) 0f else 180f)
+            toggleScientificButtonImageView.animate().rotationX(if (isVisible) 0f else 180f)
                 .setDuration(300).start()
         }
 
@@ -461,8 +459,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var isInverse = false
+    private fun onScientificButtonLayoutVisibilityChanged(isVisible: Boolean) {
+        if (!isVisible) {
+            isInverse = false
+            // Update the UI elements based on the new value of isInverse
+            updateUiElements()
+        }
+    }
+
+
     private fun inverseAction() {
         isInverse = !isInverse
+        updateUiElements()
+        performHapticFeedback()
+    }
+
+    private fun updateUiElements() {
         binding.buttonSqrt.text = if (isInverse) "x²" else "√"
         binding.buttonSin.text = if (isInverse) "sin⁻¹" else "sin"
         binding.buttonCos.text = if (isInverse) "cos⁻¹" else "cos"
@@ -479,7 +491,6 @@ class MainActivity : AppCompatActivity() {
                 if (isInverse) com.xenon.commons.accesspoint.R.color.errorContainer else com.xenon.commons.accesspoint.R.color.transparent
             )
         )
-        performHapticFeedback()
     }
 
     private fun performHapticFeedback() {
