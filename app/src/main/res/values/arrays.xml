@@ -11,13 +11,21 @@
     </string-array>
 
     <string-array name="currency_units">
-        <item>@string/euro</item>
-        <item>@string/dollar</item>
-        <item>@string/yen</item>
-        <item>@string/pound</item>
-        <item>@string/yuan</item>
-
+        <item>€ - Euro</item>
+        <item>$ - Dollar</item>
+        <item>¥ - Yen</item>
+        <item>£ - Pound</item>
+        <item>¥ - Yuan</item>
     </string-array>
+
+    <string-array name="currency_units_codes">
+        <item>EUR</item>
+        <item>USD</item>
+        <item>JPY</item>
+        <item>GBP</item>
+        <item>CNY</item>
+    </string-array>
+
     <string-array name="length_units">
         <item>@string/nanometer</item>
         <item>@string/micrometer</item>

@@ -209,6 +209,7 @@
                                 android:autofillHints=""
                                 android:hint="@string/value2"
                                 android:inputType="numberDecimal"
+                                android:textAlignment="center"
                                 tools:ignore="TextContrastCheck,VisualLintTextFieldSize" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>

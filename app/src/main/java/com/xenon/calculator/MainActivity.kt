@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     private var isRadians = true
 
 
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val sharedPreferenceManager = SharedPreferenceManager(this)
         AppCompatDelegate.setDefaultNightMode(sharedPreferenceManager.themeFlag[sharedPreferenceManager.theme])

@@ -1,7 +1,6 @@
 [versions]
 accesspoint = "1.0.7-1.2"
 agp = "8.6.1"
-
 firebaseBom = "33.4.0"
 kotlin = "1.9.24"
 coreKtx = "1.13.1"
@@ -15,6 +14,7 @@ constraintlayout = "2.1.4"
 mathparserOrgMxparser = "5.0.7"
 runtimeAndroid = "1.7.3"
 uiTextAndroid = "1.7.3"
+volley = "1.2.1"
 
 [libraries]
 accesspoint = { module = "com.xenon.commons:accesspoint", version.ref = "accesspoint" }
@@ -32,6 +32,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 mathparser-org-mxparser = { module = "org.mariuszgromada.math:MathParser.org-mXparser", version.ref = "mathparserOrgMxparser" }
 androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
 androidx-ui-text-android = { group = "androidx.compose.ui", name = "ui-text-android", version.ref = "uiTextAndroid" }
+volley = { module = "com.android.volley:volley", version.ref = "volley" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
