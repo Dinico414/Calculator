@@ -473,6 +473,12 @@ class MainActivity : AppCompatActivity() {
                 if (isInverse) com.xenon.commons.accesspoint.R.color.error else com.xenon.commons.accesspoint.R.color.textOnPrimary
             )
         )
+        binding.buttonInverse.setBackgroundColor(
+            ContextCompat.getColor(
+                this,
+                if (isInverse) com.xenon.commons.accesspoint.R.color.errorContainer else com.xenon.commons.accesspoint.R.color.transparent
+            )
+        )
         performHapticFeedback()
     }
 
