@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
 import com.google.android.material.appbar.MaterialToolbar
 import com.xenon.calculator.activities.ConverterActivity
 import com.xenon.calculator.activities.SettingsActivity
@@ -38,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     private var canAddDecimal = true
     private var isRadians = true
 
+
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         val sharedPreferenceManager = SharedPreferenceManager(this)
         AppCompatDelegate.setDefaultNightMode(sharedPreferenceManager.themeFlag[sharedPreferenceManager.theme])
@@ -46,19 +50,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
+
         vibrator = getSystemService(Vibrator::class.java)
 
+
+
         val screenLayout = findViewById<ConstraintLayout>(R.id.screen)
+
 
 
         screenLayout.post {
             val screenHeight = screenLayout.rootView.height
             val newHeight = (screenHeight * 0.3).toInt()
-
             val params = screenLayout.layoutParams
             params.height = newHeight
             screenLayout.layoutParams = params
         }
+
+
+
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         toolbar.inflateMenu(R.menu.top_app_bar)
         toolbar.setOnMenuItemClickListener { menuItem ->
@@ -77,10 +87,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         val toggleScientificButton = findViewById<Button>(R.id.toggleScientificButton)
         val scientificButtonsLayout = findViewById<ConstraintLayout>(R.id.scientificButtonsLayout)
-        val toggleScientificButtonImageView = findViewById<ImageView>(R.id.toggleScientificButtonImageView)
+        val toggleScientificButtonImageView =
+            findViewById<ImageView>(R.id.toggleScientificButtonImageView)
 
         toggleScientificButtonImageView.rotationX = 180f
 
@@ -92,6 +102,7 @@ class MainActivity : AppCompatActivity() {
             toggleScientificButtonImageView.animate().rotationX(if (isVisible) 0f else 180f)
                 .setDuration(300).start()
         }
+
 
 
         binding.apply {
@@ -200,89 +211,35 @@ class MainActivity : AppCompatActivity() {
         performHapticFeedback()
     }
 
-    private fun parenthesesAction() {
-        val workings = binding.workingsTV.text.toString()
-        val lastChar = workings.lastOrNull()
+    private fun evaluateScientificFunction(func: String): Double {
+        val function = func.substring(0, func.indexOf('('))
+        val operandStr = func.substring(function.length + 1, func.length - 1)
 
-        when {
-            workings.isEmpty() || lastChar == '(' || lastChar in listOf(
-                '+', '-', '×', '÷', '^', '√'
-            ) -> binding.workingsTV.append("(")
-
-            workings.count { it == '(' } > workings.count { it == ')' } -> binding.workingsTV.append(
-                ")"
-            )
-
-            lastChar?.isDigit() == true -> binding.workingsTV.append("×(")
-            else -> binding.workingsTV.append("(")
-        }
-
-        performHapticFeedback()
-    }
-
-    private fun findClosingParenthesis(expression: String, startIndex: Int): Int {
-        var count = 1
-        for (i in startIndex + 1 until expression.length) {
-            when (expression[i]) {
-                '(' -> count++
-                ')' -> count--
-            }
-            if (count == 0) return i
-        }
-        return -1
-    }
-
-    private fun findFunctionEnd(expression: String, startIndex: Int): Int {
-        var parenthesesCount = 0
-        for (i in startIndex until expression.length) {
-            if (expression[i] == '(') {
-                parenthesesCount++
-            } else if (expression[i] == ')') {
-                parenthesesCount--
-                if (parenthesesCount == 0) {
-                    return i
-                }
-            }
-        }
-        return -1
-    }
-
-    private fun allClearAction() {
-        binding.workingsTV.text = ""
-        binding.resultsTV.text = ""
-        performHapticFeedback()
-    }
-
-    private fun backSpaceAction() {
-        val length = binding.workingsTV.length()
-        if (length > 0) binding.workingsTV.text = binding.workingsTV.text.subSequence(0, length - 1)
-        performHapticFeedback()
-    }
-
-    private fun equalAction() {
-        binding.resultsTV.text = calculateResults()
-        performHapticFeedback()
-    }
-
-    private fun calculateResults(): String {
-        val expression = binding.workingsTV.text.toString()
         try {
-            val result = evaluateExpression(expression)
-            return formatResult(result)
-        } catch (e: Exception) {
-            return "Error"
-        }
-    }
+            var operand = evaluateExpression(operandStr)
 
-    private fun formatResult(result: Double): String {
-        val formattedResult = String.format(Locale.getDefault(), "%.10f", result)
-        val parts = formattedResult.split(decimalSeparator)
-        val integerPart = parts[0].reversed().chunked(3).joinToString(".").reversed()
-        val decimalPart = parts[1].trimEnd('0')
-        return if (decimalPart.isEmpty()) {
-            integerPart
-        } else {
-            "$integerPart,$decimalPart"
+            if (!isRadians && (function == "sin" || function == "cos" || function == "tan") && !isInverse) {
+                operand = Math.toRadians(operand)
+            }
+
+            var result = when (function) {
+                "sin" -> if (isInverse) asin(operand) else sin(operand)
+                "cos" -> if (isInverse) acos(operand) else cos(operand)
+                "tan" -> if (isInverse) atan(operand) else tan(operand)
+                "√" -> if (isInverse) operand * operand else sqrt(operand) // Calculate square if isInverse is true
+                "ln" -> ln(operand)
+                "log" -> log10(operand)
+                else -> throw IllegalArgumentException("Invalid scientific operation")
+            }
+
+            if (!isRadians && isInverse && (function == "sin" || function == "cos" || function == "tan")) {
+                result = Math.toDegrees(result)
+            }
+
+            return result
+        } catch (e: NumberFormatException) {
+            Log.e("Calculator", "Error parsing operand: ${e.message}")
+            return Double.NaN
         }
     }
 
@@ -386,48 +343,120 @@ class MainActivity : AppCompatActivity() {
         return result
     }
 
-    private fun evaluateScientificFunction(func: String): Double {
-        val function = func.substring(0, func.indexOf('('))
-        val operandStr = func.substring(function.length + 1, func.length - 1)
 
+
+    private fun parenthesesAction() {
+        val workings = binding.workingsTV.text.toString()
+        val lastChar = workings.lastOrNull()
+
+        when {
+            workings.isEmpty() || lastChar == '(' || lastChar in listOf(
+                '+', '-', '×', '÷', '^', '√'
+            ) -> binding.workingsTV.append("(")
+
+            workings.count { it == '(' } > workings.count { it == ')' } -> binding.workingsTV.append(
+                ")"
+            )
+
+            lastChar?.isDigit() == true -> binding.workingsTV.append("×(")
+            else -> binding.workingsTV.append("(")
+        }
+
+        performHapticFeedback()
+    }
+
+    private fun findClosingParenthesis(expression: String, startIndex: Int): Int {
+        var count = 1
+        for (i in startIndex + 1 until expression.length) {
+            when (expression[i]) {
+                '(' -> count++
+                ')' -> count--
+            }
+            if (count == 0) return i
+        }
+        return -1
+    }
+
+    private fun findFunctionEnd(expression: String, startIndex: Int): Int {
+        var parenthesesCount = 0
+        for (i in startIndex until expression.length) {
+            if (expression[i] == '(') {
+                parenthesesCount++
+            } else if (expression[i] == ')') {
+                parenthesesCount--
+                if (parenthesesCount == 0) {
+                    return i
+                }
+            }
+        }
+        return -1
+    }
+
+
+
+    private fun allClearAction() {
+        binding.workingsTV.text = ""
+        binding.resultsTV.text = ""
+
+        // Reset auto-sizing configuration
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+            binding.workingsTV,
+            12,
+            50,
+            1,
+            TypedValue.COMPLEX_UNIT_SP
+        )
+
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+            binding.resultsTV,
+            12,
+            50,
+            1,
+            TypedValue.COMPLEX_UNIT_SP
+        )
+
+        performHapticFeedback()
+    }
+
+    private fun backSpaceAction() {
+        val length = binding.workingsTV.length()
+        if (length > 0) binding.workingsTV.text = binding.workingsTV.text.subSequence(0, length - 1)
+        performHapticFeedback()
+    }
+
+
+
+    private fun calculateResults(): String {
+        val expression = binding.workingsTV.text.toString()
         try {
-            var operand = evaluateExpression(operandStr)
-
-            if (!isRadians && (function == "sin" || function == "cos" || function == "tan") && !isInverse) {
-                operand = Math.toRadians(operand)
-            }
-
-            var result = when (function) {
-                "sin" -> if (isInverse) asin(operand) else sin(operand)
-                "cos" -> if (isInverse) acos(operand) else cos(operand)
-                "tan" -> if (isInverse) atan(operand) else tan(operand)
-                "√" -> if (isInverse) operand * operand else sqrt(operand) // Calculate square if isInverse is true
-                "ln" -> ln(operand)
-                "log" -> log10(operand)
-                else -> throw IllegalArgumentException("Invalid scientific operation")
-            }
-
-            if (!isRadians && isInverse && (function == "sin" || function == "cos" || function == "tan")) {
-                result = Math.toDegrees(result)
-            }
-
-            return result
-        } catch (e: NumberFormatException) {
-            Log.e("Calculator", "Error parsing operand: ${e.message}")
-            return Double.NaN
+            val result = evaluateExpression(expression)
+            return formatResult(result)
+        } catch (e: Exception) {
+            return "Error"
         }
     }
 
-    private fun isScientificFunction(c: Char): Boolean = c in listOf('s', 'c', 't', '√', '!', 'l')
-
-    private fun isOperator(c: Char): Boolean = c in listOf('+', '-', '×', '/', '^')
-
-    private fun hasPrecedence(op1: Char, op2: Char): Boolean {
-        if (op2 == '(' || op2 == ')') return false
-        if ((op1 == '×' || op1 == '/') && (op2 == '+' || op2 == '-')) return false
-        return true
+    private fun formatResult(result: Double): String {
+        val formattedResult = String.format(Locale.getDefault(), "%.10f", result)
+        val parts = formattedResult.split(decimalSeparator)
+        val integerPart = parts[0].reversed().chunked(3).joinToString(".").reversed()
+        val decimalPart = parts[1].trimEnd('0')
+        return if (decimalPart.isEmpty()) {
+            integerPart
+        } else {
+            "$integerPart,$decimalPart"
+        }
     }
 
+    private fun equalAction() {
+        binding.resultsTV.text = calculateResults()
+        performHapticFeedback()
+    }
+
+
+
+    private fun isScientificFunction(c: Char): Boolean = c in listOf('s', 'c', 't', '√', '!', 'l')
+    private fun isOperator(c: Char): Boolean = c in listOf('+', '-', '×', '/', '^')
     private fun applyOp(op: Char, b: Double, a: Double): Double {
         return when (op) {
             '+' -> a + b
@@ -438,6 +467,14 @@ class MainActivity : AppCompatActivity() {
             '%' -> a / 100.0
             else -> throw IllegalArgumentException("Invalid operator")
         }
+    }
+
+
+
+    private fun hasPrecedence(op1: Char, op2: Char): Boolean {
+        if (op2 == '(' || op2 == ')') return false
+        if ((op1 == '×' || op1 == '/') && (op2 == '+' || op2 == '-')) return false
+        return true
     }
 
     private fun factorial(n: Int): Double {
@@ -458,6 +495,8 @@ class MainActivity : AppCompatActivity() {
         performHapticFeedback()
     }
 
+
+
     private var isInverse = false
     private fun onScientificButtonLayoutVisibilityChanged(isVisible: Boolean) {
         if (!isVisible) {
@@ -466,7 +505,6 @@ class MainActivity : AppCompatActivity() {
             updateUiElements()
         }
     }
-
 
     private fun inverseAction() {
         isInverse = !isInverse
@@ -492,6 +530,8 @@ class MainActivity : AppCompatActivity() {
             )
         )
     }
+
+
 
     private fun performHapticFeedback() {
         vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
