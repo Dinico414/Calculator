@@ -327,7 +327,6 @@
                     android:id="@+id/buttonClear"
                     style="@style/buttonClear"
                     android:text="AC"
-                    android:layerType="software"
                     android:textColor="@color/onTertiary"
                     app:layout_constraintBottom_toTopOf="@id/button7"
                     app:layout_constraintEnd_toStartOf="@id/buttonParentheses"
