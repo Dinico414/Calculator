@@ -1,5 +1,5 @@
 [versions]
-accesspoint = "1.0.8-1"
+xenon-commons-version = "1.0.1"
 agp = "8.6.1"
 firebaseBom = "33.4.0"
 kotlin = "1.9.24"
@@ -17,8 +17,8 @@ uiTextAndroid = "1.7.3"
 volley = "1.2.1"
 
 [libraries]
-accesspoint = { module = "com.xenon.commons:accesspoint", version.ref = "accesspoint" }
 
+dinico414-xenon-commons = { module = "com.github.Dinico414:Xenon-Commons", version.ref = "xenon-commons-version" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-database-ktx = { module = "com.google.firebase:firebase-database-ktx" }
