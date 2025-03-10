@@ -5,15 +5,15 @@ plugins {
 
 android {
     namespace = "com.xenon.calculator"
-    compileSdk = 34
+    compileSdk = 35
 
 
     defaultConfig {
         applicationId = "com.xenon.calculator"
         minSdk = 31
         targetSdk = 34
-        versionCode = 6
-        versionName = "1.1.1"
+        versionCode = 1
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -47,7 +47,7 @@ android {
 
 dependencies {
 
-    implementation(libs.accesspoint)
+    implementation (libs.dinico414.xenon.commons)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
