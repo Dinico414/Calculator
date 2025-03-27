@@ -88,15 +88,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         val toggleScientificButton = findViewById<Button>(R.id.toggleScientificButton)
-        val scientificButtonsLayout = findViewById<ConstraintLayout>(R.id.scientificButtonsLayout)
+        val row1 = findViewById<ConstraintLayout>(R.id.row1)
+        val row2 = findViewById<ConstraintLayout>(R.id.row2)
         val toggleScientificButtonImageView =
             findViewById<ImageView>(R.id.toggleScientificButtonImageView)
 
         toggleScientificButtonImageView.rotationX = 180f
 
         toggleScientificButton.setOnClickListener {
-            val isVisible = scientificButtonsLayout.visibility == View.VISIBLE
-            scientificButtonsLayout.visibility = if (isVisible) View.GONE else View.VISIBLE
+            val isVisible = row1.visibility == View.VISIBLE
+            row1.visibility = if (isVisible) View.GONE else View.VISIBLE
+            row2.visibility = if (isVisible) View.GONE else View.VISIBLE
             onScientificButtonLayoutVisibilityChanged(!isVisible)
 
             toggleScientificButtonImageView.animate().rotationX(if (isVisible) 0f else 180f)

@@ -89,449 +89,466 @@
             android:animateLayoutChanges="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/scientificFrame"
+                android:id="@+id/scientificButtonsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
-                android:paddingHorizontal="10dp"
-                app:layout_constraintBottom_toTopOf="@id/mainKeyboard"
-                app:layout_constraintEnd_toEndOf="@id/constraintLayout_main"
-                app:layout_constraintStart_toStartOf="@id/constraintLayout_main"
-                app:layout_constraintTop_toTopOf="@id/constraintLayout_main">
+                android:paddingHorizontal="5dp"
+                android:paddingTop="5dp"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="@id/constraintLayout_main"
+                tools:layout_editor_absoluteX="10dp">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/scientificKeyboard"
-                    android:layout_width="match_parent"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonSqrt"
+                    style="@style/buttonScientific"
+                    android:text="√"
+                    app:layout_constraintEnd_toStartOf="@id/buttonPi"
+                    app:layout_constraintStart_toStartOf="@id/scientificButtonsLayout"
+                    app:layout_constraintTop_toTopOf="@id/scientificButtonsLayout"
+                    tools:ignore="VisualLintButtonSize" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonPi"
+                    style="@style/buttonScientific"
+                    android:hapticFeedbackEnabled="true"
+                    android:text="π"
+                    app:layout_constraintEnd_toStartOf="@id/buttonPower"
+                    app:layout_constraintStart_toEndOf="@id/buttonSqrt"
+                    app:layout_constraintTop_toTopOf="@id/scientificButtonsLayout"
+                    tools:ignore="VisualLintButtonSize" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonPower"
+                    style="@style/buttonScientific"
+                    android:text="^"
+                    app:layout_constraintEnd_toStartOf="@id/buttonFactorial"
+                    app:layout_constraintStart_toEndOf="@id/buttonPi"
+                    app:layout_constraintTop_toTopOf="@id/scientificButtonsLayout"
+                    tools:ignore="VisualLintButtonSize" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonFactorial"
+                    style="@style/buttonScientific"
+                    android:text="!"
+                    app:layout_constraintEnd_toStartOf="@id/toggleScientificButtonLayout"
+                    app:layout_constraintStart_toEndOf="@id/buttonPower"
+                    app:layout_constraintTop_toTopOf="@id/scientificButtonsLayout"
+                    tools:ignore="VisualLintButtonSize" />
+
+                <FrameLayout
+                    android:id="@+id/toggleScientificButtonLayout"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingVertical="5dp"
-                    app:layout_constraintTop_toTopOf="@id/scientificFrame">
+                    android:paddingEnd="5dp"
+                    app:layout_constraintBottom_toBottomOf="@id/buttonSqrt"
+                    app:layout_constraintEnd_toEndOf="@id/scientificButtonsLayout"
+                    app:layout_constraintStart_toEndOf="@id/buttonFactorial"
+                    app:layout_constraintTop_toTopOf="@id/buttonSqrt"
+                    tools:ignore="RtlSymmetry">
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonSqrt"
-                        style="@style/buttonScientific"
-                        android:text="√"
-                        app:layout_constraintBottom_toBottomOf="@id/scientificKeyboard"
-                        app:layout_constraintEnd_toStartOf="@id/buttonPi"
-                        app:layout_constraintStart_toStartOf="@id/scientificKeyboard"
-                        app:layout_constraintTop_toTopOf="@id/scientificKeyboard"
-                        tools:ignore="VisualLintButtonSize" />
+                        android:id="@+id/toggleScientificButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/tile"
+                        app:backgroundTint="@color/inverseSurface"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonPi"
-                        style="@style/buttonScientific"
-                        android:hapticFeedbackEnabled="true"
-                        android:text="π"
-                        app:layout_constraintBottom_toBottomOf="@id/scientificKeyboard"
-                        app:layout_constraintEnd_toStartOf="@id/buttonPower"
-                        app:layout_constraintStart_toEndOf="@id/buttonSqrt"
-                        app:layout_constraintTop_toTopOf="@id/scientificKeyboard"
-                        tools:ignore="VisualLintButtonSize" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonPower"
-                        style="@style/buttonScientific"
-                        android:text="^"
-                        app:layout_constraintBottom_toBottomOf="@id/scientificKeyboard"
-                        app:layout_constraintEnd_toStartOf="@id/buttonFactorial"
-                        app:layout_constraintStart_toEndOf="@id/buttonPi"
-                        app:layout_constraintTop_toTopOf="@id/scientificKeyboard"
-                        tools:ignore="VisualLintButtonSize" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonFactorial"
-                        style="@style/buttonScientific"
-                        android:text="!"
-                        app:layout_constraintBottom_toBottomOf="@id/scientificKeyboard"
-                        app:layout_constraintEnd_toStartOf="@id/toggleScientificButtonLayout"
-                        app:layout_constraintStart_toEndOf="@id/buttonPower"
-                        app:layout_constraintTop_toTopOf="@id/scientificKeyboard"
-                        tools:ignore="VisualLintButtonSize" />
-
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/toggleScientificButtonLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        app:layout_constraintBottom_toBottomOf="@id/scientificKeyboard"
-                        app:layout_constraintEnd_toEndOf="@id/scientificKeyboard"
-                        app:layout_constraintStart_toEndOf="@id/buttonFactorial"
-                        app:layout_constraintTop_toTopOf="@id/scientificKeyboard">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/toggleScientificButton"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/tile"
-                            app:backgroundTint="@color/inverseSurface"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
-
-                        <ImageView
-                            android:id="@+id/toggleScientificButtonImageView"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:src="@drawable/my_path"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:tint="@color/onSurface"
-                            tools:ignore="ContentDescription" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/scientificButtonsLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="visible"
-                    app:layout_constraintTop_toTopOf="@id/scientificFrame">
-
-                    <Space
-                        android:id="@+id/space1"
+                    <ImageView
+                        android:id="@+id/toggleScientificButtonImageView"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        app:layout_constraintBottom_toTopOf="@id/space2"
-                        app:layout_constraintEnd_toEndOf="@id/scientificButtonsLayout"
-                        app:layout_constraintStart_toStartOf="@id/scientificButtonsLayout"
-                        app:layout_constraintTop_toTopOf="@id/scientificButtonsLayout" />
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:src="@drawable/my_path"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/onSurface"
+                        tools:ignore="ContentDescription" />
+                </FrameLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonRadDeg"
-                        style="@style/buttonScientific"
-                        android:text="RAD"
-                        app:layout_constraintBottom_toTopOf="@id/buttonInverse"
-                        app:layout_constraintEnd_toStartOf="@id/buttonSin"
-                        app:layout_constraintStart_toStartOf="@id/scientificButtonsLayout"
-                        app:layout_constraintTop_toBottomOf="@id/space1"
-                        tools:ignore="VisualLintButtonSize" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/row1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:paddingHorizontal="5dp"
+                android:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@id/scientificButtonsLayout">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonRadDeg"
+                    style="@style/buttonScientific"
+                    android:text="RAD"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/buttonSin"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="VisualLintButtonSize" />
 
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonSin"
-                        style="@style/buttonScientific"
-                        android:hapticFeedbackEnabled="true"
-                        android:text="sin"
-                        app:layout_constraintBottom_toTopOf="@id/buttonE"
-                        app:layout_constraintEnd_toStartOf="@id/buttonCos"
-                        app:layout_constraintStart_toEndOf="@id/buttonRadDeg"
-                        app:layout_constraintTop_toBottomOf="@id/space1"
-                        tools:ignore="VisualLintButtonSize" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonSin"
+                    style="@style/buttonScientific"
+                    android:hapticFeedbackEnabled="true"
+                    android:text="sin"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/buttonCos"
+                    app:layout_constraintStart_toEndOf="@id/buttonRadDeg"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="VisualLintButtonSize" />
 
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonCos"
-                        style="@style/buttonScientific"
-                        android:text="cos"
-                        app:layout_constraintBottom_toTopOf="@id/buttonLn"
-                        app:layout_constraintEnd_toStartOf="@id/buttonTan"
-                        app:layout_constraintStart_toEndOf="@id/buttonSin"
-                        app:layout_constraintTop_toBottomOf="@id/space1"
-                        tools:ignore="VisualLintButtonSize" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonCos"
+                    style="@style/buttonScientific"
+                    android:text="cos"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/buttonTan"
+                    app:layout_constraintStart_toEndOf="@id/buttonSin"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="VisualLintButtonSize" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonTan"
-                        style="@style/buttonScientific"
-                        android:text="tan"
-                        app:layout_constraintBottom_toTopOf="@id/buttonLog"
-                        app:layout_constraintEnd_toStartOf="@id/space2"
-                        app:layout_constraintStart_toEndOf="@id/buttonCos"
-                        app:layout_constraintTop_toBottomOf="@id/space1"
-                        tools:ignore="VisualLintButtonSize" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonTan"
+                    style="@style/buttonScientific"
+                    android:text="tan"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/dummyButtonLayout1"
+                    app:layout_constraintStart_toEndOf="@id/buttonCos"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="VisualLintButtonSize" />
 
-                    <Space
-                        android:id="@+id/space2"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        app:layout_constraintBottom_toTopOf="@id/space3"
-                        app:layout_constraintEnd_toEndOf="@id/scientificButtonsLayout"
-                        app:layout_constraintStart_toEndOf="@id/buttonTan"
-                        app:layout_constraintTop_toBottomOf="@id/space1" />
-
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonInverse"
-                        style="@style/buttonScientific"
-                        android:text="INV"
-                        app:layout_constraintBottom_toBottomOf="@id/scientificButtonsLayout"
-                        app:layout_constraintEnd_toStartOf="@id/buttonE"
-                        app:layout_constraintStart_toStartOf="@id/scientificButtonsLayout"
-                        app:layout_constraintTop_toBottomOf="@id/buttonRadDeg"
-                        tools:ignore="VisualLintButtonSize" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonE"
-                        style="@style/buttonScientific"
-                        android:text="e"
-                        app:layout_constraintBottom_toBottomOf="@id/scientificButtonsLayout"
-                        app:layout_constraintEnd_toStartOf="@id/buttonLn"
-                        app:layout_constraintStart_toEndOf="@id/buttonInverse"
-                        app:layout_constraintTop_toBottomOf="@id/buttonSin"
-                        tools:ignore="VisualLintButtonSize" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonLn"
-                        style="@style/buttonScientific"
-                        android:hapticFeedbackEnabled="true"
-                        android:text="ln"
-                        app:layout_constraintBottom_toBottomOf="@id/scientificButtonsLayout"
-                        app:layout_constraintEnd_toStartOf="@id/buttonLog"
-                        app:layout_constraintStart_toEndOf="@id/buttonE"
-                        app:layout_constraintTop_toBottomOf="@id/buttonCos"
-                        tools:ignore="VisualLintButtonSize" />
-
+                <FrameLayout
+                    android:id="@+id/dummyButtonLayout1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="5dp"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@id/buttonRadDeg"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/buttonTan"
+                    app:layout_constraintTop_toTopOf="@id/buttonRadDeg"
+                    tools:ignore="RtlSymmetry">
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonLog"
-                        style="@style/buttonScientific"
-                        android:text="log"
-                        app:layout_constraintBottom_toBottomOf="@id/scientificButtonsLayout"
-                        app:layout_constraintEnd_toStartOf="@id/space3"
-                        app:layout_constraintStart_toEndOf="@id/buttonLn"
-                        app:layout_constraintTop_toBottomOf="@id/buttonTan"
-                        tools:ignore="VisualLintButtonSize" />
+                        android:id="@+id/dummyButton1"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/tile"
+                        app:backgroundTint="@color/inverseSurface"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                </FrameLayout>
 
-                    <Space
-                        android:id="@+id/space3"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        app:layout_constraintBottom_toBottomOf="@id/scientificButtonsLayout"
-                        app:layout_constraintEnd_toEndOf="@id/scientificButtonsLayout"
-                        app:layout_constraintStart_toEndOf="@id/buttonLog"
-                        app:layout_constraintTop_toBottomOf="@id/space2" />
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/mainKeyboard"
+                android:id="@+id/row2"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_margin="5dp"
+                android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
-                app:layout_constraintBottom_toBottomOf="@id/constraintLayout_main"
-                app:layout_constraintEnd_toEndOf="@+id/constraintLayout_main"
-                app:layout_constraintStart_toStartOf="@+id/constraintLayout_main"
-                app:layout_constraintTop_toBottomOf="@+id/scientificFrame">
+                android:paddingHorizontal="5dp"
+                android:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@id/row1">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonClear"
-                    style="@style/buttonClear"
-                    android:text="AC"
-                    android:textColor="@color/onTertiary"
-                    app:layout_constraintBottom_toTopOf="@id/button7"
-                    app:layout_constraintEnd_toStartOf="@id/buttonParentheses"
-                    app:layout_constraintStart_toStartOf="@id/mainKeyboard"
-                    app:layout_constraintTop_toTopOf="@id/mainKeyboard"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
-
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonParentheses"
-                    style="@style/buttonOperator"
-                    android:text="( )"
-                    app:layout_constraintBottom_toTopOf="@id/button8"
-                    app:layout_constraintEnd_toStartOf="@id/buttonPercent"
-                    app:layout_constraintStart_toEndOf="@id/buttonClear"
-                    app:layout_constraintTop_toTopOf="@id/mainKeyboard"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+                    android:id="@+id/buttonInverse"
+                    style="@style/buttonScientific"
+                    android:text="INV"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/buttonE"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="VisualLintButtonSize" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonPercent"
-                    style="@style/buttonOperator"
-                    android:text="%"
-                    app:layout_constraintBottom_toTopOf="@id/button9"
-                    app:layout_constraintEnd_toStartOf="@id/buttonDivide"
-                    app:layout_constraintStart_toEndOf="@id/buttonParentheses"
-                    app:layout_constraintTop_toTopOf="@id/mainKeyboard"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+                    android:id="@+id/buttonE"
+                    style="@style/buttonScientific"
+                    android:text="e"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/buttonLn"
+                    app:layout_constraintStart_toEndOf="@id/buttonInverse"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="VisualLintButtonSize" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonDivide"
-                    style="@style/buttonOperator"
-                    android:text="/"
-                    app:layout_constraintBottom_toTopOf="@id/buttonMultiply"
-                    app:layout_constraintEnd_toEndOf="@id/mainKeyboard"
-                    app:layout_constraintStart_toEndOf="@id/buttonPercent"
-                    app:layout_constraintTop_toTopOf="@id/mainKeyboard"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button7"
-                    style="@style/buttonNumber"
-                    android:text="7"
-                    app:layout_constraintBottom_toTopOf="@id/button4"
-                    app:layout_constraintEnd_toStartOf="@id/button8"
-                    app:layout_constraintStart_toStartOf="@id/mainKeyboard"
-                    app:layout_constraintTop_toBottomOf="@id/buttonClear"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button8"
-                    style="@style/buttonNumber"
-                    android:text="8"
-                    app:layout_constraintBottom_toTopOf="@id/button5"
-                    app:layout_constraintEnd_toStartOf="@id/button9"
-                    app:layout_constraintStart_toEndOf="@id/button7"
-                    app:layout_constraintTop_toBottomOf="@id/buttonParentheses"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button9"
-                    style="@style/buttonNumber"
-                    android:text="9"
-                    app:layout_constraintBottom_toTopOf="@id/button6"
-                    app:layout_constraintEnd_toStartOf="@id/buttonMultiply"
-                    app:layout_constraintStart_toEndOf="@id/button8"
-                    app:layout_constraintTop_toBottomOf="@id/buttonPercent"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonMultiply"
-                    style="@style/buttonOperator"
-                    android:text="×"
-                    app:layout_constraintBottom_toTopOf="@id/buttonSubtract"
-                    app:layout_constraintEnd_toEndOf="@id/mainKeyboard"
-                    app:layout_constraintStart_toEndOf="@id/button9"
-                    app:layout_constraintTop_toBottomOf="@id/buttonDivide"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button4"
-                    style="@style/buttonNumber"
-                    android:layout_weight="1"
-                    android:text="4"
-                    app:layout_constraintBottom_toTopOf="@id/button1"
-                    app:layout_constraintEnd_toStartOf="@id/button5"
-                    app:layout_constraintStart_toStartOf="@id/mainKeyboard"
-                    app:layout_constraintTop_toBottomOf="@id/button7"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck,TouchTargetSizeCheck" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button5"
-                    style="@style/buttonNumber"
-                    android:text="5"
-                    app:layout_constraintBottom_toTopOf="@id/button2"
-                    app:layout_constraintEnd_toStartOf="@id/button6"
-                    app:layout_constraintStart_toEndOf="@id/button4"
-                    app:layout_constraintTop_toBottomOf="@id/button8"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button6"
-                    style="@style/buttonNumber"
-                    android:text="6"
-                    app:layout_constraintBottom_toTopOf="@id/button3"
-                    app:layout_constraintEnd_toStartOf="@id/buttonSubtract"
-                    app:layout_constraintStart_toEndOf="@id/button5"
-                    app:layout_constraintTop_toBottomOf="@id/button9"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonSubtract"
-                    style="@style/buttonOperator"
-                    android:text="-"
-                    app:layout_constraintBottom_toTopOf="@id/buttonAdd"
-                    app:layout_constraintEnd_toEndOf="@id/mainKeyboard"
-                    app:layout_constraintStart_toEndOf="@id/button6"
-                    app:layout_constraintTop_toBottomOf="@id/buttonMultiply"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+                    android:id="@+id/buttonLn"
+                    style="@style/buttonScientific"
+                    android:hapticFeedbackEnabled="true"
+                    android:text="ln"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/buttonLog"
+                    app:layout_constraintStart_toEndOf="@id/buttonE"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="VisualLintButtonSize" />
 
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button1"
-                    style="@style/buttonNumber"
-                    android:text="1"
-                    app:layout_constraintBottom_toTopOf="@id/buttonDot"
-                    app:layout_constraintEnd_toStartOf="@id/button2"
-                    app:layout_constraintStart_toStartOf="@id/mainKeyboard"
-                    app:layout_constraintTop_toBottomOf="@id/button4"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+                    android:id="@+id/buttonLog"
+                    style="@style/buttonScientific"
+                    android:text="log"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/dummyButtonLayout2"
+                    app:layout_constraintStart_toEndOf="@id/buttonLn"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="VisualLintButtonSize" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button2"
-                    style="@style/buttonNumber"
-                    android:text="2"
-                    app:layout_constraintBottom_toTopOf="@id/button0"
-                    app:layout_constraintEnd_toStartOf="@id/button3"
-                    app:layout_constraintStart_toEndOf="@id/button1"
-                    app:layout_constraintTop_toBottomOf="@id/button5"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+                <FrameLayout
+                    android:id="@+id/dummyButtonLayout2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="5dp"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@id/buttonInverse"
+                    app:layout_constraintEnd_toEndOf="@id/row2"
+                    app:layout_constraintStart_toEndOf="@id/buttonLog"
+                    app:layout_constraintTop_toTopOf="@id/buttonInverse"
+                    tools:ignore="RtlSymmetry">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button3"
-                    style="@style/buttonNumber"
-                    android:text="3"
-                    app:layout_constraintBottom_toTopOf="@id/buttonBackspace"
-                    app:layout_constraintEnd_toStartOf="@id/buttonAdd"
-                    app:layout_constraintStart_toEndOf="@id/button2"
-                    app:layout_constraintTop_toBottomOf="@id/button6"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonAdd"
-                    style="@style/buttonOperator"
-                    android:text="+"
-                    app:layout_constraintBottom_toTopOf="@id/buttonEqual"
-                    app:layout_constraintEnd_toEndOf="@id/mainKeyboard"
-                    app:layout_constraintStart_toEndOf="@id/button3"
-                    app:layout_constraintTop_toBottomOf="@id/buttonSubtract"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
-
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonDot"
-                    style="@style/buttonNumber"
-                    android:text=","
-                    app:layout_constraintBottom_toBottomOf="@id/mainKeyboard"
-                    app:layout_constraintEnd_toStartOf="@id/button0"
-                    app:layout_constraintStart_toStartOf="@id/mainKeyboard"
-                    app:layout_constraintTop_toBottomOf="@id/button1"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck,TextContrastCheck" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button0"
-                    style="@style/buttonNumber"
-                    android:text="0"
-                    app:layout_constraintBottom_toBottomOf="@id/mainKeyboard"
-                    app:layout_constraintEnd_toStartOf="@id/buttonBackspace"
-                    app:layout_constraintStart_toEndOf="@id/buttonDot"
-                    app:layout_constraintTop_toBottomOf="@id/button2"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonBackspace"
-                    style="@style/buttonNumber"
-                    android:onClick="backSpaceAction"
-                    android:text="⌫"
-                    android:textColor="@color/onSurface"
-                    app:layout_constraintBottom_toBottomOf="@id/mainKeyboard"
-                    app:layout_constraintEnd_toStartOf="@id/buttonEqual"
-                    app:layout_constraintStart_toEndOf="@id/button0"
-                    app:layout_constraintTop_toBottomOf="@id/button3"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/buttonEqual"
-                    style="@style/buttonEqual"
-                    android:onClick="equalAction"
-                    android:text="="
-                    app:layout_constraintBottom_toBottomOf="@id/mainKeyboard"
-                    app:layout_constraintEnd_toEndOf="@id/mainKeyboard"
-                    app:layout_constraintStart_toEndOf="@id/buttonBackspace"
-                    app:layout_constraintTop_toBottomOf="@id/buttonAdd"
-                    tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
-
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/dummyButton2"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/tile"
+                        app:backgroundTint="@color/inverseSurface"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                </FrameLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonClear"
+                style="@style/buttonClear"
+                android:text="AC"
+                android:textColor="@color/onTertiary"
+                app:layout_constraintBottom_toTopOf="@id/button7"
+                app:layout_constraintEnd_toStartOf="@id/buttonParentheses"
+                app:layout_constraintStart_toStartOf="@id/constraintLayout_main"
+                app:layout_constraintTop_toBottomOf="@id/row2"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonParentheses"
+                style="@style/buttonOperator"
+                android:text="( )"
+                app:layout_constraintBottom_toTopOf="@id/button8"
+                app:layout_constraintEnd_toStartOf="@id/buttonPercent"
+                app:layout_constraintStart_toEndOf="@id/buttonClear"
+                app:layout_constraintTop_toBottomOf="@id/row2"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonPercent"
+                style="@style/buttonOperator"
+                android:text="%"
+                app:layout_constraintBottom_toTopOf="@id/button9"
+                app:layout_constraintEnd_toStartOf="@id/buttonDivide"
+                app:layout_constraintStart_toEndOf="@id/buttonParentheses"
+                app:layout_constraintTop_toBottomOf="@id/row2"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonDivide"
+                style="@style/buttonOperator"
+                android:text="/"
+                app:layout_constraintBottom_toTopOf="@id/buttonMultiply"
+                app:layout_constraintEnd_toEndOf="@id/constraintLayout_main"
+                app:layout_constraintStart_toEndOf="@id/buttonPercent"
+                app:layout_constraintTop_toBottomOf="@id/row2"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button7"
+                style="@style/buttonNumber"
+                android:text="7"
+                app:layout_constraintBottom_toTopOf="@id/button4"
+                app:layout_constraintEnd_toStartOf="@id/button8"
+                app:layout_constraintStart_toStartOf="@id/constraintLayout_main"
+                app:layout_constraintTop_toBottomOf="@id/buttonClear"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button8"
+                style="@style/buttonNumber"
+                android:text="8"
+                app:layout_constraintBottom_toTopOf="@id/button5"
+                app:layout_constraintEnd_toStartOf="@id/button9"
+                app:layout_constraintStart_toEndOf="@id/button7"
+                app:layout_constraintTop_toBottomOf="@id/buttonParentheses"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button9"
+                style="@style/buttonNumber"
+                android:text="9"
+                app:layout_constraintBottom_toTopOf="@id/button6"
+                app:layout_constraintEnd_toStartOf="@id/buttonMultiply"
+                app:layout_constraintStart_toEndOf="@id/button8"
+                app:layout_constraintTop_toBottomOf="@id/buttonPercent"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonMultiply"
+                style="@style/buttonOperator"
+                android:text="×"
+                app:layout_constraintBottom_toTopOf="@id/buttonSubtract"
+                app:layout_constraintEnd_toEndOf="@id/constraintLayout_main"
+                app:layout_constraintStart_toEndOf="@id/button9"
+                app:layout_constraintTop_toBottomOf="@id/buttonDivide"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button4"
+                style="@style/buttonNumber"
+                android:layout_weight="1"
+                android:text="4"
+                app:layout_constraintBottom_toTopOf="@id/button1"
+                app:layout_constraintEnd_toStartOf="@id/button5"
+                app:layout_constraintStart_toStartOf="@id/constraintLayout_main"
+                app:layout_constraintTop_toBottomOf="@id/button7"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button5"
+                style="@style/buttonNumber"
+                android:text="5"
+                app:layout_constraintBottom_toTopOf="@id/button2"
+                app:layout_constraintEnd_toStartOf="@id/button6"
+                app:layout_constraintStart_toEndOf="@id/button4"
+                app:layout_constraintTop_toBottomOf="@id/button8"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button6"
+                style="@style/buttonNumber"
+                android:text="6"
+                app:layout_constraintBottom_toTopOf="@id/button3"
+                app:layout_constraintEnd_toStartOf="@id/buttonSubtract"
+                app:layout_constraintStart_toEndOf="@id/button5"
+                app:layout_constraintTop_toBottomOf="@id/button9"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonSubtract"
+                style="@style/buttonOperator"
+                android:text="-"
+                app:layout_constraintBottom_toTopOf="@id/buttonAdd"
+                app:layout_constraintEnd_toEndOf="@id/constraintLayout_main"
+                app:layout_constraintStart_toEndOf="@id/button6"
+                app:layout_constraintTop_toBottomOf="@id/buttonMultiply"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button1"
+                style="@style/buttonNumber"
+                android:text="1"
+                app:layout_constraintBottom_toTopOf="@id/buttonDot"
+                app:layout_constraintEnd_toStartOf="@id/button2"
+                app:layout_constraintStart_toStartOf="@id/constraintLayout_main"
+                app:layout_constraintTop_toBottomOf="@id/button4"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button2"
+                style="@style/buttonNumber"
+                android:text="2"
+                app:layout_constraintBottom_toTopOf="@id/button0"
+                app:layout_constraintEnd_toStartOf="@id/button3"
+                app:layout_constraintStart_toEndOf="@id/button1"
+                app:layout_constraintTop_toBottomOf="@id/button5"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button3"
+                style="@style/buttonNumber"
+                android:text="3"
+                app:layout_constraintBottom_toTopOf="@id/buttonBackspace"
+                app:layout_constraintEnd_toStartOf="@id/buttonAdd"
+                app:layout_constraintStart_toEndOf="@id/button2"
+                app:layout_constraintTop_toBottomOf="@id/button6"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonAdd"
+                style="@style/buttonOperator"
+                android:text="+"
+                app:layout_constraintBottom_toTopOf="@id/buttonEqual"
+                app:layout_constraintEnd_toEndOf="@id/constraintLayout_main"
+                app:layout_constraintStart_toEndOf="@id/button3"
+                app:layout_constraintTop_toBottomOf="@id/buttonSubtract"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonDot"
+                style="@style/buttonNumber"
+                android:text=","
+                app:layout_constraintBottom_toBottomOf="@id/constraintLayout_main"
+                app:layout_constraintEnd_toStartOf="@id/button0"
+                app:layout_constraintStart_toStartOf="@id/constraintLayout_main"
+                app:layout_constraintTop_toBottomOf="@id/button1"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck,TextContrastCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button0"
+                style="@style/buttonNumber"
+                android:text="0"
+                app:layout_constraintBottom_toBottomOf="@id/constraintLayout_main"
+                app:layout_constraintEnd_toStartOf="@id/buttonBackspace"
+                app:layout_constraintStart_toEndOf="@id/buttonDot"
+                app:layout_constraintTop_toBottomOf="@id/button2"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonBackspace"
+                style="@style/buttonNumber"
+                android:onClick="backSpaceAction"
+                android:text="⌫"
+                android:textColor="@color/onSurface"
+                app:layout_constraintBottom_toBottomOf="@id/constraintLayout_main"
+                app:layout_constraintEnd_toStartOf="@id/buttonEqual"
+                app:layout_constraintStart_toEndOf="@id/button0"
+                app:layout_constraintTop_toBottomOf="@id/button3"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonEqual"
+                style="@style/buttonEqual"
+                android:onClick="equalAction"
+                android:text="="
+                app:layout_constraintBottom_toBottomOf="@id/constraintLayout_main"
+                app:layout_constraintEnd_toEndOf="@id/constraintLayout_main"
+                app:layout_constraintStart_toEndOf="@id/buttonBackspace"
+                app:layout_constraintTop_toBottomOf="@id/buttonAdd"
+                tools:ignore="VisualLintButtonSize,TouchTargetSizeCheck" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
