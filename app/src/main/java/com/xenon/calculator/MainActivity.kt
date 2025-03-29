@@ -1,19 +1,29 @@
 package com.xenon.calculator
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
+import android.animation.LayoutTransition
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.text.method.SingleLineTransformationMethod
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.setPadding
+import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
 import com.google.android.material.appbar.MaterialToolbar
 import com.xenon.calculator.activities.ConverterActivity
@@ -21,6 +31,7 @@ import com.xenon.calculator.activities.SettingsActivity
 import com.xenon.calculator.databinding.ActivityMainBinding
 import java.text.DecimalFormatSymbols
 import java.util.Locale
+import kotlin.math.abs
 import kotlin.math.acos
 import kotlin.math.asin
 import kotlin.math.atan
@@ -99,6 +110,8 @@ class MainActivity : AppCompatActivity() {
             val isVisible = row1.visibility == View.VISIBLE
             row1.visibility = if (isVisible) View.GONE else View.VISIBLE
             row2.visibility = if (isVisible) View.GONE else View.VISIBLE
+            Log.d("aaa", binding.buttonClear.transformationMethod.toString())
+            binding.buttonClear.transformationMethod = SingleLineTransformationMethod.getInstance()
             onScientificButtonLayoutVisibilityChanged(!isVisible)
 
             toggleScientificButtonImageView.animate().rotationX(if (isVisible) 0f else 180f)
@@ -157,6 +170,56 @@ class MainActivity : AppCompatActivity() {
             buttonRadDeg.setOnClickListener { switchRadDeg() }
             buttonInverse.setOnClickListener { inverseAction() }
         }
+
+        // Make sure button views from the parent ViewGroup get resized properly with animateLayoutChanges...
+        val anim1 = binding.constraintLayoutMain!!.layoutTransition!!.getAnimator(LayoutTransition.CHANGE_DISAPPEARING) as ValueAnimator
+        anim1.addUpdateListener { anim ->
+            val objAnim = anim as ObjectAnimator
+            val view = objAnim.target as? TextView
+            if (view != null) {
+                // Assuming top and bottom padding are equal!
+                view.updatePadding(bottom = if (abs(view.height - view.measuredHeight) > 1) view.measuredHeight - view.height + view.paddingTop else view.paddingTop)
+//                Log.d("update disappearing", "${view.height} - ${view.measuredHeight} - padding: ${view.paddingTop} ${view.paddingBottom}")
+            }
+        }
+        anim1.addListener(object : AnimatorListener {
+            override fun onAnimationStart(animation: Animator) {}
+            override fun onAnimationEnd(animation: Animator) {
+                ((animation as? ObjectAnimator)?.target as? TextView).apply {
+                    this?.updatePadding(bottom=this.paddingTop)
+                }
+            }
+            override fun onAnimationCancel(animation: Animator) {
+                ((animation as? ObjectAnimator)?.target as? TextView).apply {
+                    this?.updatePadding(bottom=this.paddingTop)
+//                    Log.d("update disappearing (cancel)", "${this?.height} - ${this?.measuredHeight} - padding: ${this?.paddingTop} ${this?.paddingBottom}")
+                }
+            }
+            override fun onAnimationRepeat(animation: Animator) {}
+        })
+        val anim2 = binding.constraintLayoutMain!!.layoutTransition!!.getAnimator(LayoutTransition.CHANGE_APPEARING) as ValueAnimator
+        anim2.addUpdateListener { anim ->
+            val objAnim = anim as ObjectAnimator
+            val view = objAnim.target as? TextView
+            if(view != null) {
+                view.updatePadding(top = view.height - view.measuredHeight + view.paddingBottom)
+//                Log.d("update appearing", "${view.height} - ${view.measuredHeight} - padding: ${view.paddingTop} ${view.paddingBottom}")
+            }
+        }
+        anim2.addListener(object : AnimatorListener {
+            override fun onAnimationStart(animation: Animator) {}
+            override fun onAnimationEnd(animation: Animator) {
+                ((animation as? ObjectAnimator)?.target as? TextView).apply {
+                    this?.updatePadding(top=this.paddingBottom)
+                }
+            }
+            override fun onAnimationCancel(animation: Animator) {
+                ((animation as? ObjectAnimator)?.target as? TextView).apply {
+                    this?.updatePadding(top=this.paddingBottom)
+                }
+            }
+            override fun onAnimationRepeat(animation: Animator) {}
+        })
     }
 
     private val locale = Locale.getDefault()
