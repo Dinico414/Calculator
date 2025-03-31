@@ -38,6 +38,8 @@ import kotlin.math.atan
 import kotlin.math.cos
 import kotlin.math.ln
 import kotlin.math.log10
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -173,49 +175,58 @@ class MainActivity : AppCompatActivity() {
 
         // Make sure button views from the parent ViewGroup get resized properly with animateLayoutChanges...
         val anim1 = binding.constraintLayoutMain!!.layoutTransition!!.getAnimator(LayoutTransition.CHANGE_DISAPPEARING) as ValueAnimator
-        anim1.addUpdateListener { anim ->
-            val objAnim = anim as ObjectAnimator
-            val view = objAnim.target as? TextView
-            if (view != null) {
-                // Assuming top and bottom padding are equal!
-                view.updatePadding(bottom = if (abs(view.height - view.measuredHeight) > 1) view.measuredHeight - view.height + view.paddingTop else view.paddingTop)
-//                Log.d("update disappearing", "${view.height} - ${view.measuredHeight} - padding: ${view.paddingTop} ${view.paddingBottom}")
-            }
-        }
+
+        val paddingOffset = 10
+        val paddingCache = HashMap<TextView, Int>()
+
         anim1.addListener(object : AnimatorListener {
-            override fun onAnimationStart(animation: Animator) {}
+            override fun onAnimationStart(animation: Animator) {
+                ((animation as? ObjectAnimator)?.target as? TextView)?.apply {
+//                    Log.d("update disappearing 1", "${this.height} - ${this.measuredHeight} - padding: ${this.paddingTop} ${this.paddingBottom}")
+                    paddingCache[this] = this.paddingTop
+                    animation.addUpdateListener { anim ->
+                        // Assuming top and bottom padding are equal!
+                        val padding = paddingCache.get(this)!!
+                        this.updatePadding(top = padding - paddingOffset, bottom = this.measuredHeight - this.height + padding - paddingOffset)
+                        if (this == binding.buttonEqual)
+                            Log.d("update disappearing", "${this.height} - ${this.measuredHeight} - padding: ${this.paddingTop} ${this.paddingBottom}")
+                    }
+                }
+            }
             override fun onAnimationEnd(animation: Animator) {
                 ((animation as? ObjectAnimator)?.target as? TextView).apply {
-                    this?.updatePadding(bottom=this.paddingTop)
+                    this?.updatePadding(top=paddingCache[this]!!, bottom=paddingCache[this]!!)
                 }
             }
             override fun onAnimationCancel(animation: Animator) {
                 ((animation as? ObjectAnimator)?.target as? TextView).apply {
-                    this?.updatePadding(bottom=this.paddingTop)
-//                    Log.d("update disappearing (cancel)", "${this?.height} - ${this?.measuredHeight} - padding: ${this?.paddingTop} ${this?.paddingBottom}")
+                    this?.updatePadding(top=paddingCache[this]!!, bottom=paddingCache[this]!!)
+                    Log.d("update disappearing (cancel)", "${this?.height} - ${this?.measuredHeight} - padding: ${this?.paddingTop} ${this?.paddingBottom}")
                 }
             }
             override fun onAnimationRepeat(animation: Animator) {}
         })
+
         val anim2 = binding.constraintLayoutMain!!.layoutTransition!!.getAnimator(LayoutTransition.CHANGE_APPEARING) as ValueAnimator
-        anim2.addUpdateListener { anim ->
-            val objAnim = anim as ObjectAnimator
-            val view = objAnim.target as? TextView
-            if(view != null) {
-                view.updatePadding(top = view.height - view.measuredHeight + view.paddingBottom)
-//                Log.d("update appearing", "${view.height} - ${view.measuredHeight} - padding: ${view.paddingTop} ${view.paddingBottom}")
-            }
-        }
         anim2.addListener(object : AnimatorListener {
-            override fun onAnimationStart(animation: Animator) {}
+            override fun onAnimationStart(animation: Animator) {
+                ((animation as? ObjectAnimator)?.target as? TextView)?.apply {
+                    paddingCache[this] = this.paddingBottom
+                    animation.addUpdateListener { anim ->
+                        val padding = paddingCache.get(this)!!
+                        this.updatePadding(top = this.height - this.measuredHeight + padding - paddingOffset, bottom = padding - paddingOffset)
+//                        Log.d("update appearing", "${view.height} - ${view.measuredHeight} - padding: ${view.paddingTop} ${view.paddingBottom}")
+                    }
+                }
+            }
             override fun onAnimationEnd(animation: Animator) {
                 ((animation as? ObjectAnimator)?.target as? TextView).apply {
-                    this?.updatePadding(top=this.paddingBottom)
+                    this?.updatePadding(top = paddingCache[this]!!, bottom = paddingCache[this]!!)
                 }
             }
             override fun onAnimationCancel(animation: Animator) {
                 ((animation as? ObjectAnimator)?.target as? TextView).apply {
-                    this?.updatePadding(top=this.paddingBottom)
+                    this?.updatePadding(top = paddingCache[this]!!, bottom = paddingCache[this]!!)
                 }
             }
             override fun onAnimationRepeat(animation: Animator) {}
