@@ -173,13 +173,12 @@ class MainActivity : AppCompatActivity() {
             buttonInverse.setOnClickListener { inverseAction() }
         }
 
-        // Make sure button views from the parent ViewGroup get resized properly with animateLayoutChanges...
-        val anim1 = binding.constraintLayoutMain!!.layoutTransition!!.getAnimator(LayoutTransition.CHANGE_DISAPPEARING) as ValueAnimator
-
         val paddingOffset = 10
         val paddingCache = HashMap<TextView, Int>()
 
-        anim1.addListener(object : AnimatorListener {
+        // Make sure button views from the parent ViewGroup get resized properly with animateLayoutChanges...
+        val anim1 = binding.constraintLayoutMain?.layoutTransition?.getAnimator(LayoutTransition.CHANGE_DISAPPEARING) as ValueAnimator?
+        anim1?.addListener(object : AnimatorListener {
             override fun onAnimationStart(animation: Animator) {
                 ((animation as? ObjectAnimator)?.target as? TextView)?.apply {
 //                    Log.d("update disappearing 1", "${this.height} - ${this.measuredHeight} - padding: ${this.paddingTop} ${this.paddingBottom}")
@@ -207,8 +206,8 @@ class MainActivity : AppCompatActivity() {
             override fun onAnimationRepeat(animation: Animator) {}
         })
 
-        val anim2 = binding.constraintLayoutMain!!.layoutTransition!!.getAnimator(LayoutTransition.CHANGE_APPEARING) as ValueAnimator
-        anim2.addListener(object : AnimatorListener {
+        val anim2 = binding.constraintLayoutMain?.layoutTransition?.getAnimator(LayoutTransition.CHANGE_APPEARING) as ValueAnimator?
+        anim2?.addListener(object : AnimatorListener {
             override fun onAnimationStart(animation: Animator) {
                 ((animation as? ObjectAnimator)?.target as? TextView)?.apply {
                     paddingCache[this] = this.paddingBottom
