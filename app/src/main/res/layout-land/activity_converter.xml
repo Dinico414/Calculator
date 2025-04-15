@@ -114,7 +114,7 @@
                             android:layout_margin="10dp"
                             android:background="@drawable/tile_inputbox"
                             android:backgroundTint="@color/primary"
-                            android:dropDownSelector="@drawable/my_path"
+                            android:dropDownSelector="@drawable/arrow"
                             android:spinnerMode="dialog"
                             android:textAlignment="center"
                             android:textColor="@color/onPrimary"
