@@ -9,8 +9,10 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -99,8 +101,8 @@ fun ButtonLayout(
             if (viewModel.isScientificMode || animatedScientificRowsInnerWeight > 0.001f) {
                 AnimatedVisibility(
                     visible = viewModel.isScientificMode,
-                    enter = fadeIn() + slideInVertically(initialOffsetY = { fullHeight -> fullHeight }),
-                    exit = fadeOut() + slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }),
+                    enter = fadeIn() + slideInVertically(initialOffsetY = { fullHeight -> fullHeight }) + expandVertically(expandFrom = Alignment.Top),
+                    exit = fadeOut() + slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + shrinkVertically(shrinkTowards = Alignment.Top),
                     modifier = Modifier
                         .weight(animatedScientificRowsInnerWeight.coerceAtLeast(0.001f))
                         .fillMaxWidth()
@@ -162,7 +164,7 @@ fun ButtonLayout(
                             // Animate the spacer height
                             val spacerHeight by animateDpAsState(
                                 targetValue = if (viewModel.isScientificMode) 4.dp else 8.dp,
-                                label = "SpacerHeightAnimation" // Optional label for debugging
+                                label = "SpacerHeightAnimation"
                             )
                             Spacer(Modifier.height(spacerHeight))
                         }
@@ -350,7 +352,7 @@ fun CalculatorButton(
 
     val cornerRadiusPercent by animateIntAsState(
         targetValue = if (isPressed && !isScientific) 30 else 100,
-        animationSpec = tween(durationMillis = if (isScientific) 0 else 400),
+        animationSpec = tween(durationMillis = if (isScientific) 0 else 350),
         label = "cornerRadiusAnimation"
     )
 
