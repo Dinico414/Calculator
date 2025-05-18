@@ -36,6 +36,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,8 +47,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.xenon.calculator.ui.theme.CalculatorTheme
 
 
 @Composable
@@ -105,83 +108,91 @@ fun ButtonLayout(
                 .weight(1f)
                 .animateContentSize()
         ) {
-            val scientificPanelWeight by animateFloatAsState(
-                targetValue = if (viewModel.isScientificMode) 0.35f else 0f,
-                animationSpec = tween(durationMillis = 300),
-                label = "ScientificPanelWeight"
-            )
+            ScientificButtonsRow1(viewModel, modifier = Modifier.weight(0.1f).fillMaxWidth())
+            Spacer(Modifier.height(4.dp))
 
-            val commonButtonsWeight by animateFloatAsState(
-                targetValue = if (viewModel.isScientificMode) 0.65f else 1f,
-                animationSpec = tween(durationMillis = 300),
-                label = "CommonButtonsWeight"
-            )
+            Column(modifier = Modifier.weight(0.9f)) {
 
-            if (viewModel.isScientificMode || scientificPanelWeight > 0.001f) {
-                AnimatedVisibility(
-                    visible = viewModel.isScientificMode,
-                    enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
-                    exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
-                    modifier = Modifier
-                        .weight(scientificPanelWeight.coerceAtLeast(0.001f))
-                        .fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.fillMaxHeight()) {
-                        ScientificButtonsRow1(viewModel, modifier = Modifier.weight(1f))
-                        Spacer(Modifier.height(4.dp))
-                        ScientificButtonsRow2(viewModel, modifier = Modifier.weight(1f))
-                        Spacer(Modifier.height(4.dp))
-                        ScientificButtonsRow3(viewModel, viewModel.isInverseMode, modifier = Modifier.weight(1f))
-                        Spacer(Modifier.height(8.dp))
+                val animatedScientificRowsInnerWeight by animateFloatAsState(
+                    targetValue = if (viewModel.isScientificMode) (0.2f / 0.9f) else 0f,
+                    animationSpec = tween(durationMillis = 300),
+                    label = "AnimatedScientificRowsInnerWeight"
+                )
+
+                val commonButtonsInnerWeight by animateFloatAsState(
+                    targetValue = if (viewModel.isScientificMode) {
+                        (0.70f / 0.9f)
+                    } else {
+                        1f
+                    },
+                    animationSpec = tween(durationMillis = 300),
+                    label = "CommonButtonsInnerWeight"
+                )
+
+                if (viewModel.isScientificMode || animatedScientificRowsInnerWeight > 0.001f) {
+                    AnimatedVisibility(
+                        visible = viewModel.isScientificMode,
+                        enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+                        exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
+                        modifier = Modifier
+                            .weight(animatedScientificRowsInnerWeight.coerceAtLeast(0.001f))
+                            .fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.fillMaxHeight()) {
+                            ScientificButtonsRow2(viewModel, modifier = Modifier.weight(1f))
+                            Spacer(Modifier.height(4.dp))
+                            ScientificButtonsRow3(viewModel, viewModel.isInverseMode, modifier = Modifier.weight(1f))
+                            Spacer(Modifier.height(8.dp))
+                        }
                     }
                 }
-            }
 
-            if (commonButtonsWeight > 0.001f) {
-                Column(
-                    modifier = Modifier
-                        .weight(commonButtonsWeight.coerceAtLeast(0.001f))
-                        .fillMaxHeight()
-                ) {
-                    val buttonRows = listOf(
-                        listOf("AC", "( )", "%", "÷"),
-                        listOf("7", "8", "9", "×"),
-                        listOf("4", "5", "6", "-"),
-                        listOf("1", "2", "3", "+"),
-                        listOf(".", "0", "⌫", "=")
-                    )
+                if (commonButtonsInnerWeight > 0.001f) {
+                    Column(
+                        modifier = Modifier
+                            .weight(commonButtonsInnerWeight.coerceAtLeast(0.001f))
+                            .fillMaxHeight()
+                    ) {
+                        val buttonRows = listOf(
+                            listOf("AC", "( )", "%", "÷"),
+                            listOf("7", "8", "9", "×"),
+                            listOf("4", "5", "6", "-"),
+                            listOf("1", "2", "3", "+"),
+                            listOf(".", "0", "⌫", "=")
+                        )
 
-                    buttonRows.forEach { rowData ->
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .weight(1f)
-                                .padding(horizontal = 1.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            rowData.forEach { buttonText ->
-                                val buttonWeight = 1f
-                                CalculatorButton(
-                                    text = buttonText,
-                                    modifier = Modifier
-                                        .weight(buttonWeight)
-                                        .fillMaxHeight(),
-                                    isOperator = buttonText in listOf(
-                                        "÷", "×", "-", "+", "%", "( )"
-                                    ),
-                                    isSpecial = buttonText == "=",
-                                    isClear = buttonText == "AC",
-                                    onClick = {
-                                        if (buttonText == "( )") {
-                                            viewModel.onParenthesesClick()
-                                        } else {
-                                            viewModel.onButtonClick(buttonText)
+                        buttonRows.forEach { rowData ->
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                                    .padding(horizontal = 1.dp),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                rowData.forEach { buttonText ->
+                                    CalculatorButton(
+                                        text = buttonText,
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .fillMaxHeight(),
+                                        isOperator = buttonText in listOf(
+                                            "÷", "×", "-", "+", "%", "( )"
+                                        ),
+                                        isSpecial = buttonText == "=",
+                                        isClear = buttonText == "AC",
+                                        onClick = {
+                                            if (buttonText == "( )") {
+                                                viewModel.onParenthesesClick()
+                                            } else {
+                                                viewModel.onButtonClick(buttonText)
+                                            }
                                         }
-                                    })
+                                    )
+                                }
                             }
-                        }
-                        if (rowData != buttonRows.last()) {
-                            Spacer(Modifier.height(4.dp))
+                            if (rowData != buttonRows.last()) {
+                                Spacer(Modifier.height(4.dp))
+                            }
                         }
                     }
                 }
@@ -315,7 +326,7 @@ fun CalculatorButton(
     val contentColor = when {
         isClear -> MaterialTheme.colorScheme.onPrimary
         isSpecial -> MaterialTheme.colorScheme.onSurface
-        text == "INV" && isScientific -> if (isInverseActive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+        text == "INV" && isScientific -> if (isInverseActive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
         isScientific -> MaterialTheme.colorScheme.onSurfaceVariant
         isOperator -> MaterialTheme.colorScheme.onPrimary
         else -> MaterialTheme.colorScheme.onSurface
@@ -350,5 +361,117 @@ fun CalculatorButton(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
+    }
+}
+
+@Preview(showBackground = true, name = "Button Layout Light")
+@Composable
+fun ButtonLayoutPreviewLight() {
+    CalculatorTheme(darkTheme = false) {
+        Surface {
+            val sampleViewModel = CalculatorViewModel()
+            ButtonLayout(
+                viewModel = sampleViewModel,
+                isTablet = false,
+                isLandscape = false
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Button Layout Dark")
+@Composable
+fun ButtonLayoutPreviewDark() {
+    CalculatorTheme(darkTheme = true) {
+        Surface {
+            val sampleViewModel = CalculatorViewModel()
+            ButtonLayout(
+                viewModel = sampleViewModel,
+                isTablet = false,
+                isLandscape = false
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Button Layout Tablet Landscape")
+@Composable
+fun ButtonLayoutPreviewTabletLandscape() {
+    CalculatorTheme {
+        Surface {
+            val sampleViewModel = CalculatorViewModel()
+            ButtonLayout(
+                viewModel = sampleViewModel,
+                isTablet = true,
+                isLandscape = true
+            )
+        }
+    }
+}
+
+
+// Preview for CalculatorButton
+@Preview(showBackground = true, name = "Calculator Button Number")
+@Composable
+fun CalculatorButtonPreviewNumber() {
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(text = "7", onClick = {})
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Calculator Button Operator")
+@Composable
+fun CalculatorButtonPreviewOperator() {
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(text = "+", isOperator = true, onClick = {})
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Calculator Button Special")
+@Composable
+fun CalculatorButtonPreviewSpecial() {
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(text = "=", isSpecial = true, onClick = {})
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Calculator Button Clear")
+@Composable
+fun CalculatorButtonPreviewClear() {
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(text = "AC", isClear = true, onClick = {})
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Calculator Button Scientific")
+@Composable
+fun CalculatorButtonPreviewScientific() {
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(text = "sin", isScientific = true, isOperator = true, onClick = {})
+        }
+    }
+}
+
+@Preview(showBackground = true, name = "Calculator Button INV Active")
+@Composable
+fun CalculatorButtonPreviewInvActive() {
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(
+                text = "INV",
+                isScientific = true,
+                isInverseActive = true,
+                onClick = {}
+            )
+        }
     }
 }
