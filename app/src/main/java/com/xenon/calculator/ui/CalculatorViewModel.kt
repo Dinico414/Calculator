@@ -19,13 +19,17 @@ open class CalculatorViewModel : ViewModel() {
         private set
 
     var angleUnit by mutableStateOf(AngleUnit.RAD)
-        private set // This is fine, the issue is with explicitly defined methods clashing
+        private set
 
     private var openParenthesesCount by mutableIntStateOf(0)
         private set
 
     var isInverseMode by mutableStateOf(false)
         private set
+
+    fun toggleInverseMode() {
+        isInverseMode = !isInverseMode
+    }
 
     init {
         mXparser.setRadiansMode()
@@ -36,20 +40,57 @@ open class CalculatorViewModel : ViewModel() {
             "AC" -> clear()
             "⌫" -> backspace()
             "=" -> calculate()
-            "INV" -> toggleInverseFunctions()
-            // Use the public updateAngleUnitAndMode or toggleAngleUnit
-            "RAD" -> updateAngleUnitAndMode(AngleUnit.RAD)
-            "DEG" -> updateAngleUnitAndMode(AngleUnit.DEG)
-            "π" -> appendConstant("pi", Math.PI.toString())
+            "π" -> appendConstant("π", Math.PI.toString())
             "e" -> appendConstant("e", Math.E.toString())
-            "√" -> appendFunction("sqrt(")
+
+            "√" -> {
+                if (isInverseMode) {
+                    if (currentInput.isNotEmpty() && (currentInput.last().isDigit() || currentInput.last() == ')')) {
+                        appendOperator("^2")
+                    } else if (currentInput.isEmpty() || !currentInput.last().isDigit() && currentInput.last() != ')') {
+                        appendOperator("^2")
+                    }
+                } else {
+                    appendFunction("√(")
+                }
+            }
+            "x²" -> {
+                if (currentInput.isNotEmpty() && (currentInput.last().isDigit() || currentInput.last() == ')')) {
+                    appendOperator("^2")
+                } else if (currentInput.isEmpty() || !currentInput.last().isDigit() && currentInput.last() != ')') {
+                    appendOperator("^2")
+                }
+            }
             "^" -> appendOperator("^")
             "!" -> appendFactorial()
+
             "sin" -> appendTrigFunction("sin(")
             "cos" -> appendTrigFunction("cos(")
             "tan" -> appendTrigFunction("tan(")
-            "ln" -> appendFunction("ln(")
-            "log" -> appendFunction("log10(")
+
+            "ln" -> {
+                if (isInverseMode) {
+                    appendFunction("exp(")
+                } else {
+                    appendFunction("ln(")
+                }
+            }
+            "eˣ" -> {
+                appendFunction("exp(")
+            }
+            "log" -> {
+                if (isInverseMode) {
+                    currentInput += "10^("
+                    openParenthesesCount++
+                } else {
+                    appendFunction("log10(")
+                }
+            }
+            "10ˣ" -> {
+                currentInput += "10^("
+                openParenthesesCount++
+            }
+
             "%" -> appendOperator("%")
             "+", "-", "×", "÷" -> appendOperator(buttonValue)
             "." -> appendDecimal()
@@ -58,8 +99,6 @@ open class CalculatorViewModel : ViewModel() {
             }
         }
     }
-
-    // ... (other methods remain the same) ...
 
     private fun appendConstant(mxParserConst: String, displayValue: String) {
         currentInput += displayValue
@@ -94,36 +133,62 @@ open class CalculatorViewModel : ViewModel() {
             if (op == "-") {
                 currentInput += op
             }
+
+            if (op == "^2" && currentInput.isNotEmpty() && (currentInput.last().isDigit() || currentInput.last() == ')')) {
+                currentInput += op
+                return
+            } else if (op == "^2") {
+                return
+            }
+            if (currentInput.isEmpty() && op != "-") return
+
+        }
+
+        val lastChar = currentInput.lastOrNull()
+
+        if (op == "^2") {
+            if (lastChar != null && (lastChar.isDigit() || lastChar == ')' || lastChar == 'π' || lastChar == 'e')) {
+                currentInput += op
+            }
             return
         }
 
-        val lastChar = currentInput.last()
-        if (lastChar.isDigit() || lastChar == ')' || lastChar == 'π' || lastChar == 'e') {
+
+        if (lastChar != null && (lastChar.isDigit() || lastChar == ')' || lastChar == 'π' || lastChar == 'e')) {
             currentInput += op
-        } else if ("(+-×÷^%".contains(lastChar) && op == "-") {
+        } else if (lastChar != null && "(+-×÷^%".contains(lastChar) && op == "-") {
             currentInput += op
-        } else if ("(+-×÷^%".contains(lastChar) && !"(+-×÷^%".contains(op.first())) {
-            currentInput = currentInput.dropLast(1) + op
+        } else if (lastChar != null && "(+-×÷^%".contains(lastChar) && !"(+-×÷^%".contains(op.first())) {
+            if (op.length == 1 && "+-×÷^%".contains(op.first())) {
+                currentInput = currentInput.dropLast(1) + op
+            }
         }
     }
+
 
     private fun appendDecimal() {
         if (currentInput.isEmpty()) {
             currentInput += "0."
             return
         }
-        val lastOperatorIndex = currentInput.indexOfLast { char ->
-            "+-×÷^%eπ(".contains(char)
+        var lastOperatorIndex = -1
+        for (i in currentInput.length - 1 downTo 0) {
+            if ("+-×÷^%eπ(".contains(currentInput[i])) {
+                lastOperatorIndex = i
+                break
+            }
         }
+
         val currentNumberSegment = if (lastOperatorIndex == -1) {
             currentInput
         } else {
             currentInput.substring(lastOperatorIndex + 1)
         }
+
         if (!currentNumberSegment.contains('.')) {
             val lastChar = currentInput.lastOrNull()
-            if (lastChar == null || (!lastChar.isDigit() && lastChar != ')')) {
-                if (lastChar != '(' && !currentInput.endsWith("e") && !currentInput.endsWith("π")) {
+            if (lastChar == null || (!lastChar.isDigit() && lastChar != ')' && lastChar != 'π' && lastChar != 'e' )) {
+                if (currentInput.isEmpty() || currentInput.endsWith("(") || "+-×÷^%".contains(currentInput.last())){
                     currentInput += "0"
                 }
             }
@@ -132,9 +197,7 @@ open class CalculatorViewModel : ViewModel() {
     }
 
     private fun appendFactorial() {
-        if (currentInput.isNotEmpty() && (currentInput.last()
-                .isDigit() || currentInput.last() == ')')
-        ) {
+        if (currentInput.isNotEmpty() && (currentInput.last().isDigit() || currentInput.last() == ')')) {
             currentInput += "!"
         }
     }
@@ -146,8 +209,7 @@ open class CalculatorViewModel : ViewModel() {
 
     private fun appendCloseParenthesis() {
         if (openParenthesesCount > 0 && currentInput.isNotEmpty() &&
-            (currentInput.last()
-                .isDigit() || currentInput.last() == ')' || currentInput.last() == '!' || currentInput.last() == 'π' || currentInput.last() == 'e')
+            (currentInput.last().isDigit() || currentInput.last() == ')' || currentInput.last() == '!' || currentInput.last() == 'π' || currentInput.last() == 'e')
         ) {
             currentInput += ")"
             openParenthesesCount--
@@ -162,15 +224,19 @@ open class CalculatorViewModel : ViewModel() {
         currentInput = ""
         result = ""
         openParenthesesCount = 0
-        isInverseMode = false
     }
 
     private fun backspace() {
         if (currentInput.isNotEmpty()) {
             val removedChar = currentInput.last()
-            currentInput = currentInput.dropLast(1)
+            currentInput = if (currentInput.endsWith("^2")) {
+                currentInput.dropLast(2)
+            } else {
+                currentInput.dropLast(1)
+            }
+
             if (removedChar == '(') {
-                openParenthesesCount--
+                if(openParenthesesCount > 0) openParenthesesCount--
             } else if (removedChar == ')') {
                 openParenthesesCount++
             }
@@ -182,26 +248,28 @@ open class CalculatorViewModel : ViewModel() {
             result = ""
             return
         }
+
         var tempInput = currentInput
         if (openParenthesesCount > 0) {
             tempInput += ")".repeat(openParenthesesCount)
         }
         openParenthesesCount = 0
+
         try {
+
             val expressionString = tempInput
                 .replace("×", "*")
                 .replace("÷", "/")
                 .replace("%", "#")
-                .replace("√", "sqrt")
-                .replace("π", "(pi)")
-                .replace("e", "(e)")
+
+
             val expression = Expression(expressionString)
+
             if (expression.checkSyntax()) {
                 val calculatedResult = expression.calculate()
-                result =
-                    if (calculatedResult.isNaN()) "Error: NaN" else formatResult(calculatedResult)
+                result = if (calculatedResult.isNaN()) "Error: NaN" else formatResult(calculatedResult)
             } else {
-                result = "Error: Syntax"
+                result = "Error: Syntax (${expression.errorMessage})"
             }
         } catch (e: Exception) {
             result = "Error: Calc"
@@ -212,9 +280,7 @@ open class CalculatorViewModel : ViewModel() {
     private fun formatResult(value: Double): String {
         return if (value.isInfinite()) {
             "Error: Infinity"
-        } else if (value == value.toLong().toDouble() && !value.toString()
-                .contains("E", ignoreCase = true)
-        ) {
+        } else if (value == value.toLong().toDouble() && !value.toString().contains("E", ignoreCase = true)) {
             value.toLong().toString()
         } else {
             String.format("%.10f", value).trimEnd('0').trimEnd('.')
@@ -225,9 +291,8 @@ open class CalculatorViewModel : ViewModel() {
         isScientificMode = !isScientificMode
     }
 
-    // KEEP THIS ONE or a similar public method
     fun updateAngleUnitAndMode(newUnit: AngleUnit) {
-        this.angleUnit = newUnit // Internally, this uses the private setter
+        this.angleUnit = newUnit
         if (newUnit == AngleUnit.RAD) {
             mXparser.setRadiansMode()
         } else {
@@ -235,30 +300,27 @@ open class CalculatorViewModel : ViewModel() {
         }
     }
 
-    // This method is also good for toggling
     fun toggleAngleUnit() {
         val newUnit = if (angleUnit == AngleUnit.RAD) AngleUnit.DEG else AngleUnit.RAD
-        updateAngleUnitAndMode(newUnit) // Call the consolidated public method
-    }
-
-    private fun toggleInverseFunctions() {
-        isInverseMode = !isInverseMode
+        updateAngleUnitAndMode(newUnit)
     }
 
     fun onParenthesesClick() {
         val lastChar = currentInput.lastOrNull()
-        if (lastChar == null ||
-            "+-×÷^%(".contains(lastChar) ||
-            (currentInput.isNotEmpty() && currentInput.last()
-                .isLetter() && currentInput.last() != 'e' && currentInput.last() != 'i')
+        // More refined logic for when to open parenthesis
+        if (currentInput.isEmpty() ||
+            "+-×÷^%(".contains(lastChar ?: '(') ||
+            (currentInput.isNotEmpty() && currentInput.last().isLetter() && currentInput.endsWith("(") && currentInput.last() != 'e' && currentInput.last() != 'i') // after function like sin(
         ) {
             appendOpenParenthesis()
         }
         else if (openParenthesesCount > 0 &&
-            (lastChar != null && (lastChar.isDigit() || lastChar == ')' || lastChar == '!' || lastChar == 'π' || lastChar == 'e'))
+            (lastChar != null && (lastChar.isDigit() || lastChar == ')' || lastChar == '!' || lastChar == 'π' || lastChar == 'e')) &&
+            !currentInput.endsWith("(")
         ) {
             appendCloseParenthesis()
         }
+
     }
 }
 

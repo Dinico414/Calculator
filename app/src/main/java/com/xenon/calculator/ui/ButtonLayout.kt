@@ -1,50 +1,65 @@
+@file:Suppress("unused", "unused")
+
 package com.xenon.calculator.ui
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween // If you want to customize animationSpec
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue // Required for by animateFloatAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-// Make sure you have a CalculatorViewModel, if not, you'll need to create a placeholder
-// import com.example.yourproject.CalculatorViewModel // Your actual ViewModel import
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-// Placeholder for CalculatorViewModel - Replace with your actual ViewModel
-// class CalculatorViewModel { // Simple placeholder
-//     val isScientificMode: Boolean = true
-//     fun toggleScientificMode() {}
-//     fun onButtonClick(text: String) {}
-//     fun onParenthesesClick() {}
-//     val angleUnit: AngleUnit = AngleUnit.DEG
-//     fun toggleAngleUnit() {}
-//     val isInverseMode: Boolean = false
-// }
-// enum class AngleUnit { DEG, RAD }
 
 
 @Composable
 fun ButtonLayout(
     viewModel: CalculatorViewModel,
     isTablet: Boolean,
-    isLandscape: Boolean, // Kept for potential future use
-    modifier: Modifier = Modifier
+    isLandscape: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
-            .fillMaxHeight(0.75f) // Overall height constraint for the button layout
+            .fillMaxHeight(0.7f)
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .background(
                 MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
@@ -52,69 +67,81 @@ fun ButtonLayout(
             )
             .padding(4.dp)
     ) {
-        TextButton(
-            onClick = { viewModel.toggleScientificMode() },
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .align(Alignment.CenterHorizontally)
                 .padding(bottom = 4.dp)
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(
+                    color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.1f),
+                    shape = CircleShape
+                ),
+            contentAlignment = Alignment.Center
         ) {
-            Text(if (viewModel.isScientificMode) "Hide Scientific" else "Show Scientific")
-            Spacer(Modifier.width(4.dp))
-            Icon(
-                if (viewModel.isScientificMode) Icons.Filled.KeyboardArrowUp else Icons.Filled.ArrowDropDown,
-                contentDescription = "Toggle Scientific Panel"
-            )
+            IconButton(
+                onClick = { viewModel.toggleScientificMode() },
+                modifier = Modifier.matchParentSize(),
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+            ) {
+                val rotationAngle by animateFloatAsState(
+                    targetValue = if (viewModel.isScientificMode) 180f else 0f,
+                    animationSpec = tween(durationMillis = 300),
+                    label = "IconRotation"
+                )
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowUp,
+                    contentDescription = "Toggle Scientific Panel",
+                    modifier = Modifier.rotate(rotationAngle)
+                )
+            }
         }
 
         Column(
             modifier = Modifier
-                .weight(1f) // This Column takes remaining space after TextButton
-                .clipToBounds()
-                .animateContentSize() // Animates overall size changes of this Column
+                .weight(1f)
+                .animateContentSize()
         ) {
-            // Animate the weight factor for the scientific panel
             val scientificPanelWeight by animateFloatAsState(
-                targetValue = if (viewModel.isScientificMode) 0.2f else 0f,
-                animationSpec = tween(durationMillis = 300), // Adjust duration as needed
+                targetValue = if (viewModel.isScientificMode) 0.35f else 0f,
+                animationSpec = tween(durationMillis = 300),
                 label = "ScientificPanelWeight"
             )
 
-            // Animate the weight factor for the common buttons panel
             val commonButtonsWeight by animateFloatAsState(
-                targetValue = if (viewModel.isScientificMode) 0.8f else 1f,
-                animationSpec = tween(durationMillis = 300), // Adjust duration as needed
+                targetValue = if (viewModel.isScientificMode) 0.65f else 1f,
+                animationSpec = tween(durationMillis = 300),
                 label = "CommonButtonsWeight"
             )
 
-            // Scientific Buttons Section
-            // Conditionally compose AnimatedVisibility only if it's meant to take some space
-            // and viewModel.isScientificMode is true to drive the enter/exit animations
             if (viewModel.isScientificMode || scientificPanelWeight > 0.001f) {
                 AnimatedVisibility(
-                    visible = viewModel.isScientificMode, // Controls enter/exit animations
+                    visible = viewModel.isScientificMode,
                     enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
                     exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
                     modifier = Modifier
-                        .weight(scientificPanelWeight.coerceAtLeast(0.001f)) // Use animated weight
-                        .fillMaxWidth() // Ensure it takes full width within its weighted space
+                        .weight(scientificPanelWeight.coerceAtLeast(0.001f))
+                        .fillMaxWidth()
                 ) {
-                    // This Column now fills the height allocated by AnimatedVisibility
                     Column(modifier = Modifier.fillMaxHeight()) {
                         ScientificButtonsRow1(viewModel, modifier = Modifier.weight(1f))
                         Spacer(Modifier.height(4.dp))
                         ScientificButtonsRow2(viewModel, modifier = Modifier.weight(1f))
-                        Spacer(Modifier.height(8.dp)) // Spacing at the bottom of scientific panel
+                        Spacer(Modifier.height(4.dp))
+                        ScientificButtonsRow3(viewModel, viewModel.isInverseMode, modifier = Modifier.weight(1f))
+                        Spacer(Modifier.height(8.dp))
                     }
                 }
             }
 
-            // Common Buttons Section
-            // Conditionally compose if it's meant to take some space
             if (commonButtonsWeight > 0.001f) {
                 Column(
                     modifier = Modifier
-                        .weight(commonButtonsWeight.coerceAtLeast(0.001f)) // Use animated weight
-                        .fillMaxHeight() // Ensure it takes full height within its weighted space
+                        .weight(commonButtonsWeight.coerceAtLeast(0.001f))
+                        .fillMaxHeight()
                 ) {
                     val buttonRows = listOf(
                         listOf("AC", "( )", "%", "÷"),
@@ -128,7 +155,7 @@ fun ButtonLayout(
                         Row(
                             Modifier
                                 .fillMaxWidth()
-                                .weight(1f) // Each row takes equal portion of this common buttons Column's height
+                                .weight(1f)
                                 .padding(horizontal = 1.dp),
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
@@ -139,7 +166,9 @@ fun ButtonLayout(
                                     modifier = Modifier
                                         .weight(buttonWeight)
                                         .fillMaxHeight(),
-                                    isOperator = buttonText in listOf("÷", "×", "-", "+", "%", "( )"),
+                                    isOperator = buttonText in listOf(
+                                        "÷", "×", "-", "+", "%", "( )"
+                                    ),
                                     isSpecial = buttonText == "=",
                                     isClear = buttonText == "AC",
                                     onClick = {
@@ -148,8 +177,7 @@ fun ButtonLayout(
                                         } else {
                                             viewModel.onButtonClick(buttonText)
                                         }
-                                    }
-                                )
+                                    })
                             }
                         }
                         if (rowData != buttonRows.last()) {
@@ -165,30 +193,25 @@ fun ButtonLayout(
 @Composable
 fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier // This modifier from parent Column now includes .weight(1f)
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 1.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val scientificButtons1 = listOf("√", "π", "^", "!")
+        val firstButtonText = if (viewModel.isInverseMode) "x²" else "√"
+        val scientificButtons1 = listOf(firstButtonText, "π", "^", "!")
+
         scientificButtons1.forEach { text ->
             CalculatorButton(
-                text,
-                Modifier
+                text = text,
+                modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight(),
-                isOperator = true
-            ) { viewModel.onButtonClick(text) }
-        }
-        CalculatorButton(
-            text = viewModel.angleUnit.name, // Placeholder for actual AngleUnit
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            isOperator = true
-        ) {
-            viewModel.toggleAngleUnit()
+                isOperator = true,
+                isScientific = true,
+                onClick = { viewModel.onButtonClick(text) }
+            )
         }
     }
 }
@@ -196,35 +219,78 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
 @Composable
 fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier // This modifier from parent Column now includes .weight(1f)
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 1.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val scientificButtons2 = listOf("INV", "sin", "cos", "tan")
+        CalculatorButton(
+            text = viewModel.angleUnit.name,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            isOperator = true,
+            isScientific = true,
+            onClick = { viewModel.toggleAngleUnit() }
+        )
+
         val trigButtons = listOf("sin", "cos", "tan")
-        scientificButtons2.forEach { text ->
-            val buttonDisplayText = if (viewModel.isInverseMode && text in trigButtons) "a$text" else text
+        trigButtons.forEach { text ->
+            val buttonDisplayText =
+                if (viewModel.isInverseMode) "$text⁻¹" else text
             CalculatorButton(
                 text = buttonDisplayText,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight(),
-                isOperator = true
-            ) {
-                viewModel.onButtonClick(text) // Send original function name for logic
-            }
+                isOperator = true,
+                isScientific = true,
+                onClick = { viewModel.onButtonClick(text) }
+            )
         }
-        CalculatorButton(
-            "e",
-            Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            isOperator = true
-        ) { viewModel.onButtonClick("e") }
     }
 }
+
+@Composable
+fun ScientificButtonsRow3(
+    viewModel: CalculatorViewModel,
+    isInverseMode: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 1.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val lnButtonText = if (isInverseMode) "eˣ" else "ln"
+        val logButtonText = if (isInverseMode) "10ˣ" else "log"
+
+        val scientificButtons3Order = listOf("INV", "e", lnButtonText, logButtonText)
+
+        scientificButtons3Order.forEach { text ->
+            CalculatorButton(
+                text = text,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                isOperator = true,
+                isScientific = true,
+                isInverseActive = text == "INV" && isInverseMode,
+                onClick = {
+                    if (text == "INV") {
+                        viewModel.toggleInverseMode()
+                    } else {
+                        viewModel.onButtonClick(text)
+                    }
+                }
+            )
+        }
+    }
+}
+
 
 @Composable
 fun CalculatorButton(
@@ -233,88 +299,56 @@ fun CalculatorButton(
     isOperator: Boolean = false,
     isSpecial: Boolean = false,
     isClear: Boolean = false,
-    onClick: () -> Unit
+    isScientific: Boolean = false,
+    isInverseActive: Boolean = false,
+    onClick: () -> Unit,
 ) {
     val containerColor = when {
-        isClear -> MaterialTheme.colorScheme.errorContainer
-        isSpecial -> MaterialTheme.colorScheme.primary
-        isOperator -> MaterialTheme.colorScheme.secondaryContainer
-        else -> MaterialTheme.colorScheme.surfaceContainerHighest
+        isClear -> MaterialTheme.colorScheme.tertiary
+        isSpecial -> MaterialTheme.colorScheme.inversePrimary
+        text == "INV" && isScientific -> if (isInverseActive) MaterialTheme.colorScheme.errorContainer else Color.Transparent
+        isScientific -> Color.Transparent
+        isOperator -> MaterialTheme.colorScheme.primary
+        else -> MaterialTheme.colorScheme.secondaryContainer
     }
+
     val contentColor = when {
-        isClear -> MaterialTheme.colorScheme.onErrorContainer
-        isSpecial -> MaterialTheme.colorScheme.onPrimary
-        isOperator -> MaterialTheme.colorScheme.onSecondaryContainer
-        else -> MaterialTheme.colorScheme.onSurfaceVariant
+        isClear -> MaterialTheme.colorScheme.onPrimary
+        isSpecial -> MaterialTheme.colorScheme.onSurface
+        text == "INV" && isScientific -> if (isInverseActive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+        isScientific -> MaterialTheme.colorScheme.onSurfaceVariant
+        isOperator -> MaterialTheme.colorScheme.onPrimary
+        else -> MaterialTheme.colorScheme.onSurface
     }
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val cornerRadiusPercent by animateIntAsState(
+        targetValue = if (isPressed && !isScientific) 30 else 100,
+        animationSpec = tween(durationMillis = if (isScientific) 0 else 400),
+        label = "cornerRadiusAnimation"
+    )
 
     Button(
         onClick = onClick,
-        modifier = modifier
-            .defaultMinSize(minHeight = 48.dp, minWidth = 40.dp), // Ensure minimum touch target
-        shape = RoundedCornerShape(16.dp),
+        modifier = modifier.defaultMinSize(minHeight = 48.dp, minWidth = 40.dp),
+        shape = RoundedCornerShape(percent = cornerRadiusPercent),
         colors = ButtonDefaults.buttonColors(
-            containerColor = containerColor,
-            contentColor = contentColor
+            containerColor = containerColor, contentColor = contentColor
         ),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp, pressedElevation = 4.dp),
-        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp) // Adjusted padding
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp
+        ),
+        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
+        interactionSource = interactionSource
     ) {
         Text(
-            text,
-            fontSize = if (text.length > 3) 16.sp else 20.sp, // Smaller font for longer text
+            text = text,
+            fontSize = if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) 18.sp else 22.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
     }
 }
-
-// --- Preview Stubs (Ensure you have a CalculatorViewModel placeholder for these to work) ---
-
-// Placeholder for CalculatorViewModel if not already defined elsewhere
-// Remove or replace with your actual ViewModel
-// enum class AngleUnit { DEG, RAD }
-// class CalculatorViewModel {
-//     var isScientificMode: Boolean by mutableStateOf(true)
-//         private set // Or make it public if toggled from outside preview
-//     var isInverseMode: Boolean by mutableStateOf(false)
-//         private set
-//     var angleUnit: AngleUnit by mutableStateOf(AngleUnit.DEG)
-//         private set
-
-//     fun toggleScientificMode() {
-//         isScientificMode = !isScientificMode
-//     }
-//     fun onButtonClick(text: String) { /* TODO */ }
-//     fun onParenthesesClick() { /* TODO */ }
-//     fun toggleAngleUnit() {
-//         angleUnit = if (angleUnit == AngleUnit.DEG) AngleUnit.RAD else AngleUnit.DEG
-//     }
-// }
-
-// @Preview(showBackground = true, widthDp = 360, heightDp = 740)
-// @Composable
-// fun ButtonLayoutPreviewScientificAnimated() {
-//     val previewViewModel = CalculatorViewModel() // Initialize with isScientificMode = true
-//     // To see the animation in preview, you might need to interact or trigger state change
-//     // or have different previews for different states.
-//     MaterialTheme {
-//         ButtonLayout(viewModel = previewViewModel, isTablet = false, isLandscape = false)
-//     }
-// }
-
-// @Preview(showBackground = true, widthDp = 360, heightDp = 600)
-// @Composable
-// fun ButtonLayoutPreviewCommonAnimated() {
-//     val previewViewModel = CalculatorViewModel().apply {
-//         // If your ViewModel needs a method to set initial state for preview:
-//         // (this assumes isScientificMode is mutable for preview setup)
-//         // isScientificMode = false // Or toggle it if that's how it works
-//     }
-//     // If isScientificMode is toggled, for this preview, ensure it starts as false
-//     // One way: previewViewModel.toggleScientificMode() // if it starts true
-
-//     MaterialTheme {
-//         ButtonLayout(viewModel = previewViewModel, isTablet = false, isLandscape = false)
-//     }
-// }

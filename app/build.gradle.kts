@@ -21,7 +21,7 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".compose.debug"
-            versionNameSuffix = "-cmd"
+            versionNameSuffix = "-d"
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -30,7 +30,6 @@ android {
         }
         release {
             applicationIdSuffix = ".compose"
-            versionNameSuffix = "-cm"
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
