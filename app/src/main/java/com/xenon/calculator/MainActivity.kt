@@ -70,7 +70,8 @@ fun CalculatorApp(viewModel: CalculatorViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(horizontal = 8.dp, vertical = 8.dp)
+                .padding(horizontal = 10.dp, vertical = 0.dp)
+                .padding(top = 10.dp)
                 .clip(RoundedCornerShape(20.dp))
                 .background(MaterialTheme.colorScheme.secondaryContainer)
         ) {
@@ -79,7 +80,7 @@ fun CalculatorApp(viewModel: CalculatorViewModel) {
                 result = viewModel.result,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 24.dp)
+                    .padding(horizontal = 15.dp, vertical = 24.dp)
             )
         }
 
