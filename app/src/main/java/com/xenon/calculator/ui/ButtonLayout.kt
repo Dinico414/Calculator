@@ -238,15 +238,16 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
 fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
-            .fillMaxWidth(0.8f) // Shrink the width of this row
+            .fillMaxWidth() // Use fillMaxWidth to match the parent's width constraint
             .padding(horizontal = 1.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Existing buttons take up their weighted space
         CalculatorButton(
             text = viewModel.angleUnit.name,
             modifier = Modifier
-                .weight(1f)
+                .weight(1f) // Ensure this weight is consistent with Row1's main buttons
                 .fillMaxHeight(),
             isOperator = true,
             isScientific = true,
@@ -260,13 +261,16 @@ fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = M
             CalculatorButton(
                 text = buttonDisplayText,
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(1f) // Ensure this weight is consistent with Row1's main buttons
                     .fillMaxHeight(),
                 isOperator = true,
                 isScientific = true,
                 onClick = { viewModel.onButtonClick(text) }
             )
         }
+        // Add a Spacer to occupy the width of the IconButton in Row 1
+        Spacer(Modifier.width(40.dp)) // Matches the size of the IconButton
+        // The Arrangement.spacedBy(4.dp) will add the necessary spacing
     }
 }
 
@@ -278,7 +282,7 @@ fun ScientificButtonsRow3(
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth(0.8f) // Shrink the width of this row
+            .fillMaxWidth() // Use fillMaxWidth to match the parent's width constraint
             .padding(horizontal = 1.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -292,7 +296,7 @@ fun ScientificButtonsRow3(
             CalculatorButton(
                 text = text,
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(1f) // Ensure this weight is consistent with Row1's main buttons
                     .fillMaxHeight(),
                 isOperator = true,
                 isScientific = true,
@@ -301,11 +305,14 @@ fun ScientificButtonsRow3(
                     if (text == "INV") {
                         viewModel.toggleInverseMode()
                     } else {
-                        viewModel.onButtonClick(text) // Ensure this line is complete
+                        viewModel.onButtonClick(text)
                     }
                 }
             )
         }
+        // Add a Spacer to occupy the width of the IconButton in Row 1
+        Spacer(Modifier.width(40.dp)) // Matches the size of the IconButton
+        // The Arrangement.spacedBy(4.dp) will add the necessary spacing
     }
 }
 
