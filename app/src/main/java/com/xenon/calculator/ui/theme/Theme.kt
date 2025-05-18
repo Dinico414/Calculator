@@ -10,18 +10,14 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.colorResource
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    // Define your dark theme colors here if not using dynamic color
-)
-
-private val LightColorScheme = lightColorScheme(
-    // Define your light theme colors here if not using dynamic color
-)
+import com.xenon.commons.accesspoint.R as CommonsR
 
 @Composable
 fun CalculatorTheme(
@@ -34,25 +30,79 @@ fun CalculatorTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> darkColorScheme(
+            background = colorResource(id = CommonsR.color.background),
+            surface = colorResource(id = CommonsR.color.surface),
+            surfaceContainerLowest = colorResource(id = CommonsR.color.surfaceContainerLowest),
+            onSurface = colorResource(id = CommonsR.color.onSurface),
+            onSurfaceVariant = colorResource(id = CommonsR.color.onSurfaceVariant),
+            onSecondaryContainer = colorResource(id = CommonsR.color.onSecondaryContainer),
+            inverseSurface = colorResource(id = CommonsR.color.inverseSurface),
+            inverseOnSurface = colorResource(id = CommonsR.color.inverseOnSurface),
+            outline = colorResource(id = CommonsR.color.outline),
+            surfaceVariant = colorResource(id = CommonsR.color.surfaceVariant),
+            surfaceContainerHighest = colorResource(id = CommonsR.color.surfaceContainerHighest),
+            surfaceContainer = colorResource(id = CommonsR.color.surfaceContainer),
+            onSecondary = colorResource(id = CommonsR.color.onSecondary),
+            onTertiary = colorResource(id = CommonsR.color.onTertiary),
+            onTertiaryContainer = colorResource(id = CommonsR.color.onTertiaryContainer),
+            onBackground = colorResource(id = CommonsR.color.onBackground),
+            onPrimary = colorResource(id = CommonsR.color.onPrimary),
+            onPrimaryContainer = colorResource(id = CommonsR.color.onPrimaryContainer),
+            outlineVariant = colorResource(id = CommonsR.color.outlineVariant),
+            primary = colorResource(id = CommonsR.color.primary),
+            primaryContainer = colorResource(id = CommonsR.color.primaryContainer),
+            secondary = colorResource(id = CommonsR.color.secondary),
+            secondaryContainer = colorResource(id = CommonsR.color.secondaryContainer),
+            tertiary = colorResource(id = CommonsR.color.tertiary),
+            tertiaryContainer = colorResource(id = CommonsR.color.tertiaryContainer),
+        )
+        else -> lightColorScheme(
+            background = colorResource(id = CommonsR.color.background),
+            surface = colorResource(id = CommonsR.color.surface),
+            surfaceContainerLowest = colorResource(id = CommonsR.color.surfaceContainerLowest),
+            onSurface = colorResource(id = CommonsR.color.onSurface),
+            onSurfaceVariant = colorResource(id = CommonsR.color.onSurfaceVariant),
+            onSecondaryContainer = colorResource(id = CommonsR.color.onSecondaryContainer),
+            inverseSurface = colorResource(id = CommonsR.color.inverseSurface),
+            inverseOnSurface = colorResource(id = CommonsR.color.inverseOnSurface),
+            outline = colorResource(id = CommonsR.color.outline),
+            surfaceVariant = colorResource(id = CommonsR.color.surfaceVariant),
+            surfaceContainerHighest = colorResource(id = CommonsR.color.surfaceContainerHighest),
+            surfaceContainer = colorResource(id = CommonsR.color.surfaceContainer),
+            onSecondary = colorResource(id = CommonsR.color.onSecondary),
+            onTertiary = colorResource(id = CommonsR.color.onTertiary),
+            onTertiaryContainer = colorResource(id = CommonsR.color.onTertiaryContainer),
+            onBackground = colorResource(id = CommonsR.color.onBackground),
+            onPrimary = colorResource(id = CommonsR.color.onPrimary),
+            onPrimaryContainer = colorResource(id = CommonsR.color.onPrimaryContainer),
+            outlineVariant = colorResource(id = CommonsR.color.outlineVariant),
+            primary = colorResource(id = CommonsR.color.primary),
+            primaryContainer = colorResource(id = CommonsR.color.primaryContainer),
+            secondary = colorResource(id = CommonsR.color.secondary),
+            secondaryContainer = colorResource(id = CommonsR.color.secondaryContainer),
+            tertiary = colorResource(id = CommonsR.color.tertiary),
+            tertiaryContainer = colorResource(id = CommonsR.color.tertiaryContainer),
+        )
     }
 
     val view = LocalView.current
-    if (!view.isInEditMode) { // Don't run this in Preview
+    if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            // Set navigation bar color
-            window.navigationBarColor = colorScheme.surfaceContainerLowest.toArgb() // Or any other appropriate color from your scheme
+            WindowCompat.setDecorFitsSystemWindows(window, false)
 
-            // Set navigation bar icon color (light or dark)
+            window.statusBarColor = Color.Transparent.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+
+            window.navigationBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
         }
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = Typography, // Make sure Typography is defined
         content = content
     )
 }

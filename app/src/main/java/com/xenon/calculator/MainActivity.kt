@@ -1,4 +1,4 @@
-package com.xenon.calculator // Adjust to your main package
+package com.xenon.calculator
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -6,8 +6,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.* // Imports Column, Box, Spacer, etc.
-import androidx.compose.foundation.layout.Arrangement // <--- ENSURE THIS IMPORT IS HERE
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -16,16 +25,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-// import androidx.compose.ui.graphics.Color // Not strictly needed if using theme colors
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import com.xenon.calculator.ui.ButtonLayout
 import com.xenon.calculator.ui.CalculatorViewModel
 import com.xenon.calculator.ui.theme.CalculatorTheme
-import androidx.core.view.WindowCompat
 
 class MainActivity : ComponentActivity() {
     private val calculatorViewModel: CalculatorViewModel by viewModels()
@@ -45,8 +53,8 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(WindowInsets.safeDrawing.asPaddingValues())
-                            .padding(10.dp)
-                            .clip(RoundedCornerShape(25.dp))
+                            .padding(horizontal = 15.dp, vertical = 0.dp)
+                            .clip(RoundedCornerShape(30.dp))
                             .background(
                                 MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                             )
@@ -64,7 +72,7 @@ fun CalculatorApp(viewModel: CalculatorViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom // <--- This is where it's used
+        verticalArrangement = Arrangement.Bottom
     ) {
         Box(
             modifier = Modifier
@@ -98,7 +106,7 @@ fun CalculatorDisplay(currentInput: String, result: String, modifier: Modifier =
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.Bottom // <--- Also used here
+        verticalArrangement = Arrangement.Bottom
     ) {
         Text(
             text = currentInput,

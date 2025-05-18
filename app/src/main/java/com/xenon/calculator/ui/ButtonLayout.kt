@@ -5,13 +5,14 @@ package com.xenon.calculator.ui
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -68,34 +69,38 @@ fun ButtonLayout(
 
             .padding(10.dp)
     ) {
-        // ScientificButtonsRow1 is now always visible and contains the toggle button
-        ScientificButtonsRow1(viewModel, modifier = Modifier.height(40.dp).fillMaxWidth()) // Adjust height as needed
-        Spacer(Modifier.height(4.dp))
+        ScientificButtonsRow1(viewModel, modifier = Modifier
+            .height(40.dp)
+            .fillMaxWidth())
+
+        val spacerHeight by animateDpAsState(
+            targetValue = if (viewModel.isScientificMode) 4.dp else 12.dp,
+            label = "ScientificModeSpacerHeight"
+        )
+        Spacer(Modifier.height(spacerHeight))
 
         Column(
             modifier = Modifier
-                .weight(1f) // Adjusted weight since the toggle button is no longer here
+                .weight(1f)
                 .animateContentSize()
         ) {
-            // The rest of the scientific buttons are conditionally visible
             val animatedScientificRowsInnerWeight by animateFloatAsState(
-                targetValue = if (viewModel.isScientificMode) 0.2f else 0f, // Adjusted target for remaining scientific rows
+                targetValue = if (viewModel.isScientificMode) 0.2f else 0f,
                 animationSpec = tween(durationMillis = 300),
                 label = "AnimatedScientificRowsInnerWeight"
             )
 
             val commonButtonsInnerWeight by animateFloatAsState(
-                targetValue = if (viewModel.isScientificMode) 0.70f else 1f, // Adjusted target
+                targetValue = if (viewModel.isScientificMode) 0.70f else 1f,
                 animationSpec = tween(durationMillis = 300),
                 label = "CommonButtonsInnerWeight"
             )
 
-            // Visibility for ScientificRows 2 and 3
             if (viewModel.isScientificMode || animatedScientificRowsInnerWeight > 0.001f) {
                 AnimatedVisibility(
                     visible = viewModel.isScientificMode,
-                    enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
-                    exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
+                    enter = fadeIn() + slideInVertically(initialOffsetY = { fullHeight -> fullHeight }),
+                    exit = fadeOut() + slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }),
                     modifier = Modifier
                         .weight(animatedScientificRowsInnerWeight.coerceAtLeast(0.001f))
                         .fillMaxWidth()
@@ -104,7 +109,7 @@ fun ButtonLayout(
                         ScientificButtonsRow2(viewModel, modifier = Modifier.weight(1f))
                         Spacer(Modifier.height(4.dp))
                         ScientificButtonsRow3(viewModel, viewModel.isInverseMode, modifier = Modifier.weight(1f))
-                        Spacer(Modifier.height(8.dp)) // Keep or adjust this spacer as needed
+                        Spacer(Modifier.height(8.dp))
                     }
                 }
             }
@@ -154,7 +159,11 @@ fun ButtonLayout(
                             }
                         }
                         if (rowData != buttonRows.last()) {
-                            val spacerHeight = if (viewModel.isScientificMode) 4.dp else 8.dp
+                            // Animate the spacer height
+                            val spacerHeight by animateDpAsState(
+                                targetValue = if (viewModel.isScientificMode) 4.dp else 8.dp,
+                                label = "SpacerHeightAnimation" // Optional label for debugging
+                            )
                             Spacer(Modifier.height(spacerHeight))
                         }
                     }
@@ -168,40 +177,37 @@ fun ButtonLayout(
 fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
-            .padding(horizontal = 1.dp), // fillMaxWidth is applied by the caller
+            .padding(horizontal = 1.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         val firstButtonText = if (viewModel.isInverseMode) "x²" else "√"
-        // Adjust the number of buttons here or their weights if needed
-        val scientificButtons1 = listOf(firstButtonText, "π", "^") // "!" might be too much with the icon button
+        val scientificButtons1 = listOf(firstButtonText, "π", "^")
 
         scientificButtons1.forEach { text ->
             CalculatorButton(
                 text = text,
                 modifier = Modifier
-                    .weight(1f) // Adjust weight as needed
+                    .weight(1f)
                     .fillMaxHeight(),
                 isOperator = true,
                 isScientific = true,
                 onClick = { viewModel.onButtonClick(text) }
             )
         }
-        // Add "!" button if there's space, or adjust weights above
         CalculatorButton(
             text = "!",
             modifier = Modifier
-                .weight(1f) // Adjust weight as needed
+                .weight(1f)
                 .fillMaxHeight(),
             isOperator = true,
             isScientific = true,
             onClick = { viewModel.onButtonClick("!") }
         )
 
-        // Toggle Button for Scientific Mode
         Box(
             modifier = Modifier
-                .size(40.dp) // Ensure this size fits well with other buttons
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(
                     color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.1f),
@@ -236,16 +242,15 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
 fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
-            .fillMaxWidth() // Use fillMaxWidth to match the parent's width constraint
+            .fillMaxWidth()
             .padding(horizontal = 1.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Existing buttons take up their weighted space
         CalculatorButton(
             text = viewModel.angleUnit.name,
             modifier = Modifier
-                .weight(1f) // Ensure this weight is consistent with Row1's main buttons
+                .weight(1f)
                 .fillMaxHeight(),
             isOperator = true,
             isScientific = true,
@@ -259,16 +264,14 @@ fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = M
             CalculatorButton(
                 text = buttonDisplayText,
                 modifier = Modifier
-                    .weight(1f) // Ensure this weight is consistent with Row1's main buttons
+                    .weight(1f)
                     .fillMaxHeight(),
                 isOperator = true,
                 isScientific = true,
                 onClick = { viewModel.onButtonClick(text) }
             )
         }
-        // Add a Spacer to occupy the width of the IconButton in Row 1
-        Spacer(Modifier.width(40.dp)) // Matches the size of the IconButton
-        // The Arrangement.spacedBy(4.dp) will add the necessary spacing
+        Spacer(Modifier.width(40.dp))
     }
 }
 
@@ -276,11 +279,11 @@ fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = M
 fun ScientificButtonsRow3(
     viewModel: CalculatorViewModel,
     isInverseMode: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth() // Use fillMaxWidth to match the parent's width constraint
+            .fillMaxWidth()
             .padding(horizontal = 1.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -294,7 +297,7 @@ fun ScientificButtonsRow3(
             CalculatorButton(
                 text = text,
                 modifier = Modifier
-                    .weight(1f) // Ensure this weight is consistent with Row1's main buttons
+                    .weight(1f)
                     .fillMaxHeight(),
                 isOperator = true,
                 isScientific = true,
@@ -308,9 +311,7 @@ fun ScientificButtonsRow3(
                 }
             )
         }
-        // Add a Spacer to occupy the width of the IconButton in Row 1
-        Spacer(Modifier.width(40.dp)) // Matches the size of the IconButton
-        // The Arrangement.spacedBy(4.dp) will add the necessary spacing
+        Spacer(Modifier.width(40.dp))
     }
 }
 
