@@ -3,7 +3,7 @@ package com.xenon.calculator // Adjust to your main package
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels // For by viewModels()
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -15,18 +15,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.xenon.calculator.ui.ButtonLayout // Your ButtonLayout
-import com.xenon.calculator.ui.CalculatorViewModel // Your ViewModel
-import com.xenon.calculator.ui.theme.CalculatorTheme // Your app's theme
+import com.xenon.calculator.ui.ButtonLayout
+import com.xenon.calculator.ui.CalculatorViewModel
+import com.xenon.calculator.ui.theme.CalculatorTheme
+import androidx.core.view.WindowCompat // <-- Import this
 
 class MainActivity : ComponentActivity() {
-    // Use the by viewModels() delegate to get the ViewModel instance
     private val calculatorViewModel: CalculatorViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Enable edge-to-edge display
+        // This allows your app content to draw behind the system bars
+        WindowCompat.setDecorFitsSystemWindows(window, false) // <-- Add this line
+
         setContent {
-            CalculatorTheme { // Apply your app's theme
+            CalculatorTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -43,23 +48,25 @@ fun CalculatorApp(viewModel: CalculatorViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp),
-        verticalArrangement = Arrangement.Bottom // Align calculator to the bottom
+            // Apply padding to account for system bars (including navigation bar)
+            // This uses the safe drawing insets, which are the parts of the screen
+            // not obscured by system UI like status bar, navigation bar, or display cutouts.
+            .padding(WindowInsets.safeDrawing.asPaddingValues()) // <-- Add this for overall padding
+            .padding(8.dp), // Your existing app-specific padding
+        verticalArrangement = Arrangement.Bottom
     ) {
-        // Display for input and result
         CalculatorDisplay(
             currentInput = viewModel.currentInput,
             result = viewModel.result,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f) // Takes up remaining space above buttons
+                .weight(1f)
         )
 
-        // Button Layout
         ButtonLayout(
             viewModel = viewModel,
-            isTablet = false, // Determine this dynamically if needed
-            isLandscape = false, // Determine this dynamically if needed
+            isTablet = false,
+            isLandscape = false,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -69,14 +76,14 @@ fun CalculatorApp(viewModel: CalculatorViewModel) {
 fun CalculatorDisplay(currentInput: String, result: String, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.padding(vertical = 16.dp, horizontal = 8.dp),
-        horizontalAlignment = Alignment.End // Align text to the right
+        horizontalAlignment = Alignment.End
     ) {
         Text(
             text = currentInput,
             fontSize = 36.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.End,
-            maxLines = 2, // Allow some wrapping for long input
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth()
         )
