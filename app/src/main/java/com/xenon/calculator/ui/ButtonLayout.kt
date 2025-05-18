@@ -220,7 +220,7 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
                 )
             ) {
                 val rotationAngle by animateFloatAsState(
-                    targetValue = if (viewModel.isScientificMode) 180f else 0f,
+                    targetValue = if (viewModel.isScientificMode) 0f else 180f,
                     animationSpec = tween(durationMillis = 300),
                     label = "IconRotation"
                 )
