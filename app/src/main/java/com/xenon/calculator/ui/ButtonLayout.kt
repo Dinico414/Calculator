@@ -2,6 +2,7 @@
 
 package com.xenon.calculator.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -393,6 +394,7 @@ fun ButtonLayoutPreviewLight() {
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true, name = "Button Layout Dark")
 @Composable
 fun ButtonLayoutPreviewDark() {

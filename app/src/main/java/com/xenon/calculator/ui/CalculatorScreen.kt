@@ -1,5 +1,6 @@
 package com.xenon.calculator.ui
 
+import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -10,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -76,3 +79,43 @@ fun DisplaySection(currentInput: String, result: String, modifier: Modifier = Mo
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun DisplaySectionPreview() {
+    // You can wrap with your app's theme if you have one
+    // YourAppTheme {
+    DisplaySection(currentInput = "123 + 456", result = "579")
+    // }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CalculatorScreenPreview() {
+    // For the CalculatorScreen preview, you'll need a mock/fake ViewModel
+    // or provide a default instance if your ViewModel allows.
+    // This is a simplified example. You might need to create a more specific
+    // mock for CalculatorViewModel depending on its complexity.
+    val fakeViewModel = remember { CalculatorViewModel(/* ...dependencies if any... */) } // Or a mock
+    // YourAppTheme {
+    CalculatorScreen(viewModel = fakeViewModel)
+    // }
+}
+@Preview(showBackground = true, name = "Calculator Screen Phone Portrait")
+@Composable
+fun CalculatorScreenPhonePortraitPreview() {
+    val fakeViewModel = remember { CalculatorViewModel() }
+    CalculatorScreen(viewModel = fakeViewModel)
+}
+
+@Preview(showBackground = true, name = "Calculator Screen Tablet Landscape", device = Devices.TABLET, uiMode = UI_MODE_NIGHT_NO, widthDp = 1280, heightDp = 800)
+@Composable
+fun CalculatorScreenTabletLandscapePreview() {
+    // You would need to update your CalculatorScreen to pass the correct
+    // isTablet and isLandscape based on configuration or parameters for this to fully work.
+    // For now, ButtonLayout is called with hardcoded values.
+    val fakeViewModel = remember { CalculatorViewModel() }
+    CalculatorScreen(viewModel = fakeViewModel)
+}
+
+

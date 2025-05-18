@@ -1,5 +1,6 @@
 package com.xenon.calculator // Adjust to your main package
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xenon.calculator.ui.ButtonLayout
@@ -97,5 +99,24 @@ fun CalculatorDisplay(currentInput: String, result: String, modifier: Modifier =
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth()
         )
+    }
+}
+
+@SuppressLint("ViewModelConstructorInComposable")
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    CalculatorTheme {
+
+        val previewViewModel = CalculatorViewModel()
+        CalculatorApp(viewModel = previewViewModel)
+    }
+}
+
+@Preview(showBackground = true, widthDp = 320, heightDp = 480)
+@Composable
+fun CalculatorDisplayPreview() {
+    CalculatorTheme {
+        CalculatorDisplay(currentInput = "12345+67890", result = "80235")
     }
 }
