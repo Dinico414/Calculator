@@ -5,13 +5,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.* // Imports Column, Box, Spacer, etc.
+import androidx.compose.foundation.layout.Arrangement // <--- ENSURE THIS IMPORT IS HERE
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+// import androidx.compose.ui.graphics.Color // Not strictly needed if using theme colors
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.xenon.calculator.ui.ButtonLayout
 import com.xenon.calculator.ui.CalculatorViewModel
 import com.xenon.calculator.ui.theme.CalculatorTheme
-import androidx.core.view.WindowCompat // <-- Import this
+import androidx.core.view.WindowCompat
 
 class MainActivity : ComponentActivity() {
     private val calculatorViewModel: CalculatorViewModel by viewModels()
@@ -28,9 +33,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Enable edge-to-edge display
-        // This allows your app content to draw behind the system bars
-        WindowCompat.setDecorFitsSystemWindows(window, false) // <-- Add this line
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             CalculatorTheme {
@@ -38,7 +41,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CalculatorApp(viewModel = calculatorViewModel)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(WindowInsets.safeDrawing.asPaddingValues())
+                            .padding(10.dp)
+                            .clip(RoundedCornerShape(25.dp))
+                            .background(
+                                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                            )
+                    ) {
+                        CalculatorApp(viewModel = calculatorViewModel)
+                    }
                 }
             }
         }
@@ -49,21 +63,25 @@ class MainActivity : ComponentActivity() {
 fun CalculatorApp(viewModel: CalculatorViewModel) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            // Apply padding to account for system bars (including navigation bar)
-            // This uses the safe drawing insets, which are the parts of the screen
-            // not obscured by system UI like status bar, navigation bar, or display cutouts.
-            .padding(WindowInsets.safeDrawing.asPaddingValues()) // <-- Add this for overall padding
-            .padding(8.dp), // Your existing app-specific padding
-        verticalArrangement = Arrangement.Bottom
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom // <--- This is where it's used
     ) {
-        CalculatorDisplay(
-            currentInput = viewModel.currentInput,
-            result = viewModel.result,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-        )
+                .padding(horizontal = 8.dp, vertical = 8.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+        ) {
+            CalculatorDisplay(
+                currentInput = viewModel.currentInput,
+                result = viewModel.result,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp, vertical = 24.dp)
+            )
+        }
 
         ButtonLayout(
             viewModel = viewModel,
@@ -77,15 +95,16 @@ fun CalculatorApp(viewModel: CalculatorViewModel) {
 @Composable
 fun CalculatorDisplay(currentInput: String, result: String, modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.padding(vertical = 16.dp, horizontal = 8.dp),
-        horizontalAlignment = Alignment.End
+        modifier = modifier,
+        horizontalAlignment = Alignment.End,
+        verticalArrangement = Arrangement.Bottom // <--- Also used here
     ) {
         Text(
             text = currentInput,
             fontSize = 36.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             textAlign = TextAlign.End,
-            maxLines = 2,
+            maxLines = 3,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth()
         )
@@ -93,7 +112,7 @@ fun CalculatorDisplay(currentInput: String, result: String, modifier: Modifier =
         Text(
             text = result,
             fontSize = 48.sp,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             textAlign = TextAlign.End,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
@@ -103,13 +122,28 @@ fun CalculatorDisplay(currentInput: String, result: String, modifier: Modifier =
 }
 
 @SuppressLint("ViewModelConstructorInComposable")
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "App Content Preview")
 @Composable
 fun DefaultPreview() {
     CalculatorTheme {
-
-        val previewViewModel = CalculatorViewModel()
-        CalculatorApp(viewModel = previewViewModel)
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(10.dp)
+                    .clip(RoundedCornerShape(25.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            ) {
+                val previewViewModel = CalculatorViewModel()
+                previewViewModel.onButtonClick("123")
+                previewViewModel.onButtonClick("+")
+                previewViewModel.onButtonClick("456")
+                CalculatorApp(viewModel = previewViewModel)
+            }
+        }
     }
 }
 
@@ -117,6 +151,21 @@ fun DefaultPreview() {
 @Composable
 fun CalculatorDisplayPreview() {
     CalculatorTheme {
-        CalculatorDisplay(currentInput = "12345+67890", result = "80235")
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .padding(8.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+        ) {
+            CalculatorDisplay(
+                currentInput = "12345+67890×(3-1)",
+                result = "140780",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp, vertical = 24.dp)
+            )
+        }
     }
 }

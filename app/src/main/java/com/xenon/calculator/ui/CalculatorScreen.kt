@@ -3,11 +3,13 @@ package com.xenon.calculator.ui
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape // Make sure this is imported
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip // Make sure this is imported
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
@@ -15,7 +17,6 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun CalculatorScreen(viewModel: CalculatorViewModel) {
@@ -28,10 +29,17 @@ fun CalculatorScreen(viewModel: CalculatorViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f) // Takes up space not used by ButtonLayout
-                .background(Color.LightGray) // Placeholder for your display
+                .padding(15.dp) // Add padding around the display area
+                .clip(RoundedCornerShape(20.dp)) // Rounded corners
+                .background(MaterialTheme.colorScheme.secondaryContainer) // Background color
         ) {
-            // Your calculator display UI
-            Text("Display Area", Modifier.align(Alignment.Center))
+            DisplaySection(
+                currentInput = viewModel.currentInput, // Access directly
+                result = viewModel.result,           // Access directly
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp) // Inner padding for the text content
+            )
         }
 
         // Button Layout - constrained to max 75% of screen height
@@ -39,7 +47,6 @@ fun CalculatorScreen(viewModel: CalculatorViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(max = screenHeight * 0.75f) // Max 75% of screen height
-            // .weight(3f) // Alternatively, if display is weight(1f), this gives it 3/4 of space
         ) {
             ButtonLayout(
                 viewModel = viewModel,
@@ -83,39 +90,34 @@ fun DisplaySection(currentInput: String, result: String, modifier: Modifier = Mo
 @Preview(showBackground = true)
 @Composable
 fun DisplaySectionPreview() {
-    // You can wrap with your app's theme if you have one
-    // YourAppTheme {
-    DisplaySection(currentInput = "123 + 456", result = "579")
-    // }
+    MaterialTheme { // It's good practice to wrap previews in your theme
+        DisplaySection(currentInput = "123 + 456", result = "579")
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun CalculatorScreenPreview() {
-    // For the CalculatorScreen preview, you'll need a mock/fake ViewModel
-    // or provide a default instance if your ViewModel allows.
-    // This is a simplified example. You might need to create a more specific
-    // mock for CalculatorViewModel depending on its complexity.
-    val fakeViewModel = remember { CalculatorViewModel(/* ...dependencies if any... */) } // Or a mock
-    // YourAppTheme {
-    CalculatorScreen(viewModel = fakeViewModel)
-    // }
+    val fakeViewModel = remember { CalculatorViewModel() }
+    MaterialTheme { // It's good practice to wrap previews in your theme
+        CalculatorScreen(viewModel = fakeViewModel)
+    }
 }
+
 @Preview(showBackground = true, name = "Calculator Screen Phone Portrait")
 @Composable
 fun CalculatorScreenPhonePortraitPreview() {
     val fakeViewModel = remember { CalculatorViewModel() }
-    CalculatorScreen(viewModel = fakeViewModel)
+    MaterialTheme { // It's good practice to wrap previews in your theme
+        CalculatorScreen(viewModel = fakeViewModel)
+    }
 }
 
 @Preview(showBackground = true, name = "Calculator Screen Tablet Landscape", device = Devices.TABLET, uiMode = UI_MODE_NIGHT_NO, widthDp = 1280, heightDp = 800)
 @Composable
 fun CalculatorScreenTabletLandscapePreview() {
-    // You would need to update your CalculatorScreen to pass the correct
-    // isTablet and isLandscape based on configuration or parameters for this to fully work.
-    // For now, ButtonLayout is called with hardcoded values.
     val fakeViewModel = remember { CalculatorViewModel() }
-    CalculatorScreen(viewModel = fakeViewModel)
+    MaterialTheme { // It's good practice to wrap previews in your theme
+        CalculatorScreen(viewModel = fakeViewModel)
+    }
 }
-
-

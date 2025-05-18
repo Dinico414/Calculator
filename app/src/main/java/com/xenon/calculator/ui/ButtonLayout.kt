@@ -65,15 +65,11 @@ fun ButtonLayout(
     Column(
         modifier = modifier
             .fillMaxHeight(0.7f)
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-            .background(
-                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                shape = RoundedCornerShape(12.dp)
-            )
-            .padding(4.dp)
+
+            .padding(10.dp)
     ) {
         // ScientificButtonsRow1 is now always visible and contains the toggle button
-        ScientificButtonsRow1(viewModel, modifier = Modifier.height(48.dp).fillMaxWidth()) // Adjust height as needed
+        ScientificButtonsRow1(viewModel, modifier = Modifier.height(40.dp).fillMaxWidth()) // Adjust height as needed
         Spacer(Modifier.height(4.dp))
 
         Column(
@@ -133,8 +129,8 @@ fun ButtonLayout(
                             Modifier
                                 .fillMaxWidth()
                                 .weight(1f)
-                                .padding(horizontal = 1.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                .padding(horizontal = 0.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             rowData.forEach { buttonText ->
                                 CalculatorButton(
@@ -158,7 +154,8 @@ fun ButtonLayout(
                             }
                         }
                         if (rowData != buttonRows.last()) {
-                            Spacer(Modifier.height(4.dp))
+                            val spacerHeight = if (viewModel.isScientificMode) 4.dp else 8.dp
+                            Spacer(Modifier.height(spacerHeight))
                         }
                     }
                 }
@@ -367,18 +364,19 @@ fun CalculatorButton(
             defaultElevation = 0.dp,
             pressedElevation = 0.dp
         ),
-        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp),
+        contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
         interactionSource = interactionSource
     ) {
         Text(
             text = text,
-            fontSize = if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) 18.sp else 22.sp,
+            fontSize = if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) 22.sp else 22.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true, name = "Button Layout Light")
 @Composable
 fun ButtonLayoutPreviewLight() {
@@ -410,6 +408,7 @@ fun ButtonLayoutPreviewDark() {
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true, name = "Button Layout Tablet Landscape")
 @Composable
 fun ButtonLayoutPreviewTabletLandscape() {
