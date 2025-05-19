@@ -1,6 +1,6 @@
 @file:Suppress("unused", "unused")
 
-package com.xenon.calculator.ui.layouts
+package com.xenon.calculator.ui.layouts.buttons
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility

@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.xenon.calculator.ui.layouts.ButtonLayout
-import com.xenon.calculator.ui.layouts.CalculatorViewModel
 import com.xenon.calculator.ui.theme.CalculatorTheme
+import com.xenon.calculator.viewmodel.CalculatorViewModel
 
 class MainActivity : ComponentActivity() {
     private val calculatorViewModel: CalculatorViewModel by viewModels()

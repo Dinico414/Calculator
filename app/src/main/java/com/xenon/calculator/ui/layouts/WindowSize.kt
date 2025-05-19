@@ -19,13 +19,13 @@ fun rememberWindowSizeClass(): WindowSize {
 
     return WindowSize(
         width = when {
-            configuration.screenWidthDp > 600 -> WindowType.Small
+            configuration.screenWidthDp < 320 -> WindowType.Small
             configuration.screenWidthDp < 600 -> WindowType.Compact
             configuration.screenWidthDp < 840 -> WindowType.Medium
             else -> WindowType.Expanded
         },
         height = when {
-            configuration.screenHeightDp > 600 -> WindowType.Small
+            configuration.screenHeightDp < 320 -> WindowType.Small
             configuration.screenHeightDp < 600 -> WindowType.Compact
             configuration.screenHeightDp < 840 -> WindowType.Medium
             else -> WindowType.Expanded

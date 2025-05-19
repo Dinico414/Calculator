@@ -1,4 +1,4 @@
-package com.xenon.calculator.ui.layouts
+package com.xenon.calculator.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
