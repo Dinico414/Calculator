@@ -31,8 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
-import com.xenon.calculator.ui.ButtonLayout
-import com.xenon.calculator.ui.CalculatorViewModel
+import com.xenon.calculator.ui.layouts.ButtonLayout
+import com.xenon.calculator.ui.layouts.CalculatorViewModel
 import com.xenon.calculator.ui.theme.CalculatorTheme
 
 class MainActivity : ComponentActivity() {

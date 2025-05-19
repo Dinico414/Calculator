@@ -1,4 +1,4 @@
-package com.xenon.calculator
+package com.xenon.calculator.ui.layouts
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
