@@ -60,7 +60,7 @@
 //
 //
 //@Composable
-//fun CompactButtonLayout(
+//fun CompactLandscapeButtonLayout(
 //    viewModel: CalculatorViewModel,
 //    isTablet: Boolean,
 //    isLandscape: Boolean,
