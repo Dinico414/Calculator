@@ -4,6 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.xenon.calculator.ui.layouts.buttons.CompactButtonLayout
 import com.xenon.calculator.ui.layouts.buttons.CompactLandscapeButtonLayout
+import com.xenon.calculator.ui.layouts.buttons.CoverButtonLayout
+import com.xenon.calculator.ui.layouts.buttons.SmallButtonLayout
+import com.xenon.calculator.ui.layouts.buttons.SmallLandscapeButtonLayout
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 import com.xenon.calculator.viewmodel.LayoutType
 
@@ -13,19 +16,22 @@ fun ButtonLayout(
     viewModel: CalculatorViewModel,
     isLandscape: Boolean,
     modifier: Modifier = Modifier,
-    layoutType: LayoutType, // This parameter is correctly defined
+    layoutType: LayoutType,
 ) {
     when (layoutType) {
-        LayoutType.SMALL -> {
-//            if (isLandscape) {
-//                SmallLandscapeButtonLayout(viewModel = viewModel, modifier = modifier)
-//            } else {
-//                SmallButtonLayout(viewModel = viewModel, modifier = modifier)
-//            }
+        LayoutType.COVER -> {
             if (isLandscape) {
-                CompactLandscapeButtonLayout(viewModel = viewModel, modifier = modifier)
+                CoverButtonLayout(viewModel = viewModel, modifier = modifier)
             } else {
-                CompactButtonLayout(viewModel = viewModel, modifier = modifier)
+                CoverButtonLayout(viewModel = viewModel, modifier = modifier)
+            }
+        }
+
+        LayoutType.SMALL -> {
+            if (isLandscape) {
+                SmallLandscapeButtonLayout(viewModel = viewModel, modifier = modifier)
+            } else {
+                SmallButtonLayout(viewModel = viewModel, modifier = modifier)
             }
         }
 

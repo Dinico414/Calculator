@@ -19,6 +19,19 @@ fun CalculatorScreen(
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         when (layoutType) {
+            LayoutType.COVER -> {
+//                if (isLandscape) {
+//                    CoverCalculatorScreen(viewModel = viewModel)
+//                } else {
+//                    CoverCalculatorScreen(viewModel = viewModel)
+//                }
+                if (isLandscape) {
+                    CompactLandscapeCalculatorScreen(viewModel = viewModel)
+                } else {
+                    CompactLandscapeCalculatorScreen(viewModel = viewModel)
+                }
+            }
+
             LayoutType.SMALL -> {
 //                if (isLandscape) {
 //                    SmallLandscapeCalculatorScreen(viewModel = viewModel)
@@ -28,9 +41,10 @@ fun CalculatorScreen(
                 if (isLandscape) {
                     CompactLandscapeCalculatorScreen(viewModel = viewModel)
                 } else {
-                    CompactCalculatorScreen(viewModel = viewModel)
+                    CompactLandscapeCalculatorScreen(viewModel = viewModel)
                 }
             }
+
             LayoutType.COMPACT -> {
                 if (isLandscape) {
                     CompactLandscapeCalculatorScreen(viewModel = viewModel)
@@ -38,6 +52,7 @@ fun CalculatorScreen(
                     CompactCalculatorScreen(viewModel = viewModel)
                 }
             }
+
             LayoutType.MEDIUM -> {
 //                if (isLandscape) {
 //                    MediumLandscapeCalculatorScreen(viewModel = viewModel)
@@ -50,17 +65,18 @@ fun CalculatorScreen(
                     CompactCalculatorScreen(viewModel = viewModel)
                 }
             }
-           LayoutType.EXPANDED -> {
+
+            LayoutType.EXPANDED -> {
 //                if (isLandscape) {
 //                    ExpandedLandscapeCalculatorScreen(viewModel = viewModel)
 //                } else {
 //                    ExpandedCalculatorScreen(viewModel = viewModel)
 //                }
-               if (isLandscape) {
-                   CompactLandscapeCalculatorScreen(viewModel = viewModel)
-               } else {
-                   CompactCalculatorScreen(viewModel = viewModel)
-               }
+                if (isLandscape) {
+                    CompactLandscapeCalculatorScreen(viewModel = viewModel)
+                } else {
+                    CompactCalculatorScreen(viewModel = viewModel)
+                }
             }
         }
     }

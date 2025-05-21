@@ -1,5 +1,7 @@
 package com.xenon.calculator.ui.layouts.buttons
 
+// Import your CalculatorButton composable; ensure its path is correct
+// Example: import com.xenon.calculator.ui.components.CalculatorButton
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,13 +25,14 @@ fun CompactLandscapeButtonLayout(
 ) {
     val buttonSpacing = 4.dp
 
-    val scientificButtonRows = listOf(
+    // These definitions remain the same
+    val scientificButtonRowsData = listOf(
         listOf("√", "π", "^", "!"),
         listOf(viewModel.angleUnit.name, "sin", "cos", "tan"),
         listOf("INV", "e", "ln", "log")
     )
 
-    val numericOpButtonRows = listOf(
+    val numericOpButtonRowsData = listOf(
         listOf("7", "8", "9", "÷", "AC"),
         listOf("4", "5", "6", "×", "( )"),
         listOf("1", "2", "3", "-", "%"),
@@ -42,13 +45,14 @@ fun CompactLandscapeButtonLayout(
             .padding(10.dp),
         horizontalArrangement = Arrangement.spacedBy(buttonSpacing)
     ) {
+        // Scientific Buttons Column
         Column(
             modifier = Modifier
-                .weight(0.25f)
+                .weight(3f) // Adjust weight as needed for landscape
                 .fillMaxHeight(),
             verticalArrangement = Arrangement.spacedBy(buttonSpacing)
         ) {
-            scientificButtonRows.forEach { rowData ->
+            scientificButtonRowsData.forEach { rowData ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -58,8 +62,10 @@ fun CompactLandscapeButtonLayout(
                     rowData.forEach { originalButtonText ->
                         val isAngleToggle = originalButtonText == viewModel.angleUnit.name
                         val isInvButton = originalButtonText == "INV"
+
+                        // Determine the text to display (handles inverse functions)
                         val textToDisplay = when {
-                            isInvButton -> "INV"
+                            isInvButton -> "INV" // Always show "INV" for the button itself
                             isAngleToggle -> viewModel.angleUnit.name
                             originalButtonText == "√" && viewModel.isInverseMode -> "x²"
                             originalButtonText == "sin" && viewModel.isInverseMode -> "sin⁻¹"
@@ -69,34 +75,41 @@ fun CompactLandscapeButtonLayout(
                             originalButtonText == "log" && viewModel.isInverseMode -> "10ˣ"
                             else -> originalButtonText
                         }
+
                         CalculatorButton(
                             text = textToDisplay,
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight(),
-                            isOperator = true,
-                            isScientific = true,
+                            isOperator = true, // Most scientific buttons act as operators
+                            isSpecial = false,
+                            isClear = false,
+                            isScientificButton = true, // Crucial: This IS a scientific panel button
+                            isNumber = false,
+                            isGlobalScientificModeActive = viewModel.isScientificMode, // Pass global state
                             isInverseActive = isInvButton && viewModel.isInverseMode,
                             onClick = {
                                 when (originalButtonText) {
                                     "INV" -> viewModel.toggleInverseMode()
                                     viewModel.angleUnit.name -> viewModel.toggleAngleUnit()
+                                    // Pass originalButtonText for logic in ViewModel, not textToDisplay
                                     else -> viewModel.onButtonClick(originalButtonText)
                                 }
-                            })
+                            }
+                        )
                     }
                 }
             }
         }
 
-
+        // Numeric and Operator Buttons Column
         Column(
             modifier = Modifier
-                .weight(0.75f)
+                .weight(5f) // Adjust weight as needed for landscape
                 .fillMaxHeight(),
             verticalArrangement = Arrangement.spacedBy(buttonSpacing)
         ) {
-            numericOpButtonRows.forEach { rowData ->
+            numericOpButtonRowsData.forEach { rowData ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -105,24 +118,31 @@ fun CompactLandscapeButtonLayout(
                 ) {
                     rowData.forEach { originalButtonText ->
                         val isOp = originalButtonText in listOf("÷", "×", "-", "+", "%", "( )")
-                        val isClearButton = originalButtonText == "AC"
-                        val isSpecialButton = originalButtonText == "="
+                        val isClear = originalButtonText == "AC"
+                        val isSpecial = originalButtonText == "="
+                        val isNum = originalButtonText in listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "⌫")
+
                         CalculatorButton(
                             text = originalButtonText,
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight(),
                             isOperator = isOp,
-                            isSpecial = isSpecialButton,
-                            isClear = isClearButton,
-                            isScientific = false,
+                            isSpecial = isSpecial,
+                            isClear = isClear,
+                            isScientificButton = false,
+                            isNumber = isNum,
+                            isGlobalScientificModeActive = viewModel.isScientificMode,
                             isInverseActive = false,
+                            // Add this line for the backspace button
+                            fontFamily = if (originalButtonText == "⌫") firaSansFamily else null,
                             onClick = {
                                 when (originalButtonText) {
                                     "( )" -> viewModel.onParenthesesClick()
                                     else -> viewModel.onButtonClick(originalButtonText)
                                 }
-                            })
+                            }
+                        )
                     }
                 }
             }
@@ -130,15 +150,18 @@ fun CompactLandscapeButtonLayout(
     }
 }
 
+// Previews remain largely the same, but their appearance will change based on
+// the new CalculatorButton logic.
+
 @SuppressLint("ViewModelConstructorInComposable")
 @Preview(
     showBackground = true,
-    name = "Phone Landscape Mixed Layout Light",
-    widthDp = 800,
-    heightDp = 360
+    name = "Landscape Light - Common Mode",
+    widthDp = 800, // Typical landscape width
+    heightDp = 360 // Typical landscape height
 )
 @Composable
-fun PhoneLandscapeMixedLayoutPreviewLight() {
+fun PhoneLandscapeLayoutPreviewLightCommon() {
     CalculatorTheme(darkTheme = false) {
         Surface(modifier = Modifier.fillMaxSize()) {
             val sampleViewModel = CalculatorViewModel()
@@ -149,10 +172,47 @@ fun PhoneLandscapeMixedLayoutPreviewLight() {
 
 @SuppressLint("ViewModelConstructorInComposable")
 @Preview(
-    showBackground = true, name = "Phone Landscape Mixed Layout Dark", widthDp = 800, heightDp = 360
+    showBackground = true,
+    name = "Landscape Light - Scientific Mode",
+    widthDp = 800,
+    heightDp = 360
 )
 @Composable
-fun PhoneLandscapeMixedLayoutPreviewDark() {
+fun PhoneLandscapeLayoutPreviewLightScientific() {
+    CalculatorTheme(darkTheme = false) {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            val sampleViewModel = CalculatorViewModel()
+            CompactLandscapeButtonLayout(viewModel = sampleViewModel)
+        }
+    }
+}
+
+@SuppressLint("ViewModelConstructorInComposable")
+@Preview(
+    showBackground = true,
+    name = "Landscape Dark - Common Mode",
+    widthDp = 800,
+    heightDp = 360
+)
+@Composable
+fun PhoneLandscapeLayoutPreviewDarkCommon() {
+    CalculatorTheme(darkTheme = true) {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            val sampleViewModel = CalculatorViewModel()
+            CompactLandscapeButtonLayout(viewModel = sampleViewModel)
+        }
+    }
+}
+
+@SuppressLint("ViewModelConstructorInComposable")
+@Preview(
+    showBackground = true,
+    name = "Landscape Dark - Scientific Mode",
+    widthDp = 800,
+    heightDp = 360
+)
+@Composable
+fun PhoneLandscapeLayoutPreviewDarkScientific() {
     CalculatorTheme(darkTheme = true) {
         Surface(modifier = Modifier.fillMaxSize()) {
             val sampleViewModel = CalculatorViewModel()

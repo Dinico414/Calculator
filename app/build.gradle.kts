@@ -12,8 +12,8 @@ android {
         applicationId = "com.xenon.calculator"
         minSdk = 29
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.1"
+        versionCode = 2
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -54,12 +54,12 @@ dependencies {
 
     implementation(libs.xenon.commons)
 
-
-    implementation(libs.androidx.core.ktx) // Or latest
-    implementation(libs.androidx.lifecycle.runtime.ktx) // Or latest
-    implementation(libs.androidx.activity.compose) // Or latest
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.ui)
-    implementation(libs.mathparser.org.mxparser) // Or the latest version
+    implementation(libs.mathparser.org.mxparser)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
