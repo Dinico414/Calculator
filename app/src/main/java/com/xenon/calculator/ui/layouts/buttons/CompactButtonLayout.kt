@@ -62,8 +62,6 @@ import com.xenon.calculator.viewmodel.CalculatorViewModel
 @Composable
 fun CompactButtonLayout(
     viewModel: CalculatorViewModel,
-    isTablet: Boolean,
-    isLandscape: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -72,9 +70,11 @@ fun CompactButtonLayout(
 
             .padding(10.dp)
     ) {
-        ScientificButtonsRow1(viewModel, modifier = Modifier
-            .height(40.dp)
-            .fillMaxWidth())
+        ScientificButtonsRow1(
+            viewModel, modifier = Modifier
+                .height(40.dp)
+                .fillMaxWidth()
+        )
 
         val spacerHeight by animateDpAsState(
             targetValue = if (viewModel.isScientificMode) 4.dp else 12.dp,
@@ -102,16 +102,24 @@ fun CompactButtonLayout(
             if (viewModel.isScientificMode || animatedScientificRowsInnerWeight > 0.001f) {
                 AnimatedVisibility(
                     visible = viewModel.isScientificMode,
-                    enter = fadeIn() + slideInVertically(initialOffsetY = { fullHeight -> fullHeight }) + expandVertically(expandFrom = Alignment.Top),
-                    exit = fadeOut() + slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + shrinkVertically(shrinkTowards = Alignment.Top),
+                    enter = fadeIn() + slideInVertically(initialOffsetY = { fullHeight -> fullHeight }) + expandVertically(
+                        expandFrom = Alignment.Top
+                    ),
+                    exit = fadeOut() + slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + shrinkVertically(
+                        shrinkTowards = Alignment.Top
+                    ),
                     modifier = Modifier
-                        .weight(animatedScientificRowsInnerWeight.coerceAtLeast(0.001f))
+                        .weight(
+                            animatedScientificRowsInnerWeight.coerceAtLeast(0.001f)
+                        )
                         .fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.fillMaxHeight()) {
                         ScientificButtonsRow2(viewModel, modifier = Modifier.weight(1f))
                         Spacer(Modifier.height(4.dp))
-                        ScientificButtonsRow3(viewModel, viewModel.isInverseMode, modifier = Modifier.weight(1f))
+                        ScientificButtonsRow3(
+                            viewModel, viewModel.isInverseMode, modifier = Modifier.weight(1f)
+                        )
                         Spacer(Modifier.height(8.dp))
                     }
                 }
@@ -157,8 +165,7 @@ fun CompactButtonLayout(
                                         } else {
                                             viewModel.onButtonClick(buttonText)
                                         }
-                                    }
-                                )
+                                    })
                             }
                         }
                         if (rowData != buttonRows.last()) {
@@ -179,8 +186,7 @@ fun CompactButtonLayout(
 @Composable
 fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier
-            .padding(horizontal = 1.dp),
+        modifier = modifier.padding(horizontal = 1.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -195,8 +201,7 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
                     .fillMaxHeight(),
                 isOperator = true,
                 isScientific = true,
-                onClick = { viewModel.onButtonClick(text) }
-            )
+                onClick = { viewModel.onButtonClick(text) })
         }
         CalculatorButton(
             text = "!",
@@ -205,8 +210,7 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
                 .fillMaxHeight(),
             isOperator = true,
             isScientific = true,
-            onClick = { viewModel.onButtonClick("!") }
-        )
+            onClick = { viewModel.onButtonClick("!") })
 
         Box(
             modifier = Modifier
@@ -215,8 +219,7 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
                 .background(
                     color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.1f),
                     shape = CircleShape
-                ),
-            contentAlignment = Alignment.Center
+                ), contentAlignment = Alignment.Center
         ) {
             IconButton(
                 onClick = { viewModel.toggleScientificMode() },
@@ -257,13 +260,11 @@ fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = M
                 .fillMaxHeight(),
             isOperator = true,
             isScientific = true,
-            onClick = { viewModel.toggleAngleUnit() }
-        )
+            onClick = { viewModel.toggleAngleUnit() })
 
         val trigButtons = listOf("sin", "cos", "tan")
         trigButtons.forEach { text ->
-            val buttonDisplayText =
-                if (viewModel.isInverseMode) "$text⁻¹" else text
+            val buttonDisplayText = if (viewModel.isInverseMode) "$text⁻¹" else text
             CalculatorButton(
                 text = buttonDisplayText,
                 modifier = Modifier
@@ -271,8 +272,7 @@ fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = M
                     .fillMaxHeight(),
                 isOperator = true,
                 isScientific = true,
-                onClick = { viewModel.onButtonClick(text) }
-            )
+                onClick = { viewModel.onButtonClick(text) })
         }
         Spacer(Modifier.width(40.dp))
     }
@@ -311,8 +311,7 @@ fun ScientificButtonsRow3(
                     } else {
                         viewModel.onButtonClick(text)
                     }
-                }
-            )
+                })
         }
         Spacer(Modifier.width(40.dp))
     }
@@ -365,15 +364,17 @@ fun CalculatorButton(
             containerColor = containerColor, contentColor = contentColor
         ),
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp
+            defaultElevation = 0.dp, pressedElevation = 0.dp
         ),
         contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
         interactionSource = interactionSource
     ) {
         Text(
             text = text,
-            fontSize = if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) 22.sp else 22.sp,
+            fontSize = if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains(
+                    "²"
+                )
+            ) 22.sp else 22.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -389,9 +390,8 @@ fun ButtonLayoutPreviewLight() {
             val sampleViewModel = CalculatorViewModel()
             CompactButtonLayout(
                 viewModel = sampleViewModel,
-                isTablet = false,
-                isLandscape = false
-            )
+
+                )
         }
     }
 }
@@ -405,9 +405,8 @@ fun ButtonLayoutPreviewDark() {
             val sampleViewModel = CalculatorViewModel()
             CompactButtonLayout(
                 viewModel = sampleViewModel,
-                isTablet = false,
-                isLandscape = false
-            )
+
+                )
         }
     }
 }
@@ -421,9 +420,8 @@ fun ButtonLayoutPreviewTabletLandscape() {
             val sampleViewModel = CalculatorViewModel()
             CompactButtonLayout(
                 viewModel = sampleViewModel,
-                isTablet = true,
-                isLandscape = true
-            )
+
+                )
         }
     }
 }
@@ -486,11 +484,7 @@ fun CalculatorButtonPreviewInvActive() {
     CalculatorTheme {
         Surface {
             CalculatorButton(
-                text = "INV",
-                isScientific = true,
-                isInverseActive = true,
-                onClick = {}
-            )
+                text = "INV", isScientific = true, isInverseActive = true, onClick = {})
         }
     }
 }

@@ -9,35 +9,30 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.xenon.calculator.ui.layouts.ButtonLayout
-import com.xenon.calculator.ui.layouts.buttons.CompactLandscapeButtonLayout
+import com.xenon.calculator.ui.layouts.CalculatorScreen
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.CalculatorViewModel
+import com.xenon.calculator.viewmodel.LayoutType
 
 class MainActivity : ComponentActivity() {
     private val calculatorViewModel: CalculatorViewModel by viewModels()
@@ -50,14 +45,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             CalculatorTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(WindowInsets.safeDrawing.asPaddingValues())
-                            .padding(horizontal = 15.dp, vertical = 0.dp)
+                            .padding(horizontal = 15.dp)
                             .clip(RoundedCornerShape(30.dp))
                             .background(
                                 MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
@@ -71,88 +65,63 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @Composable
 fun CalculatorApp(viewModel: CalculatorViewModel) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            CalculatorDisplay(
-                currentInput = viewModel.currentInput,
-                result = viewModel.result,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 15.dp, vertical = 24.dp)
-            )
+    val screenWeight = if (isLandscape) 0.4f else 0.3f
+    val buttonLayoutWeight = if (isLandscape) 0.6f else 0.7f
+
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val screenWidth = this.maxWidth
+
+        val layoutType = when {
+            screenWidth < 320.dp -> LayoutType.SMALL
+            screenWidth < 600.dp -> LayoutType.COMPACT
+            screenWidth < 840.dp -> LayoutType.MEDIUM
+            else -> LayoutType.EXPANDED
         }
 
-        if (isLandscape) {
-            // Assuming you have a Composable named CompactLandscapeButtonLayout
-            // Pass necessary parameters to it
-            CompactLandscapeButtonLayout(
-                viewModel = viewModel,
-                modifier = Modifier.fillMaxWidth()
-                // Add other relevant parameters
-            )
-        } else {
-            // Your existing ButtonLayout for portrait (or default)
+        Column(
+            modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(screenWeight)
+                    .padding(horizontal = 10.dp, vertical = 0.dp)
+                    .padding(top = 10.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+            ) {
+                CalculatorScreen(
+                    viewModel = viewModel,
+                    isLandscape = isLandscape,
+                    layoutType = layoutType,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
             ButtonLayout(
                 viewModel = viewModel,
-                isTablet = false, // You might want to determine this dynamically as well
-                isLandscape = false, // This is now explicitly false for this branch
-                modifier = Modifier.fillMaxWidth()
+                isLandscape = isLandscape,
+                layoutType = layoutType,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(buttonLayoutWeight)
             )
         }
-    }
-}
-
-@Composable
-fun CalculatorDisplay(currentInput: String, result: String, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        Text(
-            text = currentInput,
-            fontSize = 36.sp,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-            textAlign = TextAlign.End,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = result,
-            fontSize = 48.sp,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-            textAlign = TextAlign.End,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 
 @SuppressLint("ViewModelConstructorInComposable")
-@Preview(showBackground = true, name = "App Content Preview")
+@Preview
 @Composable
-fun DefaultPreview() {
+fun DefaultPreviewPortrait() {
     CalculatorTheme {
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
         ) {
             Box(
                 modifier = Modifier
@@ -165,61 +134,66 @@ fun DefaultPreview() {
                 previewViewModel.onButtonClick("123")
                 previewViewModel.onButtonClick("+")
                 previewViewModel.onButtonClick("456")
-                CalculatorApp(viewModel = previewViewModel)
+                previewViewModel.onButtonClick("=")
+
+
+                CalculatorScreen(
+                    viewModel = previewViewModel,
+                    isLandscape = false,
+                    layoutType = LayoutType.COMPACT,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }
 }
 
-@Preview(showBackground = true, widthDp = 320, heightDp = 480)
+@SuppressLint("ViewModelConstructorInComposable")
+@Preview
 @Composable
-fun CalculatorDisplayPreview() {
+fun DefaultPreviewLandscape() {
     CalculatorTheme {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .padding(8.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .background(MaterialTheme.colorScheme.secondaryContainer)
+        Surface(
+            modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
         ) {
-            CalculatorDisplay(
-                currentInput = "12345+67890×(3-1)",
-                result = "140780",
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 24.dp)
-            )
+                    .padding(10.dp)
+                    .clip(RoundedCornerShape(25.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            ) {
+                val previewViewModel = CalculatorViewModel()
+                previewViewModel.onButtonClick("10")
+                previewViewModel.onButtonClick("×")
+                previewViewModel.onButtonClick("5")
+                previewViewModel.onButtonClick("=")
+
+                CalculatorScreen(
+                    viewModel = previewViewModel,
+                    isLandscape = true,
+                    layoutType = LayoutType.COMPACT,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
     }
 }
-@Preview(
-    showBackground = true,
-    name = "Calculator App Portrait",
-    device = Devices.PHONE
-)
+
+@Preview
 @Composable
-fun CalculatorAppPortraitPreview() {
+fun CalculatorAppPreview() {
+    val fakeViewModel = remember { CalculatorViewModel() }
     CalculatorTheme {
-        // ... (setup similar to your DefaultPreview)
-        val previewViewModel = CalculatorViewModel()
-        CalculatorApp(viewModel = previewViewModel)
+        CalculatorApp(viewModel = fakeViewModel)
     }
 }
 
-@Preview(
-    showBackground = true,
-    name = "Calculator App Landscape",
-    device = Devices.PHONE,
-    uiMode = Configuration.UI_MODE_NIGHT_NO, // Example: force light mode
-    widthDp = 720, // Typical landscape width for a phone
-    heightDp = 360 // Typical landscape height for a phone
-)
+@Preview(widthDp = 800, heightDp = 360)
 @Composable
-fun CalculatorAppLandscapePreview() {
+fun CalculatorAppPreviewLandscape() {
+    val fakeViewModel = remember { CalculatorViewModel() }
     CalculatorTheme {
-        // ... (setup similar to your DefaultPreview)
-        val previewViewModel = CalculatorViewModel()
-        CalculatorApp(viewModel = previewViewModel)
+        CalculatorApp(viewModel = fakeViewModel)
     }
 }

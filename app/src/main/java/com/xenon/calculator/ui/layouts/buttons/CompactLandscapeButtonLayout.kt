@@ -23,7 +23,6 @@ fun CompactLandscapeButtonLayout(
 ) {
     val buttonSpacing = 4.dp
 
-    // Data for the Scientific Buttons (3 rows, 4 buttons each)
     val scientificButtonRows = listOf(
         listOf("√", "π", "^", "!"),
         listOf(viewModel.angleUnit.name, "sin", "cos", "tan"),
@@ -40,7 +39,7 @@ fun CompactLandscapeButtonLayout(
     Row(
         modifier = modifier
             .fillMaxSize()
-            .padding(all = buttonSpacing),
+            .padding(10.dp),
         horizontalArrangement = Arrangement.spacedBy(buttonSpacing)
     ) {
         Column(
@@ -84,8 +83,7 @@ fun CompactLandscapeButtonLayout(
                                     viewModel.angleUnit.name -> viewModel.toggleAngleUnit()
                                     else -> viewModel.onButtonClick(originalButtonText)
                                 }
-                            }
-                        )
+                            })
                     }
                 }
             }
@@ -124,8 +122,7 @@ fun CompactLandscapeButtonLayout(
                                     "( )" -> viewModel.onParenthesesClick()
                                     else -> viewModel.onButtonClick(originalButtonText)
                                 }
-                            }
-                        )
+                            })
                     }
                 }
             }
@@ -134,7 +131,12 @@ fun CompactLandscapeButtonLayout(
 }
 
 @SuppressLint("ViewModelConstructorInComposable")
-@Preview(showBackground = true, name = "Phone Landscape Mixed Layout Light", widthDp = 800, heightDp = 360)
+@Preview(
+    showBackground = true,
+    name = "Phone Landscape Mixed Layout Light",
+    widthDp = 800,
+    heightDp = 360
+)
 @Composable
 fun PhoneLandscapeMixedLayoutPreviewLight() {
     CalculatorTheme(darkTheme = false) {
@@ -146,7 +148,9 @@ fun PhoneLandscapeMixedLayoutPreviewLight() {
 }
 
 @SuppressLint("ViewModelConstructorInComposable")
-@Preview(showBackground = true, name = "Phone Landscape Mixed Layout Dark", widthDp = 800, heightDp = 360)
+@Preview(
+    showBackground = true, name = "Phone Landscape Mixed Layout Dark", widthDp = 800, heightDp = 360
+)
 @Composable
 fun PhoneLandscapeMixedLayoutPreviewDark() {
     CalculatorTheme(darkTheme = true) {
