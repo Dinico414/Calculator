@@ -14,75 +14,104 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.colorResource
+// Remove colorResource if it's no longer used for the fallback themes
+// import androidx.compose.ui.res.colorResource
 import androidx.core.view.WindowCompat
 
-import com.xenon.commons.accesspoint.R as CommonsR
+// Assuming your Color.kt defines these color values globally in this package
+// or you import them appropriately.
+
+// Make sure your Typography is defined, for example:
+// import com.xenon.calculator.ui.theme.Typography
 
 @Composable
 fun CalculatorTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = true, // Retain this parameter as per your original code
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
+        // This block for dynamic colors on API 31+ remains UNCHANGED
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
+        // Apply your custom dark colors for older versions or when dynamicColor is false
         darkTheme -> darkColorScheme(
-            background = colorResource(id = CommonsR.color.background),
-            surface = colorResource(id = CommonsR.color.surface),
-            surfaceContainerLowest = colorResource(id = CommonsR.color.surfaceContainerLowest),
-            onSurface = colorResource(id = CommonsR.color.onSurface),
-            onSurfaceVariant = colorResource(id = CommonsR.color.onSurfaceVariant),
-            onSecondaryContainer = colorResource(id = CommonsR.color.onSecondaryContainer),
-            inverseSurface = colorResource(id = CommonsR.color.inverseSurface),
-            inverseOnSurface = colorResource(id = CommonsR.color.inverseOnSurface),
-            outline = colorResource(id = CommonsR.color.outline),
-            surfaceVariant = colorResource(id = CommonsR.color.surfaceVariant),
-            surfaceContainerHighest = colorResource(id = CommonsR.color.surfaceContainerHighest),
-            surfaceContainer = colorResource(id = CommonsR.color.surfaceContainer),
-            onSecondary = colorResource(id = CommonsR.color.onSecondary),
-            onTertiary = colorResource(id = CommonsR.color.onTertiary),
-            onTertiaryContainer = colorResource(id = CommonsR.color.onTertiaryContainer),
-            onBackground = colorResource(id = CommonsR.color.onBackground),
-            onPrimary = colorResource(id = CommonsR.color.onPrimary),
-            onPrimaryContainer = colorResource(id = CommonsR.color.onPrimaryContainer),
-            outlineVariant = colorResource(id = CommonsR.color.outlineVariant),
-            primary = colorResource(id = CommonsR.color.primary),
-            primaryContainer = colorResource(id = CommonsR.color.primaryContainer),
-            secondary = colorResource(id = CommonsR.color.secondary),
-            secondaryContainer = colorResource(id = CommonsR.color.secondaryContainer),
-            tertiary = colorResource(id = CommonsR.color.tertiary),
-            tertiaryContainer = colorResource(id = CommonsR.color.tertiaryContainer),
+            primary = primaryDark,
+            onPrimary = onPrimaryDark,
+            primaryContainer = primaryContainerDark,
+            onPrimaryContainer = onPrimaryContainerDark,
+            secondary = secondaryDark,
+            onSecondary = onSecondaryDark,
+            secondaryContainer = secondaryContainerDark,
+            onSecondaryContainer = onSecondaryContainerDark,
+            tertiary = tertiaryDark,
+            onTertiary = onTertiaryDark,
+            tertiaryContainer = tertiaryContainerDark,
+            onTertiaryContainer = onTertiaryContainerDark,
+            error = errorDark,
+            onError = onErrorDark,
+            errorContainer = errorContainerDark,
+            onErrorContainer = onErrorContainerDark,
+            background = backgroundDark,
+            onBackground = onBackgroundDark,
+            surface = surfaceDark,
+            onSurface = onSurfaceDark,
+            surfaceVariant = surfaceVariantDark,
+            onSurfaceVariant = onSurfaceVariantDark,
+            outline = outlineDark,
+            outlineVariant = outlineVariantDark,
+            scrim = scrimDark,
+            inverseSurface = inverseSurfaceDark,
+            inverseOnSurface = inverseOnSurfaceDark,
+            inversePrimary = inversePrimaryDark,
+            // New Material 3 roles from your list
+            surfaceDim = surfaceDimDark,
+            surfaceBright = surfaceBrightDark,
+            surfaceContainerLowest = surfaceContainerLowestDark,
+            surfaceContainerLow = surfaceContainerLowDark,
+            surfaceContainer = surfaceContainerDark,
+            surfaceContainerHigh = surfaceContainerHighDark,
+            surfaceContainerHighest = surfaceContainerHighestDark
         )
+        // Apply your custom light colors for older versions or when dynamicColor is false
         else -> lightColorScheme(
-            background = colorResource(id = CommonsR.color.background),
-            surface = colorResource(id = CommonsR.color.surface),
-            surfaceContainerLowest = colorResource(id = CommonsR.color.surfaceContainerLowest),
-            onSurface = colorResource(id = CommonsR.color.onSurface),
-            onSurfaceVariant = colorResource(id = CommonsR.color.onSurfaceVariant),
-            onSecondaryContainer = colorResource(id = CommonsR.color.onSecondaryContainer),
-            inverseSurface = colorResource(id = CommonsR.color.inverseSurface),
-            inverseOnSurface = colorResource(id = CommonsR.color.inverseOnSurface),
-            outline = colorResource(id = CommonsR.color.outline),
-            surfaceVariant = colorResource(id = CommonsR.color.surfaceVariant),
-            surfaceContainerHighest = colorResource(id = CommonsR.color.surfaceContainerHighest),
-            surfaceContainer = colorResource(id = CommonsR.color.surfaceContainer),
-            onSecondary = colorResource(id = CommonsR.color.onSecondary),
-            onTertiary = colorResource(id = CommonsR.color.onTertiary),
-            onTertiaryContainer = colorResource(id = CommonsR.color.onTertiaryContainer),
-            onBackground = colorResource(id = CommonsR.color.onBackground),
-            onPrimary = colorResource(id = CommonsR.color.onPrimary),
-            onPrimaryContainer = colorResource(id = CommonsR.color.onPrimaryContainer),
-            outlineVariant = colorResource(id = CommonsR.color.outlineVariant),
-            primary = colorResource(id = CommonsR.color.primary),
-            primaryContainer = colorResource(id = CommonsR.color.primaryContainer),
-            secondary = colorResource(id = CommonsR.color.secondary),
-            secondaryContainer = colorResource(id = CommonsR.color.secondaryContainer),
-            tertiary = colorResource(id = CommonsR.color.tertiary),
-            tertiaryContainer = colorResource(id = CommonsR.color.tertiaryContainer),
+            primary = primaryLight,
+            onPrimary = onPrimaryLight,
+            primaryContainer = primaryContainerLight,
+            onPrimaryContainer = onPrimaryContainerLight,
+            secondary = secondaryLight,
+            onSecondary = onSecondaryLight,
+            secondaryContainer = secondaryContainerLight,
+            onSecondaryContainer = onSecondaryContainerLight,
+            tertiary = tertiaryLight,
+            onTertiary = onTertiaryLight,
+            tertiaryContainer = tertiaryContainerLight,
+            onTertiaryContainer = onTertiaryContainerLight,
+            error = errorLight,
+            onError = onErrorLight,
+            errorContainer = errorContainerLight,
+            onErrorContainer = onErrorContainerLight,
+            background = backgroundLight,
+            onBackground = onBackgroundLight,
+            surface = surfaceLight,
+            onSurface = onSurfaceLight,
+            surfaceVariant = surfaceVariantLight,
+            onSurfaceVariant = onSurfaceVariantLight,
+            outline = outlineLight,
+            outlineVariant = outlineVariantLight,
+            scrim = scrimLight,
+            inverseSurface = inverseSurfaceLight,
+            inverseOnSurface = inverseOnSurfaceLight,
+            inversePrimary = inversePrimaryLight,
+            surfaceDim = surfaceDimLight,
+            surfaceBright = surfaceBrightLight,
+            surfaceContainerLowest = surfaceContainerLowestLight,
+            surfaceContainerLow = surfaceContainerLowLight,
+            surfaceContainer = surfaceContainerLight,
+            surfaceContainerHigh = surfaceContainerHighLight,
+            surfaceContainerHighest = surfaceContainerHighestLight
         )
     }
 
@@ -95,14 +124,16 @@ fun CalculatorTheme(
             window.statusBarColor = Color.Transparent.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
 
-            window.navigationBarColor = colorScheme.background.toArgb()
+            // Use a color from the determined colorScheme for the navigation bar
+            // This part is important to ensure consistency even with non-dynamic themes
+            window.navigationBarColor = colorScheme.surfaceContainerLowest.toArgb() // Or colorScheme.background.toArgb() or another appropriate color
             WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
         }
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography, // Make sure Typography is defined
+        typography = Typography, // Ensure Typography is defined
         content = content
     )
 }
