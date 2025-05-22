@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="Calculator.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-05-22T08:18:12.040349900Z">
+        <DropdownSelection timestamp="2025-05-22T10:06:31.524014800Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\nicob\.android\avd\Pixel_8_Pro_API_34.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\nicob\.android\avd\Pixel_8_Pro.avd" />
             </handle>
           </Target>
         </DropdownSelection>

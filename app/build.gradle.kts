@@ -12,8 +12,8 @@ android {
         applicationId = "com.xenon.calculator"
         minSdk = 29
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.1.1"
+        versionCode = 3
+        versionName = "1.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -22,6 +22,7 @@ android {
         debug {
             applicationIdSuffix = ".compose.debug"
             versionNameSuffix = "-d"
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -53,12 +54,17 @@ android {
 dependencies {
 
     implementation(libs.xenon.commons)
+    val composeBom = platform("androidx.compose:compose-bom:2025.05.01") // Check latest stable BOM
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
 
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.navigation.compose) // Ensure this is the one being used
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.ui)
+    implementation(libs.androidx.appcompat)
     implementation(libs.mathparser.org.mxparser)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
