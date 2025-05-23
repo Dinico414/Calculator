@@ -51,19 +51,6 @@ class SettingsActivity : ComponentActivity() {
                 }
             }
 
-            LaunchedEffect(selectedThemeIndex) {
-                val persistedTheme = SharedPreferenceManager(applicationContext).theme
-                if (persistedTheme in settingsViewModel.themeOptions.indices) {
-                    val expectedNightMode = settingsViewModel.themeOptions[persistedTheme].nightModeFlag
-                    if (AppCompatDelegate.getDefaultNightMode() != expectedNightMode) {
-                        AppCompatDelegate.setDefaultNightMode(expectedNightMode)
-                    }
-                }
-                if (settingsViewModel.selectedThemeIndex.value != persistedTheme) {
-                    settingsViewModel.onThemeSelected(persistedTheme)
-                }
-            }
-
             val configuration = LocalConfiguration.current
             val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 

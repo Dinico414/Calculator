@@ -3,6 +3,7 @@ package com.xenon.calculator
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.edit
 
 class SharedPreferenceManager(context: Context) {
 
@@ -15,7 +16,7 @@ class SharedPreferenceManager(context: Context) {
     // Default to System theme (index 2 in your ThemeSetting enum)
     var theme: Int
         get() = sharedPreferences.getInt(themeKey, 2)
-        set(value) = sharedPreferences.edit().putInt(themeKey, value).apply()
+        set(value) = sharedPreferences.edit { putInt(themeKey, value) }
 
     // themeFlag maps your integer theme value (0, 1, 2) to AppCompatDelegate.MODE_NIGHT_*
     val themeFlag: Array<Int> = arrayOf(

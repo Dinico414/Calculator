@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -67,11 +68,10 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun applyTheme() {
-        sharedPreferenceManager.theme = _selectedThemeIndex.value
-        AppCompatDelegate.setDefaultNightMode(themeOptions[_selectedThemeIndex.value].nightModeFlag)
-        _currentThemeTitle.value = themeOptions[_selectedThemeIndex.value].title
         _showThemeDialog.value = false
-        _currentThemeStateUpdated.value = Unit // Signal that theme state was updated for SettingsActivity
+        val index = _selectedThemeIndex.value
+        sharedPreferenceManager.theme = index
+        AppCompatDelegate.setDefaultNightMode(themeOptions[index].nightModeFlag)
     }
 
     fun updateCurrentLanguage() {
@@ -86,14 +86,18 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun onThemeSelected(index: Int) {
-        // This updates the selection within the dialog before applying
         _selectedThemeIndex.value = index
+        AppCompatDelegate.setDefaultNightMode(themeOptions[index].nightModeFlag)
+        _currentThemeTitle.value = themeOptions[index].title
+        _currentThemeStateUpdated.value = Unit // Signal that theme state was updated for SettingsActivity
     }
 
     fun dismissThemeDialog() {
         _showThemeDialog.value = false
+        val index = sharedPreferenceManager.theme
+        _currentThemeTitle.value = themeOptions[index].title
         // If user dismissed without applying, reset selectedThemeIndex to actual persisted theme
-        _selectedThemeIndex.value = sharedPreferenceManager.theme
+        _selectedThemeIndex.value = index
     }
 
     fun onClearDataClicked() {

@@ -4,6 +4,7 @@ package com.xenon.calculator
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -154,6 +155,7 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         val storedTheme = sharedPreferenceManager.theme
+        Log.d("AAA", "$storedTheme $activeThemeForMainActivity")
         if (activeThemeForMainActivity != storedTheme) {
             activeThemeForMainActivity = storedTheme
             recreate()
