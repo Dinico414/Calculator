@@ -109,7 +109,6 @@ class MainActivity : ComponentActivity() {
                     Surface(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(WindowInsets.safeDrawing.asPaddingValues())
                             .then(
                                 if (isTargetWidthMet) {
                                     Modifier
@@ -123,11 +122,13 @@ class MainActivity : ComponentActivity() {
                                         .clip(RoundedCornerShape(30.dp))
                                 }
                             ),
-                        color = if (isTargetWidthMet) Color.Black else MaterialTheme.colorScheme.primary //Color of Calculator Screen padding
+                        color = if (isTargetWidthMet) Color.Black else MaterialTheme.colorScheme.background //Color of Calculator Screen padding
                     ) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
+                                .padding(WindowInsets.safeDrawing.asPaddingValues())
+                                .clip(RoundedCornerShape(30.dp))
                                 .then(
                                     if (!isTargetWidthMet) {
                                         Modifier.background(MaterialTheme.colorScheme.surfaceContainer) //LayoutContainer Background
