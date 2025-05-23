@@ -93,7 +93,6 @@ fun CompactSettings(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 15.dp)
                 .padding(innerPadding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .verticalScroll(rememberScrollState())

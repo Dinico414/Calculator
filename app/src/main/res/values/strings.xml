@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Calculator-cp</string>
     <string name="settings">Settings</string>
-    <string name="abc_action_bar_up_description">wtf</string>
+    <string name="abc_action_bar_up_description">back</string>
     <string name="general">General</string>
     <string name="language">Language</string>
     <string name="theme">Theme</string>

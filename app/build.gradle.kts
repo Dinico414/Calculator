@@ -54,13 +54,14 @@ android {
 dependencies {
 
     implementation(libs.xenon.commons)
-    val composeBom = platform("androidx.compose:compose-bom:2025.05.01") // Check latest stable BOM
+    val composeBom = platform("androidx.compose:compose-bom:2025.05.01")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
+    implementation("dev.chrisbanes.haze:haze-materials:1.6.2")
     implementation ("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.navigation.compose) // Ensure this is the one being used
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.ui)
