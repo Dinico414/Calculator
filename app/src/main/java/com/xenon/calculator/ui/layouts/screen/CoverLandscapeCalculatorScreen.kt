@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 
 @Composable
-fun CompactLandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
+fun CoverLandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
     Log.d("CalculatorDebug", "CompactLandscapeCalculatorScreen Composing")
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -40,7 +40,7 @@ fun CompactLandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
                 .clip(RoundedCornerShape(20.dp))
                 .background(MaterialTheme.colorScheme.secondaryContainer)
         ) {
-            LandscapeDisplaySection(
+            CoverLandscapeDisplaySection(
                 currentInput = viewModel.currentInput,
                 result = viewModel.result,
                 modifier = Modifier
@@ -58,7 +58,7 @@ fun CompactLandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
 }
 
 @Composable
-fun LandscapeDisplaySection(currentInput: String, result: String, modifier: Modifier = Modifier) {
+fun CoverLandscapeDisplaySection(currentInput: String, result: String, modifier: Modifier = Modifier) {
     Log.d("CalculatorDebug", "LandscapeDisplaySection Composing. Input: '$currentInput', Result: '$result'")
     Row(
         modifier = modifier
@@ -93,12 +93,12 @@ fun LandscapeDisplaySection(currentInput: String, result: String, modifier: Modi
 
 @Preview(showBackground = true, name = "Landscape Display Section", widthDp = 800, heightDp = 150)
 @Composable
-fun LandscapeDisplaySectionPreview() {
+fun CoverLandscapeDisplaySectionPreview() {
     MaterialTheme {
         Box(modifier = Modifier
             .background(MaterialTheme.colorScheme.secondaryContainer)
             .padding(16.dp)) {
-            LandscapeDisplaySection(
+            CoverLandscapeDisplaySection(
                 currentInput = "12345 * (67890 + 123)",
                 result = "836854335"
             )
@@ -108,18 +108,18 @@ fun LandscapeDisplaySectionPreview() {
 
 @Preview(showBackground = true, name = "Compact Landscape Calculator Screen Phone", widthDp = 720, heightDp = 360)
 @Composable
-fun CompactLandscapeCalculatorScreenPhonePreview() {
+fun CoverLandscapeCalculatorScreenPhonePreview() {
     val fakeViewModel = remember { CalculatorViewModel() }
     MaterialTheme {
-        CompactLandscapeCalculatorScreen(viewModel = fakeViewModel)
+        CoverLandscapeCalculatorScreen(viewModel = fakeViewModel)
     }
 }
 
 @Preview(showBackground = true, name = "Compact Landscape Calculator Screen Tablet", device = Devices.TABLET, widthDp = 1280, heightDp = 800)
 @Composable
-fun CompactLandscapeCalculatorScreenTabletPreview() {
+fun CoverLandscapeCalculatorScreenTabletPreview() {
     val fakeViewModel = remember { CalculatorViewModel() }
     MaterialTheme {
-        CompactLandscapeCalculatorScreen(viewModel = fakeViewModel)
+        CoverLandscapeCalculatorScreen(viewModel = fakeViewModel)
     }
 }

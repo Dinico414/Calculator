@@ -7,11 +7,9 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -31,70 +29,105 @@ enum class ThemeSetting(val title: String, val nightModeFlag: Int) {
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
     private val sharedPreferenceManager = SharedPreferenceManager(application)
-    private val themeOptions = ThemeSetting.entries.toTypedArray()
+    val themeOptions = ThemeSetting.entries.toTypedArray()
 
-    // To signal MainActivity to recreate for theme changes
-    private val _themeChanged = MutableStateFlow(false)
-    val themeChanged: StateFlow<Boolean> = _themeChanged.asStateFlow()
+    private val _currentThemeStateUpdated = MutableStateFlow(Unit) // For SettingsActivity immediate UI update
+    val currentThemeStateUpdated: StateFlow<Unit> = _currentThemeStateUpdated.asStateFlow()
 
-    fun onThemeApplied() {
-        _themeChanged.value = false // Reset after handling
+    // --- Current Language ---
+    private val _currentLanguage = mutableStateOf(Locale.getDefault().displayLanguage)
+    val currentLanguage: State<String> = _currentLanguage
+    // Updated via updateCurrentLanguage()
+
+    // --- Selected Theme Index (for the dialog) ---
+    private val _selectedThemeIndex = mutableIntStateOf(sharedPreferenceManager.theme)
+    val selectedThemeIndex: State<Int> = _selectedThemeIndex
+    // Setter is internal to ViewModel via onThemeSelected or init/dismiss
+
+    // --- Current Theme Title (reflects applied theme) ---
+    private val _currentThemeTitle = mutableStateOf(themeOptions[sharedPreferenceManager.theme].title)
+    val currentThemeTitle: State<String> = _currentThemeTitle
+    // Setter is internal to ViewModel via applyTheme or init/dismiss
+
+    // --- Show Theme Dialog ---
+    private val _showThemeDialog = mutableStateOf(false)
+    val showThemeDialog: State<Boolean> = _showThemeDialog
+    // Setter is internal to ViewModel
+
+    // --- Show Clear Data Dialog ---
+    private val _showClearDataDialog = mutableStateOf(false)
+    val showClearDataDialog: State<Boolean> = _showClearDataDialog
+    // Setter is internal to ViewModel
+
+    init {
+        // Ensure ViewModel starts with the correct theme title & index from SharedPreferences
+        _currentThemeTitle.value = themeOptions[sharedPreferenceManager.theme].title
+        _selectedThemeIndex.value = sharedPreferenceManager.theme
+        updateCurrentLanguage() // Set initial language
     }
 
     fun applyTheme() {
-        sharedPreferenceManager.theme = selectedThemeIndex
-        // This line is crucial for the system to know the new theme preference
-        AppCompatDelegate.setDefaultNightMode(themeOptions[selectedThemeIndex].nightModeFlag)
-        currentThemeTitle = themeOptions[selectedThemeIndex].title
-        showThemeDialog = false
-        _themeChanged.value = true // Signal that the theme has changed
+        sharedPreferenceManager.theme = _selectedThemeIndex.value
+        AppCompatDelegate.setDefaultNightMode(themeOptions[_selectedThemeIndex.value].nightModeFlag)
+        _currentThemeTitle.value = themeOptions[_selectedThemeIndex.value].title
+        _showThemeDialog.value = false
+        _currentThemeStateUpdated.value = Unit // Signal that theme state was updated for SettingsActivity
     }
-
-    var currentLanguage by mutableStateOf(Locale.getDefault().displayLanguage)
-        private set
-
-    var selectedThemeIndex by mutableIntStateOf(sharedPreferenceManager.theme)
-        private set
-
-    var currentThemeTitle by mutableStateOf(themeOptions[sharedPreferenceManager.theme].title)
-        private set
-
-    var showThemeDialog by mutableStateOf(false)
-    var showClearDataDialog by mutableStateOf(false)
-
 
     fun updateCurrentLanguage() {
-        currentLanguage = Locale.getDefault().displayLanguage
+        _currentLanguage.value = Locale.getDefault().displayLanguage
     }
+
     fun onThemeSettingClicked() {
-        selectedThemeIndex = sharedPreferenceManager.theme
-        showThemeDialog = true
+        // When opening the dialog, ensure selectedThemeIndex reflects the persisted theme
+        _selectedThemeIndex.value = sharedPreferenceManager.theme
+        // _currentThemeTitle reflects the *applied* theme, so it shouldn't change here until applyTheme
+        _showThemeDialog.value = true
     }
 
     fun onThemeSelected(index: Int) {
-        selectedThemeIndex = index
+        // This updates the selection within the dialog before applying
+        _selectedThemeIndex.value = index
     }
 
     fun dismissThemeDialog() {
-        showThemeDialog = false
+        _showThemeDialog.value = false
+        // If user dismissed without applying, reset selectedThemeIndex to actual persisted theme
+        _selectedThemeIndex.value = sharedPreferenceManager.theme
     }
+
     fun onClearDataClicked() {
-        showClearDataDialog = true
+        _showClearDataDialog.value = true
     }
 
     fun confirmClearData() {
         viewModelScope.launch {
-            val appSharedPreferences = getApplication<Application>().getSharedPreferences(
-                getApplication<Application>().packageName, Context.MODE_PRIVATE
+            // Clear app-specific SharedPreferences (the one used by SharedPreferenceManager)
+            val customPrefs = getApplication<Application>().getSharedPreferences(
+                "CalculatorPrefs", // Make sure this matches SharedPreferenceManager
+                Context.MODE_PRIVATE
             )
-            appSharedPreferences.edit { clear() }
+            customPrefs.edit().clear().apply()
+
+            // Optional: Clear default SharedPreferences if your app uses them for other things
+            // val defaultAppSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
+            // defaultAppSharedPreferences.edit().clear().apply()
+
+            // After clearing, re-initialize theme in ViewModel to default (or whatever is appropriate)
+            // and restart.
+            // For example, if system theme (index 2) is your default after clearing:
+            sharedPreferenceManager.theme = 2 // Assuming 2 is "System"
+            _selectedThemeIndex.value = sharedPreferenceManager.theme
+            _currentThemeTitle.value = themeOptions[sharedPreferenceManager.theme].title
+            AppCompatDelegate.setDefaultNightMode(themeOptions[sharedPreferenceManager.theme].nightModeFlag)
+
             restartApplication(getApplication())
         }
-        showClearDataDialog = false
+        _showClearDataDialog.value = false
     }
 
     fun dismissClearDataDialog() {
-        showClearDataDialog = false
+        _showClearDataDialog.value = false
     }
 
     fun openLanguageSettings(context: Context) {
@@ -116,7 +149,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         val componentName = intent?.component
         val mainIntent = Intent.makeRestartActivityTask(componentName)
         context.startActivity(mainIntent)
-        Runtime.getRuntime().exit(0)
+        Runtime.getRuntime().exit(0) // Ensure the old process is killed
     }
 
     class SettingsViewModelFactory(private val application: Application) : ViewModelProvider.Factory {

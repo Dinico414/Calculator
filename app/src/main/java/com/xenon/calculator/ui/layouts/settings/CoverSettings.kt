@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -46,7 +46,7 @@ import com.xenon.calculator.viewmodel.ThemeSetting
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CompactSettings(
+fun CoverSettings(
     onNavigateBack: () -> Unit,
     viewModel: SettingsViewModel,
 ) {
@@ -60,16 +60,23 @@ fun CompactSettings(
     val showClearDataDialog by viewModel.showClearDataDialog
 
     Scaffold(
+        containerColor = Color.Black, // Set Scaffold background to black
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Settings") },
+                title = { Text("Settings", color = Color.White) }, // Set title text to white
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Navigate back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Navigate back",
+                            tint = Color.White // Set icon tint to white
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent
+                    containerColor = Color.Black, // Set TopAppBar background to black
+                    titleContentColor = Color.White, // Ensure title text is white
+                    navigationIconContentColor = Color.White // Ensure nav icon is white
                 )
             )
         }
@@ -77,68 +84,56 @@ fun CompactSettings(
         Column(
             modifier = Modifier
                 .padding(paddingValues)
-                .fillMaxSize()
-                .padding(horizontal = 15.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(vertical = 8.dp)
+                .fillMaxWidth() // Ensure column takes full width for background
+                .background(Color.Black) // Set Column background to black
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(30.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState())
-                        .padding(vertical = 10.dp, horizontal = 10.dp)
-                ) {
-                    SettingsGroupTile(
-                        title = "Theme",
-                        subtitle = "Current: $currentThemeTitle",
-                        onClick = { viewModel.onThemeSettingClicked() },
-                    )
-                    Spacer(modifier = Modifier.height(5.dp))
+            CoverSettingsGroupTile(
+                title = "Theme",
+                subtitle = "Current: $currentThemeTitle",
+                onClick = { viewModel.onThemeSettingClicked() },
+            )
+            Spacer(modifier = Modifier.height(5.dp))
 
-                    SettingsGroupTile(
-                        title = "Language",
-                        subtitle = "Current: $currentLanguage",
-                        onClick = { viewModel.openLanguageSettings(context) },
-                    )
-                    LaunchedEffect(Unit) {
-                        viewModel.updateCurrentLanguage()
-                    }
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    SettingsGroupTile(
-                        title = "Data Management",
-                        subtitle = "Clear app data and cache",
-                        onClick = { viewModel.onClearDataClicked() },
-                    )
-                }
+            CoverSettingsGroupTile(
+                title = "Language",
+                subtitle = "Current: $currentLanguage",
+                onClick = { viewModel.openLanguageSettings(context) },
+            )
+            LaunchedEffect(Unit) {
+                viewModel.updateCurrentLanguage()
             }
-        }
-        if (showThemeDialog) {
-            ThemeSelectionDialog(
-                themeOptions = themeOptions,
-                currentThemeIndex = selectedThemeIndex,
-                onThemeSelected = { index -> viewModel.onThemeSelected(index) },
-                onDismiss = { viewModel.dismissThemeDialog() },
-                onConfirm = { viewModel.applyTheme() }
-            )
-        }
+            Spacer(modifier = Modifier.height(5.dp))
 
-        if (showClearDataDialog) {
-            ClearDataConfirmationDialog(
-                onConfirm = { viewModel.confirmClearData() },
-                onDismiss = { viewModel.dismissClearDataDialog() }
+            CoverSettingsGroupTile(
+                title = "Data Management",
+                subtitle = "Clear app data and cache",
+                onClick = { viewModel.onClearDataClicked() },
             )
+
+            if (showThemeDialog) {
+                CoverThemeSelectionDialog(
+                    themeOptions = themeOptions,
+                    currentThemeIndex = selectedThemeIndex,
+                    onThemeSelected = { index -> viewModel.onThemeSelected(index) },
+                    onDismiss = { viewModel.dismissThemeDialog() },
+                    onConfirm = { viewModel.applyTheme() }
+                )
+            }
+
+            if (showClearDataDialog) {
+                CoverClearDataConfirmationDialog(
+                    onConfirm = { viewModel.confirmClearData() },
+                    onDismiss = { viewModel.dismissClearDataDialog() }
+                )
+            }
         }
     }
 }
 
 @Composable
-fun SettingsGroupTile(
+fun CoverSettingsGroupTile(
     title: String,
     subtitle: String,
     onClick: () -> Unit,
@@ -146,8 +141,9 @@ fun SettingsGroupTile(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+            .padding(horizontal = 10.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.Black) // Set Row background to black (or a dark grey if you want some separation)
             .clickable(onClick = onClick, role = Role.Button)
             .padding(horizontal = 16.dp, vertical = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -155,19 +151,20 @@ fun SettingsGroupTile(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White // Set title text to white
             )
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = Color.White // Set subtitle text to white
             )
         }
     }
 }
 
 @Composable
-fun ThemeSelectionDialog(
+fun CoverThemeSelectionDialog(
     themeOptions: Array<ThemeSetting>,
     currentThemeIndex: Int,
     onThemeSelected: (Int) -> Unit,
@@ -175,10 +172,15 @@ fun ThemeSelectionDialog(
     onConfirm: () -> Unit,
 ) {
     AlertDialog(
+        containerColor = Color.Black, // Set AlertDialog background to black
         onDismissRequest = onDismiss,
-        title = { Text(text = "Select Theme") },
+        title = { Text(text = "Select Theme", color = Color.White) }, // Set title text to white
         text = {
-            Column(Modifier.selectableGroup()) {
+            Column(
+                Modifier
+                    .selectableGroup()
+                    .background(Color.Black) // Set Column background to black
+            ) {
                 themeOptions.forEachIndexed { index, theme ->
                     Row(
                         Modifier
@@ -194,12 +196,19 @@ fun ThemeSelectionDialog(
                     ) {
                         RadioButton(
                             selected = (index == currentThemeIndex),
-                            onClick = null
+                            onClick = null,
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = Color.White, // Radio button selected color
+                                unselectedColor = Color.Gray, // Radio button unselected color
+                                disabledSelectedColor = Color.DarkGray,
+                                disabledUnselectedColor = Color.DarkGray
+                            )
                         )
                         Text(
                             text = theme.title,
                             style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(start = 16.dp)
+                            modifier = Modifier.padding(start = 16.dp),
+                            color = Color.White // Set option text to white
                         )
                     }
                 }
@@ -207,34 +216,35 @@ fun ThemeSelectionDialog(
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text("OK")
+                Text("OK", color = Color.White) // Set button text to white
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text("Cancel", color = Color.White) // Set button text to white
             }
         }
     )
 }
 
 @Composable
-fun ClearDataConfirmationDialog(
+fun CoverClearDataConfirmationDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     AlertDialog(
+        containerColor = Color.Black, // Set AlertDialog background to black
         onDismissRequest = onDismiss,
-        title = { Text(text = "Clear Data") },
-        text = { Text(text = "Are you sure you want to clear all app data? This action cannot be undone and will restart the app.") },
+        title = { Text(text = "Clear Data", color = Color.White) }, // Set title text to white
+        text = { Text(text = "Are you sure you want to clear all app data? This action cannot be undone and will restart the app.", color = Color.White) }, // Set body text to white
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text("Confirm")
+                Text("Confirm", color = Color.White) // Set button text to white
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text("Cancel", color = Color.White) // Set button text to white
             }
         }
     )
@@ -242,12 +252,20 @@ fun ClearDataConfirmationDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun CompactSettingsPreview() {
+fun CoverSettingsPreview() {
     val context = LocalContext.current
     val previewViewModel: SettingsViewModel = viewModel(
         factory = SettingsViewModel.SettingsViewModelFactory(context.applicationContext as Application)
     )
-    CalculatorTheme {
-        CompactSettings(onNavigateBack = {}, viewModel = previewViewModel)
+    // For preview, you might want to wrap with a theme that has black background
+    // or apply background directly to the CoverSettings if CalculatorTheme doesn't default to black
+    CalculatorTheme { // Or a custom theme for this preview
+        // To ensure the preview also reflects the black background,
+        // you might need to apply a background modifier here too,
+        // or ensure your CalculatorTheme's surface is black for this preview.
+        // Forcing it here for clarity if CalculatorTheme isn't strictly black.
+        Column(Modifier.background(Color.Black)) {
+            CoverSettings(onNavigateBack = {}, viewModel = previewViewModel)
+        }
     }
 }

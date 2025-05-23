@@ -1,7 +1,7 @@
 package com.xenon.calculator
 
 
-import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,15 +23,17 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,61 +44,48 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.xenon.calculator.ui.layouts.ButtonLayout
 import com.xenon.calculator.ui.layouts.CalculatorScreen
-import com.xenon.calculator.ui.layouts.settings.CompactSettings
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 import com.xenon.calculator.viewmodel.LayoutType
-import com.xenon.calculator.viewmodel.SettingsViewModel
 
 class MainActivity : ComponentActivity() {
     private val calculatorViewModel: CalculatorViewModel by viewModels()
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
-    private lateinit var settingsViewModel: SettingsViewModel
+    private var activeThemeForMainActivity: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         sharedPreferenceManager = SharedPreferenceManager(applicationContext)
-        settingsViewModel = ViewModelProvider(
-            this,
-            SettingsViewModel.SettingsViewModelFactory(application)
-        )[SettingsViewModel::class.java]
 
-        AppCompatDelegate.setDefaultNightMode(sharedPreferenceManager.themeFlag[sharedPreferenceManager.theme])
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
+        sharedPreferenceManager = SharedPreferenceManager(applicationContext)
+        activeThemeForMainActivity = sharedPreferenceManager.theme
+
+        if (activeThemeForMainActivity >= 0 && activeThemeForMainActivity < sharedPreferenceManager.themeFlag.size) {
+            AppCompatDelegate.setDefaultNightMode(sharedPreferenceManager.themeFlag[activeThemeForMainActivity])
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            activeThemeForMainActivity = 2
+        }
         setContent {
-            var currentThemeSetting by remember { mutableIntStateOf(sharedPreferenceManager.theme) }
 
-            LaunchedEffect(settingsViewModel) {
-                settingsViewModel.themeChanged.collect { changed ->
-                    if (changed) {
-                        currentThemeSetting = sharedPreferenceManager.theme
-                        settingsViewModel.onThemeApplied()
-                    }
-                }
-            }
-
-
-            val isDarkTheme = when (currentThemeSetting) {
+            val appIsDarkTheme = when (activeThemeForMainActivity) {
                 0 -> false
                 1 -> true
                 else -> isSystemInDarkTheme()
             }
 
-            CalculatorTheme(darkTheme = isDarkTheme) {
+            CalculatorTheme(darkTheme = appIsDarkTheme) {
                 val systemUiController = rememberSystemUiController()
                 val view = LocalView.current
-                val navController = rememberNavController()
 
                 BoxWithConstraints {
                     val screenWidth = this.maxWidth
@@ -104,8 +93,8 @@ class MainActivity : ComponentActivity() {
                     val tolerance = 0.5.dp
                     val isTargetWidthMet = (screenWidth >= targetWidth - tolerance) && (screenWidth <= targetWidth + tolerance)
 
-                    val systemBarColor = if (isTargetWidthMet) Color.Black else MaterialTheme.colorScheme.background
-                    val darkIcons = !isTargetWidthMet && !isDarkTheme
+                    val systemBarColor = if (isTargetWidthMet) Color.Black else MaterialTheme.colorScheme.background //Notification- and Navigationbar color SDK 34-
+                    val darkIcons = !isTargetWidthMet && !appIsDarkTheme
 
                     if (!view.isInEditMode) {
                         SideEffect {
@@ -124,47 +113,49 @@ class MainActivity : ComponentActivity() {
                             .then(
                                 if (isTargetWidthMet) {
                                     Modifier
-                                        .background(Color.Black)
+                                        .background(Color.Black) //Cover screen App Background
                                         .padding(horizontal = 0.dp)
                                         .clip(RoundedCornerShape(0.dp))
                                 } else {
                                     Modifier
-                                        .background(MaterialTheme.colorScheme.background)
+                                        .background(MaterialTheme.colorScheme.background) //App Background
                                         .padding(horizontal = 15.dp)
                                         .clip(RoundedCornerShape(30.dp))
                                 }
                             ),
-                        color = if (isTargetWidthMet) Color.Black else MaterialTheme.colorScheme.background
+                        color = if (isTargetWidthMet) Color.Black else MaterialTheme.colorScheme.primary //Color of Calculator Screen padding
                     ) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .then(
                                     if (!isTargetWidthMet) {
-                                        Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
+                                        Modifier.background(MaterialTheme.colorScheme.surfaceContainer) //LayoutContainer Background
                                     } else {
                                         Modifier
                                     }
                                 )
                         ) {
-                            NavHost(navController = navController, startDestination = "calculator") {
-                                composable("calculator") {
-                                    CalculatorApp(
-                                        viewModel = calculatorViewModel,
-                                        navController = navController
-                                    )
+                            CalculatorApp(
+                                viewModel = calculatorViewModel,
+                                onOpenSettings = {
+                                    val intent = Intent(this@MainActivity, SettingsActivity::class.java)
+                                    startActivity(intent)
                                 }
-                                composable("settings") {
-                                    CompactSettings(
-                                        onNavigateBack = { navController.popBackStack() },
-                                        viewModel = settingsViewModel
-                                    )
-                                }
-                            }
+                            )
                         }
                     }
                 }
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val storedTheme = sharedPreferenceManager.theme
+        if (activeThemeForMainActivity != storedTheme) {
+            activeThemeForMainActivity = storedTheme
+            recreate()
         }
     }
 }
@@ -172,21 +163,22 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CalculatorApp(
     viewModel: CalculatorViewModel,
-    navController: NavController,
+    onOpenSettings: () -> Unit,
 ) {
     val configuration = LocalConfiguration.current
     LocalContext.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    var showMenu by remember { mutableStateOf(false) }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val screenWidth = this.maxWidth
-//        val targetWidth = 418.30066.dp
-//        val tolerance = 0.5.dp
-//        val isTargetWidthMet = (screenWidth >= targetWidth - tolerance) && (screenWidth <= targetWidth + tolerance)
+        val targetWidth = 418.30066.dp
+        val tolerance = 0.5.dp
+        val isTargetWidthMet = (screenWidth >= targetWidth - tolerance) && (screenWidth <= targetWidth + tolerance)
 
 
         val layoutType = when {
-//            isTargetWidthMet -> LayoutType.COVER
+            isTargetWidthMet -> LayoutType.COVER
             screenWidth < 320.dp -> LayoutType.SMALL
             screenWidth < 600.dp -> LayoutType.COMPACT
             screenWidth < 840.dp -> LayoutType.MEDIUM
@@ -211,20 +203,43 @@ fun CalculatorApp(
                     layoutType = layoutType,
                     modifier = Modifier.fillMaxSize()
                 )
+
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 8.dp, end = 8.dp),
-                    contentAlignment = Alignment.TopEnd
+                        .align(Alignment.TopEnd)
+                        .padding(top = 8.dp, end = 8.dp)
+
                 ) {
-                    IconButton(onClick = {
-                        navController.navigate("settings")
-                    }) {
+                    IconButton(onClick = { showMenu = !showMenu }) {
+
+
                         Icon(
                             imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Settings",
+                            contentDescription = "Menu",
                             tint = MaterialTheme.colorScheme.onSecondaryContainer
                         )
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+
+                        offset = DpOffset(x = 0.dp, y = (-48).dp)
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Settings") },
+                            onClick = {
+                                showMenu = false
+                                onOpenSettings()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Converter(Placeholder)") },
+                            onClick = {
+                                showMenu = false
+                                onOpenSettings()
+                            }
+                        )
+                        // DropdownMenuItem(text = { Text("Item 3") }, onClick = { showMenu = false })
                     }
                 }
             }
@@ -241,78 +256,40 @@ fun CalculatorApp(
     }
 }
 
-@SuppressLint("ViewModelConstructorInComposable")
-@Preview
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light Mode")
+
 @Composable
-fun DefaultPreviewPortrait() {
-    CalculatorTheme {
-        rememberNavController()
+fun DefaultPreviewPortraitLight() {
+    CalculatorTheme(darkTheme = false) {
+
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(10.dp)
-                    .clip(RoundedCornerShape(25.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-            ) {
-                val previewViewModel = CalculatorViewModel()
-                previewViewModel.onButtonClick("123")
-                CalculatorScreen(
-                    viewModel = previewViewModel,
-                    isLandscape = false,
-                    layoutType = LayoutType.COMPACT,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+            val previewViewModel = remember { CalculatorViewModel() }
+            CalculatorApp(viewModel = previewViewModel, onOpenSettings = {})
         }
     }
 }
 
-
-@Preview
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode")
 @Composable
-fun CalculatorAppPreview() {
-    val fakeViewModel = remember { CalculatorViewModel() }
-    val dummyNavController = rememberNavController()
-    CalculatorTheme {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 15.dp)
-                .clip(RoundedCornerShape(30.dp))
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
-            ) {
-                CalculatorApp(viewModel = fakeViewModel, navController = dummyNavController)
-            }
-        }
+fun DefaultPreviewPortraitDark() {
+    CalculatorTheme(darkTheme = true) {
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+            val previewViewModel = remember { CalculatorViewModel() }
+            CalculatorApp(viewModel = previewViewModel, onOpenSettings = {})
+                    }
     }
 }
 
-@Preview(widthDp = 800, heightDp = 360)
+@Preview(showBackground = true, widthDp = 700, heightDp = 400, name = "Landscape")
 @Composable
 fun CalculatorAppPreviewLandscape() {
     val fakeViewModel = remember { CalculatorViewModel() }
-    val dummyNavController = rememberNavController()
-    CalculatorTheme {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 15.dp)
-                .clip(RoundedCornerShape(30.dp))
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
-            ) {
-                CalculatorApp(viewModel = fakeViewModel, navController = dummyNavController)
-            }
+    CalculatorTheme(darkTheme = false) {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            CalculatorApp(
+                viewModel = fakeViewModel,
+                onOpenSettings = {}
+            )
         }
     }
 }

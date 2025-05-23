@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.xenon.calculator.ui.layouts.screen.CompactCalculatorScreen
 import com.xenon.calculator.ui.layouts.screen.CompactLandscapeCalculatorScreen
+import com.xenon.calculator.ui.layouts.screen.CoverLandscapeCalculatorScreen
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 import com.xenon.calculator.viewmodel.LayoutType
 
@@ -20,15 +21,10 @@ fun CalculatorScreen(
     Box(modifier = modifier.fillMaxSize()) {
         when (layoutType) {
             LayoutType.COVER -> {
-//                if (isLandscape) {
-//                    CoverCalculatorScreen(viewModel = viewModel)
-//                } else {
-//                    CoverCalculatorScreen(viewModel = viewModel)
-//                }
                 if (isLandscape) {
-                    CompactLandscapeCalculatorScreen(viewModel = viewModel)
+                    CoverLandscapeCalculatorScreen(viewModel = viewModel)
                 } else {
-                    CompactLandscapeCalculatorScreen(viewModel = viewModel)
+                    CoverLandscapeCalculatorScreen(viewModel = viewModel)
                 }
             }
 
