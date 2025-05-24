@@ -32,6 +32,11 @@
             android:exported="true"
             android:label="@string/settings"
             android:theme="@style/Theme.Calculator"/>
+        <activity
+            android:name=".ConverterActivity"
+            android:exported="true"
+            android:label="@string/converter"
+            android:theme="@style/Theme.Calculator"/>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

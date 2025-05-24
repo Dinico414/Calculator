@@ -1,10 +1,10 @@
 package com.xenon.calculator
 
 
+// Add the import for your ConverterActivity
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -32,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -149,6 +148,11 @@ class MainActivity : ComponentActivity() {
                                 onOpenSettings = {
                                     val intent = Intent(this@MainActivity, SettingsActivity::class.java)
                                     startActivity(intent)
+                                },
+                                // Add the onOpenConverter lambda
+                                onOpenConverter = {
+                                    val intent = Intent(this@MainActivity, ConverterActivity::class.java)
+                                    startActivity(intent)
                                 }
                             )
                         }
@@ -172,6 +176,7 @@ class MainActivity : ComponentActivity() {
 fun CalculatorApp(
     viewModel: CalculatorViewModel,
     onOpenSettings: () -> Unit,
+    onOpenConverter: () -> Unit // Add this parameter
 ) {
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
@@ -195,26 +200,26 @@ fun CalculatorApp(
             dimensionForLayout < 840.dp -> LayoutType.MEDIUM
             else -> LayoutType.EXPANDED
         }
-
-        fun getLayoutNames(currentLayoutType: LayoutType, landscape: Boolean): Pair<String, String> {
-            val orientationSuffix = if (landscape && currentLayoutType != LayoutType.COVER) "Landscape" else ""
-
-            val baseName = currentLayoutType.name.lowercase().replaceFirstChar { it.uppercase() }
-
-            if (currentLayoutType == LayoutType.COVER) {
-                return Pair("CoverScreenLayout", "CoverButtonLayout")
-            }
-
-            val screenLayoutName = "${baseName}${orientationSuffix}CalculatorScreen"
-            val buttonLayoutName = "${baseName}${orientationSuffix}ButtonLayout"
-            return Pair(screenLayoutName, buttonLayoutName)
-        }
-
-        LaunchedEffect(layoutType, isLandscape) {
-            val (screenLayoutName, buttonLayoutName) = getLayoutNames(layoutType, isLandscape)
-            val toastMessage = "Layout: ${layoutType.name}\nScreen: $screenLayoutName\nButtons: $buttonLayoutName"
-            Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
-        }
+//
+//        fun getLayoutNames(currentLayoutType: LayoutType, landscape: Boolean): Pair<String, String> {
+//            val orientationSuffix = if (landscape && currentLayoutType != LayoutType.COVER) "Landscape" else ""
+//
+//            val baseName = currentLayoutType.name.lowercase().replaceFirstChar { it.uppercase() }
+//
+//            if (currentLayoutType == LayoutType.COVER) {
+//                return Pair("CoverScreenLayout", "CoverButtonLayout")
+//            }
+//
+//            val screenLayoutName = "${baseName}${orientationSuffix}CalculatorScreen"
+//            val buttonLayoutName = "${baseName}${orientationSuffix}ButtonLayout"
+//            return Pair(screenLayoutName, buttonLayoutName)
+//        }
+//
+//        LaunchedEffect(layoutType, isLandscape) {
+//            val (screenLayoutName, buttonLayoutName) = getLayoutNames(layoutType, isLandscape)
+//            val toastMessage = "Layout: ${layoutType.name}\nScreen: $screenLayoutName\nButtons: $buttonLayoutName"
+//            Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
+//        }
 
         Column(
             modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom
@@ -268,10 +273,10 @@ fun CalculatorApp(
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Converter(Placeholder)") },
+                            text = { Text("Converter") },
                             onClick = {
                                 showMenu = false
-                                onOpenSettings()
+                                onOpenConverter() // Call the new lambda here
                             }
                         )
                     }
@@ -298,7 +303,7 @@ fun DefaultPreviewPortraitLight() {
 
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             val previewViewModel = remember { CalculatorViewModel() }
-            CalculatorApp(viewModel = previewViewModel, onOpenSettings = {})
+            CalculatorApp(viewModel = previewViewModel, onOpenSettings = {}, onOpenConverter = {}) // Add for preview
         }
     }
 }
@@ -309,8 +314,8 @@ fun DefaultPreviewPortraitDark() {
     CalculatorTheme(darkTheme = true) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             val previewViewModel = remember { CalculatorViewModel() }
-            CalculatorApp(viewModel = previewViewModel, onOpenSettings = {})
-                    }
+            CalculatorApp(viewModel = previewViewModel, onOpenSettings = {}, onOpenConverter = {}) // Add for preview
+        }
     }
 }
 
@@ -322,7 +327,8 @@ fun CalculatorAppPreviewLandscape() {
         Surface(modifier = Modifier.fillMaxSize()) {
             CalculatorApp(
                 viewModel = fakeViewModel,
-                onOpenSettings = {}
+                onOpenSettings = {},
+                onOpenConverter = {} // Add for preview
             )
         }
     }
