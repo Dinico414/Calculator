@@ -42,6 +42,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.SettingsViewModel
 import com.xenon.calculator.viewmodel.ThemeSetting
@@ -61,29 +62,15 @@ fun CoverSettings(
     val currentLanguage by viewModel.currentLanguage
     val showClearDataDialog by viewModel.showClearDataDialog
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    Scaffold(
-        containerColor = Color.Black, // Set Scaffold background to black
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Settings", color = Color.White) }, // Set title text to white
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Navigate back",
-                            tint = Color.White // Set icon tint to white
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Black, // Set TopAppBar background to black
-                    titleContentColor = Color.White, // Ensure title text is white
-                    navigationIconContentColor = Color.White // Ensure nav icon is white
-                ),
-                scrollBehavior = scrollBehavior,
-            )
+    CollapsingAppBarLayout(
+        navigationIcon = {
+            IconButton(onClick = onNavigateBack) {
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Navigate back",
+                    tint = Color.White // Set icon tint to white
+                )
+            }
         }
     ) { paddingValues ->
         Column(

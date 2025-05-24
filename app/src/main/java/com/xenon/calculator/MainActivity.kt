@@ -76,8 +76,7 @@ class MainActivity : ComponentActivity() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             activeThemeForMainActivity = 2
         }
-        val intent = Intent(this@MainActivity, SettingsActivity::class.java)
-        startActivity(intent)
+
         setContent {
 
             val appIsDarkTheme = when (activeThemeForMainActivity) {

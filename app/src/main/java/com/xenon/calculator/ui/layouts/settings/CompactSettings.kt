@@ -1,7 +1,6 @@
 package com.xenon.calculator.ui.layouts.settings
 
 import android.app.Application
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -45,37 +44,15 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.SettingsViewModel
 import com.xenon.calculator.viewmodel.ThemeSetting
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CollapsingToolbar(
-    modifier: Modifier = Modifier,
-    navigationIcon: @Composable () -> Unit = {},
-    content: @Composable (paddingValues: PaddingValues) -> Unit
-) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-    Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            LargeTopAppBar(
-                title = { Text("Settings") },
-                navigationIcon = navigationIcon,
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent
-                ),
-                scrollBehavior = scrollBehavior,
-            )
-        }
-    ) { paddingValues ->
-        content(paddingValues)
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -92,60 +69,11 @@ fun CompactSettings(
     val currentLanguage by viewModel.currentLanguage
     val showClearDataDialog by viewModel.showClearDataDialog
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    val expandedHeight = 200.dp
-    val collapsedHeight = 54.dp
-
-    Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            LargeTopAppBar(
-                title = {},
-                collapsedHeight = collapsedHeight,
-                expandedHeight = expandedHeight,
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent,
-                    scrolledContainerColor = Color.Transparent,
-                    navigationIconContentColor = Color.Transparent,
-                    titleContentColor = Color.Transparent,
-                    actionIconContentColor = Color.Transparent,
-                ),
-                scrollBehavior = scrollBehavior
-            )
-
-            val fraction = scrollBehavior.state.collapsedFraction
-            val curHeight = collapsedHeight.times(fraction) + expandedHeight.times(1-fraction)
-            val curFontSize = (24*fraction + 45*(1-fraction)).sp
-
-            CenterAlignedTopAppBar(
-                expandedHeight = curHeight,
-                title = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("Settings", fontSize = curFontSize)
-                    }
-               },
-                navigationIcon = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .padding(top=curHeight-collapsedHeight),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        IconButton(onClick = onNavigateBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Navigate back")
-                        }
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Transparent,
-                    scrolledContainerColor = Color.Transparent
-                ),
-//                scrollBehavior = scrollBehavior,
-            )
+    CollapsingAppBarLayout(
+        navigationIcon = {
+            IconButton(onClick = onNavigateBack) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Navigate back")
+            }
         }
     ) { paddingValues ->
         Column(
