@@ -19,10 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 
@@ -37,10 +39,11 @@ fun CompactLandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
+                .padding(end = 40.dp)
                 .clip(RoundedCornerShape(20.dp))
                 .background(MaterialTheme.colorScheme.secondaryContainer)
         ) {
-            LandscapeDisplaySection(
+            CompactLandscapeDisplaySection(
                 currentInput = viewModel.currentInput,
                 result = viewModel.result,
                 modifier = Modifier
@@ -58,7 +61,7 @@ fun CompactLandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
 }
 
 @Composable
-fun LandscapeDisplaySection(currentInput: String, result: String, modifier: Modifier = Modifier) {
+fun CompactLandscapeDisplaySection(currentInput: String, result: String, modifier: Modifier = Modifier) {
     Log.d("CalculatorDebug", "LandscapeDisplaySection Composing. Input: '$currentInput', Result: '$result'")
     Row(
         modifier = modifier
@@ -67,10 +70,13 @@ fun LandscapeDisplaySection(currentInput: String, result: String, modifier: Modi
     ) {
         Text(
             text = currentInput,
-            style = MaterialTheme.typography.headlineSmall.copy(fontSize = 36.sp),
+            style = MaterialTheme.typography.displaySmall.copy(
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Light,
+                lineHeight = 0.8.em),
             color = MaterialTheme.colorScheme.onSecondaryContainer,
             textAlign = TextAlign.Start,
-            maxLines = 5,
+            maxLines = 3,
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
@@ -79,10 +85,14 @@ fun LandscapeDisplaySection(currentInput: String, result: String, modifier: Modi
 
         Text(
             text = result,
-            style = MaterialTheme.typography.displaySmall.copy(fontSize = 48.sp),
+            style = MaterialTheme.typography.displaySmall.copy(
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 0.8.em
+            ),
             color = MaterialTheme.colorScheme.onSecondaryContainer,
             textAlign = TextAlign.End,
-            maxLines = 2,
+            maxLines = 3,
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
@@ -98,7 +108,7 @@ fun LandscapeDisplaySectionPreview() {
         Box(modifier = Modifier
             .background(MaterialTheme.colorScheme.secondaryContainer)
             .padding(16.dp)) {
-            LandscapeDisplaySection(
+            CompactLandscapeDisplaySection(
                 currentInput = "12345 * (67890 + 123)",
                 result = "836854335"
             )

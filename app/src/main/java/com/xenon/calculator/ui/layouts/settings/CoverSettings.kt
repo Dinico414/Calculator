@@ -28,7 +28,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,13 +35,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.SettingsViewModel
 import com.xenon.calculator.viewmodel.ThemeSetting
@@ -62,15 +59,28 @@ fun CoverSettings(
     val currentLanguage by viewModel.currentLanguage
     val showClearDataDialog by viewModel.showClearDataDialog
 
-    CollapsingAppBarLayout(
-        navigationIcon = {
-            IconButton(onClick = onNavigateBack) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Navigate back",
-                    tint = Color.White // Set icon tint to white
+    Scaffold(
+        containerColor = Color.Black, // Set Scaffold background to black
+
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text("Settings", color = Color.White) }, // Set title text to white
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Navigate back",
+                            tint = Color.White // Set icon tint to white
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Black, // Set TopAppBar background to black
+                    titleContentColor = Color.White, // Ensure title text is white
+                    navigationIconContentColor = Color.White // Ensure nav icon is white
                 )
-            }
+
+            )
         }
     ) { paddingValues ->
         Column(

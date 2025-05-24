@@ -4,7 +4,7 @@ package com.xenon.calculator
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -32,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -114,14 +115,14 @@ class MainActivity : ComponentActivity() {
                             .then(
                                 if (isTargetWidthMet) {
                                     Modifier
+                                        .clip(RoundedCornerShape(0.dp))
                                         .background(Color.Black) //Cover screen App Background
                                         .padding(horizontal = 0.dp)
-                                        .clip(RoundedCornerShape(0.dp))
                                 } else {
                                     Modifier
+                                        .clip(RoundedCornerShape(30.dp))
                                         .background(MaterialTheme.colorScheme.background) //App Background
                                         .padding(horizontal = 15.dp)
-                                        .clip(RoundedCornerShape(30.dp))
                                 }
                             ),
                         color = if (isTargetWidthMet) Color.Black else MaterialTheme.colorScheme.background //Color of Calculator Screen padding
@@ -130,12 +131,16 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(WindowInsets.safeDrawing.asPaddingValues())
-                                .clip(RoundedCornerShape(30.dp))
                                 .then(
-                                    if (!isTargetWidthMet) {
-                                        Modifier.background(MaterialTheme.colorScheme.surfaceContainer) //LayoutContainer Background
+                                    if (isTargetWidthMet) {
+                                        Modifier
+                                            .background(Color.Black) //Cover screen App Background
+                                            .padding(horizontal = 0.dp)
+                                            .clip(RoundedCornerShape(0.dp))
                                     } else {
                                         Modifier
+                                            .clip(RoundedCornerShape(30.dp))
+                                            .background(MaterialTheme.colorScheme.surfaceContainer) //App Background
                                     }
                                 )
                         ) {
@@ -169,34 +174,66 @@ fun CalculatorApp(
     onOpenSettings: () -> Unit,
 ) {
     val configuration = LocalConfiguration.current
-    LocalContext.current
+    val context = LocalContext.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     var showMenu by remember { mutableStateOf(false) }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val screenWidth = this.maxWidth
+        val screenHeight = this.maxHeight
         val targetWidth = 418.30066.dp
         val tolerance = 0.5.dp
         val isTargetWidthMet = (screenWidth >= targetWidth - tolerance) && (screenWidth <= targetWidth + tolerance)
 
 
+        val dimensionForLayout = if (isLandscape && !isTargetWidthMet) screenHeight else screenWidth
+
         val layoutType = when {
             isTargetWidthMet -> LayoutType.COVER
-            screenWidth < 320.dp -> LayoutType.SMALL
-            screenWidth < 600.dp -> LayoutType.COMPACT
-            screenWidth < 840.dp -> LayoutType.MEDIUM
+            dimensionForLayout < 320.dp -> LayoutType.SMALL
+            dimensionForLayout < 600.dp -> LayoutType.COMPACT
+            dimensionForLayout < 840.dp -> LayoutType.MEDIUM
             else -> LayoutType.EXPANDED
+        }
+
+        fun getLayoutNames(currentLayoutType: LayoutType, landscape: Boolean): Pair<String, String> {
+            val orientationSuffix = if (landscape && currentLayoutType != LayoutType.COVER) "Landscape" else ""
+
+            val baseName = currentLayoutType.name.lowercase().replaceFirstChar { it.uppercase() }
+
+            if (currentLayoutType == LayoutType.COVER) {
+                return Pair("CoverScreenLayout", "CoverButtonLayout")
+            }
+
+            val screenLayoutName = "${baseName}${orientationSuffix}CalculatorScreen"
+            val buttonLayoutName = "${baseName}${orientationSuffix}ButtonLayout"
+            return Pair(screenLayoutName, buttonLayoutName)
+        }
+
+        LaunchedEffect(layoutType, isLandscape) {
+            val (screenLayoutName, buttonLayoutName) = getLayoutNames(layoutType, isLandscape)
+            val toastMessage = "Layout: ${layoutType.name}\nScreen: $screenLayoutName\nButtons: $buttonLayoutName"
+            Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
         }
 
         Column(
             modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom
         ) {
             Box(
+
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(0.35f)
-                    .padding(horizontal = 10.dp, vertical = 0.dp)
-                    .padding(top = 10.dp)
+                    .then(
+                        if (isTargetWidthMet) {
+                            Modifier
+                                .padding(horizontal = 0.dp, vertical = 0.dp)
+                        } else {
+                            Modifier
+                                .padding(horizontal = 10.dp, vertical = 0.dp)
+                                .padding(top = 10.dp)
+                        }
+                    )
                     .clip(RoundedCornerShape(20.dp))
                     .background(MaterialTheme.colorScheme.secondaryContainer)
             ) {
@@ -206,16 +243,12 @@ fun CalculatorApp(
                     layoutType = layoutType,
                     modifier = Modifier.fillMaxSize()
                 )
-
                 Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(top = 8.dp, end = 8.dp)
-
                 ) {
                     IconButton(onClick = { showMenu = !showMenu }) {
-
-
                         Icon(
                             imageVector = Icons.Default.MoreVert,
                             contentDescription = "Menu",
@@ -225,7 +258,6 @@ fun CalculatorApp(
                     DropdownMenu(
                         expanded = showMenu,
                         onDismissRequest = { showMenu = false },
-
                         offset = DpOffset(x = 0.dp, y = (-48).dp)
                     ) {
                         DropdownMenuItem(
@@ -242,7 +274,6 @@ fun CalculatorApp(
                                 onOpenSettings()
                             }
                         )
-                        // DropdownMenuItem(text = { Text("Item 3") }, onClick = { showMenu = false })
                     }
                 }
             }
