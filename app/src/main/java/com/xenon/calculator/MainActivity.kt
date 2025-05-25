@@ -1,7 +1,6 @@
 package com.xenon.calculator
 
 
-// Add the import for your ConverterActivity
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -114,12 +113,12 @@ class MainActivity : ComponentActivity() {
                             .then(
                                 if (isTargetWidthMet) {
                                     Modifier
-                                        .clip(RoundedCornerShape(0.dp))
+//                                        .clip(RoundedCornerShape(0.dp))
                                         .background(Color.Black) //Cover screen App Background
                                         .padding(horizontal = 0.dp)
                                 } else {
                                     Modifier
-                                        .clip(RoundedCornerShape(30.dp))
+//                                        .clip(RoundedCornerShape(30.dp))
                                         .background(MaterialTheme.colorScheme.background) //App Background
                                         .padding(horizontal = 15.dp)
                                 }
@@ -266,17 +265,17 @@ fun CalculatorApp(
                         offset = DpOffset(x = 0.dp, y = (-48).dp)
                     ) {
                         DropdownMenuItem(
+                            text = { Text("UnitConverter") },
+                            onClick = {
+                                showMenu = false
+                                onOpenConverter() // Call the new lambda here
+                            }
+                        )
+                        DropdownMenuItem(
                             text = { Text("Settings") },
                             onClick = {
                                 showMenu = false
                                 onOpenSettings()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Converter") },
-                            onClick = {
-                                showMenu = false
-                                onOpenConverter() // Call the new lambda here
                             }
                         )
                     }

@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollapsingAppBarLayout(
+fun SettingsCollapsingAppBarLayout(
     modifier: Modifier = Modifier,
     collapsedHeight: Dp = 54.dp,
     expandedHeight: Dp = 200.dp,
@@ -76,6 +76,83 @@ fun CollapsingAppBarLayout(
                         contentAlignment = Alignment.Center
                     ) {
                         Text("Settings", fontSize = curFontSize, color = interpolatedTextColor)
+                    }
+                },
+                navigationIcon = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(top=curHeight-collapsedHeight),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        navigationIcon()
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent,
+                    scrolledContainerColor = Color.Transparent,
+                    navigationIconContentColor = navigationIconContentColor,
+                    titleContentColor = interpolatedTextColor,
+                    actionIconContentColor = navigationIconContentColor
+                ),
+            )
+        }
+    ) { paddingValues ->
+        content(paddingValues)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ConverterCollapsingAppBarLayout(
+    modifier: Modifier = Modifier,
+    collapsedHeight: Dp = 54.dp,
+    expandedHeight: Dp = 200.dp,
+    navigationIcon: @Composable () -> Unit = {},
+    expandedTextColor: Color = MaterialTheme.colorScheme.primary,
+    collapsedTextColor: Color = MaterialTheme.colorScheme.onBackground,
+    expandedContainerColor: Color = MaterialTheme.colorScheme.background,
+    collapsedContainerColor: Color = MaterialTheme.colorScheme.background,
+    navigationIconContentColor: Color = MaterialTheme.colorScheme.onBackground,
+    content: @Composable (paddingValues: PaddingValues) -> Unit
+) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            LargeTopAppBar(
+                title = {},
+                collapsedHeight = collapsedHeight,
+                expandedHeight = expandedHeight,
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = expandedContainerColor,
+                    scrolledContainerColor = collapsedContainerColor,
+                    navigationIconContentColor = navigationIconContentColor,
+                    titleContentColor = Color.Transparent,
+                    actionIconContentColor = navigationIconContentColor,
+                ),
+                scrollBehavior = scrollBehavior
+            )
+
+            val fraction = scrollBehavior.state.collapsedFraction
+            val curHeight by remember(fraction) { derivedStateOf { collapsedHeight.times(fraction) + expandedHeight.times(1 - fraction) } }
+            val curFontSize by remember(fraction) { derivedStateOf { (24 * fraction + 45 * (1 - fraction)).sp } }
+
+            val interpolatedTextColor by remember(fraction, expandedTextColor, collapsedTextColor) {
+                derivedStateOf {
+                    lerp(expandedTextColor, collapsedTextColor, fraction)
+                }
+            }
+
+            CenterAlignedTopAppBar(
+                expandedHeight = curHeight,
+                title = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("UnitConverter", fontSize = curFontSize, color = interpolatedTextColor)
                     }
                 },
                 navigationIcon = {
