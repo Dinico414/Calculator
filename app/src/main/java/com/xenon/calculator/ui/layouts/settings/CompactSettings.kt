@@ -36,7 +36,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.xenon.calculator.ui.layouts.SettingsCollapsingAppBarLayout
+import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.SettingsViewModel
 import com.xenon.calculator.viewmodel.ThemeSetting
@@ -57,7 +57,10 @@ fun CompactSettings(
     val currentLanguage by viewModel.currentLanguage
     val showClearDataDialog by viewModel.showClearDataDialog
 
-    SettingsCollapsingAppBarLayout(
+    CollapsingAppBarLayout(
+        title = { fontSize, color ->
+            Text("Settings", fontSize = fontSize, color = color)
+        },
         navigationIcon = {
             IconButton(onClick = onNavigateBack) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Navigate back")

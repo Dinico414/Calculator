@@ -37,7 +37,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.xenon.calculator.ui.layouts.ConverterCollapsingAppBarLayout
+import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.ConverterViewModel
 import com.xenon.calculator.viewmodel.classes.AreaUnit
@@ -71,7 +71,10 @@ fun CompactConverterScreen(
     val fromWeightUnit by converterViewModel.fromWeightUnit
     val toWeightUnit by converterViewModel.toWeightUnit
 
-    ConverterCollapsingAppBarLayout(
+    CollapsingAppBarLayout(
+        title = { fontSize, color ->
+            Text("UnitConverter", fontSize = fontSize, color = color)
+        },
         navigationIcon = {
             onNavigateBack?.let {
                 IconButton(onClick = it) {
