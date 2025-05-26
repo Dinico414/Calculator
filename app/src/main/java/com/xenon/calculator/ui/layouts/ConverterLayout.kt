@@ -9,10 +9,9 @@ import com.xenon.calculator.ui.layouts.converter.CompactConverter
 import com.xenon.calculator.viewmodel.LayoutType
 import com.xenon.calculator.viewmodel.ConverterViewModel
 
-
 @Composable
 fun ConverterLayout(
-    onNavigateBack: () -> Unit, // Add this parameter
+    onNavigateBack: () -> Unit,
     viewModel: ConverterViewModel,
     isLandscape: Boolean,
     layoutType: LayoutType,

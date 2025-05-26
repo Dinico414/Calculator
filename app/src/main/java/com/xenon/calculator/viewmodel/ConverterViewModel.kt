@@ -1,8 +1,12 @@
 package com.xenon.calculator.viewmodel
 
+import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.xenon.calculator.SharedPreferenceManager
 import com.xenon.calculator.viewmodel.classes.AreaUnit
 import com.xenon.calculator.viewmodel.classes.ConverterType
 import com.xenon.calculator.viewmodel.classes.CurrencyUnit
@@ -12,7 +16,7 @@ import com.xenon.calculator.viewmodel.classes.VolumeUnit
 import com.xenon.calculator.viewmodel.classes.WeightUnit
 import java.text.DecimalFormat
 
-class ConverterViewModel : ViewModel() {
+class ConverterViewModel(application: Application) : AndroidViewModel(application) {
 
     enum class EditedField { FIELD1, FIELD2 }
     private var lastEditedField: EditedField = EditedField.FIELD1
@@ -317,6 +321,15 @@ class ConverterViewModel : ViewModel() {
             ConverterType.CURRENCY -> _toCurrencyUnit.value
             ConverterType.AREA -> _toAreaUnit.value
             ConverterType.WEIGHT -> _toWeightUnit.value
+        }
+    }
+    class ConverterViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(ConverterViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return ConverterViewModel(application) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
     }
 }

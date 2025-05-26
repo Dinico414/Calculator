@@ -1,24 +1,32 @@
 package com.xenon.calculator
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TimePickerDefaults.layoutType
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.ViewModelProvider
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.xenon.calculator.ui.layouts.ConverterLayout
 import com.xenon.calculator.ui.theme.CalculatorTheme
+import com.xenon.calculator.viewmodel.ConverterViewModel
+import com.xenon.calculator.viewmodel.LayoutType
 
 
 class ConverterActivity : ComponentActivity() {
 
+    private lateinit var converterViewModel: ConverterViewModel
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
     private var activeThemeForConverterActivity: Int = 2
 
@@ -27,6 +35,10 @@ class ConverterActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         sharedPreferenceManager = SharedPreferenceManager(applicationContext)
 
+        converterViewModel = ViewModelProvider(
+            this,
+            ConverterViewModel.ConverterViewModelFactory(application)
+        )[ConverterViewModel::class.java]
         activeThemeForConverterActivity = sharedPreferenceManager.theme
 
         setContent {
@@ -41,6 +53,10 @@ class ConverterActivity : ComponentActivity() {
                     }
                 }
             }
+
+            val configuration = LocalConfiguration.current
+            val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
 
             CalculatorTheme(darkTheme = appIsDarkTheme) {
                 val systemUiController = rememberSystemUiController()
@@ -69,16 +85,19 @@ class ConverterActivity : ComponentActivity() {
                         }
                     }
 
-                    // val layoutType = when {
-                    //     // isTargetWidthMet -> LayoutType.COVER
-                    //     screenWidth < 320.dp -> LayoutType.SMALL
-                    //     screenWidth < 600.dp -> LayoutType.COMPACT
-                    //     screenWidth < 840.dp -> LayoutType.MEDIUM
-                    //     else -> LayoutType.EXPANDED
-                    // }
+                     val layoutType = when {
+                         // isTargetWidthMet -> LayoutType.COVER
+                         screenWidth < 320.dp -> LayoutType.SMALL
+                         screenWidth < 600.dp -> LayoutType.COMPACT
+                         screenWidth < 840.dp -> LayoutType.MEDIUM
+                         else -> LayoutType.EXPANDED
+                     }
 
                     ConverterLayout(
-                        onNavigateBack = { finish() }
+                        onNavigateBack = { finish() },
+                        viewModel = converterViewModel,
+                        isLandscape = isLandscape,
+                        layoutType = layoutType
                     )
                 }
             }

@@ -34,13 +34,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
+import com.xenon.calculator.ui.layouts.settings.CompactSettings
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.ConverterViewModel
+import com.xenon.calculator.viewmodel.SettingsViewModel
 import com.xenon.calculator.viewmodel.classes.AreaUnit
 import com.xenon.calculator.viewmodel.classes.ConverterType
 import com.xenon.calculator.viewmodel.classes.CurrencyUnit
@@ -57,26 +60,26 @@ import dev.chrisbanes.haze.materials.FluentMaterials
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
 fun CompactConverter(
-    onNavigateBack: (() -> Unit)? = null, converterViewModel: ConverterViewModel = viewModel()
-) {
+    onNavigateBack: (() -> Unit)? = null,
+viewModel: ConverterViewModel) {
     val hazeState = remember { HazeState() }
 
-    val selectedType by converterViewModel.selectedConverterType
-    val value1 by converterViewModel.value1
-    val value2 by converterViewModel.value2
+    val selectedType by viewModel.selectedConverterType
+    val value1 by viewModel.value1
+    val value2 by viewModel.value2
 
-    val fromVolumeUnit by converterViewModel.fromVolumeUnit
-    val toVolumeUnit by converterViewModel.toVolumeUnit
-    val fromLengthUnit by converterViewModel.fromLengthUnit
-    val toLengthUnit by converterViewModel.toLengthUnit
-    val fromTemperatureUnit by converterViewModel.fromTemperatureUnit
-    val toTemperatureUnit by converterViewModel.toTemperatureUnit
-    val fromCurrencyUnit by converterViewModel.fromCurrencyUnit
-    val toCurrencyUnit by converterViewModel.toCurrencyUnit
-    val fromAreaUnit by converterViewModel.fromAreaUnit
-    val toAreaUnit by converterViewModel.toAreaUnit
-    val fromWeightUnit by converterViewModel.fromWeightUnit
-    val toWeightUnit by converterViewModel.toWeightUnit
+    val fromVolumeUnit by viewModel.fromVolumeUnit
+    val toVolumeUnit by viewModel.toVolumeUnit
+    val fromLengthUnit by viewModel.fromLengthUnit
+    val toLengthUnit by viewModel.toLengthUnit
+    val fromTemperatureUnit by viewModel.fromTemperatureUnit
+    val toTemperatureUnit by viewModel.toTemperatureUnit
+    val fromCurrencyUnit by viewModel.fromCurrencyUnit
+    val toCurrencyUnit by viewModel.toCurrencyUnit
+    val fromAreaUnit by viewModel.fromAreaUnit
+    val toAreaUnit by viewModel.toAreaUnit
+    val fromWeightUnit by viewModel.fromWeightUnit
+    val toWeightUnit by viewModel.toWeightUnit
 
     CollapsingAppBarLayout(title = { fontSize, color ->
         Text("UnitConverter", fontSize = fontSize, color = color)
@@ -111,7 +114,7 @@ fun CompactConverter(
                 ConverterInputGroup {
                     ConverterTypeDropdown(
                         selectedType = selectedType, onTypeSelected = { newType ->
-                            converterViewModel.onConverterTypeChange(newType)
+                            viewModel.onConverterTypeChange(newType)
                         }, hazeState = hazeState
                     )
                 }
@@ -122,33 +125,33 @@ fun CompactConverter(
                         selectedConverterType = selectedType,
                         selectedVolumeUnit = fromVolumeUnit,
                         onVolumeUnitSelected = { unit ->
-                            converterViewModel.onFromVolumeUnitChange(
+                            viewModel.onFromVolumeUnitChange(
                                 unit
                             )
                         },
                         selectedLengthUnit = fromLengthUnit,
                         onLengthUnitSelected = { unit ->
-                            converterViewModel.onFromLengthUnitChange(
+                            viewModel.onFromLengthUnitChange(
                                 unit
                             )
                         },
                         selectedTemperatureUnit = fromTemperatureUnit,
                         onTemperatureUnitSelected = { unit ->
-                            converterViewModel.onFromTemperatureUnitChange(
+                            viewModel.onFromTemperatureUnitChange(
                                 unit
                             )
                         },
                         selectedCurrencyUnit = fromCurrencyUnit,
                         onCurrencyUnitSelected = { unit ->
-                            converterViewModel.onFromCurrencyUnitChange(
+                            viewModel.onFromCurrencyUnitChange(
                                 unit
                             )
                         },
                         selectedAreaUnit = fromAreaUnit,
-                        onAreaUnitSelected = { unit -> converterViewModel.onFromAreaUnitChange(unit) },
+                        onAreaUnitSelected = { unit -> viewModel.onFromAreaUnitChange(unit) },
                         selectedWeightUnit = fromWeightUnit,
                         onWeightUnitSelected = { unit ->
-                            converterViewModel.onFromWeightUnitChange(
+                            viewModel.onFromWeightUnitChange(
                                 unit
                             )
                         },
@@ -158,7 +161,7 @@ fun CompactConverter(
                     TextField(
                         value = value1,
                         onValueChange = { newValue ->
-                            converterViewModel.onValueChanged(
+                            viewModel.onValueChanged(
                                 newValue, ConverterViewModel.EditedField.FIELD1
                             )
                         },
@@ -186,33 +189,33 @@ fun CompactConverter(
                         selectedConverterType = selectedType,
                         selectedVolumeUnit = toVolumeUnit,
                         onVolumeUnitSelected = { unit ->
-                            converterViewModel.onToVolumeUnitChange(
+                            viewModel.onToVolumeUnitChange(
                                 unit
                             )
                         },
                         selectedLengthUnit = toLengthUnit,
                         onLengthUnitSelected = { unit ->
-                            converterViewModel.onToLengthUnitChange(
+                            viewModel.onToLengthUnitChange(
                                 unit
                             )
                         },
                         selectedTemperatureUnit = toTemperatureUnit,
                         onTemperatureUnitSelected = { unit ->
-                            converterViewModel.onToTemperatureUnitChange(
+                            viewModel.onToTemperatureUnitChange(
                                 unit
                             )
                         },
                         selectedCurrencyUnit = toCurrencyUnit,
                         onCurrencyUnitSelected = { unit ->
-                            converterViewModel.onToCurrencyUnitChange(
+                            viewModel.onToCurrencyUnitChange(
                                 unit
                             )
                         },
                         selectedAreaUnit = toAreaUnit,
-                        onAreaUnitSelected = { unit -> converterViewModel.onToAreaUnitChange(unit) },
+                        onAreaUnitSelected = { unit -> viewModel.onToAreaUnitChange(unit) },
                         selectedWeightUnit = toWeightUnit,
                         onWeightUnitSelected = { unit ->
-                            converterViewModel.onToWeightUnitChange(
+                            viewModel.onToWeightUnitChange(
                                 unit
                             )
                         },
@@ -222,7 +225,7 @@ fun CompactConverter(
                     TextField(
                         value = value2,
                         onValueChange = { newValue ->
-                            converterViewModel.onValueChanged(
+                            viewModel.onValueChanged(
                                 newValue, ConverterViewModel.EditedField.FIELD2
                             )
                         },
@@ -472,6 +475,8 @@ fun UnitDropdown(
 @Composable
 fun CompactConverterScreenPreview() {
     CalculatorTheme {
-        CompactConverter()
+        val context = LocalContext.current
+        val previewViewModel: ConverterViewModel = viewModel()
+            CompactConverter(onNavigateBack = {}, viewModel = previewViewModel)
     }
 }
