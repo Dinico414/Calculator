@@ -178,7 +178,7 @@ fun CalculatorApp(
     onOpenConverter: () -> Unit // Add this parameter
 ) {
     val configuration = LocalConfiguration.current
-    val context = LocalContext.current
+    LocalContext.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     var showMenu by remember { mutableStateOf(false) }
 

@@ -56,7 +56,7 @@ import dev.chrisbanes.haze.materials.FluentMaterials
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
-fun CompactConverterScreen(
+fun CompactConverter(
     onNavigateBack: (() -> Unit)? = null, converterViewModel: ConverterViewModel = viewModel()
 ) {
     val hazeState = remember { HazeState() }
@@ -472,6 +472,6 @@ fun UnitDropdown(
 @Composable
 fun CompactConverterScreenPreview() {
     CalculatorTheme {
-        CompactConverterScreen()
+        CompactConverter()
     }
 }
