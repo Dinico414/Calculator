@@ -99,6 +99,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun onThemeOptionSelectedInDialog(index: Int) {
         if (index >= 0 && index < themeOptions.size) {
             _dialogPreviewThemeIndex.value = index
+            _persistedThemeIndexFlow.value = index
             // The 'activeNightModeFlag' flow will automatically update and trigger theme change
         }
     }
@@ -122,11 +123,10 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun dismissThemeDialog() {
-        _showThemeDialog.value = false // This will cause 'activeNightModeFlag' to switch to persisted
-        // No need to manually revert AppCompatDelegate, 'activeNightModeFlag' handles it by
-        // falling back to _persistedThemeIndexFlow when dialog is not shown.
-        // We can ensure the dialog preview is reset if needed for next time.
-        _dialogPreviewThemeIndex.value = _persistedThemeIndexFlow.value
+        _showThemeDialog.value = false
+        val index = sharedPreferenceManager.theme
+        _persistedThemeIndexFlow.value = index
+        _dialogPreviewThemeIndex.value = index
     }
 
     fun onClearDataClicked() {
