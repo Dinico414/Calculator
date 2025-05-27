@@ -81,14 +81,7 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun onConverterTypeChange(newType: ConverterType) {
         _selectedConverterType.value = newType
-        // Reset values when converter type changes for a clean slate
-        _value1.value = ""
-        _value2.value = ""
-        // Optionally, reset units to their defaults for the new type.
-        // This depends on the desired user experience. For example:
-        // _fromLengthUnit.value = LengthUnit.METERS
-        // _toLengthUnit.value = LengthUnit.KILOMETERS
-        // etc.
+        onValueChanged(_value1.value, EditedField.FIELD1)
     }
 
     fun onValueChanged(newValue: String, changedField: EditedField) {
