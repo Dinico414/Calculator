@@ -289,6 +289,41 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
         _toWeightUnit.value = newUnit
         recalculateForUnitChange(EditedField.FIELD2)
     }
+    fun onUnitsSwitch() {
+        when (_selectedConverterType.value) {
+            ConverterType.VOLUME -> {
+                val tmp = _fromVolumeUnit.value
+                _fromVolumeUnit.value = _toVolumeUnit.value
+                _toVolumeUnit.value = tmp
+            }
+            ConverterType.LENGTH -> {
+                val tmp = _fromLengthUnit.value
+                _fromLengthUnit.value = _toLengthUnit.value
+                _toLengthUnit.value = tmp
+            }
+            ConverterType.TEMPERATURE -> {
+                val tmp = _fromTemperatureUnit.value
+                _fromTemperatureUnit.value = _toTemperatureUnit.value
+                _toTemperatureUnit.value = tmp
+            }
+            ConverterType.CURRENCY -> {
+                val tmp = _fromCurrencyUnit.value
+                _fromCurrencyUnit.value = _toCurrencyUnit.value
+                _toCurrencyUnit.value = tmp
+            }
+            ConverterType.AREA -> {
+                val tmp = _fromAreaUnit.value
+                _fromAreaUnit.value = _toAreaUnit.value
+                _toAreaUnit.value = tmp
+            }
+            ConverterType.WEIGHT -> {
+                val tmp = _fromWeightUnit.value
+                _fromWeightUnit.value = _toWeightUnit.value
+                _toWeightUnit.value = tmp
+            }
+        }
+        recalculateForUnitChange(EditedField.FIELD1)
+    }
 
     /**
      * Recalculates a field's value when its OWN unit has changed.

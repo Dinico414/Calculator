@@ -14,6 +14,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -181,6 +183,13 @@ fun CompactConverter(
                             unfocusedLabelColor = colorScheme.primary,
                         )
                     )
+                }
+
+                IconButton (
+                    onClick = { viewModel.onUnitsSwitch() },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(Icons.Default.KeyboardArrowUp, "", tint = Color.White)
                 }
 
                 ConverterInputGroup(modifier = Modifier.fillMaxWidth()) {
