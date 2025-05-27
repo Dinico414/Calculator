@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -87,33 +88,41 @@ fun CoverConverter(
     val fromWeightUnit by viewModel.fromWeightUnit
     val toWeightUnit by viewModel.toWeightUnit
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Converter",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                },
-                navigationIcon = {
-                    onNavigateBack?.let {
-                        IconButton(onClick = it) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Navigate back"
-                            )
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = "Converter",
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            color = Color.White // Set text color to white
+                        )
+                    },
+                    navigationIcon = {
+                        onNavigateBack?.let {
+                            IconButton(onClick = it) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Navigate back",
+                                    tint = Color.White // Set icon color to white
+                                )
+                            }
                         }
-                    }
-                },
-            )
-        }
-    ) { contentPadding ->
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Black, // Set background color to black
+                        titleContentColor = Color.White, // Default title color
+                        navigationIconContentColor = Color.White // Default navigation icon color
+                    )
+                )
+            }
+        ) { contentPadding ->
 
         Column(
             modifier = Modifier
                 .padding(contentPadding)
+                .background(Color.Black)
                 .fillMaxSize()
                 .hazeSource(hazeState)
         ) {
