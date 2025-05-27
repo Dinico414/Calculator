@@ -70,6 +70,8 @@ class MainActivity : ComponentActivity() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             activeThemeForMainActivity = 2
         }
+        val intent = Intent(this@MainActivity, ConverterActivity::class.java)
+        startActivity(intent)
 
         setContent {
             ScreenEnvironment(themePreference = activeThemeForMainActivity) { layoutType, isLandscape ->

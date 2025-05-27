@@ -298,30 +298,12 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
      *                              This is the field whose value will be updated.
      */
     private fun recalculateForUnitChange(fieldWhoseUnitChanged: EditedField) {
-        if (fieldWhoseUnitChanged == EditedField.FIELD1) {
-            // Unit for FIELD1 (_from...Unit) changed. We need to update _value1.
-            // _value1 will be derived from _value2 (which is in _to...Unit).
-            val value2Double = _value2.value.toDoubleOrNull()
-            if (value2Double != null) {
-                // Convert value2 (in current toUnit) to the new fromUnit for value1
-                val result = performConversion(value2Double, getCurrentToUnit(), getCurrentFromUnit())
-                _value1.value = if (result != null) decimalFormat.format(result) else ""
-            } else {
-                // If value2 is empty or invalid, value1 cannot be derived, so clear it.
-                _value1.value = ""
-            }
-        } else { // fieldWhoseUnitChanged == EditedField.FIELD2
-            // Unit for FIELD2 (_to...Unit) changed. We need to update _value2.
-            // _value2 will be derived from _value1 (which is in _from...Unit).
-            val value1Double = _value1.value.toDoubleOrNull()
-            if (value1Double != null) {
-                // Convert value1 (in current fromUnit) to the new toUnit for value2
-                val result = performConversion(value1Double, getCurrentFromUnit(), getCurrentToUnit())
-                _value2.value = if (result != null) decimalFormat.format(result) else ""
-            } else {
-                // If value1 is empty or invalid, value2 cannot be derived, so clear it.
-                _value2.value = ""
-            }
+        val value1Double = _value1.value.toDoubleOrNull()
+        if (value1Double != null) {
+            val result = performConversion(value1Double, getCurrentFromUnit(), getCurrentToUnit())
+            _value2.value = if (result != null) decimalFormat.format(result) else ""
+        } else {
+            _value2.value = ""
         }
     }
 
