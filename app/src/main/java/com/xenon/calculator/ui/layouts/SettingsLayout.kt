@@ -9,6 +9,7 @@ import com.xenon.calculator.ui.layouts.settings.CoverSettings
 import com.xenon.calculator.viewmodel.LayoutType
 import com.xenon.calculator.viewmodel.SettingsViewModel
 
+
 @Composable
 fun SettingsLayout(
     onNavigateBack: () -> Unit, // Add this parameter

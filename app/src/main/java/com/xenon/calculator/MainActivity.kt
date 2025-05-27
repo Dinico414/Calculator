@@ -53,6 +53,11 @@ import com.xenon.calculator.ui.layouts.CalculatorScreen
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 import com.xenon.calculator.viewmodel.LayoutType
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.FluentMaterials
 
 class MainActivity : ComponentActivity() {
     private val calculatorViewModel: CalculatorViewModel by viewModels()
@@ -171,6 +176,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalHazeMaterialsApi::class)
 @Composable
 fun CalculatorApp(
     viewModel: CalculatorViewModel,
@@ -181,6 +187,7 @@ fun CalculatorApp(
     LocalContext.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     var showMenu by remember { mutableStateOf(false) }
+    val hazeState = remember { HazeState() }
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val screenWidth = this.maxWidth
@@ -221,7 +228,10 @@ fun CalculatorApp(
 //        }
 
         Column(
-            modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom
+            modifier = Modifier
+                .fillMaxSize()
+                .hazeSource(hazeState),
+            verticalArrangement = Arrangement.Bottom
         ) {
             Box(
 
@@ -262,13 +272,19 @@ fun CalculatorApp(
                     DropdownMenu(
                         expanded = showMenu,
                         onDismissRequest = { showMenu = false },
-                        offset = DpOffset(x = 0.dp, y = (-48).dp)
+                        offset = DpOffset(x = 0.dp, y = (-48).dp),
+                        modifier = Modifier
+                            .hazeEffect(
+                                state = hazeState,
+                                style = FluentMaterials.mica()
+                            )
+                            .background(Color.Transparent)
                     ) {
                         DropdownMenuItem(
                             text = { Text("UnitConverter") },
                             onClick = {
                                 showMenu = false
-                                onOpenConverter() // Call the new lambda here
+                                onOpenConverter()
                             }
                         )
                         DropdownMenuItem(

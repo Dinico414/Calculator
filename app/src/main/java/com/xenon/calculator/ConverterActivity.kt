@@ -85,13 +85,13 @@ class ConverterActivity : ComponentActivity() {
                         }
                     }
 
-                     val layoutType = when {
-                         // isTargetWidthMet -> LayoutType.COVER
-                         screenWidth < 320.dp -> LayoutType.SMALL
-                         screenWidth < 600.dp -> LayoutType.COMPACT
-                         screenWidth < 840.dp -> LayoutType.MEDIUM
-                         else -> LayoutType.EXPANDED
-                     }
+                    val layoutType = when {
+                        // isTargetWidthMet -> LayoutType.COVER
+                        screenWidth < 320.dp -> LayoutType.SMALL
+                        screenWidth < 600.dp -> LayoutType.COMPACT
+                        screenWidth < 840.dp -> LayoutType.MEDIUM
+                        else -> LayoutType.EXPANDED
+                    }
 
                     ConverterLayout(
                         onNavigateBack = { finish() },
