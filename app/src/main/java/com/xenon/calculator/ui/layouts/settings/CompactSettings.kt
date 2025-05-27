@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,12 +51,13 @@ fun CompactSettings(
 ) {
     val context = LocalContext.current
 
-    val currentThemeTitle by viewModel.currentThemeTitle
-    val showThemeDialog by viewModel.showThemeDialog
-    val themeOptions = viewModel.themeOptions
-    val selectedThemeIndex by viewModel.selectedThemeIndex
-    val currentLanguage by viewModel.currentLanguage
-    val showClearDataDialog by viewModel.showClearDataDialog
+
+    val currentThemeTitle by viewModel.currentThemeTitle.collectAsState()
+    val showThemeDialog by viewModel.showThemeDialog.collectAsState()
+    val themeOptions = viewModel.themeOptions // This is a regular property
+    val dialogSelectedThemeIndex by viewModel.dialogPreviewThemeIndex.collectAsState()
+    val currentLanguage by viewModel.currentLanguage.collectAsState()
+    val showClearDataDialog by viewModel.showClearDataDialog.collectAsState()
 
     CollapsingAppBarLayout(
         title = { fontSize, color ->
@@ -114,10 +116,12 @@ fun CompactSettings(
         if (showThemeDialog) {
             ThemeSelectionDialog(
                 themeOptions = themeOptions,
-                currentThemeIndex = selectedThemeIndex,
-                onThemeSelected = { index -> viewModel.onThemeSelected(index) },
+                currentThemeIndex = dialogSelectedThemeIndex,
+                onThemeSelected = { index ->
+                    viewModel.onThemeOptionSelectedInDialog(index)
+                },
                 onDismiss = { viewModel.dismissThemeDialog() },
-                onConfirm = { viewModel.applyTheme() }
+                onConfirm = { viewModel.applySelectedTheme() }
             )
         }
 
@@ -237,8 +241,10 @@ fun ClearDataConfirmationDialog(
 @Composable
 fun CompactSettingsPreview() {
     val context = LocalContext.current
+    val application = context.applicationContext as? Application
+        ?: error("Preview requires Application context")
     val previewViewModel: SettingsViewModel = viewModel(
-        factory = SettingsViewModel.SettingsViewModelFactory(context.applicationContext as Application)
+        factory = SettingsViewModel.SettingsViewModelFactory(application)
     )
     CalculatorTheme {
         CompactSettings(onNavigateBack = {}, viewModel = previewViewModel)

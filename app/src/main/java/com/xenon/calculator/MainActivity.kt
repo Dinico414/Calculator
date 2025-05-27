@@ -1,6 +1,5 @@
 package com.xenon.calculator
 
-
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -9,10 +8,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -31,7 +28,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,38 +36,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.xenon.calculator.ui.layouts.ButtonLayout
 import com.xenon.calculator.ui.layouts.CalculatorScreen
 import com.xenon.calculator.ui.theme.CalculatorTheme
+import com.xenon.calculator.ui.theme.ScreenEnvironment
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 import com.xenon.calculator.viewmodel.LayoutType
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.materials.CupertinoMaterials
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
-import dev.chrisbanes.haze.materials.FluentMaterials
 
 class MainActivity : ComponentActivity() {
     private val calculatorViewModel: CalculatorViewModel by viewModels()
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
-    private var activeThemeForMainActivity: Int = 1
+    private var activeThemeForMainActivity: Int = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         sharedPreferenceManager = SharedPreferenceManager(applicationContext)
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        sharedPreferenceManager = SharedPreferenceManager(applicationContext)
         activeThemeForMainActivity = sharedPreferenceManager.theme
 
         if (activeThemeForMainActivity >= 0 && activeThemeForMainActivity < sharedPreferenceManager.themeFlag.size) {
@@ -82,84 +72,55 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
+            ScreenEnvironment(themePreference = activeThemeForMainActivity) { layoutType, isLandscape ->
+                val isCoverScreen = layoutType == LayoutType.COVER
 
-            val appIsDarkTheme = when (activeThemeForMainActivity) {
-                0 -> false
-                1 -> true
-                else -> isSystemInDarkTheme()
-            }
-
-            CalculatorTheme(darkTheme = appIsDarkTheme) {
-                val systemUiController = rememberSystemUiController()
-                val view = LocalView.current
-
-                BoxWithConstraints {
-                    val screenWidth = this.maxWidth
-                    val targetWidth = 418.30066.dp
-                    val tolerance = 0.5.dp
-                    val isTargetWidthMet = (screenWidth >= targetWidth - tolerance) && (screenWidth <= targetWidth + tolerance)
-
-                    val systemBarColor = if (isTargetWidthMet) Color.Black else MaterialTheme.colorScheme.background //Notification- and Navigationbar color SDK 34-
-                    val darkIcons = !isTargetWidthMet && !appIsDarkTheme
-
-                    if (!view.isInEditMode) {
-                        SideEffect {
-                            systemUiController.setSystemBarsColor(
-                                color = systemBarColor,
-                                darkIcons = darkIcons,
-                                isNavigationBarContrastEnforced = false
-                            )
-                        }
-                    }
-
-                    Surface(
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .then(
+                            if (isCoverScreen) {
+                                Modifier
+                                    .background(Color.Black) //Cover screen App Background
+                                    .padding(horizontal = 0.dp)
+                            } else {
+                                Modifier
+                                    .background(MaterialTheme.colorScheme.background) //App Background
+                                    .padding(horizontal = 15.dp)
+                            }
+                        ),
+                    color = if (isCoverScreen) Color.Black else MaterialTheme.colorScheme.background
+                ) {
+                    Box(
                         modifier = Modifier
                             .fillMaxSize()
+                            .padding(WindowInsets.safeDrawing.asPaddingValues())
                             .then(
-                                if (isTargetWidthMet) {
+                                if (isCoverScreen) {
                                     Modifier
-//                                        .clip(RoundedCornerShape(0.dp))
-                                        .background(Color.Black) //Cover screen App Background
+                                        .background(Color.Black)
                                         .padding(horizontal = 0.dp)
+                                        .clip(RoundedCornerShape(0.dp))
                                 } else {
                                     Modifier
-//                                        .clip(RoundedCornerShape(30.dp))
-                                        .background(MaterialTheme.colorScheme.background) //App Background
-                                        .padding(horizontal = 15.dp)
-                                }
-                            ),
-                        color = if (isTargetWidthMet) Color.Black else MaterialTheme.colorScheme.background //Color of Calculator Screen padding
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(WindowInsets.safeDrawing.asPaddingValues())
-                                .then(
-                                    if (isTargetWidthMet) {
-                                        Modifier
-                                            .background(Color.Black) //Cover screen App Background
-                                            .padding(horizontal = 0.dp)
-                                            .clip(RoundedCornerShape(0.dp))
-                                    } else {
-                                        Modifier
-                                            .clip(RoundedCornerShape(30.dp))
-                                            .background(MaterialTheme.colorScheme.surfaceContainer) //App Background
-                                    }
-                                )
-                        ) {
-                            CalculatorApp(
-                                viewModel = calculatorViewModel,
-                                onOpenSettings = {
-                                    val intent = Intent(this@MainActivity, SettingsActivity::class.java)
-                                    startActivity(intent)
-                                },
-                                // Add the onOpenConverter lambda
-                                onOpenConverter = {
-                                    val intent = Intent(this@MainActivity, ConverterActivity::class.java)
-                                    startActivity(intent)
+                                        .clip(RoundedCornerShape(30.dp))
+                                        .background(MaterialTheme.colorScheme.surfaceContainer)
                                 }
                             )
-                        }
+                    ) {
+                        CalculatorApp(
+                            viewModel = calculatorViewModel,
+                            layoutType = layoutType,
+                            isLandscape = isLandscape,
+                            onOpenSettings = {
+                                val intent = Intent(this@MainActivity, SettingsActivity::class.java)
+                                startActivity(intent)
+                            },
+                            onOpenConverter = {
+                                val intent = Intent(this@MainActivity, ConverterActivity::class.java)
+                                startActivity(intent)
+                            }
+                        )
                     }
                 }
             }
@@ -180,170 +141,160 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CalculatorApp(
     viewModel: CalculatorViewModel,
+    layoutType: LayoutType,
+    isLandscape: Boolean,
     onOpenSettings: () -> Unit,
-    onOpenConverter: () -> Unit // Add this parameter
+    onOpenConverter: () -> Unit
 ) {
-    val configuration = LocalConfiguration.current
-    LocalContext.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
     var showMenu by remember { mutableStateOf(false) }
     val hazeState = remember { HazeState() }
-
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        val screenWidth = this.maxWidth
-        val screenHeight = this.maxHeight
-        val targetWidth = 418.30066.dp
-        val tolerance = 0.5.dp
-        val isTargetWidthMet = (screenWidth >= targetWidth - tolerance) && (screenWidth <= targetWidth + tolerance)
-
-
-        val dimensionForLayout = if (isLandscape && !isTargetWidthMet) screenHeight else screenWidth
-
-        val layoutType = when {
-            isTargetWidthMet -> LayoutType.COVER
-            dimensionForLayout < 320.dp -> LayoutType.SMALL
-            dimensionForLayout < 600.dp -> LayoutType.COMPACT
-            dimensionForLayout < 840.dp -> LayoutType.MEDIUM
-            else -> LayoutType.EXPANDED
-        }
-//
-//        fun getLayoutNames(currentLayoutType: LayoutType, landscape: Boolean): Pair<String, String> {
-//            val orientationSuffix = if (landscape && currentLayoutType != LayoutType.COVER) "Landscape" else ""
-//
-//            val baseName = currentLayoutType.name.lowercase().replaceFirstChar { it.uppercase() }
-//
-//            if (currentLayoutType == LayoutType.COVER) {
-//                return Pair("CoverScreenLayout", "CoverButtonLayout")
-//            }
-//
-//            val screenLayoutName = "${baseName}${orientationSuffix}CalculatorScreen"
-//            val buttonLayoutName = "${baseName}${orientationSuffix}ButtonLayout"
-//            return Pair(screenLayoutName, buttonLayoutName)
-//        }
-//
-//        LaunchedEffect(layoutType, isLandscape) {
-//            val (screenLayoutName, buttonLayoutName) = getLayoutNames(layoutType, isLandscape)
-//            val toastMessage = "Layout: ${layoutType.name}\nScreen: $screenLayoutName\nButtons: $buttonLayoutName"
-//            Toast.makeText(context, toastMessage, Toast.LENGTH_LONG).show()
-//        }
-
-        Column(
+    val isCoverScreenLayout = layoutType == LayoutType.COVER
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .hazeSource(hazeState),
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .hazeSource(hazeState),
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            Box(
-
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(0.35f)
-                    .then(
-                        if (isTargetWidthMet) {
-                            Modifier
-                                .padding(horizontal = 0.dp, vertical = 0.dp)
-                        } else {
-                            Modifier
-                                .padding(horizontal = 10.dp, vertical = 0.dp)
-                                .padding(top = 10.dp)
-                        }
-                    )
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(MaterialTheme.colorScheme.secondaryContainer)
-            ) {
-                CalculatorScreen(
-                    viewModel = viewModel,
-                    isLandscape = isLandscape,
-                    layoutType = layoutType,
-                    modifier = Modifier.fillMaxSize()
+                .fillMaxWidth()
+                .weight(0.35f)
+                .then(
+                    if (isCoverScreenLayout) {
+                        Modifier
+                            .padding(horizontal = 0.dp, vertical = 0.dp)
+                    } else {
+                        Modifier
+                            .padding(horizontal = 10.dp, vertical = 0.dp)
+                            .padding(top = 10.dp)
+                    }
                 )
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(top = 8.dp, end = 8.dp)
-                ) {
-                    IconButton(onClick = { showMenu = !showMenu }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Menu",
-                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = showMenu,
-                        onDismissRequest = { showMenu = false },
-                        offset = DpOffset(x = 0.dp, y = (-48).dp),
-                        modifier = Modifier
-                            .hazeEffect(
-                                state = hazeState,
-                                style = FluentMaterials.mica()
-                            )
-                            .background(Color.Transparent)
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("UnitConverter") },
-                            onClick = {
-                                showMenu = false
-                                onOpenConverter()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Settings") },
-                            onClick = {
-                                showMenu = false
-                                onOpenSettings()
-                            }
-                        )
-                    }
-                }
-            }
-
-            ButtonLayout(
+                .clip(RoundedCornerShape(if (isCoverScreenLayout) 0.dp else 20.dp))
+                .background(
+                    if (isCoverScreenLayout) Color.Black
+                    else MaterialTheme.colorScheme.secondaryContainer
+                )
+        ) {
+            CalculatorScreen(
                 viewModel = viewModel,
                 isLandscape = isLandscape,
                 layoutType = layoutType,
+                modifier = Modifier.fillMaxSize()
+            )
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(0.65f)
+                    .align(Alignment.TopEnd)
+                    .padding(top = 8.dp, end = 8.dp)
+            ) {
+                IconButton(onClick = { showMenu = !showMenu }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Menu",
+                        tint = if (isCoverScreenLayout) Color.White else MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false },
+                    offset = DpOffset(x = 0.dp, y = (-48).dp),
+                    modifier = Modifier
+                        .hazeEffect(
+                            state = hazeState,
+                            style = CupertinoMaterials.ultraThin()
+                        )
+                        .background(Color.Transparent)
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("UnitConverter", color = if (isCoverScreenLayout) Color.White else Color.Unspecified) },
+                        onClick = {
+                            showMenu = false
+                            onOpenConverter()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Settings", color = if (isCoverScreenLayout) Color.White else Color.Unspecified) },
+                        onClick = {
+                            showMenu = false
+                            onOpenSettings()
+                        }
+                    )
+                }
+            }
+        }
+
+        ButtonLayout(
+            viewModel = viewModel,
+            isLandscape = isLandscape,
+            layoutType = layoutType,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.65f)
+        )
+    }
+}
+
+
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light Mode Compact")
+@Composable
+fun DefaultPreviewPortraitLight() {
+    CalculatorTheme(darkTheme = false) {
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+            CalculatorApp(
+                viewModel = remember { CalculatorViewModel() },
+                layoutType = LayoutType.COMPACT,
+                isLandscape = false,
+                onOpenSettings = {},
+                onOpenConverter = {}
             )
         }
     }
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light Mode")
-
-@Composable
-fun DefaultPreviewPortraitLight() {
-    CalculatorTheme(darkTheme = false) {
-
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            val previewViewModel = remember { CalculatorViewModel() }
-            CalculatorApp(viewModel = previewViewModel, onOpenSettings = {}, onOpenConverter = {}) // Add for preview
-        }
-    }
-}
-
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode")
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode Compact")
 @Composable
 fun DefaultPreviewPortraitDark() {
     CalculatorTheme(darkTheme = true) {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-            val previewViewModel = remember { CalculatorViewModel() }
-            CalculatorApp(viewModel = previewViewModel, onOpenSettings = {}, onOpenConverter = {}) // Add for preview
+            CalculatorApp(
+                viewModel = remember { CalculatorViewModel() },
+                layoutType = LayoutType.COMPACT,
+                isLandscape = false,
+                onOpenSettings = {},
+                onOpenConverter = {}
+            )
         }
     }
 }
 
-@Preview(showBackground = true, widthDp = 700, heightDp = 400, name = "Landscape")
+@Preview(showBackground = true, widthDp = 700, heightDp = 400, name = "Landscape Medium")
 @Composable
 fun CalculatorAppPreviewLandscape() {
-    val fakeViewModel = remember { CalculatorViewModel() }
     CalculatorTheme(darkTheme = false) {
         Surface(modifier = Modifier.fillMaxSize()) {
             CalculatorApp(
-                viewModel = fakeViewModel,
+                viewModel = remember { CalculatorViewModel() },
+                layoutType = LayoutType.MEDIUM,
+                isLandscape = true,
                 onOpenSettings = {},
-                onOpenConverter = {} // Add for preview
+                onOpenConverter = {}
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 418, heightDp = 800, name = "Cover Screen")
+@Composable
+fun CalculatorAppPreviewCover() {
+
+    CalculatorTheme(darkTheme = true) {
+        Surface(modifier = Modifier.fillMaxSize(), color = Color.Black ) {
+            CalculatorApp(
+                viewModel = remember { CalculatorViewModel() },
+                layoutType = LayoutType.COVER,
+                isLandscape = false,
+                onOpenSettings = {},
+                onOpenConverter = {}
             )
         }
     }

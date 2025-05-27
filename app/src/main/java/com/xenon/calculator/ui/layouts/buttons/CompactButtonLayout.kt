@@ -10,8 +10,8 @@ import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+//import androidx.compose.animation.slideInVertically // Kept removed for simpler animation as discussed
+//import androidx.compose.animation.slideOutVertically // Kept removed for simpler animation as discussed
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -82,6 +82,7 @@ fun CompactButtonLayout(
 
         val spacerHeight by animateDpAsState(
             targetValue = if (viewModel.isScientificMode) 4.dp else 12.dp,
+            animationSpec = tween(durationMillis = 300),
             label = "ScientificModeSpacerHeight"
         )
         Spacer(Modifier.height(spacerHeight))
@@ -89,25 +90,25 @@ fun CompactButtonLayout(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .animateContentSize()
+                .animateContentSize(animationSpec = tween(durationMillis = 300)) // Faster content size animation
         ) {
             val animatedScientificRowsInnerWeight by animateFloatAsState(
                 targetValue = if (viewModel.isScientificMode) 0.2f else 0f,
-                animationSpec = tween(durationMillis = 300),
+                animationSpec = tween(durationMillis = 350),
                 label = "AnimatedScientificRowsInnerWeight"
             )
 
             val commonButtonsInnerWeight by animateFloatAsState(
                 targetValue = if (viewModel.isScientificMode) 0.70f else 1f,
-                animationSpec = tween(durationMillis = 300),
+                animationSpec = tween(durationMillis = 350),
                 label = "CommonButtonsInnerWeight"
             )
 
             if (viewModel.isScientificMode || animatedScientificRowsInnerWeight > 0.001f) {
                 AnimatedVisibility(
                     visible = viewModel.isScientificMode,
-                    enter = fadeIn() + slideInVertically(initialOffsetY = { fullHeight -> fullHeight }),
-                    exit = fadeOut() + slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }),
+                    enter = fadeIn(animationSpec = tween(durationMillis = 300)),
+                    exit = fadeOut(animationSpec = tween(durationMillis = 300)),
                     modifier = Modifier
                         .weight(animatedScientificRowsInnerWeight.coerceAtLeast(0.001f))
                         .fillMaxWidth()
@@ -158,7 +159,6 @@ fun CompactButtonLayout(
                                     isScientificButton = false,
                                     isNumber = isNumberButton || buttonText == "⌫",
                                     isGlobalScientificModeActive = viewModel.isScientificMode,
-                                    // Pass the custom font family for the backspace button
                                     fontFamily = if (buttonText == "⌫") firaSansFamily else null,
                                     onClick = {
                                         if (buttonText == "( )") {
@@ -173,7 +173,8 @@ fun CompactButtonLayout(
                         if (rowData != buttonRows.last()) {
                             val spacerInnerHeight by animateDpAsState(
                                 targetValue = if (viewModel.isScientificMode) 4.dp else 8.dp,
-                                label = "SpacerHeightAnimation"
+                                animationSpec = tween(durationMillis = 300),
+                                label = "SpacerInnerHeightAnimation"
                             )
                             Spacer(Modifier.height(spacerInnerHeight))
                         }
@@ -235,7 +236,7 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
             ) {
                 val rotationAngle by animateFloatAsState(
                     targetValue = if (viewModel.isScientificMode) 0f else 180f,
-                    animationSpec = tween(durationMillis = 300),
+                    animationSpec = tween(durationMillis = 400),
                     label = "IconRotation"
                 )
                 Icon(
@@ -311,7 +312,12 @@ fun ScientificButtonsRow3(
                     if (text == "INV") {
                         viewModel.toggleInverseMode()
                     } else {
-                        viewModel.onButtonClick(text)
+                        val textToSend = when(text) {
+                            "eˣ" -> "ln"
+                            "10ˣ" -> "log"
+                            else -> text
+                        }
+                        viewModel.onButtonClick(textToSend)
                     }
                 }
             )
@@ -340,19 +346,18 @@ fun CalculatorButton(
 
     val targetFontSize = when {
         isScientificButton -> when {
-            isLandscape -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) 20.sp else 20.sp
-            else -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) 20.sp else 20.sp
+            isLandscape -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) 18.sp else 20.sp
+            else -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) 18.sp else 20.sp
         }
         isNumber -> when {
-            isLandscape -> if (isGlobalScientificModeActive) 28.sp else 28.sp
-            else -> if (isGlobalScientificModeActive) 28.sp else 35.sp
+            isLandscape -> if (isGlobalScientificModeActive) 26.sp else 28.sp
+            else -> if (isGlobalScientificModeActive) 26.sp else 32.sp
         }
-        else -> when { // This covers operators like +, -, etc., and AC, ()
-            isLandscape -> if (isGlobalScientificModeActive) 28.sp else 28.sp
-            else -> if (isGlobalScientificModeActive) 28.sp else 35.sp
+        else -> when { // Operators, AC, ()
+            isLandscape -> if (isGlobalScientificModeActive) 26.sp else 28.sp
+            else -> if (isGlobalScientificModeActive) 26.sp else 32.sp
         }
     }
-
 
     val animatedFontSize by animateDpAsState(
         targetValue = targetFontSize.value.dp,
@@ -518,9 +523,9 @@ fun BackspaceButtonPreview() {
             CalculatorButton(
                 text = "⌫",
                 isScientificButton = false,
-                isNumber = true, // Treat as number for styling consistency in this context
+                isNumber = true,
                 isGlobalScientificModeActive = false,
-                fontFamily = firaSansFamily, // Apply Fira Sans
+                fontFamily = firaSansFamily,
                 onClick = {}
             )
         }

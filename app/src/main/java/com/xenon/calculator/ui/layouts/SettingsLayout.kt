@@ -12,7 +12,7 @@ import com.xenon.calculator.viewmodel.SettingsViewModel
 
 @Composable
 fun SettingsLayout(
-    onNavigateBack: () -> Unit, // Add this parameter
+    onNavigateBack: () -> Unit,
     viewModel: SettingsViewModel,
     isLandscape: Boolean,
     layoutType: LayoutType,

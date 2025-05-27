@@ -1,10 +1,12 @@
 package com.xenon.calculator.ui.layouts.converter
 
 // Haze Imports
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,10 +24,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,11 +39,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.ConverterViewModel
 import com.xenon.calculator.viewmodel.classes.AreaUnit
@@ -56,9 +61,16 @@ import dev.chrisbanes.haze.materials.FluentMaterials
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
-fun CompactConverter(
+fun LandscapeCompactConverter(
     onNavigateBack: (() -> Unit)? = null,
-viewModel: ConverterViewModel) {
+    viewModel: ConverterViewModel
+) {
+    val context = LocalContext.current // Get the current context
+
+    // Use LaunchedEffect to show the Toast only once when the Composable enters the composition
+    LaunchedEffect(Unit) {
+        Toast.makeText(context, "Landscape Compact Converter Layout", Toast.LENGTH_SHORT).show()
+    }
     val hazeState = remember { HazeState() }
 
     val selectedType by viewModel.selectedConverterType
@@ -78,18 +90,29 @@ viewModel: ConverterViewModel) {
     val fromWeightUnit by viewModel.fromWeightUnit
     val toWeightUnit by viewModel.toWeightUnit
 
-    CollapsingAppBarLayout(title = { fontSize, color ->
-        Text("UnitConverter", fontSize = fontSize, color = color)
-    }, navigationIcon = {
-        onNavigateBack?.let {
-            IconButton(onClick = it) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Navigate back"
-                )
-            }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Converter",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    )
+                },
+                navigationIcon = {
+                    onNavigateBack?.let {
+                        IconButton(onClick = it) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Navigate back"
+                            )
+                        }
+                    }
+                },
+            )
         }
-    }) { contentPadding ->
+    ) { contentPadding ->
 
         Column(
             modifier = Modifier
@@ -108,140 +131,145 @@ viewModel: ConverterViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                ConverterInputGroup {
-                    ConverterTypeDropdown(
+                LandscapeCompactConverterInputGroup {
+                    LandscapeCompactConverterTypeDropdown(
                         selectedType = selectedType, onTypeSelected = { newType ->
                             viewModel.onConverterTypeChange(newType)
                         }, hazeState = hazeState
                     )
                 }
 
-                ConverterInputGroup(modifier = Modifier.fillMaxWidth()) {
-                    UnitDropdown(
-                        label = fromUnitLabel(selectedType),
-                        selectedConverterType = selectedType,
-                        selectedVolumeUnit = fromVolumeUnit,
-                        onVolumeUnitSelected = { unit ->
-                            viewModel.onFromVolumeUnitChange(
-                                unit
-                            )
-                        },
-                        selectedLengthUnit = fromLengthUnit,
-                        onLengthUnitSelected = { unit ->
-                            viewModel.onFromLengthUnitChange(
-                                unit
-                            )
-                        },
-                        selectedTemperatureUnit = fromTemperatureUnit,
-                        onTemperatureUnitSelected = { unit ->
-                            viewModel.onFromTemperatureUnitChange(
-                                unit
-                            )
-                        },
-                        selectedCurrencyUnit = fromCurrencyUnit,
-                        onCurrencyUnitSelected = { unit ->
-                            viewModel.onFromCurrencyUnitChange(
-                                unit
-                            )
-                        },
-                        selectedAreaUnit = fromAreaUnit,
-                        onAreaUnitSelected = { unit -> viewModel.onFromAreaUnitChange(unit) },
-                        selectedWeightUnit = fromWeightUnit,
-                        onWeightUnitSelected = { unit ->
-                            viewModel.onFromWeightUnitChange(
-                                unit
-                            )
-                        },
-                        hazeState = hazeState,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    TextField(
-                        value = value1,
-                        onValueChange = { newValue ->
-                            viewModel.onValueChanged(
-                                newValue, ConverterViewModel.EditedField.FIELD1
-                            )
-                        },
-                        label = { Text("Value 1") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(10.dp)),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                            unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            focusedLabelColor = MaterialTheme.colorScheme.primary,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    LandscapeCompactConverterInputGroup(modifier = Modifier.weight(1f)) {
+                        LandscapeCompactUnitDropdown(
+                            label = fromUnitLabel(selectedType),
+                            selectedConverterType = selectedType,
+                            selectedVolumeUnit = fromVolumeUnit,
+                            onVolumeUnitSelected = { unit ->
+                                viewModel.onFromVolumeUnitChange(
+                                    unit
+                                )
+                            },
+                            selectedLengthUnit = fromLengthUnit,
+                            onLengthUnitSelected = { unit ->
+                                viewModel.onFromLengthUnitChange(
+                                    unit
+                                )
+                            },
+                            selectedTemperatureUnit = fromTemperatureUnit,
+                            onTemperatureUnitSelected = { unit ->
+                                viewModel.onFromTemperatureUnitChange(
+                                    unit
+                                )
+                            },
+                            selectedCurrencyUnit = fromCurrencyUnit,
+                            onCurrencyUnitSelected = { unit ->
+                                viewModel.onFromCurrencyUnitChange(
+                                    unit
+                                )
+                            },
+                            selectedAreaUnit = fromAreaUnit,
+                            onAreaUnitSelected = { unit -> viewModel.onFromAreaUnitChange(unit) },
+                            selectedWeightUnit = fromWeightUnit,
+                            onWeightUnitSelected = { unit ->
+                                viewModel.onFromWeightUnitChange(
+                                    unit
+                                )
+                            },
+                            hazeState = hazeState,
+                            modifier = Modifier.fillMaxWidth()
                         )
-                    )
-                }
+                        TextField(
+                            value = value1,
+                            onValueChange = { newValue ->
+                                viewModel.onValueChanged(
+                                    newValue, ConverterViewModel.EditedField.FIELD1
+                                )
+                            },
+                            label = { Text("Value 1") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp)),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+                                unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+                                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                            )
+                        )
+                    }
 
-                ConverterInputGroup(modifier = Modifier.fillMaxWidth()) {
-                    UnitDropdown(
-                        label = toUnitLabel(selectedType),
-                        selectedConverterType = selectedType,
-                        selectedVolumeUnit = toVolumeUnit,
-                        onVolumeUnitSelected = { unit ->
-                            viewModel.onToVolumeUnitChange(
-                                unit
-                            )
-                        },
-                        selectedLengthUnit = toLengthUnit,
-                        onLengthUnitSelected = { unit ->
-                            viewModel.onToLengthUnitChange(
-                                unit
-                            )
-                        },
-                        selectedTemperatureUnit = toTemperatureUnit,
-                        onTemperatureUnitSelected = { unit ->
-                            viewModel.onToTemperatureUnitChange(
-                                unit
-                            )
-                        },
-                        selectedCurrencyUnit = toCurrencyUnit,
-                        onCurrencyUnitSelected = { unit ->
-                            viewModel.onToCurrencyUnitChange(
-                                unit
-                            )
-                        },
-                        selectedAreaUnit = toAreaUnit,
-                        onAreaUnitSelected = { unit -> viewModel.onToAreaUnitChange(unit) },
-                        selectedWeightUnit = toWeightUnit,
-                        onWeightUnitSelected = { unit ->
-                            viewModel.onToWeightUnitChange(
-                                unit
-                            )
-                        },
-                        hazeState = hazeState,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    TextField(
-                        value = value2,
-                        onValueChange = { newValue ->
-                            viewModel.onValueChanged(
-                                newValue, ConverterViewModel.EditedField.FIELD2
-                            )
-                        },
-                        label = { Text("Value 2") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(10.dp)),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                            unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            focusedLabelColor = MaterialTheme.colorScheme.primary,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                    LandscapeCompactConverterInputGroup(modifier = Modifier.weight(1f)) {
+                        LandscapeCompactUnitDropdown(
+                            label = toUnitLabel(selectedType),
+                            selectedConverterType = selectedType,
+                            selectedVolumeUnit = toVolumeUnit,
+                            onVolumeUnitSelected = { unit ->
+                                viewModel.onToVolumeUnitChange(
+                                    unit
+                                )
+                            },
+                            selectedLengthUnit = toLengthUnit,
+                            onLengthUnitSelected = { unit ->
+                                viewModel.onToLengthUnitChange(
+                                    unit
+                                )
+                            },
+                            selectedTemperatureUnit = toTemperatureUnit,
+                            onTemperatureUnitSelected = { unit ->
+                                viewModel.onToTemperatureUnitChange(
+                                    unit
+                                )
+                            },
+                            selectedCurrencyUnit = toCurrencyUnit,
+                            onCurrencyUnitSelected = { unit ->
+                                viewModel.onToCurrencyUnitChange(
+                                    unit
+                                )
+                            },
+                            selectedAreaUnit = toAreaUnit,
+                            onAreaUnitSelected = { unit -> viewModel.onToAreaUnitChange(unit) },
+                            selectedWeightUnit = toWeightUnit,
+                            onWeightUnitSelected = { unit ->
+                                viewModel.onToWeightUnitChange(
+                                    unit
+                                )
+                            },
+                            hazeState = hazeState,
+                            modifier = Modifier.fillMaxWidth()
                         )
-                    )
+                        TextField(
+                            value = value2,
+                            onValueChange = { newValue ->
+                                viewModel.onValueChanged(
+                                    newValue, ConverterViewModel.EditedField.FIELD2
+                                )
+                            },
+                            label = { Text("Value 2") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp)),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+                                unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+                                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -252,7 +280,7 @@ private fun fromUnitLabel(type: ConverterType): String = "From (${type.displayNa
 private fun toUnitLabel(type: ConverterType): String = "To (${type.displayName.lowercase()})"
 
 @Composable
-fun ConverterInputGroup(
+fun LandscapeCompactConverterInputGroup(
     modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
@@ -267,7 +295,7 @@ fun ConverterInputGroup(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
-fun ConverterTypeDropdown(
+fun LandscapeCompactConverterTypeDropdown(
     selectedType: ConverterType, onTypeSelected: (ConverterType) -> Unit, hazeState: HazeState
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -326,7 +354,7 @@ fun ConverterTypeDropdown(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
-fun <T> GenericUnitDropdown(
+fun <T> LandscapeCompactGenericUnitDropdown(
     label: String,
     units: Array<T>,
     selectedUnit: T,
@@ -387,7 +415,7 @@ fun <T> GenericUnitDropdown(
 }
 
 @Composable
-fun UnitDropdown(
+fun LandscapeCompactUnitDropdown(
     label: String,
     selectedConverterType: ConverterType,
     selectedVolumeUnit: VolumeUnit,
@@ -406,7 +434,7 @@ fun UnitDropdown(
     modifier: Modifier = Modifier
 ) {
     when (selectedConverterType) {
-        ConverterType.VOLUME -> GenericUnitDropdown(
+        ConverterType.VOLUME -> LandscapeCompactGenericUnitDropdown(
             label,
             VolumeUnit.entries.toTypedArray(),
             selectedVolumeUnit,
@@ -416,7 +444,7 @@ fun UnitDropdown(
             modifier
         )
 
-        ConverterType.AREA -> GenericUnitDropdown(
+        ConverterType.AREA -> LandscapeCompactGenericUnitDropdown(
             label,
             AreaUnit.entries.toTypedArray(),
             selectedAreaUnit,
@@ -426,7 +454,7 @@ fun UnitDropdown(
             modifier
         )
 
-        ConverterType.LENGTH -> GenericUnitDropdown(
+        ConverterType.LENGTH -> LandscapeCompactGenericUnitDropdown(
             label,
             LengthUnit.entries.toTypedArray(),
             selectedLengthUnit,
@@ -436,7 +464,7 @@ fun UnitDropdown(
             modifier
         )
 
-        ConverterType.TEMPERATURE -> GenericUnitDropdown(
+        ConverterType.TEMPERATURE -> LandscapeCompactGenericUnitDropdown(
             label,
             TemperatureUnit.entries.toTypedArray(),
             selectedTemperatureUnit,
@@ -446,7 +474,7 @@ fun UnitDropdown(
             modifier
         )
 
-        ConverterType.CURRENCY -> GenericUnitDropdown(
+        ConverterType.CURRENCY -> LandscapeCompactGenericUnitDropdown(
             label,
             CurrencyUnit.entries.toTypedArray(),
             selectedCurrencyUnit,
@@ -456,7 +484,7 @@ fun UnitDropdown(
             modifier
         )
 
-        ConverterType.WEIGHT -> GenericUnitDropdown(
+        ConverterType.WEIGHT -> LandscapeCompactGenericUnitDropdown(
             label,
             WeightUnit.entries.toTypedArray(),
             selectedWeightUnit,
@@ -468,11 +496,12 @@ fun UnitDropdown(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
 @Composable
-fun CompactConverterScreenPreview() {
+fun LandscapeCompactConverterScreenPreview() {
     CalculatorTheme {
+        val context = LocalContext.current
         val previewViewModel: ConverterViewModel = viewModel()
-            CompactConverter(onNavigateBack = {}, viewModel = previewViewModel)
+        LandscapeCompactConverter(onNavigateBack = {}, viewModel = previewViewModel)
     }
 }

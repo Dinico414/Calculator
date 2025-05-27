@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.xenon.calculator.ui.layouts.converter.CompactConverter
-//import com.xenon.calculator.ui.layouts.converter.CoverConverter
-import com.xenon.calculator.viewmodel.LayoutType
+import com.xenon.calculator.ui.layouts.converter.CoverConverter
+import com.xenon.calculator.ui.layouts.converter.LandscapeCompactConverter
+import com.xenon.calculator.ui.layouts.converter.TabletConverter
 import com.xenon.calculator.viewmodel.ConverterViewModel
+import com.xenon.calculator.viewmodel.LayoutType
 
 @Composable
 fun ConverterLayout(
@@ -21,12 +23,12 @@ fun ConverterLayout(
         when (layoutType) {
             LayoutType.COVER -> {
                 if (isLandscape) {
-                    CompactConverter(
+                    CoverConverter(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel
                     )
                 } else {
-                    CompactConverter(
+                    CoverConverter(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel
                     )
@@ -35,7 +37,7 @@ fun ConverterLayout(
 
             LayoutType.SMALL -> {
                 if (isLandscape) {
-                    CompactConverter(onNavigateBack = onNavigateBack,
+                    LandscapeCompactConverter(onNavigateBack = onNavigateBack,
                         viewModel = viewModel)
                 } else {
                     CompactConverter(onNavigateBack = onNavigateBack,
@@ -45,7 +47,7 @@ fun ConverterLayout(
 
             LayoutType.COMPACT -> {
                 if (isLandscape) {
-                    CompactConverter(onNavigateBack = onNavigateBack,
+                    LandscapeCompactConverter(onNavigateBack = onNavigateBack,
                         viewModel = viewModel)
                 } else {
                     CompactConverter(onNavigateBack = onNavigateBack,
@@ -54,20 +56,20 @@ fun ConverterLayout(
 
             LayoutType.MEDIUM -> {
                 if (isLandscape) {
-                    CompactConverter(onNavigateBack = onNavigateBack,
+                    TabletConverter(onNavigateBack = onNavigateBack,
                         viewModel = viewModel)
                 } else {
-                    CompactConverter(onNavigateBack = onNavigateBack,
+                    TabletConverter(onNavigateBack = onNavigateBack,
                         viewModel = viewModel)
                 }
             }
 
             LayoutType.EXPANDED -> {
                 if (isLandscape) {
-                    CompactConverter(onNavigateBack = onNavigateBack,
+                    TabletConverter(onNavigateBack = onNavigateBack,
                         viewModel = viewModel)
                 } else {
-                    CompactConverter(onNavigateBack = onNavigateBack,
+                    TabletConverter(onNavigateBack = onNavigateBack,
                         viewModel = viewModel)
                 }
             }

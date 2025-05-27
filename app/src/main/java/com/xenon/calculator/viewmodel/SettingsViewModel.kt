@@ -7,18 +7,18 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.xenon.calculator.SharedPreferenceManager
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -32,46 +32,84 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     private val sharedPreferenceManager = SharedPreferenceManager(application)
     val themeOptions = ThemeSetting.entries.toTypedArray()
 
-    private val _currentThemeStateUpdated = MutableStateFlow(Unit) // For SettingsActivity immediate UI update
-    val currentThemeStateUpdated: StateFlow<Unit> = _currentThemeStateUpdated.asStateFlow()
+    private val _persistedThemeIndexFlow = MutableStateFlow(sharedPreferenceManager.theme)
+    val persistedThemeIndex: StateFlow<Int> = _persistedThemeIndexFlow.asStateFlow()
 
-    // --- Current Language ---
-    private val _currentLanguage = mutableStateOf(Locale.getDefault().displayLanguage)
-    val currentLanguage: State<String> = _currentLanguage
-    // Updated via updateCurrentLanguage()
+    private val _dialogPreviewThemeIndex = MutableStateFlow(sharedPreferenceManager.theme)
+    val dialogPreviewThemeIndex: StateFlow<Int> = _dialogPreviewThemeIndex.asStateFlow()
 
-    // --- Selected Theme Index (for the dialog) ---
-    private val _selectedThemeIndex = mutableIntStateOf(sharedPreferenceManager.theme)
-    val selectedThemeIndex: State<Int> = _selectedThemeIndex
-    // Setter is internal to ViewModel via onThemeSelected or init/dismiss
+    private val _currentThemeTitleFlow = MutableStateFlow(themeOptions[sharedPreferenceManager.theme].title)
+    val currentThemeTitle: StateFlow<String> = _currentThemeTitleFlow.asStateFlow()
 
-    // --- Current Theme Title (reflects applied theme) ---
-    private val _currentThemeTitle = mutableStateOf(themeOptions[sharedPreferenceManager.theme].title)
-    val currentThemeTitle: State<String> = _currentThemeTitle
-    // Setter is internal to ViewModel via applyTheme or init/dismiss
+    private val _currentLanguage = MutableStateFlow(Locale.getDefault().displayLanguage)
+    val currentLanguage: StateFlow<String> = _currentLanguage.asStateFlow()
 
-    // --- Show Theme Dialog ---
-    private val _showThemeDialog = mutableStateOf(false)
-    val showThemeDialog: State<Boolean> = _showThemeDialog
-    // Setter is internal to ViewModel
+    private val _showThemeDialog = MutableStateFlow(false)
+    val showThemeDialog: StateFlow<Boolean> = _showThemeDialog.asStateFlow()
 
-    // --- Show Clear Data Dialog ---
-    private val _showClearDataDialog = mutableStateOf(false)
-    val showClearDataDialog: State<Boolean> = _showClearDataDialog
-    // Setter is internal to ViewModel
+    private val _showClearDataDialog = MutableStateFlow(false)
+    val showClearDataDialog: StateFlow<Boolean> = _showClearDataDialog.asStateFlow()
+
+    // --- NEW: Flow for the currently active theme's night mode flag ---
+    // This will drive the actual theme application in Compose
+    val activeNightModeFlag: StateFlow<Int> = combine(
+        _persistedThemeIndexFlow,
+        _dialogPreviewThemeIndex,
+        _showThemeDialog
+    ) { persistedIndex, previewIndex, isDialogShowing ->
+        val themeIndexToUse = if (isDialogShowing) {
+            previewIndex // Use preview theme if dialog is showing
+        } else {
+            persistedIndex // Otherwise, use the persisted theme
+        }
+        if (themeIndexToUse >= 0 && themeIndexToUse < themeOptions.size) {
+            themeOptions[themeIndexToUse].nightModeFlag
+        } else {
+            // Fallback to a default if index is somehow out of bounds
+            themeOptions.firstOrNull { it == ThemeSetting.SYSTEM }?.nightModeFlag
+                ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = themeOptions[sharedPreferenceManager.theme].nightModeFlag // Initial value
+    )
+
 
     init {
-        // Ensure ViewModel starts with the correct theme title & index from SharedPreferences
-        _currentThemeTitle.value = themeOptions[sharedPreferenceManager.theme].title
-        _selectedThemeIndex.value = sharedPreferenceManager.theme
-        updateCurrentLanguage() // Set initial language
+        // Apply the active night mode flag whenever it changes
+        viewModelScope.launch {
+            activeNightModeFlag.collect { nightMode ->
+                // This is the single point where we command the theme change
+                AppCompatDelegate.setDefaultNightMode(nightMode)
+            }
+        }
+
+        // Update current theme title based on the persisted theme
+        viewModelScope.launch {
+            _persistedThemeIndexFlow.collect { index ->
+                if (index >= 0 && index < themeOptions.size) {
+                    _currentThemeTitleFlow.value = themeOptions[index].title
+                }
+            }
+        }
+        updateCurrentLanguage()
     }
 
-    fun applyTheme() {
-        _showThemeDialog.value = false
-        val index = _selectedThemeIndex.value
-        sharedPreferenceManager.theme = index
-        AppCompatDelegate.setDefaultNightMode(themeOptions[index].nightModeFlag)
+    fun onThemeOptionSelectedInDialog(index: Int) {
+        if (index >= 0 && index < themeOptions.size) {
+            _dialogPreviewThemeIndex.value = index
+            // The 'activeNightModeFlag' flow will automatically update and trigger theme change
+        }
+    }
+
+    fun applySelectedTheme() {
+        val indexToApply = _dialogPreviewThemeIndex.value
+        if (indexToApply >= 0 && indexToApply < themeOptions.size) {
+            sharedPreferenceManager.theme = indexToApply
+            _persistedThemeIndexFlow.value = indexToApply // Update persisted theme
+        }
+        _showThemeDialog.value = false // This will also cause 'activeNightModeFlag' to switch to persisted
     }
 
     fun updateCurrentLanguage() {
@@ -79,25 +117,16 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun onThemeSettingClicked() {
-        // When opening the dialog, ensure selectedThemeIndex reflects the persisted theme
-        _selectedThemeIndex.value = sharedPreferenceManager.theme
-        // _currentThemeTitle reflects the *applied* theme, so it shouldn't change here until applyTheme
-        _showThemeDialog.value = true
-    }
-
-    fun onThemeSelected(index: Int) {
-        _selectedThemeIndex.value = index
-        AppCompatDelegate.setDefaultNightMode(themeOptions[index].nightModeFlag)
-        _currentThemeTitle.value = themeOptions[index].title
-        _currentThemeStateUpdated.value = Unit // Signal that theme state was updated for SettingsActivity
+        _dialogPreviewThemeIndex.value = _persistedThemeIndexFlow.value // Start preview with current persisted
+        _showThemeDialog.value = true // This will cause 'activeNightModeFlag' to switch to preview
     }
 
     fun dismissThemeDialog() {
-        _showThemeDialog.value = false
-        val index = sharedPreferenceManager.theme
-        _currentThemeTitle.value = themeOptions[index].title
-        // If user dismissed without applying, reset selectedThemeIndex to actual persisted theme
-        _selectedThemeIndex.value = index
+        _showThemeDialog.value = false // This will cause 'activeNightModeFlag' to switch to persisted
+        // No need to manually revert AppCompatDelegate, 'activeNightModeFlag' handles it by
+        // falling back to _persistedThemeIndexFlow when dialog is not shown.
+        // We can ensure the dialog preview is reset if needed for next time.
+        _dialogPreviewThemeIndex.value = _persistedThemeIndexFlow.value
     }
 
     fun onClearDataClicked() {
@@ -106,26 +135,22 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun confirmClearData() {
         viewModelScope.launch {
-            // Clear app-specific SharedPreferences (the one used by SharedPreferenceManager)
             val customPrefs = getApplication<Application>().getSharedPreferences(
-                "CalculatorPrefs", // Make sure this matches SharedPreferenceManager
+                "CalculatorPrefs",
                 Context.MODE_PRIVATE
             )
-            customPrefs.edit().clear().apply()
+            customPrefs.edit { clear() }
 
-            // Optional: Clear default SharedPreferences if your app uses them for other things
-            // val defaultAppSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication())
-            // defaultAppSharedPreferences.edit().clear().apply()
+            val defaultThemeIndex = themeOptions.indexOfFirst { it == ThemeSetting.SYSTEM }
+                .takeIf { it != -1 } ?: 0
 
-            // After clearing, re-initialize theme in ViewModel to default (or whatever is appropriate)
-            // and restart.
-            // For example, if system theme (index 2) is your default after clearing:
-            sharedPreferenceManager.theme = 2 // Assuming 2 is "System"
-            _selectedThemeIndex.value = sharedPreferenceManager.theme
-            _currentThemeTitle.value = themeOptions[sharedPreferenceManager.theme].title
-            AppCompatDelegate.setDefaultNightMode(themeOptions[sharedPreferenceManager.theme].nightModeFlag)
+            sharedPreferenceManager.theme = defaultThemeIndex
+            _persistedThemeIndexFlow.value = defaultThemeIndex
+            // _dialogPreviewThemeIndex will be updated by activeNightModeFlag logic if dialog was open
+            // or by onThemeSettingClicked next time. Better to keep it consistent:
+            _dialogPreviewThemeIndex.value = defaultThemeIndex
 
-            restartApplication(getApplication())
+            restartApplication(getApplication()) // This will inherently re-apply the new default
         }
         _showClearDataDialog.value = false
     }
@@ -149,11 +174,14 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun restartApplication(context: Context) {
-        val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+        val packageManager = context.packageManager
+        val intent = packageManager.getLaunchIntentForPackage(context.packageName)
         val componentName = intent?.component
-        val mainIntent = Intent.makeRestartActivityTask(componentName)
-        context.startActivity(mainIntent)
-        Runtime.getRuntime().exit(0) // Ensure the old process is killed
+        if (componentName != null) {
+            val mainIntent = Intent.makeRestartActivityTask(componentName)
+            context.startActivity(mainIntent)
+            Runtime.getRuntime().exit(0)
+        }
     }
 
     class SettingsViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
@@ -162,7 +190,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
                 @Suppress("UNCHECKED_CAST")
                 return SettingsViewModel(application) as T
             }
-            throw IllegalArgumentException("Unknown ViewModel class")
+            throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
     }
 }
