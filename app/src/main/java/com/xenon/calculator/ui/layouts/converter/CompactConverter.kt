@@ -1,6 +1,7 @@
 package com.xenon.calculator.ui.layouts.converter
 
 // Haze Imports
+import android.graphics.BlurMaskFilter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,7 +34,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -302,10 +308,14 @@ fun ConverterTypeDropdown(
             )
         )
         ExposedDropdownMenu(
-            expanded = expanded, onDismissRequest = { expanded = false }, modifier = Modifier
-//                .padding(top = 5.dp, bottom = 5.dp)
-//                .clip(RoundedCornerShape(10.dp))
-                .background(Color.Transparent)
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            containerColor = Color.Transparent,
+            shadowElevation = 0.dp,
+            modifier = Modifier
+                .padding(top = 5.dp, bottom = 5.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.Gray)
                 .hazeEffect(
                     state = hazeState, style = FluentMaterials.thinAcrylic()
                 )
@@ -364,10 +374,14 @@ fun <T> GenericUnitDropdown(
             )
         )
         ExposedDropdownMenu(
-            expanded = expanded, onDismissRequest = { expanded = false }, modifier = Modifier
-//                .padding(top = 5.dp, bottom = 5.dp)
-//                .clip(RoundedCornerShape(10.dp))
-                .background(Color.Transparent)
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            containerColor = Color.Transparent,
+            shadowElevation = 0.dp,
+            modifier = Modifier
+                .padding(top = 5.dp, bottom = 5.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.Gray)
                 .hazeEffect(
                     state = hazeState, style = FluentMaterials.thinAcrylic()
                 )
