@@ -1,7 +1,6 @@
 package com.xenon.calculator.ui.layouts.converter
 
 // Haze Imports
-import android.graphics.BlurMaskFilter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,7 +20,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -34,16 +33,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.xenon.calculator.R
 import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.ConverterViewModel
@@ -63,8 +60,8 @@ import dev.chrisbanes.haze.materials.FluentMaterials
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
 fun CompactConverter(
-    onNavigateBack: (() -> Unit)? = null,
-viewModel: ConverterViewModel) {
+    onNavigateBack: (() -> Unit)? = null, viewModel: ConverterViewModel
+) {
     val hazeState = remember { HazeState() }
 
     val selectedType by viewModel.selectedConverterType
@@ -85,7 +82,7 @@ viewModel: ConverterViewModel) {
     val toWeightUnit by viewModel.toWeightUnit
 
     CollapsingAppBarLayout(title = { fontSize, color ->
-        Text("UnitConverter", fontSize = fontSize, color = color)
+        Text(stringResource(id = R.string.converter), fontSize = fontSize, color = color)
     }, navigationIcon = {
         onNavigateBack?.let {
             IconButton(onClick = it) {
@@ -108,7 +105,7 @@ viewModel: ConverterViewModel) {
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(30.dp))
-                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .background(colorScheme.surfaceContainer)
                     .verticalScroll(rememberScrollState())
                     .padding(vertical = 10.dp, horizontal = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -168,20 +165,20 @@ viewModel: ConverterViewModel) {
                                 newValue, ConverterViewModel.EditedField.FIELD1
                             )
                         },
-                        label = { Text("Value 1") },
+                        label = { Text(stringResource(id = R.string.value_1)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(10.dp)),
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                            unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                            focusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
+                            unfocusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
+                            focusedIndicatorColor = colorScheme.primary,
                             unfocusedIndicatorColor = Color.Transparent,
-                            focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            focusedLabelColor = MaterialTheme.colorScheme.primary,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                            focusedTextColor = colorScheme.onPrimaryContainer,
+                            unfocusedTextColor = colorScheme.onPrimaryContainer,
+                            focusedLabelColor = colorScheme.primary,
+                            unfocusedLabelColor = colorScheme.primary,
                         )
                     )
                 }
@@ -232,20 +229,20 @@ viewModel: ConverterViewModel) {
                                 newValue, ConverterViewModel.EditedField.FIELD2
                             )
                         },
-                        label = { Text("Value 2") },
+                        label = { Text(stringResource(id = R.string.value_2)) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(10.dp)),
                         colors = TextFieldDefaults.colors(
-                            focusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                            unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                            focusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
+                            unfocusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
+                            focusedIndicatorColor = colorScheme.primary,
                             unfocusedIndicatorColor = Color.Transparent,
-                            focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                            focusedLabelColor = MaterialTheme.colorScheme.primary,
-                            unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+                            focusedTextColor = colorScheme.onPrimaryContainer,
+                            unfocusedTextColor = colorScheme.onPrimaryContainer,
+                            focusedLabelColor = colorScheme.primary,
+                            unfocusedLabelColor = colorScheme.primary,
                         )
                     )
                 }
@@ -253,9 +250,18 @@ viewModel: ConverterViewModel) {
         }
     }
 }
+@Composable
+private fun fromUnitLabel(type: ConverterType): String {
+    val typeName = stringResource(id = type.displayNameResId)
+    return stringResource(id = R.string.label_from, typeName.lowercase())
+}
 
-private fun fromUnitLabel(type: ConverterType): String = "From (${type.displayName.lowercase()})"
-private fun toUnitLabel(type: ConverterType): String = "To (${type.displayName.lowercase()})"
+@Composable
+private fun toUnitLabel(type: ConverterType): String {
+    val typeName = stringResource(id = type.displayNameResId)
+    return stringResource(id = R.string.label_to, typeName.lowercase())
+}
+
 
 @Composable
 fun ConverterInputGroup(
@@ -264,7 +270,7 @@ fun ConverterInputGroup(
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+            .background(colorScheme.surfaceContainerHighest)
             .padding(horizontal = 10.dp, vertical = 10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         content = content
@@ -285,7 +291,7 @@ fun ConverterTypeDropdown(
         modifier = Modifier.fillMaxWidth()
     ) {
         TextField(
-            value = selectedType.displayName,
+            value = stringResource(id = selectedType.displayNameResId),
             onValueChange = {},
             readOnly = true,
             label = { Text("Converter Type") },
@@ -295,16 +301,16 @@ fun ConverterTypeDropdown(
                 .fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f),
+                focusedContainerColor = colorScheme.secondary,
+                unfocusedContainerColor = colorScheme.secondary.copy(alpha = 0.7f),
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                focusedTextColor = MaterialTheme.colorScheme.onSecondary,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSecondary,
-                focusedLabelColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.4f),
-                unfocusedLabelColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.4f),
-                focusedTrailingIconColor = MaterialTheme.colorScheme.onSecondary,
-                unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSecondary,
+                focusedTextColor = colorScheme.onSecondary,
+                unfocusedTextColor = colorScheme.onSecondary,
+                focusedLabelColor = colorScheme.onSecondary.copy(alpha = 0.4f),
+                unfocusedLabelColor = colorScheme.onSecondary.copy(alpha = 0.4f),
+                focusedTrailingIconColor = colorScheme.onSecondary,
+                unfocusedTrailingIconColor = colorScheme.onSecondary,
             )
         )
         ExposedDropdownMenu(
@@ -323,7 +329,8 @@ fun ConverterTypeDropdown(
             items.forEach { type ->
                 DropdownMenuItem(text = {
                     Text(
-                        type.displayName, color = MaterialTheme.colorScheme.onSurface
+                        text = stringResource(id = type.displayNameResId), // Corrected line
+                        color = colorScheme.onSurface
                     )
                 }, onClick = {
                     onTypeSelected(type)
@@ -361,16 +368,16 @@ fun <T> GenericUnitDropdown(
                 .fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.primary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+                focusedContainerColor = colorScheme.primary,
+                unfocusedContainerColor = colorScheme.primary.copy(alpha = 0.7f),
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f),
-                unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f),
-                focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+                focusedTextColor = colorScheme.onPrimary,
+                unfocusedTextColor = colorScheme.onPrimary,
+                focusedLabelColor = colorScheme.onPrimary.copy(alpha = 0.4f),
+                unfocusedLabelColor = colorScheme.onPrimary.copy(alpha = 0.4f),
+                focusedTrailingIconColor = colorScheme.onPrimary,
+                unfocusedTrailingIconColor = colorScheme.onPrimary,
             )
         )
         ExposedDropdownMenu(
@@ -389,7 +396,7 @@ fun <T> GenericUnitDropdown(
             units.forEach { unit ->
                 DropdownMenuItem(text = {
                     Text(
-                        getDisplayName(unit), color = MaterialTheme.colorScheme.onSurface
+                        getDisplayName(unit), color = colorScheme.onSurface
                     )
                 }, onClick = {
                     onUnitSelected(unit)
@@ -486,7 +493,8 @@ fun UnitDropdown(
 @Composable
 fun CompactConverterScreenPreview() {
     CalculatorTheme {
+        LocalContext.current
         val previewViewModel: ConverterViewModel = viewModel()
-            CompactConverter(onNavigateBack = {}, viewModel = previewViewModel)
+        CompactConverter(onNavigateBack = {}, viewModel = previewViewModel)
     }
 }

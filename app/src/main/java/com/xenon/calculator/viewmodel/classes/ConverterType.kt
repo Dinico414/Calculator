@@ -1,10 +1,13 @@
 package com.xenon.calculator.viewmodel.classes
 
-enum class ConverterType(val displayName: String) {
-    VOLUME("Volume"),
-    AREA("Area"),
-    LENGTH("Length"),
-    WEIGHT("Weight"),
-    TEMPERATURE("Temperature"),
-    CURRENCY("Currency")
+import androidx.annotation.StringRes
+import com.xenon.calculator.R
+
+enum class ConverterType(@StringRes val displayNameResId: Int) {
+    VOLUME(R.string.converter_type_volume),
+    AREA(R.string.converter_type_area),
+    LENGTH(R.string.converter_type_length),
+    WEIGHT(R.string.converter_type_weight),
+    TEMPERATURE(R.string.converter_type_temperature),
+    CURRENCY(R.string.converter_type_currency)
 }

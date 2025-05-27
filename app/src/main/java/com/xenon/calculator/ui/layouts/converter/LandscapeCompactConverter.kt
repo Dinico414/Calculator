@@ -1,11 +1,9 @@
 package com.xenon.calculator.ui.layouts.converter
 
-// Haze Imports
-import android.widget.Toast
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,48 +14,35 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.xenon.calculator.R
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.ConverterViewModel
-import com.xenon.calculator.viewmodel.classes.AreaUnit
 import com.xenon.calculator.viewmodel.classes.ConverterType
-import com.xenon.calculator.viewmodel.classes.CurrencyUnit
-import com.xenon.calculator.viewmodel.classes.LengthUnit
-import com.xenon.calculator.viewmodel.classes.TemperatureUnit
-import com.xenon.calculator.viewmodel.classes.VolumeUnit
-import com.xenon.calculator.viewmodel.classes.WeightUnit
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
-import dev.chrisbanes.haze.materials.FluentMaterials
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
@@ -65,12 +50,8 @@ fun LandscapeCompactConverter(
     onNavigateBack: (() -> Unit)? = null,
     viewModel: ConverterViewModel
 ) {
-    val context = LocalContext.current // Get the current context
+    LocalContext.current
 
-    // Use LaunchedEffect to show the Toast only once when the Composable enters the composition
-    LaunchedEffect(Unit) {
-        Toast.makeText(context, "Landscape Compact Converter Layout", Toast.LENGTH_SHORT).show()
-    }
     val hazeState = remember { HazeState() }
 
     val selectedType by viewModel.selectedConverterType
@@ -92,27 +73,20 @@ fun LandscapeCompactConverter(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Converter",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                    )
-                },
+            CenterAlignedTopAppBar(
+                title = { Text(stringResource(id = R.string.converter)) },
                 navigationIcon = {
                     onNavigateBack?.let {
                         IconButton(onClick = it) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Navigate back"
+                                contentDescription = "Navigate back",
                             )
                         }
                     }
-                },
+                }
             )
-        }
-    ) { contentPadding ->
+        })  { contentPadding ->
 
         Column(
             modifier = Modifier
@@ -131,8 +105,8 @@ fun LandscapeCompactConverter(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                LandscapeCompactConverterInputGroup {
-                    LandscapeCompactConverterTypeDropdown(
+                ConverterInputGroup {
+                    ConverterTypeDropdown(
                         selectedType = selectedType, onTypeSelected = { newType ->
                             viewModel.onConverterTypeChange(newType)
                         }, hazeState = hazeState
@@ -143,8 +117,8 @@ fun LandscapeCompactConverter(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    LandscapeCompactConverterInputGroup(modifier = Modifier.weight(1f)) {
-                        LandscapeCompactUnitDropdown(
+                    ConverterInputGroup(modifier = Modifier.weight(1f)) {
+                        UnitDropdown(
                             label = fromUnitLabel(selectedType),
                             selectedConverterType = selectedType,
                             selectedVolumeUnit = fromVolumeUnit,
@@ -189,7 +163,7 @@ fun LandscapeCompactConverter(
                                     newValue, ConverterViewModel.EditedField.FIELD1
                                 )
                             },
-                            label = { Text("Value 1") },
+                            label = { Text(stringResource(id = R.string.value_1)) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -207,8 +181,8 @@ fun LandscapeCompactConverter(
                         )
                     }
 
-                    LandscapeCompactConverterInputGroup(modifier = Modifier.weight(1f)) {
-                        LandscapeCompactUnitDropdown(
+                    ConverterInputGroup(modifier = Modifier.weight(1f)) {
+                        UnitDropdown(
                             label = toUnitLabel(selectedType),
                             selectedConverterType = selectedType,
                             selectedVolumeUnit = toVolumeUnit,
@@ -253,7 +227,7 @@ fun LandscapeCompactConverter(
                                     newValue, ConverterViewModel.EditedField.FIELD2
                                 )
                             },
-                            label = { Text("Value 2") },
+                            label = { Text(stringResource(id = R.string.value_2)) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -275,232 +249,23 @@ fun LandscapeCompactConverter(
         }
     }
 }
-
-private fun fromUnitLabel(type: ConverterType): String = "From (${type.displayName.lowercase()})"
-private fun toUnitLabel(type: ConverterType): String = "To (${type.displayName.lowercase()})"
-
 @Composable
-fun LandscapeCompactConverterInputGroup(
-    modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit
-) {
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-            .padding(horizontal = 10.dp, vertical = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        content = content
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
-@Composable
-fun LandscapeCompactConverterTypeDropdown(
-    selectedType: ConverterType, onTypeSelected: (ConverterType) -> Unit, hazeState: HazeState
-) {
-    var expanded by remember { mutableStateOf(false) }
-    val items = ConverterType.entries.toTypedArray()
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        TextField(
-            value = selectedType.displayName,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text("Converter Type") },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier
-                .menuAnchor(MenuAnchorType.PrimaryEditable)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.7f),
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedTextColor = MaterialTheme.colorScheme.onSecondary,
-                unfocusedTextColor = MaterialTheme.colorScheme.onSecondary,
-                focusedLabelColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.4f),
-                unfocusedLabelColor = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.4f),
-                focusedTrailingIconColor = MaterialTheme.colorScheme.onSecondary,
-                unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSecondary,
-            )
-        )
-        ExposedDropdownMenu(
-            expanded = expanded, onDismissRequest = { expanded = false }, modifier = Modifier
-//                .padding(top = 5.dp, bottom = 5.dp)
-//                .clip(RoundedCornerShape(10.dp))
-                .background(Color.Transparent)
-                .hazeEffect(
-                    state = hazeState, style = FluentMaterials.thinAcrylic()
-                )
-        ) {
-            items.forEach { type ->
-                DropdownMenuItem(text = {
-                    Text(
-                        type.displayName, color = MaterialTheme.colorScheme.onSurface
-                    )
-                }, onClick = {
-                    onTypeSelected(type)
-                    expanded = false
-                })
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
-@Composable
-fun <T> LandscapeCompactGenericUnitDropdown(
-    label: String,
-    units: Array<T>,
-    selectedUnit: T,
-    onUnitSelected: (T) -> Unit,
-    getDisplayName: (T) -> String,
-    hazeState: HazeState,
-    modifier: Modifier = Modifier
-) where T : Enum<T> {
-    var expanded by remember { mutableStateOf(false) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded, onExpandedChange = { expanded = !expanded }, modifier = modifier
-    ) {
-        TextField(
-            value = getDisplayName(selectedUnit),
-            onValueChange = {},
-            readOnly = true,
-            label = { Text(label) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier
-                .menuAnchor(MenuAnchorType.PrimaryEditable)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.primary,
-                unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                focusedLabelColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f),
-                unfocusedLabelColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.4f),
-                focusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
-                unfocusedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
-            )
-        )
-        ExposedDropdownMenu(
-            expanded = expanded, onDismissRequest = { expanded = false }, modifier = Modifier
-//                .padding(top = 5.dp, bottom = 5.dp)
-//                .clip(RoundedCornerShape(10.dp))
-                .background(Color.Transparent)
-                .hazeEffect(
-                    state = hazeState, style = FluentMaterials.thinAcrylic()
-                )
-        ) {
-            units.forEach { unit ->
-                DropdownMenuItem(text = {
-                    Text(
-                        getDisplayName(unit), color = MaterialTheme.colorScheme.onSurface
-                    )
-                }, onClick = {
-                    onUnitSelected(unit)
-                    expanded = false
-                })
-            }
-        }
-    }
+private fun fromUnitLabel(type: ConverterType): String {
+    val typeName = stringResource(id = type.displayNameResId)
+    return stringResource(id = R.string.label_from, typeName.lowercase())
 }
 
 @Composable
-fun LandscapeCompactUnitDropdown(
-    label: String,
-    selectedConverterType: ConverterType,
-    selectedVolumeUnit: VolumeUnit,
-    onVolumeUnitSelected: (VolumeUnit) -> Unit,
-    selectedLengthUnit: LengthUnit,
-    onLengthUnitSelected: (LengthUnit) -> Unit,
-    selectedTemperatureUnit: TemperatureUnit,
-    onTemperatureUnitSelected: (TemperatureUnit) -> Unit,
-    selectedCurrencyUnit: CurrencyUnit,
-    onCurrencyUnitSelected: (CurrencyUnit) -> Unit,
-    selectedAreaUnit: AreaUnit,
-    onAreaUnitSelected: (AreaUnit) -> Unit,
-    selectedWeightUnit: WeightUnit,
-    onWeightUnitSelected: (WeightUnit) -> Unit,
-    hazeState: HazeState,
-    modifier: Modifier = Modifier
-) {
-    when (selectedConverterType) {
-        ConverterType.VOLUME -> LandscapeCompactGenericUnitDropdown(
-            label,
-            VolumeUnit.entries.toTypedArray(),
-            selectedVolumeUnit,
-            onVolumeUnitSelected,
-            { it.displayName },
-            hazeState,
-            modifier
-        )
-
-        ConverterType.AREA -> LandscapeCompactGenericUnitDropdown(
-            label,
-            AreaUnit.entries.toTypedArray(),
-            selectedAreaUnit,
-            onAreaUnitSelected,
-            { it.displayName },
-            hazeState,
-            modifier
-        )
-
-        ConverterType.LENGTH -> LandscapeCompactGenericUnitDropdown(
-            label,
-            LengthUnit.entries.toTypedArray(),
-            selectedLengthUnit,
-            onLengthUnitSelected,
-            { it.displayName },
-            hazeState,
-            modifier
-        )
-
-        ConverterType.TEMPERATURE -> LandscapeCompactGenericUnitDropdown(
-            label,
-            TemperatureUnit.entries.toTypedArray(),
-            selectedTemperatureUnit,
-            onTemperatureUnitSelected,
-            { it.displayName },
-            hazeState,
-            modifier
-        )
-
-        ConverterType.CURRENCY -> LandscapeCompactGenericUnitDropdown(
-            label,
-            CurrencyUnit.entries.toTypedArray(),
-            selectedCurrencyUnit,
-            onCurrencyUnitSelected,
-            { it.displayName },
-            hazeState,
-            modifier
-        )
-
-        ConverterType.WEIGHT -> LandscapeCompactGenericUnitDropdown(
-            label,
-            WeightUnit.entries.toTypedArray(),
-            selectedWeightUnit,
-            onWeightUnitSelected,
-            { it.displayName },
-            hazeState,
-            modifier
-        )
-    }
+private fun toUnitLabel(type: ConverterType): String {
+    val typeName = stringResource(id = type.displayNameResId)
+    return stringResource(id = R.string.label_to, typeName.lowercase())
 }
 
 @Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
 @Composable
 fun LandscapeCompactConverterScreenPreview() {
     CalculatorTheme {
-        val context = LocalContext.current
+        LocalContext.current
         val previewViewModel: ConverterViewModel = viewModel()
         LandscapeCompactConverter(onNavigateBack = {}, viewModel = previewViewModel)
     }

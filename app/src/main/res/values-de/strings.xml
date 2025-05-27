@@ -11,4 +11,15 @@
     <string name="yes">Ja</string>
     <string name="cancel">Abbruch</string>
     <string name="converter">Umrechner</string>
+    <string name="label_from">Von (%s)</string>
+    <string name="label_to">Zu (%s)</string>
+    <string name="value_1">Wert 1</string>
+    <string name="value_2">Wert 2</string>
+    <string name="converter_type">Umrechnungs Einheit</string>
+    <string name="converter_type_volume">Volumen</string>
+    <string name="converter_type_area">Fläche</string>
+    <string name="converter_type_length">Länge</string>
+    <string name="converter_type_weight">Gewicht</string>
+    <string name="converter_type_temperature">Temperatur</string>
+    <string name="converter_type_currency">Währung</string>
 </resources>

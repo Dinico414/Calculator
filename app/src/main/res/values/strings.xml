@@ -10,4 +10,15 @@
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
     <string name="converter">Converter</string>
+    <string name="label_from">From (%s)</string>
+    <string name="label_to">To (%s)</string>
+    <string name="value_1">Value 1</string>
+    <string name="value_2">Value 2</string>
+    <string name="converter_type">Converter Type</string>
+    <string name="converter_type_volume">Volumen</string>
+    <string name="converter_type_area">Area</string>
+    <string name="converter_type_length">Length</string>
+    <string name="converter_type_weight">Weight</string>
+    <string name="converter_type_temperature">Temperature</string>
+    <string name="converter_type_currency">Currency</string>
 </resources>
