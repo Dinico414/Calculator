@@ -62,8 +62,7 @@ import dev.chrisbanes.haze.materials.FluentMaterials
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
 fun CoverConverter(
-    onNavigateBack: (() -> Unit)? = null,
-    viewModel: ConverterViewModel
+    onNavigateBack: (() -> Unit)? = null, viewModel: ConverterViewModel
 ) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -88,36 +87,33 @@ fun CoverConverter(
     val fromWeightUnit by viewModel.fromWeightUnit
     val toWeightUnit by viewModel.toWeightUnit
 
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Converter",
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            color = Color.White // Set text color to white
-                        )
-                    },
-                    navigationIcon = {
-                        onNavigateBack?.let {
-                            IconButton(onClick = it) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Navigate back",
-                                    tint = Color.White // Set icon color to white
-                                )
-                            }
-                        }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Black, // Set background color to black
-                        titleContentColor = Color.White, // Default title color
-                        navigationIconContentColor = Color.White // Default navigation icon color
+    Scaffold( 
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Converter",
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        color = Color.White // Set text color to white
                     )
+                }, navigationIcon = {
+                    onNavigateBack?.let {
+                        IconButton(onClick = it) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Navigate back",
+                                tint = Color.White // Set icon color to white
+                            )
+                        }
+                    }
+                }, colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Black, // Set background color to black
+                    titleContentColor = Color.White, // Default title color
+                    navigationIconContentColor = Color.White // Default navigation icon color
                 )
-            }
-        ) { contentPadding ->
+            )
+        }) { contentPadding ->
 
         Column(
             modifier = Modifier
@@ -144,7 +140,10 @@ fun CoverConverter(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
                         CoverUnitDropdown(
                             label = fromUnitLabel(selectedType),
                             selectedConverterType = selectedType,
@@ -197,7 +196,9 @@ fun CoverConverter(
                                 .clip(RoundedCornerShape(10.dp)),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                                unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+                                unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(
+                                    alpha = 0.25f
+                                ),
                                 focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                                 unfocusedIndicatorColor = Color.Transparent,
                                 focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -208,7 +209,10 @@ fun CoverConverter(
                         )
                     }
 
-                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
                         CoverUnitDropdown(
                             label = toUnitLabel(selectedType),
                             selectedConverterType = selectedType,
@@ -261,7 +265,9 @@ fun CoverConverter(
                                 .clip(RoundedCornerShape(10.dp)),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                                unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
+                                unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(
+                                    alpha = 0.25f
+                                ),
                                 focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                                 unfocusedIndicatorColor = Color.Transparent,
                                 focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -318,7 +324,9 @@ fun CoverConverterTypeDropdown(
             )
         )
         ExposedDropdownMenu(
-            expanded = expanded, onDismissRequest = { expanded = false }, modifier = Modifier
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
                 .background(Color.Transparent)
                 .hazeEffect(
                     state = hazeState, style = FluentMaterials.thinAcrylic()
@@ -378,7 +386,9 @@ fun <T> CoverGenericUnitDropdown(
             )
         )
         ExposedDropdownMenu(
-            expanded = expanded, onDismissRequest = { expanded = false }, modifier = Modifier
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
                 .background(Color.Transparent)
                 .hazeEffect(
                     state = hazeState, style = FluentMaterials.thinAcrylic()
