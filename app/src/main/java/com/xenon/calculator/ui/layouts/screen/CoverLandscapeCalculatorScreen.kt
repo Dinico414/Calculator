@@ -39,7 +39,6 @@ fun CoverLandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(end = 40.dp)
     ) {
         Box(
             modifier = Modifier
@@ -53,6 +52,7 @@ fun CoverLandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
                 result = viewModel.result,
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(end = 40.dp)
                     .padding(16.dp)
             )
         }

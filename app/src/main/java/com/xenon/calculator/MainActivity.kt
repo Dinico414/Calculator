@@ -81,11 +81,11 @@ class MainActivity : ComponentActivity() {
                         .then(
                             if (isCoverScreen) {
                                 Modifier
-                                    .background(Color.Black) //Cover screen App Background
+                                    .background(Color.Black)
                                     .padding(horizontal = 0.dp)
                             } else {
                                 Modifier
-                                    .background(MaterialTheme.colorScheme.background) //App Background
+                                    .background(MaterialTheme.colorScheme.background)
                                     .padding(horizontal = 15.dp)
                             }
                         ),
@@ -191,7 +191,7 @@ fun CalculatorApp(
                     Icon(
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = "Menu",
-                        tint = if (isCoverScreenLayout) Color.White else MaterialTheme.colorScheme.onSecondaryContainer
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
                 DropdownMenu(

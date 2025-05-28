@@ -5,8 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
-import com.xenon.calculator.ui.theme.ScreenEnvironment // Import
 import com.xenon.calculator.ui.layouts.ConverterLayout
+import com.xenon.calculator.ui.theme.ScreenEnvironment
 import com.xenon.calculator.viewmodel.ConverterViewModel
 
 class ConverterActivity : ComponentActivity() {
@@ -25,7 +25,7 @@ class ConverterActivity : ComponentActivity() {
             ConverterViewModel.ConverterViewModelFactory(application)
         )[ConverterViewModel::class.java]
 
-        val activeThemeForConverterActivity = sharedPreferenceManager.theme // 0, 1, or 2 (system)
+        val activeThemeForConverterActivity = sharedPreferenceManager.theme
 
         setContent {
             ScreenEnvironment(themePreference = activeThemeForConverterActivity) { layoutType, isLandscape ->
@@ -41,11 +41,10 @@ class ConverterActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Recreate if theme changed, MainActivity handles this well.
-        // You might need similar logic if theme can change while ConverterActivity is visible.
+
         val storedTheme = sharedPreferenceManager.theme
-        val currentActivityTheme = sharedPreferenceManager.theme // re-fetch or use a member variable
-        if (currentActivityTheme != storedTheme) { // Simple check, might need to store initial theme
+        val currentActivityTheme = sharedPreferenceManager.theme
+        if (currentActivityTheme != storedTheme) {
             recreate()
         }
     }

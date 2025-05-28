@@ -1,21 +1,23 @@
 package com.xenon.calculator.ui.layouts.converter
 
 // Haze Imports
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -29,14 +31,17 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -82,6 +87,13 @@ fun CompactConverter(
     val toAreaUnit by viewModel.toAreaUnit
     val fromWeightUnit by viewModel.fromWeightUnit
     val toWeightUnit by viewModel.toWeightUnit
+
+    var accumulatedRotation by remember { mutableFloatStateOf(0f) } // Store the total rotation
+    val rotationAngle by animateFloatAsState(
+        targetValue = accumulatedRotation, // Animate to the new accumulated rotation
+        animationSpec = tween(durationMillis = 300),
+        label = "IconRotation"
+    )
 
     CollapsingAppBarLayout(title = { fontSize, color ->
         Text(stringResource(id = R.string.converter), fontSize = fontSize, color = color)
@@ -185,11 +197,23 @@ fun CompactConverter(
                     )
                 }
 
-                IconButton (
-                    onClick = { viewModel.onUnitsSwitch() },
-                    modifier = Modifier.fillMaxWidth()
+                IconButton(
+                    onClick = {
+                        viewModel.onUnitsSwitch()
+                        accumulatedRotation += 180f
+                    },
+                    modifier = Modifier
+                        .height(40.dp)
+                        .fillMaxWidth(0.5f)
+                        .clip(CircleShape)
+                        .background(colorScheme.tertiary)
                 ) {
-                    Icon(Icons.Default.KeyboardArrowUp, "", tint = Color.White)
+                    Icon(
+                        painter = painterResource(id = R.drawable.swap),
+                        contentDescription = "Switch units",
+                        tint = colorScheme.onTertiary,
+                        modifier = Modifier.rotate(rotationAngle)
+                    )
                 }
 
                 ConverterInputGroup(modifier = Modifier.fillMaxWidth()) {
@@ -259,6 +283,7 @@ fun CompactConverter(
         }
     }
 }
+
 @Composable
 private fun fromUnitLabel(type: ConverterType): String {
     val typeName = stringResource(id = type.displayNameResId)
