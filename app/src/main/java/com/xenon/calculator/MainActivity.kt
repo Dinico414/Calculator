@@ -28,6 +28,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,6 +54,7 @@ import com.xenon.calculator.ui.res.NoCornerRadius
 import com.xenon.calculator.ui.res.NoElevation
 import com.xenon.calculator.ui.res.NoPadding
 import com.xenon.calculator.ui.res.SmallCornerRadius
+import com.xenon.calculator.ui.res.SmallMediumPadding
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.ui.theme.ScreenEnvironment
 import com.xenon.calculator.viewmodel.CalculatorViewModel
@@ -209,11 +211,11 @@ fun CalculatorApp(
                     containerColor = Color.Transparent,
                     shadowElevation = NoElevation,
                     modifier = Modifier
+                        .padding(top = SmallMediumPadding, bottom = SmallMediumPadding)
                         .clip(RoundedCornerShape(SmallCornerRadius))
-                        .background(Color.Transparent)
+                        .background(colorScheme.surfaceContainer)
                         .hazeEffect(
-                            state = hazeState,
-                            style = CupertinoMaterials.ultraThin()
+                            state = hazeState, style = CupertinoMaterials.ultraThin()
                         )
                 ) {
                     DropdownMenuItem(

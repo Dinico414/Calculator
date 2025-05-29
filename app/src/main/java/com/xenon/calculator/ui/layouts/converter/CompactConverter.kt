@@ -50,7 +50,6 @@ import com.xenon.calculator.R
 import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
 import com.xenon.calculator.ui.res.LargeCornerRadius
 import com.xenon.calculator.ui.res.LargePadding
-import com.xenon.calculator.ui.res.LargeSpacing
 import com.xenon.calculator.ui.res.LargerSpacing
 import com.xenon.calculator.ui.res.MediumCornerRadius
 import com.xenon.calculator.ui.res.MediumPadding
@@ -132,7 +131,7 @@ fun CompactConverter(
                     .verticalScroll(rememberScrollState())
                     .padding(vertical = MediumPadding, horizontal = MediumPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(LargeSpacing)
+                verticalArrangement = Arrangement.spacedBy(LargerSpacing)
             ) {
                 ConverterInputGroup {
                     ConverterTypeDropdown(
@@ -364,7 +363,7 @@ fun ConverterTypeDropdown(
             modifier = Modifier
                 .padding(top = SmallMediumPadding, bottom = SmallMediumPadding)
                 .clip(RoundedCornerShape(SmallCornerRadius))
-                .background(Color.Transparent)
+                .background(colorScheme.surfaceContainer)
                 .hazeEffect(
                     state = hazeState, style = FluentMaterials.thinAcrylic()
                 )
@@ -431,7 +430,7 @@ fun <T> GenericUnitDropdown(
             modifier = Modifier
                 .padding(top = SmallMediumPadding, bottom = SmallMediumPadding)
                 .clip(RoundedCornerShape(SmallCornerRadius))
-                .background(Color.Transparent)
+                .background(colorScheme.surfaceContainer)
                 .hazeEffect(
                     state = hazeState, style = FluentMaterials.thinAcrylic()
                 )
