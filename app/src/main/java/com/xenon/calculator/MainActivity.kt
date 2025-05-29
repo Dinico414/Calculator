@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -36,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -82,11 +84,9 @@ class MainActivity : ComponentActivity() {
                             if (isCoverScreen) {
                                 Modifier
                                     .background(Color.Black)
-                                    .padding(horizontal = 0.dp)
                             } else {
                                 Modifier
                                     .background(MaterialTheme.colorScheme.background)
-                                    .padding(horizontal = 15.dp)
                             }
                         ),
                     color = if (isCoverScreen) Color.Black else MaterialTheme.colorScheme.background
@@ -103,7 +103,7 @@ class MainActivity : ComponentActivity() {
                                         .clip(RoundedCornerShape(0.dp))
                                 } else {
                                     Modifier
-                                        .clip(RoundedCornerShape(30.dp))
+                                        .clip(RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
                                         .background(MaterialTheme.colorScheme.surfaceContainer)
                                 }
                             )
@@ -170,7 +170,7 @@ fun CalculatorApp(
                             .padding(top = 10.dp)
                     }
                 )
-                .clip(RoundedCornerShape(if (isCoverScreenLayout) 0.dp else 20.dp))
+                .clip(RoundedCornerShape(if (isCoverScreenLayout) 0.dp else 30.dp))
                 .background(
                     if (isCoverScreenLayout) Color.Black
                     else MaterialTheme.colorScheme.secondaryContainer
@@ -185,35 +185,40 @@ fun CalculatorApp(
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(top = 8.dp, end = 8.dp)
+                    .padding(top = 10.dp, end = 10.dp)
+                    .clip(shape = CircleShape)
+                    .background(color = MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 IconButton(onClick = { showMenu = !showMenu }) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = "Menu",
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
                 DropdownMenu(
                     expanded = showMenu,
                     onDismissRequest = { showMenu = false },
                     offset = DpOffset(x = 0.dp, y = (-48).dp),
+                    containerColor = Color.Transparent,
+                    shadowElevation = 0.dp,
                     modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(Color.Transparent)
                         .hazeEffect(
                             state = hazeState,
                             style = CupertinoMaterials.ultraThin()
                         )
-                        .background(Color.Transparent)
                 ) {
                     DropdownMenuItem(
-                        text = { Text("UnitConverter", color = if (isCoverScreenLayout) Color.White else Color.Unspecified) },
+                        text = { Text(stringResource(id = R.string.converter), color = if (isCoverScreenLayout) Color.White else MaterialTheme.colorScheme.onSurface) },
                         onClick = {
                             showMenu = false
                             onOpenConverter()
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text("Settings", color = if (isCoverScreenLayout) Color.White else Color.Unspecified) },
+                        text = { Text(stringResource(id = R.string.settings), color = if (isCoverScreenLayout) Color.White else MaterialTheme.colorScheme.onSurface) },
                         onClick = {
                             showMenu = false
                             onOpenSettings()

@@ -355,7 +355,7 @@ fun ConverterTypeDropdown(
             modifier = Modifier
                 .padding(top = 5.dp, bottom = 5.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(Color.Gray)
+                .background(Color.Transparent)
                 .hazeEffect(
                     state = hazeState, style = FluentMaterials.thinAcrylic()
                 )
@@ -422,7 +422,7 @@ fun <T> GenericUnitDropdown(
             modifier = Modifier
                 .padding(top = 5.dp, bottom = 5.dp)
                 .clip(RoundedCornerShape(10.dp))
-                .background(Color.Gray)
+                .background(Color.Transparent)
                 .hazeEffect(
                     state = hazeState, style = FluentMaterials.thinAcrylic()
                 )

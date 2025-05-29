@@ -56,10 +56,18 @@ fun ScreenEnvironment(
 
             if (!view.isInEditMode) {
                 SideEffect {
-                    systemUiController.setSystemBarsColor(
+                    systemUiController.setStatusBarColor(
                         color = systemBarColor,
+                        darkIcons = darkIcons
+                    )
+
+                    // Make navigation bar transparent
+                    systemUiController.setNavigationBarColor(
+                        color = Color.Transparent,
                         darkIcons = darkIcons,
-                        isNavigationBarContrastEnforced = false
+                        // For API level 29+ you might want to disable navigation bar contrast enforcement
+                        // if you want full transparency without a scrim.
+                        navigationBarContrastEnforced = false // Requires API 29+
                     )
                 }
             }
