@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember // Added import
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,6 +60,18 @@ fun CoverSettings(
     val dialogSelectedThemeIndex by viewModel.dialogPreviewThemeIndex.collectAsState()
     val currentLanguage by viewModel.currentLanguage.collectAsState()
     val showClearDataDialog by viewModel.showClearDataDialog.collectAsState()
+
+    // Get package info to access app version
+    val packageManager = context.packageManager
+    val packageName = context.packageName
+    val packageInfo = remember {
+        try {
+            packageManager.getPackageInfo(packageName, 0)
+        } catch (e: Exception) {
+            null // Handle potential exceptions
+        }
+    }
+    val appVersion = packageInfo?.versionName ?: "N/A" // Display "N/A" if version is not found
 
     Scaffold(
         containerColor = Color.Black,
@@ -112,6 +125,14 @@ fun CoverSettings(
                 subtitle = "Clear app data and cache",
                 onClick = { viewModel.onClearDataClicked() },
             )
+            Spacer(modifier = Modifier.height(5.dp)) // Added spacer
+
+            CoverSettingsGroupTile( // Added Version Tile
+                title = "Version",
+                subtitle = "Version $appVersion",
+                onClick = null, // Set onClick to null to disable it
+            )
+
 
             if (showThemeDialog) {
                 CoverThemeSelectionDialog(
@@ -139,7 +160,7 @@ fun CoverSettings(
 fun CoverSettingsGroupTile(
     title: String,
     subtitle: String,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)?, // Make onClick nullable
 ) {
     Row(
         modifier = Modifier
@@ -147,7 +168,13 @@ fun CoverSettingsGroupTile(
             .padding(horizontal = 10.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(Color.Black)
-            .clickable(onClick = onClick, role = Role.Button)
+            .then( // Conditionally apply clickable modifier
+                if (onClick != null) {
+                    Modifier.clickable(onClick = onClick, role = Role.Button)
+                } else {
+                    Modifier
+                }
+            )
             .padding(horizontal = 16.dp, vertical = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
