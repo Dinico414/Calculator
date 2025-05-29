@@ -9,7 +9,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -21,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.sp
 fun CollapsingAppBarLayout(
     modifier: Modifier = Modifier,
     collapsedHeight: Dp = 54.dp,
-    expandedHeight: Dp = 200.dp,
     title: @Composable (fontSize: TextUnit, color: Color) -> Unit = { _, _ -> },
     navigationIcon: @Composable () -> Unit = {},
     expandedTextColor: Color = MaterialTheme.colorScheme.primary,
@@ -42,11 +41,13 @@ fun CollapsingAppBarLayout(
     navigationIconContentColor: Color = MaterialTheme.colorScheme.onBackground,
     content: @Composable (paddingValues: PaddingValues) -> Unit
 ) {
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val expandedHeight = remember { (screenHeight / 100) * 35 }
+
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            // Dummy TopAppBar
             LargeTopAppBar(
                 title = {},
                 collapsedHeight = collapsedHeight,
@@ -62,7 +63,9 @@ fun CollapsingAppBarLayout(
             )
 
             val fraction = scrollBehavior.state.collapsedFraction
-            val curHeight by remember(fraction) { derivedStateOf { collapsedHeight.times(fraction) + expandedHeight.times(1 - fraction) } }
+            val curHeight by remember(fraction, expandedHeight, collapsedHeight) {
+                derivedStateOf { collapsedHeight.times(fraction) + expandedHeight.times(1 - fraction) }
+            }
             val curFontSize by remember(fraction) { derivedStateOf { (24 * fraction + 45 * (1 - fraction)).sp } }
 
             val interpolatedTextColor by remember(fraction, expandedTextColor, collapsedTextColor) {
@@ -70,8 +73,6 @@ fun CollapsingAppBarLayout(
                     lerp(expandedTextColor, collapsedTextColor, fraction)
                 }
             }
-
-            // Single line app bar with custom behaviour depending on scrollBehaviour
             CenterAlignedTopAppBar(
                 expandedHeight = curHeight,
                 title = {
