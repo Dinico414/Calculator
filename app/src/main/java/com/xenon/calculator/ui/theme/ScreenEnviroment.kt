@@ -23,51 +23,53 @@ fun ScreenEnvironment(
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-    val appIsDarkTheme = when (themePreference) {
-        0 -> false
-        1 -> true
-        else -> isSystemInDarkTheme()
-    }
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val screenWidth = this.maxWidth
+        val screenHeight = this.maxHeight
+        val targetCoverWidth = 418.30066.dp
+        val tolerance = 0.5.dp
+        val isTargetWidthMet =
+            (screenWidth >= targetCoverWidth - tolerance) && (screenWidth <= targetCoverWidth + tolerance)
 
-    CalculatorTheme(darkTheme = appIsDarkTheme) {
+        val dimensionForLayout = if (isLandscape && !isTargetWidthMet) screenHeight else screenWidth
 
-        val systemUiController = rememberSystemUiController()
-        val view = LocalView.current
+        val layoutType = when {
+            isTargetWidthMet -> LayoutType.COVER
+            dimensionForLayout < 320.dp -> LayoutType.SMALL
+            dimensionForLayout < 600.dp -> LayoutType.COMPACT
+            dimensionForLayout < 840.dp -> LayoutType.MEDIUM
+            else -> LayoutType.EXPANDED
+        }
 
-        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            val screenWidth = this.maxWidth
-            val screenHeight = this.maxHeight
-            val targetCoverWidth = 418.30066.dp
-            val tolerance = 0.5.dp
-            val isTargetWidthMet = (screenWidth >= targetCoverWidth - tolerance) && (screenWidth <= targetCoverWidth + tolerance)
-
-            val dimensionForLayout = if (isLandscape && !isTargetWidthMet) screenHeight else screenWidth
-
-            val layoutType = when {
-                isTargetWidthMet -> LayoutType.COVER
-                dimensionForLayout < 320.dp -> LayoutType.SMALL
-                dimensionForLayout < 600.dp -> LayoutType.COMPACT
-                dimensionForLayout < 840.dp -> LayoutType.MEDIUM
-                else -> LayoutType.EXPANDED
+        val appIsDarkTheme = if (layoutType == LayoutType.COVER) {
+            true
+        } else {
+            when (themePreference) {
+                0 -> false
+                1 -> true
+                else -> isSystemInDarkTheme()
             }
+        }
 
-            val systemBarColor = if (layoutType == LayoutType.COVER) Color.Black else MaterialTheme.colorScheme.background
-            val darkIcons = layoutType != LayoutType.COVER && !appIsDarkTheme
+        CalculatorTheme(darkTheme = appIsDarkTheme) {
+            val systemUiController = rememberSystemUiController()
+            val view = LocalView.current
+
+            val systemBarColor =
+                if (layoutType == LayoutType.COVER) Color.Black else MaterialTheme.colorScheme.background
+            val darkIconsForSystemBars =
+                if (layoutType == LayoutType.COVER) false else !appIsDarkTheme
 
             if (!view.isInEditMode) {
                 SideEffect {
                     systemUiController.setStatusBarColor(
-                        color = systemBarColor,
-                        darkIcons = darkIcons
+                        color = systemBarColor, darkIcons = darkIconsForSystemBars
                     )
 
-                    // Make navigation bar transparent
                     systemUiController.setNavigationBarColor(
                         color = Color.Transparent,
-                        darkIcons = darkIcons,
-                        // For API level 29+ you might want to disable navigation bar contrast enforcement
-                        // if you want full transparency without a scrim.
-                        navigationBarContrastEnforced = false // Requires API 29+
+                        darkIcons = darkIconsForSystemBars,
+                        navigationBarContrastEnforced = false
                     )
                 }
             }

@@ -39,7 +39,7 @@ fun CompactLandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(end = 40.dp)
+                .padding(end = 50.dp)
                 .clip(RoundedCornerShape(20.dp))
                 .background(MaterialTheme.colorScheme.secondaryContainer)
         ) {

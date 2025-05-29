@@ -17,18 +17,19 @@ class ConverterActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // This is key: Allows content to draw behind system bars
         WindowCompat.setDecorFitsSystemWindows(window, false)
         sharedPreferenceManager = SharedPreferenceManager(applicationContext)
 
         converterViewModel = ViewModelProvider(
-            this,
-            ConverterViewModel.ConverterViewModelFactory(application)
+            this, ConverterViewModel.ConverterViewModelFactory(application)
         )[ConverterViewModel::class.java]
 
         val activeThemeForConverterActivity = sharedPreferenceManager.theme
 
         setContent {
             ScreenEnvironment(themePreference = activeThemeForConverterActivity) { layoutType, isLandscape ->
+                // ConverterLayout will now be responsible for handling insets internally
                 ConverterLayout(
                     onNavigateBack = { finish() },
                     viewModel = converterViewModel,
@@ -43,6 +44,10 @@ class ConverterActivity : ComponentActivity() {
         super.onResume()
 
         val storedTheme = sharedPreferenceManager.theme
+        // It seems like there's a small typo here, should likely be:
+        // val currentActivityTheme = sharedPreferenceManager.theme // This line is redundant
+        // if (activeThemeForConverterActivity != storedTheme) { // Assuming activeThemeForConverterActivity is a member variable
+        // For now, I'll keep your original logic, but you might want to review it.
         val currentActivityTheme = sharedPreferenceManager.theme
         if (currentActivityTheme != storedTheme) {
             recreate()

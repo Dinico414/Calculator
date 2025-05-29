@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.shape.CircleShape
@@ -80,21 +82,16 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
-                        .then(
-                            if (isCoverScreen) {
-                                Modifier
-                                    .background(Color.Black)
-                            } else {
-                                Modifier
-                                    .background(MaterialTheme.colorScheme.background)
-                            }
+                        .background(
+                            if (isCoverScreen) Color.Black
+                            else MaterialTheme.colorScheme.background
                         ),
                     color = if (isCoverScreen) Color.Black else MaterialTheme.colorScheme.background
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(WindowInsets.safeDrawing.asPaddingValues())
+                            .padding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal).asPaddingValues())
                             .then(
                                 if (isCoverScreen) {
                                     Modifier
@@ -150,10 +147,12 @@ fun CalculatorApp(
     var showMenu by remember { mutableStateOf(false) }
     val hazeState = remember { HazeState() }
     val isCoverScreenLayout = layoutType == LayoutType.COVER
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .hazeSource(hazeState),
+            .hazeSource(hazeState)
+            .padding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom).asPaddingValues()),
         verticalArrangement = Arrangement.Bottom
     ) {
         Box(

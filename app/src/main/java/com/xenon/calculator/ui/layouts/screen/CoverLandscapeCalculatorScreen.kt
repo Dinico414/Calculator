@@ -52,7 +52,7 @@ fun CoverLandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
                 result = viewModel.result,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(end = 40.dp)
+                    .padding(end = 50.dp)
                     .padding(16.dp)
             )
         }

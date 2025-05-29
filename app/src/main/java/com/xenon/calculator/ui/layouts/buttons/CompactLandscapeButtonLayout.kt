@@ -25,7 +25,6 @@ fun CompactLandscapeButtonLayout(
 ) {
     val buttonSpacing = 4.dp
 
-    // These definitions remain the same
     val scientificButtonRowsData = listOf(
         listOf("√", "π", "^", "!"),
         listOf(viewModel.angleUnit.name, "sin", "cos", "tan"),
@@ -45,10 +44,9 @@ fun CompactLandscapeButtonLayout(
             .padding(10.dp),
         horizontalArrangement = Arrangement.spacedBy(buttonSpacing)
     ) {
-        // Scientific Buttons Column
         Column(
             modifier = Modifier
-                .weight(3f) // Adjust weight as needed for landscape
+                .weight(3f)
                 .fillMaxHeight(),
             verticalArrangement = Arrangement.spacedBy(buttonSpacing)
         ) {
