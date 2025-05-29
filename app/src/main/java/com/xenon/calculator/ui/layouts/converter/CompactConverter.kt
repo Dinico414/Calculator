@@ -45,10 +45,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.xenon.calculator.R
 import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
+import com.xenon.calculator.ui.res.LargeCornerRadius
+import com.xenon.calculator.ui.res.LargePadding
+import com.xenon.calculator.ui.res.LargeSpacing
+import com.xenon.calculator.ui.res.LargerSpacing
+import com.xenon.calculator.ui.res.MediumCornerRadius
+import com.xenon.calculator.ui.res.MediumPadding
+import com.xenon.calculator.ui.res.MinMediumButtonHeight
+import com.xenon.calculator.ui.res.NoElevation
+import com.xenon.calculator.ui.res.SmallCornerRadius
+import com.xenon.calculator.ui.res.SmallMediumPadding
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.ConverterViewModel
 import com.xenon.calculator.viewmodel.classes.AreaUnit
@@ -113,17 +122,17 @@ fun CompactConverter(
                 .padding(contentPadding)
                 .fillMaxSize()
                 .hazeSource(hazeState)
-                .padding(horizontal = 15.dp)
+                .padding(horizontal = LargePadding)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(30.dp))
+                    .clip(RoundedCornerShape(LargeCornerRadius))
                     .background(colorScheme.surfaceContainer)
                     .verticalScroll(rememberScrollState())
-                    .padding(vertical = 10.dp, horizontal = 10.dp),
+                    .padding(vertical = MediumPadding, horizontal = MediumPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(LargeSpacing)
             ) {
                 ConverterInputGroup {
                     ConverterTypeDropdown(
@@ -183,7 +192,7 @@ fun CompactConverter(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(10.dp)),
+                            .clip(RoundedCornerShape(SmallCornerRadius)),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
                             unfocusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
@@ -203,7 +212,7 @@ fun CompactConverter(
                         accumulatedRotation += 180f
                     },
                     modifier = Modifier
-                        .height(40.dp)
+                        .height(MinMediumButtonHeight)
                         .fillMaxWidth(0.5f)
                         .clip(CircleShape)
                         .background(colorScheme.tertiary)
@@ -266,7 +275,7 @@ fun CompactConverter(
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(10.dp)),
+                            .clip(RoundedCornerShape(SmallCornerRadius)),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
                             unfocusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
@@ -303,10 +312,10 @@ fun ConverterInputGroup(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(MediumCornerRadius))
             .background(colorScheme.surfaceContainerHighest)
-            .padding(horizontal = 10.dp, vertical = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+            .padding(horizontal = MediumPadding, vertical = MediumPadding),
+        verticalArrangement = Arrangement.spacedBy(LargerSpacing),
         content = content
     )
 }
@@ -333,7 +342,7 @@ fun ConverterTypeDropdown(
             modifier = Modifier
                 .menuAnchor(MenuAnchorType.PrimaryEditable)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(SmallCornerRadius),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = colorScheme.secondary,
                 unfocusedContainerColor = colorScheme.secondary.copy(alpha = 0.7f),
@@ -351,10 +360,10 @@ fun ConverterTypeDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             containerColor = Color.Transparent,
-            shadowElevation = 0.dp,
+            shadowElevation = NoElevation,
             modifier = Modifier
-                .padding(top = 5.dp, bottom = 5.dp)
-                .clip(RoundedCornerShape(10.dp))
+                .padding(top = SmallMediumPadding, bottom = SmallMediumPadding)
+                .clip(RoundedCornerShape(SmallCornerRadius))
                 .background(Color.Transparent)
                 .hazeEffect(
                     state = hazeState, style = FluentMaterials.thinAcrylic()
@@ -363,7 +372,7 @@ fun ConverterTypeDropdown(
             items.forEach { type ->
                 DropdownMenuItem(text = {
                     Text(
-                        text = stringResource(id = type.displayNameResId), // Corrected line
+                        text = stringResource(id = type.displayNameResId),
                         color = colorScheme.onSurface
                     )
                 }, onClick = {
@@ -400,7 +409,7 @@ fun <T> GenericUnitDropdown(
             modifier = Modifier
                 .menuAnchor(MenuAnchorType.PrimaryEditable)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(SmallCornerRadius),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = colorScheme.primary,
                 unfocusedContainerColor = colorScheme.primary.copy(alpha = 0.7f),
@@ -418,10 +427,10 @@ fun <T> GenericUnitDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             containerColor = Color.Transparent,
-            shadowElevation = 0.dp,
+            shadowElevation = NoElevation,
             modifier = Modifier
-                .padding(top = 5.dp, bottom = 5.dp)
-                .clip(RoundedCornerShape(10.dp))
+                .padding(top = SmallMediumPadding, bottom = SmallMediumPadding)
+                .clip(RoundedCornerShape(SmallCornerRadius))
                 .background(Color.Transparent)
                 .hazeEffect(
                     state = hazeState, style = FluentMaterials.thinAcrylic()

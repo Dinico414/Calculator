@@ -1,5 +1,7 @@
 package com.xenon.calculator.ui.layouts.buttons
 
+//import androidx.compose.animation.slideInVertically // Kept removed for simpler animation as discussed
+//import androidx.compose.animation.slideOutVertically // Kept removed for simpler animation as discussed
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
@@ -10,8 +12,6 @@ import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-//import androidx.compose.animation.slideInVertically // Kept removed for simpler animation as discussed
-//import androidx.compose.animation.slideOutVertically // Kept removed for simpler animation as discussed
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -57,6 +57,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xenon.calculator.R
+import com.xenon.calculator.ui.res.LargeSpacing
+import com.xenon.calculator.ui.res.LargerSpacing
+import com.xenon.calculator.ui.res.LargestSpacing
+import com.xenon.calculator.ui.res.MediumButtonHeight
+import com.xenon.calculator.ui.res.MediumIconButtonSize
+import com.xenon.calculator.ui.res.MediumSpacing
+import com.xenon.calculator.ui.res.MinMediumButtonHeight
+import com.xenon.calculator.ui.res.NoElevation
+import com.xenon.calculator.ui.res.NoPadding
+import com.xenon.calculator.ui.res.SmallButtonSizeSpacing
+import com.xenon.calculator.ui.res.SmallPadding
+import com.xenon.calculator.ui.res.SmallestPadding
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 
@@ -72,16 +84,16 @@ fun CompactButtonLayout(
     Column(
         modifier = modifier
             .fillMaxHeight(0.7f)
-            .padding(10.dp)
+            .padding(MediumSpacing)
     ) {
         ScientificButtonsRow1(
             viewModel, modifier = Modifier
-                .height(40.dp)
+                .height(SmallButtonSizeSpacing)
                 .fillMaxWidth()
         )
 
         val spacerHeight by animateDpAsState(
-            targetValue = if (viewModel.isScientificMode) 4.dp else 12.dp,
+            targetValue = if (viewModel.isScientificMode) MediumSpacing else LargestSpacing,
             animationSpec = tween(durationMillis = 300),
             label = "ScientificModeSpacerHeight"
         )
@@ -115,11 +127,11 @@ fun CompactButtonLayout(
                 ) {
                     Column(modifier = Modifier.fillMaxHeight()) {
                         ScientificButtonsRow2(viewModel, modifier = Modifier.weight(1f))
-                        Spacer(Modifier.height(4.dp))
+                        Spacer(Modifier.height(MediumSpacing))
                         ScientificButtonsRow3(
                             viewModel, viewModel.isInverseMode, modifier = Modifier.weight(1f)
                         )
-                        Spacer(Modifier.height(8.dp))
+                        Spacer(Modifier.height(LargeSpacing))
                     }
                 }
             }
@@ -143,8 +155,8 @@ fun CompactButtonLayout(
                             Modifier
                                 .fillMaxWidth()
                                 .weight(1f)
-                                .padding(horizontal = 0.dp),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                .padding(horizontal = NoPadding),
+                            horizontalArrangement = Arrangement.spacedBy(LargerSpacing)
                         ) {
                             rowData.forEach { buttonText ->
                                 val isNumberButton = buttonText in listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".")
@@ -172,7 +184,7 @@ fun CompactButtonLayout(
                         }
                         if (rowData != buttonRows.last()) {
                             val spacerInnerHeight by animateDpAsState(
-                                targetValue = if (viewModel.isScientificMode) 4.dp else 8.dp,
+                                targetValue = if (viewModel.isScientificMode) MediumSpacing else LargeSpacing,
                                 animationSpec = tween(durationMillis = 300),
                                 label = "SpacerInnerHeightAnimation"
                             )
@@ -188,8 +200,8 @@ fun CompactButtonLayout(
 @Composable
 fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.padding(horizontal = 1.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = modifier.padding(horizontal = SmallestPadding),
+        horizontalArrangement = Arrangement.spacedBy(MediumSpacing),
         verticalAlignment = Alignment.CenterVertically
     ) {
         val firstButtonText = if (viewModel.isInverseMode) "x²" else "√"
@@ -218,7 +230,7 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
 
         Box(
             modifier = Modifier
-                .size(40.dp)
+                .size(MediumIconButtonSize)
                 .clip(CircleShape)
                 .background(
                     color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.1f),
@@ -252,8 +264,8 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
 @Composable
 fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 1.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = modifier.fillMaxWidth().padding(horizontal = SmallestPadding),
+        horizontalArrangement = Arrangement.spacedBy(MediumSpacing),
         verticalAlignment = Alignment.CenterVertically
     ) {
         CalculatorButton(
@@ -279,7 +291,7 @@ fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = M
                 onClick = { viewModel.onButtonClick(text) }
             )
         }
-        Spacer(Modifier.width(40.dp))
+        Spacer(Modifier.width(SmallButtonSizeSpacing))
     }
 }
 
@@ -290,8 +302,8 @@ fun ScientificButtonsRow3(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 1.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = modifier.fillMaxWidth().padding(horizontal = SmallestPadding),
+        horizontalArrangement = Arrangement.spacedBy(MediumSpacing),
         verticalAlignment = Alignment.CenterVertically
     ) {
         val lnButtonText = if (isInverseMode) "eˣ" else "ln"
@@ -322,7 +334,7 @@ fun ScientificButtonsRow3(
                 }
             )
         }
-        Spacer(Modifier.width(40.dp))
+        Spacer(Modifier.width(SmallButtonSizeSpacing))
     }
 }
 
@@ -394,13 +406,13 @@ fun CalculatorButton(
 
     Button(
         onClick = onClick,
-        modifier = modifier.defaultMinSize(minHeight = 48.dp, minWidth = 40.dp),
+        modifier = modifier.defaultMinSize(minHeight = MediumButtonHeight, minWidth = MinMediumButtonHeight),
         shape = RoundedCornerShape(percent = cornerRadiusPercent),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor, contentColor = contentColor
         ),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp, pressedElevation = 0.dp),
-        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = NoElevation, pressedElevation = NoElevation),
+        contentPadding = PaddingValues(horizontal = SmallPadding, vertical = SmallPadding),
         interactionSource = interactionSource
     ) {
         Text(

@@ -12,9 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color // Import Color
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.xenon.calculator.ui.res.MediumPadding
+import com.xenon.calculator.ui.res.MediumSpacing
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 
@@ -23,7 +24,7 @@ fun CoverButtonLayout(
     viewModel: CalculatorViewModel,
     modifier: Modifier = Modifier,
 ) {
-    val buttonSpacing = 4.dp
+    val buttonSpacing = MediumSpacing
 
     val numericOpButtonRowsData = listOf(
         listOf("7", "8", "9", "÷", "AC"),
@@ -35,7 +36,7 @@ fun CoverButtonLayout(
     Row(
         modifier = modifier
             .fillMaxSize()
-            .padding(top = 10.dp)
+            .padding(top = MediumPadding)
             .background(color = Color.Black),
         horizontalArrangement = Arrangement.spacedBy(buttonSpacing)
     ) {

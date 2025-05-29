@@ -42,10 +42,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.xenon.calculator.ui.layouts.ButtonLayout
 import com.xenon.calculator.ui.layouts.CalculatorScreen
+import com.xenon.calculator.ui.res.ButtonBoxPadding
+import com.xenon.calculator.ui.res.LargeCornerRadius
+import com.xenon.calculator.ui.res.MediumCornerRadius
+import com.xenon.calculator.ui.res.MediumPadding
+import com.xenon.calculator.ui.res.NoCornerRadius
+import com.xenon.calculator.ui.res.NoElevation
+import com.xenon.calculator.ui.res.NoPadding
+import com.xenon.calculator.ui.res.SmallCornerRadius
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.ui.theme.ScreenEnvironment
 import com.xenon.calculator.viewmodel.CalculatorViewModel
@@ -96,11 +103,11 @@ class MainActivity : ComponentActivity() {
                                 if (isCoverScreen) {
                                     Modifier
                                         .background(Color.Black)
-                                        .padding(horizontal = 0.dp)
-                                        .clip(RoundedCornerShape(0.dp))
+                                        .padding(horizontal = NoPadding)
+                                        .clip(RoundedCornerShape(NoCornerRadius))
                                 } else {
                                     Modifier
-                                        .clip(RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
+                                        .clip(RoundedCornerShape(topStart = LargeCornerRadius, topEnd = LargeCornerRadius))
                                         .background(MaterialTheme.colorScheme.surfaceContainer)
                                 }
                             )
@@ -162,14 +169,14 @@ fun CalculatorApp(
                 .then(
                     if (isCoverScreenLayout) {
                         Modifier
-                            .padding(horizontal = 0.dp, vertical = 0.dp)
+                            .padding(horizontal = NoPadding, vertical = NoPadding)
                     } else {
                         Modifier
-                            .padding(horizontal = 10.dp, vertical = 0.dp)
-                            .padding(top = 10.dp)
+                            .padding(horizontal = MediumPadding, vertical = NoPadding)
+                            .padding(top = MediumPadding)
                     }
                 )
-                .clip(RoundedCornerShape(if (isCoverScreenLayout) 0.dp else 30.dp))
+                .clip(RoundedCornerShape(if (isCoverScreenLayout) NoCornerRadius else MediumCornerRadius))
                 .background(
                     if (isCoverScreenLayout) Color.Black
                     else MaterialTheme.colorScheme.secondaryContainer
@@ -184,7 +191,7 @@ fun CalculatorApp(
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(top = 10.dp, end = 10.dp)
+                    .padding(top = MediumPadding, end = MediumPadding)
                     .clip(shape = CircleShape)
                     .background(color = MaterialTheme.colorScheme.surfaceContainer)
             ) {
@@ -198,11 +205,11 @@ fun CalculatorApp(
                 DropdownMenu(
                     expanded = showMenu,
                     onDismissRequest = { showMenu = false },
-                    offset = DpOffset(x = 0.dp, y = (-48).dp),
+                    offset = DpOffset(x = NoPadding, y = ButtonBoxPadding),
                     containerColor = Color.Transparent,
-                    shadowElevation = 0.dp,
+                    shadowElevation = NoElevation,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
+                        .clip(RoundedCornerShape(SmallCornerRadius))
                         .background(Color.Transparent)
                         .hazeEffect(
                             state = hazeState,
