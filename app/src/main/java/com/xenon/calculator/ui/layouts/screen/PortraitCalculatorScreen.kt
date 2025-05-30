@@ -33,7 +33,7 @@ fun PortraitCalculatorScreen(viewModel: CalculatorViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(top = SmallTextFieldPadding)
+                .padding(top = LargeTextFieldPadding)
         ) {
             DisplaySection(
                 currentInput = viewModel.currentInput,
