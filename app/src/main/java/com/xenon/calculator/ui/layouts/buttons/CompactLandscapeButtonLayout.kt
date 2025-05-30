@@ -140,6 +140,11 @@ fun CompactLandscapeButtonLayout(
                                     "( )" -> viewModel.onParenthesesClick()
                                     else -> viewModel.onButtonClick(originalButtonText)
                                 }
+                            },
+                            onLongClick = {
+                                if (originalButtonText == "⌫") {
+                                    viewModel.onButtonClick("AC")
+                                }
                             }
                         )
                     }

@@ -4,6 +4,7 @@ package com.xenon.calculator.ui.layouts.buttons
 //import androidx.compose.animation.slideOutVertically // Kept removed for simpler animation as discussed
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
@@ -13,6 +14,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +35,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -48,6 +52,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -71,6 +76,8 @@ import com.xenon.calculator.ui.res.SmallPadding
 import com.xenon.calculator.ui.res.SmallestPadding
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.viewmodel.CalculatorViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 
 val firaSansFamily = FontFamily(
     Font(R.font.fira_sans, FontWeight.Normal)
@@ -177,6 +184,11 @@ fun CompactButtonLayout(
                                             viewModel.onParenthesesClick()
                                         } else {
                                             viewModel.onButtonClick(buttonText)
+                                        }
+                                    },
+                                    onLongClick = {
+                                        if (buttonText == "⌫") {
+                                            viewModel.onButtonClick("AC")
                                         }
                                     }
                                 )
@@ -352,6 +364,7 @@ fun CalculatorButton(
     isInverseActive: Boolean = false,
     fontFamily: FontFamily? = null,
     onClick: () -> Unit,
+    onLongClick: () -> Unit = {},
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -397,15 +410,25 @@ fun CalculatorButton(
 
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+    var longClickFired = remember { false }
 
     val cornerRadiusPercent by animateIntAsState(
         targetValue = if (isPressed && !isScientificButton) 30 else 100,
         animationSpec = tween(durationMillis = if (isScientificButton) 0 else 350),
-        label = "cornerRadiusAnimation"
+        label = "cornerRadiusAnimation",
+        finishedListener = { value ->
+            if (isPressed && value != 100) {
+                onLongClick()
+                longClickFired = true
+            }
+        }
     )
 
     Button(
-        onClick = onClick,
+        onClick = {
+            if (longClickFired) longClickFired = false
+            else onClick()
+        },
         modifier = modifier.defaultMinSize(minHeight = MediumButtonHeight, minWidth = MinMediumButtonHeight),
         shape = RoundedCornerShape(percent = cornerRadiusPercent),
         colors = ButtonDefaults.buttonColors(
