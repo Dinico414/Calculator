@@ -3,6 +3,7 @@ package com.xenon.calculator
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import com.xenon.calculator.ui.layouts.ConverterLayout
@@ -16,7 +17,7 @@ class ConverterActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false) // Correctly set for edge-to-edge
+//        WindowCompat.setDecorFitsSystemWindows(window, false) // Correctly set for edge-to-edge
         sharedPreferenceManager = SharedPreferenceManager(applicationContext)
 
         converterViewModel = ViewModelProvider(
@@ -24,6 +25,8 @@ class ConverterActivity : ComponentActivity() {
         )[ConverterViewModel::class.java]
 
         val activeThemeForConverterActivity = sharedPreferenceManager.theme
+
+        enableEdgeToEdge()
 
         setContent {
             ScreenEnvironment(themePreference = activeThemeForConverterActivity) { layoutType, isLandscape ->

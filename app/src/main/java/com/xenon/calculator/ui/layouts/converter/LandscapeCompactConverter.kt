@@ -42,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.xenon.calculator.R
+import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
 import com.xenon.calculator.ui.res.ConverterTypeDropdown
 import com.xenon.calculator.ui.res.InputGroup
 import com.xenon.calculator.ui.res.XenonTextField
@@ -91,20 +92,19 @@ fun LandscapeCompactConverter(
     )
 
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text(stringResource(id = R.string.converter)) },
-                navigationIcon = {
-                    onNavigateBack?.let {
-                        IconButton(onClick = it) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Navigate back",
-                            )
-                        }
-                    }
-                })
+    CollapsingAppBarLayout (
+        title = { fontSize, color ->
+            Text(stringResource(id = R.string.converter), fontSize = fontSize, color = color)
+        },
+        navigationIcon = {
+            onNavigateBack?.let {
+                IconButton(onClick = it) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Navigate back",
+                    )
+                }
+            }
         }) { contentPadding ->
 
         Column(

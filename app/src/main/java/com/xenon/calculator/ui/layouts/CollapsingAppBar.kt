@@ -1,5 +1,6 @@
 package com.xenon.calculator.ui.layouts
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets // Import
@@ -53,6 +54,7 @@ fun CollapsingAppBarLayout(
     Scaffold(
         modifier = modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .background(MaterialTheme.colorScheme.background)
             .padding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues()),
         topBar = {
             LargeTopAppBar(
