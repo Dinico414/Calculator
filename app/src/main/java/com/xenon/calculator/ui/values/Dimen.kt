@@ -1,4 +1,4 @@
-package com.xenon.calculator.ui.res
+package com.xenon.calculator.ui.values
 
 import androidx.compose.ui.unit.dp
 
@@ -46,10 +46,12 @@ val LargestSpacing = 12.dp
 val ExtraLargeSpacing = 16.dp
 val SmallButtonSizeSpacing = 40.dp
 
-val IconSizeSmall = 16.dp
+val IconSizeSmaller = 16.dp
+val IconSizeSmall = 20.dp
 val IconSizeMedium = 24.dp
 val IconSizeLarge = 32.dp
 val IconSizeExtraLarge = 48.dp
+
 
 val MinTouchTargetSize = 48.dp // Important for accessibility
 val ListItemHeight = 72.dp

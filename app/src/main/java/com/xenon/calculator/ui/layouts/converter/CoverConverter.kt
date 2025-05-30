@@ -5,7 +5,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-// import androidx.compose.foundation.layout.Row // Will be replaced by SubcomposeLayout for the specific row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,8 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -25,8 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,12 +37,14 @@ import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.xenon.calculator.R
-import com.xenon.calculator.ui.theme.CalculatorTheme
+import com.xenon.calculator.ui.res.ConverterTypeDropdown
+import com.xenon.calculator.ui.res.XenonTextField
+import com.xenon.calculator.ui.values.IconSizeLarge
+import com.xenon.calculator.ui.values.IconSizeSmall
+import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.MediumSpacing
+import com.xenon.calculator.ui.values.UnitDropdown
 import com.xenon.calculator.viewmodel.ConverterViewModel
 import com.xenon.calculator.viewmodel.classes.ConverterType
 import dev.chrisbanes.haze.HazeState
@@ -84,12 +81,12 @@ fun CoverConverter(
     var accumulatedRotation by remember { mutableFloatStateOf(0f) }
     val rotationAngle by animateFloatAsState(
         targetValue = accumulatedRotation,
-        animationSpec = tween(durationMillis = 300), label = "IconRotation"
+        animationSpec = tween(durationMillis = 300),
+        label = "IconRotation"
     )
 
     Scaffold(
-        containerColor = Color.Black,
-        topBar = {
+        containerColor = Color.Black, topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(stringResource(id = R.string.converter), color = Color.White) },
                 navigationIcon = {
@@ -117,14 +114,14 @@ fun CoverConverter(
                 .background(Color.Black)
                 .fillMaxSize()
                 .hazeSource(hazeState)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = LargePadding)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(MediumSpacing)
             ) {
                 ConverterTypeDropdown(
                     selectedType = selectedType, onTypeSelected = { newType ->
@@ -132,52 +129,58 @@ fun CoverConverter(
                     }, hazeState = hazeState
                 )
 
-                val spacing = 10.dp
+                val spacing = MediumSpacing
                 SubcomposeLayout(modifier = Modifier.fillMaxWidth()) { constraints ->
                     val subcomposeContent = @Composable {
-                        // Column 1 (From)
+
                         Column(
                             modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                            verticalArrangement = Arrangement.spacedBy(MediumSpacing)
                         ) {
                             UnitDropdown(
                                 label = fromUnitLabel(selectedType),
                                 selectedConverterType = selectedType,
                                 selectedVolumeUnit = fromVolumeUnit,
-                                onVolumeUnitSelected = { unit -> viewModel.onFromVolumeUnitChange(unit) },
+                                onVolumeUnitSelected = { unit ->
+                                    viewModel.onFromVolumeUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedLengthUnit = fromLengthUnit,
-                                onLengthUnitSelected = { unit -> viewModel.onFromLengthUnitChange(unit) },
+                                onLengthUnitSelected = { unit ->
+                                    viewModel.onFromLengthUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedTemperatureUnit = fromTemperatureUnit,
-                                onTemperatureUnitSelected = { unit -> viewModel.onFromTemperatureUnitChange(unit) },
+                                onTemperatureUnitSelected = { unit ->
+                                    viewModel.onFromTemperatureUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedCurrencyUnit = fromCurrencyUnit,
-                                onCurrencyUnitSelected = { unit -> viewModel.onFromCurrencyUnitChange(unit) },
+                                onCurrencyUnitSelected = { unit ->
+                                    viewModel.onFromCurrencyUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedAreaUnit = fromAreaUnit,
                                 onAreaUnitSelected = { unit -> viewModel.onFromAreaUnitChange(unit) },
                                 selectedWeightUnit = fromWeightUnit,
-                                onWeightUnitSelected = { unit -> viewModel.onFromWeightUnitChange(unit) },
+                                onWeightUnitSelected = { unit ->
+                                    viewModel.onFromWeightUnitChange(
+                                        unit
+                                    )
+                                },
                                 hazeState = hazeState,
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            TextField(
-                                value = value1,
-                                onValueChange = { newValue ->
-                                    viewModel.onValueChanged(newValue, ConverterViewModel.EditedField.FIELD1)
-                                },
-                                label = { Text(stringResource(id = R.string.value_1)) },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(10.dp)),
-                                colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
-                                    unfocusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
-                                    focusedIndicatorColor = colorScheme.primary,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    focusedTextColor = colorScheme.onPrimaryContainer,
-                                    unfocusedTextColor = colorScheme.onPrimaryContainer,
-                                    focusedLabelColor = colorScheme.primary,
-                                    unfocusedLabelColor = colorScheme.primary,
-                                )
+                            XenonTextField(
+                                value = value1, onValueChange = { newValue ->
+                                    viewModel.onValueChanged(
+                                        newValue, ConverterViewModel.EditedField.FIELD1
+                                    )
+                                }, label = stringResource(id = R.string.value_1)
                             )
                         }
 
@@ -188,7 +191,7 @@ fun CoverConverter(
                                 accumulatedRotation += 180f
                             },
                             modifier = Modifier
-                                .width(32.dp)
+                                .width(IconSizeLarge)
                                 .clip(CircleShape)
                                 .background(colorScheme.tertiary)
                         ) {
@@ -198,14 +201,14 @@ fun CoverConverter(
                                 tint = colorScheme.onTertiary,
                                 modifier = Modifier
                                     .rotate(rotationAngle)
-                                    .width(20.dp)
-                                    .height(20.dp)
+                                    .width(IconSizeSmall)
+                                    .height(IconSizeSmall)
                             )
                         }
 
                         Column(
                             modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                            verticalArrangement = Arrangement.spacedBy(MediumSpacing)
                         ) {
                             UnitDropdown(
                                 label = toUnitLabel(selectedType),
@@ -215,9 +218,17 @@ fun CoverConverter(
                                 selectedLengthUnit = toLengthUnit,
                                 onLengthUnitSelected = { unit -> viewModel.onToLengthUnitChange(unit) },
                                 selectedTemperatureUnit = toTemperatureUnit,
-                                onTemperatureUnitSelected = { unit -> viewModel.onToTemperatureUnitChange(unit) },
+                                onTemperatureUnitSelected = { unit ->
+                                    viewModel.onToTemperatureUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedCurrencyUnit = toCurrencyUnit,
-                                onCurrencyUnitSelected = { unit -> viewModel.onToCurrencyUnitChange(unit) },
+                                onCurrencyUnitSelected = { unit ->
+                                    viewModel.onToCurrencyUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedAreaUnit = toAreaUnit,
                                 onAreaUnitSelected = { unit -> viewModel.onToAreaUnitChange(unit) },
                                 selectedWeightUnit = toWeightUnit,
@@ -225,26 +236,12 @@ fun CoverConverter(
                                 hazeState = hazeState,
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            TextField(
-                                value = value2,
-                                onValueChange = { newValue ->
-                                    viewModel.onValueChanged(newValue, ConverterViewModel.EditedField.FIELD2)
-                                },
-                                label = { Text(stringResource(id = R.string.value_2)) },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(10.dp)),
-                                colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
-                                    unfocusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
-                                    focusedIndicatorColor = colorScheme.primary,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    focusedTextColor = colorScheme.onPrimaryContainer,
-                                    unfocusedTextColor = colorScheme.onPrimaryContainer,
-                                    focusedLabelColor = colorScheme.primary,
-                                    unfocusedLabelColor = colorScheme.primary,
-                                )
+                            XenonTextField(
+                                value = value2, onValueChange = { newValue ->
+                                    viewModel.onValueChanged(
+                                        newValue, ConverterViewModel.EditedField.FIELD2
+                                    )
+                                }, label = stringResource(id = R.string.value_2)
                             )
                         }
                     }
@@ -261,9 +258,12 @@ fun CoverConverter(
 
                     val spacingPx = spacing.toPx().roundToInt()
 
-                    val iconButtonFixedWidth = iconButtonMeasurable.maxIntrinsicWidth(constraints.maxHeight)
-                    val availableWidthForColumns = constraints.maxWidth - iconButtonFixedWidth - (2 * spacingPx)
-                    val columnWidth = if (availableWidthForColumns > 0) availableWidthForColumns / 2 else 0
+                    val iconButtonFixedWidth =
+                        iconButtonMeasurable.maxIntrinsicWidth(constraints.maxHeight)
+                    val availableWidthForColumns =
+                        constraints.maxWidth - iconButtonFixedWidth - (2 * spacingPx)
+                    val columnWidth =
+                        if (availableWidthForColumns > 0) availableWidthForColumns / 2 else 0
 
 
                     val column1Placeable = column1Measurable.measure(
@@ -284,18 +284,27 @@ fun CoverConverter(
                         )
                     )
 
-                    val totalWidth = column1Placeable.width + spacingPx + iconButtonPlaceable.width + spacingPx + column2Placeable.width
-                    val maxHeight = maxOf(column1Placeable.height, iconButtonPlaceable.height, column2Placeable.height)
+                    val totalWidth =
+                        column1Placeable.width + spacingPx + iconButtonPlaceable.width + spacingPx + column2Placeable.width
+                    val maxHeight = maxOf(
+                        column1Placeable.height, iconButtonPlaceable.height, column2Placeable.height
+                    )
 
                     layout(totalWidth, maxHeight) {
                         var currentX = 0
-                        column1Placeable.placeRelative(currentX, (maxHeight - column1Placeable.height) / 2)
+                        column1Placeable.placeRelative(
+                            currentX, (maxHeight - column1Placeable.height) / 2
+                        )
                         currentX += column1Placeable.width + spacingPx
 
-                        iconButtonPlaceable.placeRelative(currentX, (maxHeight - iconButtonPlaceable.height) / 2)
+                        iconButtonPlaceable.placeRelative(
+                            currentX, (maxHeight - iconButtonPlaceable.height) / 2
+                        )
                         currentX += iconButtonPlaceable.width + spacingPx
 
-                        column2Placeable.placeRelative(currentX, (maxHeight - column2Placeable.height) / 2)
+                        column2Placeable.placeRelative(
+                            currentX, (maxHeight - column2Placeable.height) / 2
+                        )
                     }
                 }
             }
@@ -314,13 +323,4 @@ private fun fromUnitLabel(type: ConverterType): String {
 private fun toUnitLabel(type: ConverterType): String {
     val typeName = stringResource(id = type.displayNameResId)
     return stringResource(id = R.string.label_to, typeName.lowercase())
-}
-
-@Preview(showBackground = true, device = "spec:width=411dp,height=891dp")
-@Composable
-fun CoverConverterScreenPreview() {
-    CalculatorTheme(darkTheme = true) {
-        val previewViewModel: ConverterViewModel = viewModel()
-        CoverConverter(onNavigateBack = {}, viewModel = previewViewModel)
-    }
 }

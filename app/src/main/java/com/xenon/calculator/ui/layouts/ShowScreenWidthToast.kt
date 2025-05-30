@@ -10,8 +10,6 @@ fun ShowScreenWidthToast() {
     val context = LocalContext.current
     val screenWidthDp = configuration.screenWidthDp
 
-    // LaunchedEffect ensures the Toast is shown only once when the composable enters the composition
-    // or when screenWidthDp changes.
     LaunchedEffect(screenWidthDp) {
         Toast.makeText(context, "Screen Width: $screenWidthDp dp", Toast.LENGTH_LONG).show()
     }

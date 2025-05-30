@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -25,8 +24,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -36,17 +33,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.xenon.calculator.R
-import com.xenon.calculator.ui.theme.CalculatorTheme
+import com.xenon.calculator.ui.res.ConverterTypeDropdown
+import com.xenon.calculator.ui.res.InputGroup
+import com.xenon.calculator.ui.res.XenonTextField
+import com.xenon.calculator.ui.values.IconSizeLarge
+import com.xenon.calculator.ui.values.LargeCornerRadius
+import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.LargerSpacing
+import com.xenon.calculator.ui.values.MediumPadding
+import com.xenon.calculator.ui.values.UnitDropdown
 import com.xenon.calculator.viewmodel.ConverterViewModel
 import com.xenon.calculator.viewmodel.classes.ConverterType
 import dev.chrisbanes.haze.HazeState
@@ -83,7 +84,8 @@ fun LandscapeCompactConverter(
     var accumulatedRotation by remember { mutableFloatStateOf(0f) }
     val rotationAngle by animateFloatAsState(
         targetValue = accumulatedRotation,
-        animationSpec = tween(durationMillis = 300), label = "IconRotation"
+        animationSpec = tween(durationMillis = 300),
+        label = "IconRotation"
     )
 
 
@@ -100,28 +102,27 @@ fun LandscapeCompactConverter(
                             )
                         }
                     }
-                }
-            )
-        })  { contentPadding ->
+                })
+        }) { contentPadding ->
 
         Column(
             modifier = Modifier
                 .padding(contentPadding)
                 .fillMaxSize()
                 .hazeSource(hazeState)
-                .padding(horizontal = 15.dp)
+                .padding(horizontal = LargePadding)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(30.dp))
+                    .clip(RoundedCornerShape(LargeCornerRadius))
                     .background(colorScheme.surfaceContainer)
                     .verticalScroll(rememberScrollState())
-                    .padding(vertical = 10.dp, horizontal = 10.dp),
+                    .padding(vertical = MediumPadding, horizontal = MediumPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(LargerSpacing)
             ) {
-                ConverterInputGroup {
+                InputGroup {
                     ConverterTypeDropdown(
                         selectedType = selectedType, onTypeSelected = { newType ->
                             viewModel.onConverterTypeChange(newType)
@@ -129,48 +130,54 @@ fun LandscapeCompactConverter(
                     )
                 }
 
-                val spacing = 10.dp
+                val spacing = LargerSpacing
                 SubcomposeLayout(modifier = Modifier.fillMaxWidth()) { constraints ->
                     val subcomposeContent = @Composable {
-                        ConverterInputGroup(modifier = Modifier.weight(1f)) {
+                        InputGroup(modifier = Modifier.weight(1f)) {
                             UnitDropdown(
                                 label = fromUnitLabel(selectedType),
                                 selectedConverterType = selectedType,
                                 selectedVolumeUnit = fromVolumeUnit,
-                                onVolumeUnitSelected = { unit -> viewModel.onFromVolumeUnitChange(unit) },
+                                onVolumeUnitSelected = { unit ->
+                                    viewModel.onFromVolumeUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedLengthUnit = fromLengthUnit,
-                                onLengthUnitSelected = { unit -> viewModel.onFromLengthUnitChange(unit) },
+                                onLengthUnitSelected = { unit ->
+                                    viewModel.onFromLengthUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedTemperatureUnit = fromTemperatureUnit,
-                                onTemperatureUnitSelected = { unit -> viewModel.onFromTemperatureUnitChange(unit) },
+                                onTemperatureUnitSelected = { unit ->
+                                    viewModel.onFromTemperatureUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedCurrencyUnit = fromCurrencyUnit,
-                                onCurrencyUnitSelected = { unit -> viewModel.onFromCurrencyUnitChange(unit) },
+                                onCurrencyUnitSelected = { unit ->
+                                    viewModel.onFromCurrencyUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedAreaUnit = fromAreaUnit,
                                 onAreaUnitSelected = { unit -> viewModel.onFromAreaUnitChange(unit) },
                                 selectedWeightUnit = fromWeightUnit,
-                                onWeightUnitSelected = { unit -> viewModel.onFromWeightUnitChange(unit) },
+                                onWeightUnitSelected = { unit ->
+                                    viewModel.onFromWeightUnitChange(
+                                        unit
+                                    )
+                                },
                                 hazeState = hazeState,
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            TextField(
-                                value = value1,
-                                onValueChange = { newValue ->
-                                    viewModel.onValueChanged(newValue, ConverterViewModel.EditedField.FIELD1)
-                                },
-                                label = { Text(stringResource(id = R.string.value_1)) },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(10.dp)),
-                                colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
-                                    unfocusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
-                                    focusedIndicatorColor = colorScheme.primary,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    focusedTextColor = colorScheme.onPrimaryContainer,
-                                    unfocusedTextColor = colorScheme.onPrimaryContainer,
-                                    focusedLabelColor = colorScheme.primary,
-                                    unfocusedLabelColor = colorScheme.primary,
+                            XenonTextField(
+                                value = value1, onValueChange = { newValue ->
+                                    viewModel.onValueChanged(
+                                        newValue, ConverterViewModel.EditedField.FIELD1
                                     )
+                                }, label = stringResource(id = R.string.value_1)
                             )
                         }
 
@@ -192,13 +199,13 @@ fun LandscapeCompactConverter(
                                 tint = colorScheme.onTertiary,
                                 modifier = Modifier
                                     .rotate(rotationAngle)
-                                    .width(32.dp)
-                                    .height(32.dp)
+                                    .width(IconSizeLarge)
+                                    .height(IconSizeLarge)
                             )
                         }
 
 
-                        ConverterInputGroup(modifier = Modifier.weight(1f)) {
+                        InputGroup(modifier = Modifier.weight(1f)) {
                             UnitDropdown(
                                 label = toUnitLabel(selectedType),
                                 selectedConverterType = selectedType,
@@ -207,9 +214,17 @@ fun LandscapeCompactConverter(
                                 selectedLengthUnit = toLengthUnit,
                                 onLengthUnitSelected = { unit -> viewModel.onToLengthUnitChange(unit) },
                                 selectedTemperatureUnit = toTemperatureUnit,
-                                onTemperatureUnitSelected = { unit -> viewModel.onToTemperatureUnitChange(unit) },
+                                onTemperatureUnitSelected = { unit ->
+                                    viewModel.onToTemperatureUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedCurrencyUnit = toCurrencyUnit,
-                                onCurrencyUnitSelected = { unit -> viewModel.onToCurrencyUnitChange(unit) },
+                                onCurrencyUnitSelected = { unit ->
+                                    viewModel.onToCurrencyUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedAreaUnit = toAreaUnit,
                                 onAreaUnitSelected = { unit -> viewModel.onToAreaUnitChange(unit) },
                                 selectedWeightUnit = toWeightUnit,
@@ -217,26 +232,12 @@ fun LandscapeCompactConverter(
                                 hazeState = hazeState,
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            TextField(
-                                value = value2,
-                                onValueChange = { newValue ->
-                                    viewModel.onValueChanged(newValue, ConverterViewModel.EditedField.FIELD2)
-                                },
-                                label = { Text(stringResource(id = R.string.value_2)) },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(10.dp)),
-                                colors = TextFieldDefaults.colors(
-                                    focusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
-                                    unfocusedContainerColor = colorScheme.primary.copy(alpha = 0.25f),
-                                    focusedIndicatorColor = colorScheme.primary,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    focusedTextColor = colorScheme.onPrimaryContainer,
-                                    unfocusedTextColor = colorScheme.onPrimaryContainer,
-                                    focusedLabelColor = colorScheme.primary,
-                                    unfocusedLabelColor = colorScheme.primary,
+                            XenonTextField(
+                                value = value2, onValueChange = { newValue ->
+                                    viewModel.onValueChanged(
+                                        newValue, ConverterViewModel.EditedField.FIELD2
                                     )
+                                }, label = stringResource(id = R.string.value_2)
                             )
                         }
                     }
@@ -244,7 +245,7 @@ fun LandscapeCompactConverter(
                     val measurables = subcompose(0, subcomposeContent)
 
                     if (measurables.size != 3) {
-                        return@SubcomposeLayout layout(0,0) {}
+                        return@SubcomposeLayout layout(0, 0) {}
                     }
 
                     val group1Measurable = measurables[0]
@@ -253,9 +254,12 @@ fun LandscapeCompactConverter(
 
                     val spacingPx = spacing.toPx().roundToInt()
 
-                    val iconButtonFixedWidth = iconButtonMeasurable.maxIntrinsicWidth(constraints.maxHeight)
-                    val availableWidthForGroups = constraints.maxWidth - iconButtonFixedWidth - (2 * spacingPx)
-                    val groupWidth = if (availableWidthForGroups > 0) availableWidthForGroups / 2 else 0
+                    val iconButtonFixedWidth =
+                        iconButtonMeasurable.maxIntrinsicWidth(constraints.maxHeight)
+                    val availableWidthForGroups =
+                        constraints.maxWidth - iconButtonFixedWidth - (2 * spacingPx)
+                    val groupWidth =
+                        if (availableWidthForGroups > 0) availableWidthForGroups / 2 else 0
 
 
                     val group1Placeable = group1Measurable.measure(
@@ -276,24 +280,34 @@ fun LandscapeCompactConverter(
                         )
                     )
 
-                    val totalWidth = group1Placeable.width + spacingPx + iconButtonPlaceable.width + spacingPx + group2Placeable.width
-                    val maxHeight = maxOf(group1Placeable.height, iconButtonPlaceable.height, group2Placeable.height)
+                    val totalWidth =
+                        group1Placeable.width + spacingPx + iconButtonPlaceable.width + spacingPx + group2Placeable.width
+                    val maxHeight = maxOf(
+                        group1Placeable.height, iconButtonPlaceable.height, group2Placeable.height
+                    )
 
                     layout(totalWidth, maxHeight) {
                         var currentX = 0
-                        group1Placeable.placeRelative(currentX, (maxHeight - group1Placeable.height) / 2)
+                        group1Placeable.placeRelative(
+                            currentX, (maxHeight - group1Placeable.height) / 2
+                        )
                         currentX += group1Placeable.width + spacingPx
 
-                        iconButtonPlaceable.placeRelative(currentX, (maxHeight - iconButtonPlaceable.height) / 2)
+                        iconButtonPlaceable.placeRelative(
+                            currentX, (maxHeight - iconButtonPlaceable.height) / 2
+                        )
                         currentX += iconButtonPlaceable.width + spacingPx
 
-                        group2Placeable.placeRelative(currentX, (maxHeight - group2Placeable.height) / 2)
+                        group2Placeable.placeRelative(
+                            currentX, (maxHeight - group2Placeable.height) / 2
+                        )
                     }
                 }
             }
         }
     }
 }
+
 @Composable
 private fun fromUnitLabel(type: ConverterType): String {
     val typeName = stringResource(id = type.displayNameResId)
@@ -304,14 +318,4 @@ private fun fromUnitLabel(type: ConverterType): String {
 private fun toUnitLabel(type: ConverterType): String {
     val typeName = stringResource(id = type.displayNameResId)
     return stringResource(id = R.string.label_to, typeName.lowercase())
-}
-
-@Preview(showBackground = true, device = "spec:width=1280dp,height=800dp,dpi=240")
-@Composable
-fun LandscapeCompactConverterScreenPreview() {
-    CalculatorTheme {
-        LocalContext.current
-        val previewViewModel: ConverterViewModel = viewModel()
-        LandscapeCompactConverter(onNavigateBack = {}, viewModel = previewViewModel)
-    }
 }

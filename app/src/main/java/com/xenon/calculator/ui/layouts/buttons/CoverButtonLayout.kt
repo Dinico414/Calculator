@@ -1,6 +1,5 @@
 package com.xenon.calculator.ui.layouts.buttons
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,14 +8,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import com.xenon.calculator.ui.res.MediumPadding
-import com.xenon.calculator.ui.res.MediumSpacing
-import com.xenon.calculator.ui.theme.CalculatorTheme
+import com.xenon.calculator.ui.res.CalculatorButton
+import com.xenon.calculator.ui.values.MediumPadding
+import com.xenon.calculator.ui.values.MediumSpacing
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 
 @Composable
@@ -72,7 +69,7 @@ fun CoverButtonLayout(
                             isNumber = isNum,
                             isGlobalScientificModeActive = viewModel.isScientificMode,
                             isInverseActive = false,
-                            fontFamily = if (originalButtonText == "⌫") firaSansFamily else null, // Make sure firaSansFamily is defined or remove this line if not needed
+                            fontFamily = if (originalButtonText == "⌫") firaSansFamily else null,
                             onClick = {
                                 when (originalButtonText) {
                                     "( )" -> viewModel.onParenthesesClick()
@@ -87,51 +84,3 @@ fun CoverButtonLayout(
     }
 }
 
-
-
-@SuppressLint("ViewModelConstructorInComposable")
-@Preview(
-    showBackground = true,
-    name = "Landscape Light - Basic",
-    widthDp = 800,
-    heightDp = 360
-)
-@Composable
-fun CoverLayoutPreviewLightBasic() {
-    CalculatorTheme(darkTheme = false) {
-        // Set the background color of the Surface to Black
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color.Black // Added this line
-        ) {
-            val sampleViewModel = CalculatorViewModel()
-            // Assuming SmallButtonLayout is a typo and you meant CoverButtonLayout
-            CoverButtonLayout(viewModel = sampleViewModel)
-        }
-    }
-}
-
-@SuppressLint("ViewModelConstructorInComposable")
-@Preview(
-    showBackground = true,
-    name = "Landscape Dark - Basic",
-    widthDp = 800,
-    heightDp = 360
-)
-@Composable
-fun CoverLayoutPreviewDarkBasic() {
-    CalculatorTheme(darkTheme = true) {
-        // Set the background color of the Surface to Black
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color.Black // Added this line
-        ) {
-            val sampleViewModel = CalculatorViewModel()
-            // Assuming SmallButtonLayout is a typo and you meant CoverButtonLayout
-            CoverButtonLayout(viewModel = sampleViewModel)
-        }
-    }
-}
-
-// Placeholder for firaSansFamily if it's not defined elsewhere
-// val firaSansFamily = null // Replace with your actual FontFamily or remove if not used
