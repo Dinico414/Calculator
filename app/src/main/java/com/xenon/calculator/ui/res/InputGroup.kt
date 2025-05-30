@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.MediumCornerRadius
-import com.xenon.calculator.ui.values.MediumPadding
+import com.xenon.calculator.ui.values.LargePadding
 
 @Composable
 fun InputGroup(
@@ -22,7 +22,7 @@ fun InputGroup(
         modifier = modifier
             .clip(RoundedCornerShape(MediumCornerRadius))
             .background(colorScheme.surfaceContainerHighest)
-            .padding(horizontal = MediumPadding, vertical = MediumPadding),
+            .padding(horizontal = LargePadding, vertical = LargePadding),
         verticalArrangement = Arrangement.spacedBy(LargerSpacing),
         content = content
     )

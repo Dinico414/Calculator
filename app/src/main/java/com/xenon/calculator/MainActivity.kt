@@ -46,18 +46,18 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.core.view.WindowCompat
 import com.xenon.calculator.ui.layouts.ButtonLayout
 import com.xenon.calculator.ui.layouts.CalculatorScreen
+import com.xenon.calculator.ui.theme.CalculatorTheme
+import com.xenon.calculator.ui.theme.ScreenEnvironment
 import com.xenon.calculator.ui.values.ButtonBoxPadding
 import com.xenon.calculator.ui.values.LargeCornerRadius
 import com.xenon.calculator.ui.values.MediumCornerRadius
-import com.xenon.calculator.ui.values.MediumPadding
+import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.NoCornerRadius
 import com.xenon.calculator.ui.values.NoElevation
 import com.xenon.calculator.ui.values.NoPadding
 import com.xenon.calculator.ui.values.SmallCornerRadius
 import com.xenon.calculator.ui.values.SmallElevation
 import com.xenon.calculator.ui.values.SmallMediumPadding
-import com.xenon.calculator.ui.theme.CalculatorTheme
-import com.xenon.calculator.ui.theme.ScreenEnvironment
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 import com.xenon.calculator.viewmodel.LayoutType
 import dev.chrisbanes.haze.HazeState
@@ -175,15 +175,12 @@ fun CalculatorApp(
                             .padding(horizontal = NoPadding, vertical = NoPadding)
                     } else {
                         Modifier
-                            .padding(horizontal = MediumPadding, vertical = NoPadding)
-                            .padding(top = MediumPadding)
+                            .padding(horizontal = LargePadding, vertical = NoPadding)
+                            .padding(top = LargePadding)
                     }
                 )
-                .clip(RoundedCornerShape(if (isCoverScreenLayout) NoCornerRadius else MediumCornerRadius))
-                .background(
-                    if (isCoverScreenLayout) Color.Black
-                    else colorScheme.secondaryContainer
-                )
+                .clip(RoundedCornerShape(MediumCornerRadius))
+                .background(colorScheme.secondaryContainer)
         ) {
             CalculatorScreen(
                 viewModel = viewModel,
@@ -194,7 +191,7 @@ fun CalculatorApp(
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(top = MediumPadding, end = MediumPadding)
+                    .padding(top = LargePadding, end = LargePadding)
                     .clip(shape = CircleShape)
                     .background(color = colorScheme.surfaceContainer)
                     .shadow(elevation = SmallElevation)

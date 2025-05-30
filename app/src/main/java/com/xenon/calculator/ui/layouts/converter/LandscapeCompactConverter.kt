@@ -44,9 +44,9 @@ import com.xenon.calculator.ui.res.InputGroup
 import com.xenon.calculator.ui.res.XenonTextField
 import com.xenon.calculator.ui.values.IconSizeLarge
 import com.xenon.calculator.ui.values.LargeCornerRadius
-import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.ui.values.LargerSpacing
-import com.xenon.calculator.ui.values.MediumPadding
+import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.UnitDropdown
 import com.xenon.calculator.viewmodel.ConverterViewModel
 import com.xenon.calculator.viewmodel.classes.ConverterType
@@ -110,7 +110,7 @@ fun LandscapeCompactConverter(
                 .padding(contentPadding)
                 .fillMaxSize()
                 .hazeSource(hazeState)
-                .padding(horizontal = LargePadding)
+                .padding(horizontal = LargerPadding)
         ) {
             Column(
                 modifier = Modifier
@@ -118,7 +118,7 @@ fun LandscapeCompactConverter(
                     .clip(RoundedCornerShape(LargeCornerRadius))
                     .background(colorScheme.surfaceContainer)
                     .verticalScroll(rememberScrollState())
-                    .padding(vertical = MediumPadding, horizontal = MediumPadding),
+                    .padding(vertical = LargePadding, horizontal = LargePadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(LargerSpacing)
             ) {

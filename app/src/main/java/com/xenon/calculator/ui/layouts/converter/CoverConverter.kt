@@ -42,7 +42,7 @@ import com.xenon.calculator.ui.res.ConverterTypeDropdown
 import com.xenon.calculator.ui.res.XenonTextField
 import com.xenon.calculator.ui.values.IconSizeLarge
 import com.xenon.calculator.ui.values.IconSizeSmall
-import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.ui.values.MediumSpacing
 import com.xenon.calculator.ui.values.UnitDropdown
 import com.xenon.calculator.viewmodel.ConverterViewModel
@@ -114,7 +114,7 @@ fun CoverConverter(
                 .background(Color.Black)
                 .fillMaxSize()
                 .hazeSource(hazeState)
-                .padding(horizontal = LargePadding)
+                .padding(horizontal = LargerPadding)
         ) {
             Column(
                 modifier = Modifier

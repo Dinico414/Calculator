@@ -42,7 +42,7 @@ import com.xenon.calculator.ui.values.LargeSpacing
 import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.LargestSpacing
 import com.xenon.calculator.ui.values.MediumIconButtonSize
-import com.xenon.calculator.ui.values.MediumPadding
+import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.MediumSpacing
 import com.xenon.calculator.ui.values.NoPadding
 import com.xenon.calculator.ui.values.SmallButtonSizeSpacing
@@ -61,7 +61,7 @@ fun CompactButtonLayout(
     Column(
         modifier = modifier
             .fillMaxHeight(0.7f)
-            .padding(MediumPadding)
+            .padding(LargePadding)
     ) {
         ScientificButtonsRow1(
             viewModel, modifier = Modifier

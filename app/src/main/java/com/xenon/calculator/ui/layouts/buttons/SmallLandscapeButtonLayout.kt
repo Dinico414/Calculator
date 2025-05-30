@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.xenon.calculator.ui.res.CalculatorButton
-import com.xenon.calculator.ui.values.MediumPadding
+import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.MediumSpacing
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 
@@ -31,7 +31,7 @@ fun SmallLandscapeButtonLayout(
     Row(
         modifier = modifier
             .fillMaxSize()
-            .padding(MediumPadding),
+            .padding(LargePadding),
         horizontalArrangement = Arrangement.spacedBy(buttonSpacing)
     ) {
 

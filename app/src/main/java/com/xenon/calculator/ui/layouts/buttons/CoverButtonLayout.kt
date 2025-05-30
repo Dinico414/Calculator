@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.xenon.calculator.ui.res.CalculatorButton
-import com.xenon.calculator.ui.values.MediumPadding
+import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.MediumSpacing
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 
@@ -33,7 +33,7 @@ fun CoverButtonLayout(
     Row(
         modifier = modifier
             .fillMaxSize()
-            .padding(top = MediumPadding)
+            .padding(top = LargePadding)
             .background(color = Color.Black),
         horizontalArrangement = Arrangement.spacedBy(buttonSpacing)
     ) {

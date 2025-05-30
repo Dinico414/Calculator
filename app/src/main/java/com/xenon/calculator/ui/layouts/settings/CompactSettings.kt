@@ -1,6 +1,5 @@
 package com.xenon.calculator.ui.layouts.settings
 
-import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -35,11 +34,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
-import com.xenon.calculator.ui.theme.CalculatorTheme
+import com.xenon.calculator.ui.values.ExtraLargePadding
+import com.xenon.calculator.ui.values.LargeCornerRadius
+import com.xenon.calculator.ui.values.LargerPadding
+import com.xenon.calculator.ui.values.MediumCornerRadius
+import com.xenon.calculator.ui.values.MediumSpacing
 import com.xenon.calculator.viewmodel.SettingsViewModel
 import com.xenon.calculator.viewmodel.ThemeSetting
 
@@ -55,43 +56,40 @@ fun CompactSettings(
 
     val currentThemeTitle by viewModel.currentThemeTitle.collectAsState()
     val showThemeDialog by viewModel.showThemeDialog.collectAsState()
-    val themeOptions = viewModel.themeOptions // This is a regular property
+    val themeOptions = viewModel.themeOptions
     val dialogSelectedThemeIndex by viewModel.dialogPreviewThemeIndex.collectAsState()
     val currentLanguage by viewModel.currentLanguage.collectAsState()
     val showClearDataDialog by viewModel.showClearDataDialog.collectAsState()
 
-    // Get package info to access app version
+
     val packageManager = context.packageManager
     val packageName = context.packageName
     val packageInfo = remember {
         try {
             packageManager.getPackageInfo(packageName, 0)
         } catch (e: Exception) {
-            null // Handle potential exceptions
+            null
         }
     }
-    val appVersion = packageInfo?.versionName ?: "N/A" // Display "N/A" if version is not found
+    val appVersion = packageInfo?.versionName ?: "N/A"
 
-    CollapsingAppBarLayout(
-        title = { fontSize, color ->
-            Text("Settings", fontSize = fontSize, color = color)
-        },
-        navigationIcon = {
-            IconButton(onClick = onNavigateBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Navigate back")
-            }
+    CollapsingAppBarLayout(title = { fontSize, color ->
+        Text("Settings", fontSize = fontSize, color = color)
+    }, navigationIcon = {
+        IconButton(onClick = onNavigateBack) {
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Navigate back")
         }
-    ) { paddingValues ->
+    }) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .padding(horizontal = 15.dp)
+                .padding(horizontal = LargerPadding)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(30.dp))
+                    .clip(RoundedCornerShape(LargeCornerRadius))
                     .background(MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 Column(
@@ -99,14 +97,14 @@ fun CompactSettings(
                         .fillMaxWidth()
                         .weight(1f)
                         .verticalScroll(rememberScrollState())
-                        .padding(vertical = 10.dp, horizontal = 10.dp)
+                        .padding(vertical = LargerPadding, horizontal = LargerPadding)
                 ) {
                     SettingsGroupTile(
                         title = "Theme",
                         subtitle = "Current: $currentThemeTitle",
                         onClick = { viewModel.onThemeSettingClicked() },
                     )
-                    Spacer(modifier = Modifier.height(5.dp))
+                    Spacer(modifier = Modifier.height(MediumSpacing))
 
                     SettingsGroupTile(
                         title = "Language",
@@ -116,14 +114,14 @@ fun CompactSettings(
                     LaunchedEffect(Unit) {
                         viewModel.updateCurrentLanguage()
                     }
-                    Spacer(modifier = Modifier.height(5.dp))
+                    Spacer(modifier = Modifier.height(MediumSpacing))
 
                     SettingsGroupTile(
                         title = "Data Management",
                         subtitle = "Clear app data and cache",
                         onClick = { viewModel.onClearDataClicked() },
                     )
-                    Spacer(modifier = Modifier.height(5.dp))
+                    Spacer(modifier = Modifier.height(MediumSpacing))
 
                     SettingsGroupTile(
                         title = "Version",
@@ -141,15 +139,13 @@ fun CompactSettings(
                     viewModel.onThemeOptionSelectedInDialog(index)
                 },
                 onDismiss = { viewModel.dismissThemeDialog() },
-                onConfirm = { viewModel.applySelectedTheme() }
-            )
+                onConfirm = { viewModel.applySelectedTheme() })
         }
 
         if (showClearDataDialog) {
             ClearDataConfirmationDialog(
                 onConfirm = { viewModel.confirmClearData() },
-                onDismiss = { viewModel.dismissClearDataDialog() }
-            )
+                onDismiss = { viewModel.dismissClearDataDialog() })
         }
     }
 }
@@ -158,27 +154,26 @@ fun CompactSettings(
 fun SettingsGroupTile(
     title: String,
     subtitle: String,
-    onClick: (() -> Unit)?, // Make onClick nullable
+    onClick: (() -> Unit)?,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(MediumCornerRadius))
             .background(MaterialTheme.colorScheme.surfaceContainerHighest)
             .then(
-                if (onClick != null) { // Conditionally apply clickable modifier
+                if (onClick != null) {
                     Modifier.clickable(onClick = onClick, role = Role.Button)
                 } else {
                     Modifier
                 }
             )
-            .padding(horizontal = 16.dp, vertical = 20.dp),
+            .padding(horizontal = LargerPadding, vertical = ExtraLargePadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium
+                text = title, style = MaterialTheme.typography.titleMedium
             )
             Text(
                 text = subtitle,
@@ -197,48 +192,41 @@ fun ThemeSelectionDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(text = "Select Theme") },
-        text = {
-            Column(Modifier.selectableGroup()) {
-                themeOptions.forEachIndexed { index, theme ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(56.dp)
-                            .selectable(
-                                selected = (index == currentThemeIndex),
-                                onClick = { onThemeSelected(index) },
-                                role = Role.RadioButton
-                            )
-                            .padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
+    AlertDialog(onDismissRequest = onDismiss, title = { Text(text = "Select Theme") }, text = {
+        Column(Modifier.selectableGroup()) {
+            themeOptions.forEachIndexed { index, theme ->
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .selectable(
                             selected = (index == currentThemeIndex),
-                            onClick = null
+                            onClick = { onThemeSelected(index) },
+                            role = Role.RadioButton
                         )
-                        Text(
-                            text = theme.title,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(start = 16.dp)
-                        )
-                    }
+                        .padding(horizontal = LargerPadding),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = (index == currentThemeIndex), onClick = null
+                    )
+                    Text(
+                        text = theme.title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(start = LargerPadding)
+                    )
                 }
             }
-        },
-        confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text("OK")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
         }
-    )
+    }, confirmButton = {
+        TextButton(onClick = onConfirm) {
+            Text("OK")
+        }
+    }, dismissButton = {
+        TextButton(onClick = onDismiss) {
+            Text("Cancel")
+        }
+    })
 }
 
 @Composable
@@ -259,20 +247,5 @@ fun ClearDataConfirmationDialog(
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
-        }
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CompactSettingsPreview() {
-    val context = LocalContext.current
-    val application = context.applicationContext as? Application
-        ?: error("Preview requires Application context")
-    val previewViewModel: SettingsViewModel = viewModel(
-        factory = SettingsViewModel.SettingsViewModelFactory(application)
-    )
-    CalculatorTheme {
-        CompactSettings(onNavigateBack = {}, viewModel = previewViewModel)
-    }
+        })
 }

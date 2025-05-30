@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.LargeTextFieldPadding
-import com.xenon.calculator.ui.values.MediumPadding
+import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 
 @SuppressLint("ConfigurationScreenWidthHeight")
@@ -48,7 +48,7 @@ fun SmallCalculatorScreen(viewModel: CalculatorViewModel) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(end = LargeTextFieldPadding)
-                    .padding(LargePadding)
+                    .padding(LargerPadding)
             )
         }
 
@@ -81,7 +81,7 @@ fun CoverLandscapeDisplaySection(currentInput: String, result: String, modifier:
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .padding(end = MediumPadding)
+                .padding(end = LargePadding)
         )
 
         Text(
@@ -97,7 +97,7 @@ fun CoverLandscapeDisplaySection(currentInput: String, result: String, modifier:
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .padding(start = MediumPadding)
+                .padding(start = LargePadding)
         )
     }
 }

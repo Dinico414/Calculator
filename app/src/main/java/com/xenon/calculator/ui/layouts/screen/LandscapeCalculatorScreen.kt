@@ -24,9 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.ui.values.LargeTextFieldPadding
-import com.xenon.calculator.ui.values.MediumPadding
+import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 
 @Composable
@@ -47,7 +47,7 @@ fun LandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
                 result = viewModel.result,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(LargePadding)
+                    .padding(LargerPadding)
             )
         }
 
@@ -79,7 +79,7 @@ fun CompactLandscapeDisplaySection(currentInput: String, result: String, modifie
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .padding(end = MediumPadding)
+                .padding(end = LargePadding)
         )
 
         Text(
@@ -95,7 +95,7 @@ fun CompactLandscapeDisplaySection(currentInput: String, result: String, modifie
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .padding(start = MediumPadding)
+                .padding(start = LargePadding)
         )
     }
 }
