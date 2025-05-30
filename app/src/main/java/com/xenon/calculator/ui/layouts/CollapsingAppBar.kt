@@ -40,6 +40,7 @@ fun CollapsingAppBarLayout(
     collapsedHeight: Dp = 54.dp,
     title: @Composable (fontSize: TextUnit, color: Color) -> Unit = { _, _ -> },
     navigationIcon: @Composable () -> Unit = {},
+    expandable: Boolean = true,
     expandedTextColor: Color = MaterialTheme.colorScheme.primary,
     collapsedTextColor: Color = MaterialTheme.colorScheme.onBackground,
     expandedContainerColor: Color = MaterialTheme.colorScheme.background,
@@ -48,7 +49,9 @@ fun CollapsingAppBarLayout(
     content: @Composable (paddingValues: PaddingValues) -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-    val expandedHeight = remember { (screenHeight / 100) * 35 }
+    val expandedHeight = remember(expandable) {
+        if (expandable) (screenHeight / 100) * 35 else collapsedHeight
+    }
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     Scaffold(
@@ -71,7 +74,7 @@ fun CollapsingAppBarLayout(
                 scrollBehavior = scrollBehavior
             )
 
-            val fraction = scrollBehavior.state.collapsedFraction
+            val fraction = if (expandable) scrollBehavior.state.collapsedFraction else 1f
             val curHeight by remember(fraction, expandedHeight, collapsedHeight) {
                 derivedStateOf { collapsedHeight.times(fraction) + expandedHeight.times(1 - fraction) }
             }

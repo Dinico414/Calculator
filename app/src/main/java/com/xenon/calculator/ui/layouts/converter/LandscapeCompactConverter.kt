@@ -105,7 +105,9 @@ fun LandscapeCompactConverter(
                     )
                 }
             }
-        }) { contentPadding ->
+        },
+        expandable = false
+    ) { contentPadding ->
 
         Column(
             modifier = Modifier
