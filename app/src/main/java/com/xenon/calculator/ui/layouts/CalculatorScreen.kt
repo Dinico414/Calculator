@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.xenon.calculator.ui.layouts.screen.CompactCalculatorScreen
-import com.xenon.calculator.ui.layouts.screen.CompactLandscapeCalculatorScreen
-import com.xenon.calculator.ui.layouts.screen.CoverLandscapeCalculatorScreen
+import com.xenon.calculator.ui.layouts.screen.LandscapeCalculatorScreen
+import com.xenon.calculator.ui.layouts.screen.PortraitCalculatorScreen
+import com.xenon.calculator.ui.layouts.screen.SmallCalculatorScreen
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 import com.xenon.calculator.viewmodel.LayoutType
 
@@ -22,56 +22,41 @@ fun CalculatorScreen(
         when (layoutType) {
             LayoutType.COVER -> {
                 if (isLandscape) {
-                    CoverLandscapeCalculatorScreen(viewModel = viewModel)
+                    SmallCalculatorScreen(viewModel = viewModel)
                 } else {
-                    CoverLandscapeCalculatorScreen(viewModel = viewModel)
+                    SmallCalculatorScreen(viewModel = viewModel)
                 }
             }
 
             LayoutType.SMALL -> {
-//                if (isLandscape) {
-//                    SmallLandscapeCalculatorScreen(viewModel = viewModel)
-//                } else {
-//                    SmallCalculatorScreen(viewModel = viewModel)
-//                }
-                if (isLandscape) {
-                    CompactLandscapeCalculatorScreen(viewModel = viewModel)
+               if (isLandscape) {
+                    SmallCalculatorScreen(viewModel = viewModel)
                 } else {
-                    CompactLandscapeCalculatorScreen(viewModel = viewModel)
+                    SmallCalculatorScreen(viewModel = viewModel)
                 }
             }
 
             LayoutType.COMPACT -> {
                 if (isLandscape) {
-                    CompactLandscapeCalculatorScreen(viewModel = viewModel)
+                    LandscapeCalculatorScreen(viewModel = viewModel)
                 } else {
-                    CompactCalculatorScreen(viewModel = viewModel)
+                    PortraitCalculatorScreen(viewModel = viewModel)
                 }
             }
 
             LayoutType.MEDIUM -> {
-//                if (isLandscape) {
-//                    MediumLandscapeCalculatorScreen(viewModel = viewModel)
-//                } else {
-//                    MediumCalculatorScreen(viewModel = viewModel)
-//                }
                 if (isLandscape) {
-                    CompactLandscapeCalculatorScreen(viewModel = viewModel)
+                    LandscapeCalculatorScreen(viewModel = viewModel)
                 } else {
-                    CompactCalculatorScreen(viewModel = viewModel)
+                    PortraitCalculatorScreen(viewModel = viewModel)
                 }
             }
 
             LayoutType.EXPANDED -> {
-//                if (isLandscape) {
-//                    ExpandedLandscapeCalculatorScreen(viewModel = viewModel)
-//                } else {
-//                    ExpandedCalculatorScreen(viewModel = viewModel)
-//                }
                 if (isLandscape) {
-                    CompactLandscapeCalculatorScreen(viewModel = viewModel)
+                    LandscapeCalculatorScreen(viewModel = viewModel)
                 } else {
-                    CompactCalculatorScreen(viewModel = viewModel)
+                    PortraitCalculatorScreen(viewModel = viewModel)
                 }
             }
         }

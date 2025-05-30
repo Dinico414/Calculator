@@ -10,14 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -26,10 +24,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.LargeTextFieldPadding
+import com.xenon.calculator.ui.values.MediumPadding
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 
 @Composable
-fun CompactLandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
+fun LandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
     Log.d("CalculatorDebug", "CompactLandscapeCalculatorScreen Composing")
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -39,16 +40,14 @@ fun CompactLandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(end = 50.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .padding(end = LargeTextFieldPadding)
         ) {
             CompactLandscapeDisplaySection(
                 currentInput = viewModel.currentInput,
                 result = viewModel.result,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(LargePadding)
             )
         }
 
@@ -80,7 +79,7 @@ fun CompactLandscapeDisplaySection(currentInput: String, result: String, modifie
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .padding(end = 10.dp)
+                .padding(end = MediumPadding)
         )
 
         Text(
@@ -96,7 +95,7 @@ fun CompactLandscapeDisplaySection(currentInput: String, result: String, modifie
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .padding(start = 10.dp)
+                .padding(start = MediumPadding)
         )
     }
 }
@@ -121,7 +120,7 @@ fun LandscapeDisplaySectionPreview() {
 fun CompactLandscapeCalculatorScreenPhonePreview() {
     val fakeViewModel = remember { CalculatorViewModel() }
     MaterialTheme {
-        CompactLandscapeCalculatorScreen(viewModel = fakeViewModel)
+        LandscapeCalculatorScreen(viewModel = fakeViewModel)
     }
 }
 
@@ -130,6 +129,6 @@ fun CompactLandscapeCalculatorScreenPhonePreview() {
 fun CompactLandscapeCalculatorScreenTabletPreview() {
     val fakeViewModel = remember { CalculatorViewModel() }
     MaterialTheme {
-        CompactLandscapeCalculatorScreen(viewModel = fakeViewModel)
+        LandscapeCalculatorScreen(viewModel = fakeViewModel)
     }
 }

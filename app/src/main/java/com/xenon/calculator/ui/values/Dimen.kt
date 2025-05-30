@@ -11,7 +11,8 @@ val MediumPadding = 10.dp
 val LargePadding = 15.dp
 val ExtraLargePadding = 20.dp
 val ButtonBoxPadding = (-48).dp
-val TextFieldPadding = 50.dp
+val SmallTextFieldPadding = 40.dp
+val LargeTextFieldPadding = 50.dp
 
 val IconButtonSize = 48.dp
 val SmallButtonHeight = 36.dp
