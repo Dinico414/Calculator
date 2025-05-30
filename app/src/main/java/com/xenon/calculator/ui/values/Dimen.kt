@@ -1,4 +1,4 @@
-package com.xenon.calculator.ui.res
+package com.xenon.calculator.ui.values
 
 import androidx.compose.ui.unit.dp
 
@@ -7,11 +7,13 @@ val SmallestPadding = 1.dp
 val SmallerPadding = 2.dp
 val SmallPadding = 4.dp
 val SmallMediumPadding = 5.dp
-val MediumPadding = 10.dp
-val LargePadding = 15.dp
+val MediumPadding = 8.dp
+val LargePadding = 10.dp
+val LargerPadding = 15.dp
 val ExtraLargePadding = 20.dp
 val ButtonBoxPadding = (-48).dp
-val TextFieldPadding = 50.dp
+val SmallTextFieldPadding = 40.dp
+val LargeTextFieldPadding = 50.dp
 
 val IconButtonSize = 48.dp
 val SmallButtonHeight = 36.dp
@@ -34,7 +36,7 @@ val LargeCornerRadius = 40.dp
 val FullCornerRadius = 100.0f
 
 val NoElevation = 0.dp
-val CardElevation = 2.dp
+val SmallElevation  = 2.dp
 
 val NoSpacing = 0.dp
 val SmallestSpacing = 1.dp
@@ -46,10 +48,12 @@ val LargestSpacing = 12.dp
 val ExtraLargeSpacing = 16.dp
 val SmallButtonSizeSpacing = 40.dp
 
-val IconSizeSmall = 16.dp
+val IconSizeSmaller = 16.dp
+val IconSizeSmall = 20.dp
 val IconSizeMedium = 24.dp
 val IconSizeLarge = 32.dp
 val IconSizeExtraLarge = 48.dp
+
 
 val MinTouchTargetSize = 48.dp // Important for accessibility
 val ListItemHeight = 72.dp

@@ -62,19 +62,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xenon.calculator.R
-import com.xenon.calculator.ui.res.LargeSpacing
-import com.xenon.calculator.ui.res.LargerSpacing
-import com.xenon.calculator.ui.res.LargestSpacing
-import com.xenon.calculator.ui.res.MediumButtonHeight
-import com.xenon.calculator.ui.res.MediumIconButtonSize
-import com.xenon.calculator.ui.res.MediumSpacing
-import com.xenon.calculator.ui.res.MinMediumButtonHeight
-import com.xenon.calculator.ui.res.NoElevation
-import com.xenon.calculator.ui.res.NoPadding
-import com.xenon.calculator.ui.res.SmallButtonSizeSpacing
-import com.xenon.calculator.ui.res.SmallPadding
-import com.xenon.calculator.ui.res.SmallestPadding
+import com.xenon.calculator.ui.res.CalculatorButton
 import com.xenon.calculator.ui.theme.CalculatorTheme
+import com.xenon.calculator.ui.values.LargeSpacing
+import com.xenon.calculator.ui.values.LargerSpacing
+import com.xenon.calculator.ui.values.LargestSpacing
+import com.xenon.calculator.ui.values.MediumIconButtonSize
+import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.MediumButtonHeight
+import com.xenon.calculator.ui.values.MediumSpacing
+import com.xenon.calculator.ui.values.MinMediumButtonHeight
+import com.xenon.calculator.ui.values.NoElevation
+import com.xenon.calculator.ui.values.NoPadding
+import com.xenon.calculator.ui.values.SmallButtonSizeSpacing
+import com.xenon.calculator.ui.values.SmallPadding
+import com.xenon.calculator.ui.values.SmallestPadding
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -91,7 +93,7 @@ fun CompactButtonLayout(
     Column(
         modifier = modifier
             .fillMaxHeight(0.7f)
-            .padding(MediumSpacing)
+            .padding(LargePadding)
     ) {
         ScientificButtonsRow1(
             viewModel, modifier = Modifier
@@ -129,7 +131,9 @@ fun CompactButtonLayout(
                     enter = fadeIn(animationSpec = tween(durationMillis = 300)),
                     exit = fadeOut(animationSpec = tween(durationMillis = 300)),
                     modifier = Modifier
-                        .weight(animatedScientificRowsInnerWeight.coerceAtLeast(0.001f))
+                        .weight(
+                            animatedScientificRowsInnerWeight.coerceAtLeast(0.001f)
+                        )
                         .fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.fillMaxHeight()) {
@@ -166,13 +170,17 @@ fun CompactButtonLayout(
                             horizontalArrangement = Arrangement.spacedBy(LargerSpacing)
                         ) {
                             rowData.forEach { buttonText ->
-                                val isNumberButton = buttonText in listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".")
+                                val isNumberButton = buttonText in listOf(
+                                    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."
+                                )
                                 CalculatorButton(
                                     text = buttonText,
                                     modifier = Modifier
                                         .weight(1f)
                                         .fillMaxHeight(),
-                                    isOperator = buttonText in listOf("÷", "×", "-", "+", "%", "( )"),
+                                    isOperator = buttonText in listOf(
+                                        "÷", "×", "-", "+", "%", "( )"
+                                    ),
                                     isSpecial = buttonText == "=",
                                     isClear = buttonText == "AC",
                                     isScientificButton = false,
@@ -222,23 +230,25 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
         scientificButtons1.forEach { text ->
             CalculatorButton(
                 text = text,
-                modifier = Modifier.weight(1f).fillMaxHeight(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 isOperator = true,
                 isScientificButton = true,
                 isNumber = false,
                 isGlobalScientificModeActive = viewModel.isScientificMode,
-                onClick = { viewModel.onButtonClick(text) }
-            )
+                onClick = { viewModel.onButtonClick(text) })
         }
         CalculatorButton(
             text = "!",
-            modifier = Modifier.weight(1f).fillMaxHeight(),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
             isOperator = true,
             isScientificButton = true,
             isNumber = false,
             isGlobalScientificModeActive = viewModel.isScientificMode,
-            onClick = { viewModel.onButtonClick("!") }
-        )
+            onClick = { viewModel.onButtonClick("!") })
 
         Box(
             modifier = Modifier
@@ -247,8 +257,7 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
                 .background(
                     color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.1f),
                     shape = CircleShape
-                ),
-            contentAlignment = Alignment.Center
+                ), contentAlignment = Alignment.Center
         ) {
             IconButton(
                 onClick = { viewModel.toggleScientificMode() },
@@ -276,32 +285,36 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
 @Composable
 fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.fillMaxWidth().padding(horizontal = SmallestPadding),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = SmallestPadding),
         horizontalArrangement = Arrangement.spacedBy(MediumSpacing),
         verticalAlignment = Alignment.CenterVertically
     ) {
         CalculatorButton(
             text = viewModel.angleUnit.name,
-            modifier = Modifier.weight(1f).fillMaxHeight(),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
             isOperator = true,
             isScientificButton = true,
             isNumber = false,
             isGlobalScientificModeActive = viewModel.isScientificMode,
-            onClick = { viewModel.toggleAngleUnit() }
-        )
+            onClick = { viewModel.toggleAngleUnit() })
 
         val trigButtons = listOf("sin", "cos", "tan")
         trigButtons.forEach { text ->
             val buttonDisplayText = if (viewModel.isInverseMode) "$text⁻¹" else text
             CalculatorButton(
                 text = buttonDisplayText,
-                modifier = Modifier.weight(1f).fillMaxHeight(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 isOperator = true,
                 isScientificButton = true,
                 isNumber = false,
                 isGlobalScientificModeActive = viewModel.isScientificMode,
-                onClick = { viewModel.onButtonClick(text) }
-            )
+                onClick = { viewModel.onButtonClick(text) })
         }
         Spacer(Modifier.width(SmallButtonSizeSpacing))
     }
@@ -314,7 +327,9 @@ fun ScientificButtonsRow3(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().padding(horizontal = SmallestPadding),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = SmallestPadding),
         horizontalArrangement = Arrangement.spacedBy(MediumSpacing),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -326,7 +341,9 @@ fun ScientificButtonsRow3(
         scientificButtons3Order.forEach { text ->
             CalculatorButton(
                 text = text,
-                modifier = Modifier.weight(1f).fillMaxHeight(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 isOperator = true,
                 isScientificButton = true,
                 isNumber = false,
@@ -336,15 +353,14 @@ fun ScientificButtonsRow3(
                     if (text == "INV") {
                         viewModel.toggleInverseMode()
                     } else {
-                        val textToSend = when(text) {
+                        val textToSend = when (text) {
                             "eˣ" -> "ln"
                             "10ˣ" -> "log"
                             else -> text
                         }
                         viewModel.onButtonClick(textToSend)
                     }
-                }
-            )
+                })
         }
         Spacer(Modifier.width(SmallButtonSizeSpacing))
     }

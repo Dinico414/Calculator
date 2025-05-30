@@ -57,8 +57,8 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    implementation("dev.chrisbanes.haze:haze-materials:1.6.2")
-    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+    implementation(libs.haze.materials)
+    implementation (libs.accompanist.systemuicontroller)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)

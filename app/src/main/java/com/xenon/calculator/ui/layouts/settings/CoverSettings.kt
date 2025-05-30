@@ -1,18 +1,15 @@
 package com.xenon.calculator.ui.layouts.settings
 
-import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -32,17 +29,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember // Added import
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.xenon.calculator.ui.theme.CalculatorTheme
+import com.xenon.calculator.ui.values.ExtraLargePadding
+import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.LargerPadding
+import com.xenon.calculator.ui.values.LargerSpacing
+import com.xenon.calculator.ui.values.MediumPadding
 import com.xenon.calculator.viewmodel.SettingsViewModel
 import com.xenon.calculator.viewmodel.ThemeSetting
 
@@ -56,26 +54,24 @@ fun CoverSettings(
 
     val currentThemeTitle by viewModel.currentThemeTitle.collectAsState()
     val showThemeDialog by viewModel.showThemeDialog.collectAsState()
-    val themeOptions = viewModel.themeOptions // This is a regular property
+    val themeOptions = viewModel.themeOptions
     val dialogSelectedThemeIndex by viewModel.dialogPreviewThemeIndex.collectAsState()
     val currentLanguage by viewModel.currentLanguage.collectAsState()
     val showClearDataDialog by viewModel.showClearDataDialog.collectAsState()
 
-    // Get package info to access app version
     val packageManager = context.packageManager
     val packageName = context.packageName
     val packageInfo = remember {
         try {
             packageManager.getPackageInfo(packageName, 0)
         } catch (e: Exception) {
-            null // Handle potential exceptions
+            null
         }
     }
-    val appVersion = packageInfo?.versionName ?: "N/A" // Display "N/A" if version is not found
+    val appVersion = packageInfo?.versionName ?: "N/A"
 
     Scaffold(
-        containerColor = Color.Black,
-        topBar = {
+        containerColor = Color.Black, topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Settings", color = Color.White) },
                 navigationIcon = {
@@ -93,13 +89,12 @@ fun CoverSettings(
                     navigationIconContentColor = Color.White
                 )
             )
-        }
-    ) { paddingValues ->
+        }) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
-                .padding(vertical = 8.dp)
+                .padding(vertical = MediumPadding)
                 .fillMaxWidth()
                 .background(Color.Black)
         ) {
@@ -108,7 +103,6 @@ fun CoverSettings(
                 subtitle = "Current: $currentThemeTitle",
                 onClick = { viewModel.onThemeSettingClicked() },
             )
-            Spacer(modifier = Modifier.height(5.dp))
 
             CoverSettingsGroupTile(
                 title = "Language",
@@ -118,19 +112,17 @@ fun CoverSettings(
             LaunchedEffect(Unit) {
                 viewModel.updateCurrentLanguage()
             }
-            Spacer(modifier = Modifier.height(5.dp))
 
             CoverSettingsGroupTile(
                 title = "Data Management",
                 subtitle = "Clear app data and cache",
                 onClick = { viewModel.onClearDataClicked() },
             )
-            Spacer(modifier = Modifier.height(5.dp)) // Added spacer
 
-            CoverSettingsGroupTile( // Added Version Tile
+            CoverSettingsGroupTile(
                 title = "Version",
                 subtitle = "Version $appVersion",
-                onClick = null, // Set onClick to null to disable it
+                onClick = null,
             )
 
 
@@ -142,15 +134,13 @@ fun CoverSettings(
                         viewModel.onThemeOptionSelectedInDialog(index)
                     },
                     onDismiss = { viewModel.dismissThemeDialog() },
-                    onConfirm = { viewModel.applySelectedTheme() }
-                )
+                    onConfirm = { viewModel.applySelectedTheme() })
             }
 
             if (showClearDataDialog) {
                 CoverClearDataConfirmationDialog(
                     onConfirm = { viewModel.confirmClearData() },
-                    onDismiss = { viewModel.dismissClearDataDialog() }
-                )
+                    onDismiss = { viewModel.dismissClearDataDialog() })
             }
         }
     }
@@ -160,34 +150,29 @@ fun CoverSettings(
 fun CoverSettingsGroupTile(
     title: String,
     subtitle: String,
-    onClick: (() -> Unit)?, // Make onClick nullable
+    onClick: (() -> Unit)?,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 10.dp)
-            .clip(RoundedCornerShape(8.dp))
+            .padding(horizontal = LargePadding)
             .background(Color.Black)
-            .then( // Conditionally apply clickable modifier
+            .then(
                 if (onClick != null) {
                     Modifier.clickable(onClick = onClick, role = Role.Button)
                 } else {
                     Modifier
                 }
             )
-            .padding(horizontal = 16.dp, vertical = 20.dp),
+            .padding(horizontal = LargerSpacing, vertical = ExtraLargePadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                color = Color.White
+                text = title, style = MaterialTheme.typography.titleMedium, color = Color.White
             )
             Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.White
+                text = subtitle, style = MaterialTheme.typography.bodyMedium, color = Color.White
             )
         }
     }
@@ -221,7 +206,7 @@ fun CoverThemeSelectionDialog(
                                 onClick = { onThemeSelected(index) },
                                 role = Role.RadioButton
                             )
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = LargerPadding),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
@@ -237,7 +222,7 @@ fun CoverThemeSelectionDialog(
                         Text(
                             text = theme.title,
                             style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(start = 16.dp),
+                            modifier = Modifier.padding(start = LargerPadding),
                             color = Color.White
                         )
                     }
@@ -253,8 +238,7 @@ fun CoverThemeSelectionDialog(
             TextButton(onClick = onDismiss) {
                 Text("Cancel", color = Color.White)
             }
-        }
-    )
+        })
 }
 
 @Composable
@@ -266,7 +250,12 @@ fun CoverClearDataConfirmationDialog(
         containerColor = Color.Black,
         onDismissRequest = onDismiss,
         title = { Text(text = "Clear Data", color = Color.White) },
-        text = { Text(text = "Are you sure you want to clear all app data? This action cannot be undone and will restart the app.", color = Color.White) },
+        text = {
+            Text(
+                text = "Are you sure you want to clear all app data? This action cannot be undone and will restart the app.",
+                color = Color.White
+            )
+        },
         confirmButton = {
             TextButton(onClick = onConfirm) {
                 Text("Confirm", color = Color.White)
@@ -276,24 +265,5 @@ fun CoverClearDataConfirmationDialog(
             TextButton(onClick = onDismiss) {
                 Text("Cancel", color = Color.White)
             }
-        }
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CoverSettingsPreview() {
-    val context = LocalContext.current
-
-    val application = context.applicationContext as? Application
-        ?: error("Preview requires Application context")
-
-    val previewViewModel: SettingsViewModel = viewModel(
-        factory = SettingsViewModel.SettingsViewModelFactory(application)
-    )
-    CalculatorTheme {
-        Column(Modifier.background(Color.Black)) {
-            CoverSettings(onNavigateBack = {}, viewModel = previewViewModel)
-        }
-    }
+        })
 }

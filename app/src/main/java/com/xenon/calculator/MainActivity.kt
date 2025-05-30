@@ -27,7 +27,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,17 +46,18 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.core.view.WindowCompat
 import com.xenon.calculator.ui.layouts.ButtonLayout
 import com.xenon.calculator.ui.layouts.CalculatorScreen
-import com.xenon.calculator.ui.res.ButtonBoxPadding
-import com.xenon.calculator.ui.res.LargeCornerRadius
-import com.xenon.calculator.ui.res.MediumCornerRadius
-import com.xenon.calculator.ui.res.MediumPadding
-import com.xenon.calculator.ui.res.NoCornerRadius
-import com.xenon.calculator.ui.res.NoElevation
-import com.xenon.calculator.ui.res.NoPadding
-import com.xenon.calculator.ui.res.SmallCornerRadius
-import com.xenon.calculator.ui.res.SmallMediumPadding
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.ui.theme.ScreenEnvironment
+import com.xenon.calculator.ui.values.ButtonBoxPadding
+import com.xenon.calculator.ui.values.LargeCornerRadius
+import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.MediumCornerRadius
+import com.xenon.calculator.ui.values.NoCornerRadius
+import com.xenon.calculator.ui.values.NoElevation
+import com.xenon.calculator.ui.values.NoPadding
+import com.xenon.calculator.ui.values.SmallCornerRadius
+import com.xenon.calculator.ui.values.SmallElevation
+import com.xenon.calculator.ui.values.SmallMediumPadding
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 import com.xenon.calculator.viewmodel.LayoutType
 import dev.chrisbanes.haze.HazeState
@@ -93,24 +94,27 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(
                             if (isCoverScreen) Color.Black
-                            else MaterialTheme.colorScheme.background
-                        ),
-                    color = if (isCoverScreen) Color.Black else MaterialTheme.colorScheme.background
+                            else colorScheme.background
+                        ), color = if (isCoverScreen) Color.Black else colorScheme.background
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal).asPaddingValues())
+                            .padding(
+                                WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+                                    .asPaddingValues()
+                            )
                             .then(
                                 if (isCoverScreen) {
-                                    Modifier
-                                        .background(Color.Black)
-                                        .padding(horizontal = NoPadding)
+                                    Modifier.background(Color.Black).padding(horizontal = NoPadding)
                                         .clip(RoundedCornerShape(NoCornerRadius))
                                 } else {
-                                    Modifier
-                                        .clip(RoundedCornerShape(topStart = LargeCornerRadius, topEnd = LargeCornerRadius))
-                                        .background(MaterialTheme.colorScheme.surfaceContainer)
+                                    Modifier.clip(
+                                            RoundedCornerShape(
+                                                topStart = LargeCornerRadius,
+                                                topEnd = LargeCornerRadius
+                                            )
+                                        ).background(colorScheme.surfaceContainer)
                                 }
                             )
                     ) {
@@ -123,10 +127,10 @@ class MainActivity : ComponentActivity() {
                                 startActivity(intent)
                             },
                             onOpenConverter = {
-                                val intent = Intent(this@MainActivity, ConverterActivity::class.java)
+                                val intent =
+                                    Intent(this@MainActivity, ConverterActivity::class.java)
                                 startActivity(intent)
-                            }
-                        )
+                            })
                     }
                 }
             }
@@ -170,19 +174,14 @@ fun CalculatorApp(
                 .weight(0.35f)
                 .then(
                     if (isCoverScreenLayout) {
-                        Modifier
-                            .padding(horizontal = NoPadding, vertical = NoPadding)
+                        Modifier.padding(horizontal = NoPadding, vertical = NoPadding)
                     } else {
-                        Modifier
-                            .padding(horizontal = MediumPadding, vertical = NoPadding)
-                            .padding(top = MediumPadding)
+                        Modifier.padding(horizontal = LargePadding, vertical = NoPadding)
+                            .padding(top = LargePadding)
                     }
                 )
-                .clip(RoundedCornerShape(if (isCoverScreenLayout) NoCornerRadius else MediumCornerRadius))
-                .background(
-                    if (isCoverScreenLayout) Color.Black
-                    else MaterialTheme.colorScheme.secondaryContainer
-                )
+                .clip(RoundedCornerShape(MediumCornerRadius))
+                .background(colorScheme.secondaryContainer)
         ) {
             CalculatorScreen(
                 viewModel = viewModel,
@@ -190,18 +189,23 @@ fun CalculatorApp(
                 layoutType = layoutType,
                 modifier = Modifier.fillMaxSize()
             )
+
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(top = MediumPadding, end = MediumPadding)
-                    .clip(shape = CircleShape)
-                    .background(color = MaterialTheme.colorScheme.surfaceContainer)
+                    .padding(top = LargePadding, end = LargePadding)
             ) {
-                IconButton(onClick = { showMenu = !showMenu }) {
+                IconButton(
+                    onClick = { showMenu = !showMenu },
+                    modifier = Modifier
+                        .shadow(elevation = SmallElevation, shape = CircleShape)
+                        .clip(shape = CircleShape)
+                        .background(color = colorScheme.surfaceContainer)
+                ) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = "Menu",
-                        tint = MaterialTheme.colorScheme.onSurface,
+                        tint = colorScheme.onSurface,
                     )
                 }
                 DropdownMenu(
@@ -211,27 +215,33 @@ fun CalculatorApp(
                     containerColor = Color.Transparent,
                     shadowElevation = NoElevation,
                     modifier = Modifier
-                        .padding(top = SmallMediumPadding, bottom = SmallMediumPadding)
+                        .padding(
+                            top = SmallMediumPadding, bottom = SmallMediumPadding
+                        )
                         .clip(RoundedCornerShape(SmallCornerRadius))
                         .background(colorScheme.surfaceContainer)
                         .hazeEffect(
                             state = hazeState, style = CupertinoMaterials.ultraThin()
                         )
                 ) {
-                    DropdownMenuItem(
-                        text = { Text(stringResource(id = R.string.converter), color = if (isCoverScreenLayout) Color.White else MaterialTheme.colorScheme.onSurface) },
-                        onClick = {
-                            showMenu = false
-                            onOpenConverter()
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(stringResource(id = R.string.settings), color = if (isCoverScreenLayout) Color.White else MaterialTheme.colorScheme.onSurface) },
-                        onClick = {
-                            showMenu = false
-                            onOpenSettings()
-                        }
-                    )
+                    DropdownMenuItem(text = {
+                        Text(
+                            stringResource(id = R.string.converter),
+                            color = if (isCoverScreenLayout) Color.White else colorScheme.onSurface
+                        )
+                    }, onClick = {
+                        showMenu = false
+                        onOpenConverter()
+                    })
+                    DropdownMenuItem(text = {
+                        Text(
+                            stringResource(id = R.string.settings),
+                            color = if (isCoverScreenLayout) Color.White else colorScheme.onSurface
+                        )
+                    }, onClick = {
+                        showMenu = false
+                        onOpenSettings()
+                    })
                 }
             }
         }
@@ -248,34 +258,36 @@ fun CalculatorApp(
 }
 
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light Mode Compact")
+@Preview(
+    showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light Mode Compact"
+)
 @Composable
 fun DefaultPreviewPortraitLight() {
     CalculatorTheme(darkTheme = false) {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+        Surface(modifier = Modifier.fillMaxSize(), color = colorScheme.background) {
             CalculatorApp(
                 viewModel = remember { CalculatorViewModel() },
                 layoutType = LayoutType.COMPACT,
                 isLandscape = false,
                 onOpenSettings = {},
-                onOpenConverter = {}
-            )
+                onOpenConverter = {})
         }
     }
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode Compact")
+@Preview(
+    showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode Compact"
+)
 @Composable
 fun DefaultPreviewPortraitDark() {
     CalculatorTheme(darkTheme = true) {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+        Surface(modifier = Modifier.fillMaxSize(), color = colorScheme.background) {
             CalculatorApp(
                 viewModel = remember { CalculatorViewModel() },
                 layoutType = LayoutType.COMPACT,
                 isLandscape = false,
                 onOpenSettings = {},
-                onOpenConverter = {}
-            )
+                onOpenConverter = {})
         }
     }
 }
@@ -290,8 +302,7 @@ fun CalculatorAppPreviewLandscape() {
                 layoutType = LayoutType.MEDIUM,
                 isLandscape = true,
                 onOpenSettings = {},
-                onOpenConverter = {}
-            )
+                onOpenConverter = {})
         }
     }
 }
@@ -301,14 +312,13 @@ fun CalculatorAppPreviewLandscape() {
 fun CalculatorAppPreviewCover() {
 
     CalculatorTheme(darkTheme = true) {
-        Surface(modifier = Modifier.fillMaxSize(), color = Color.Black ) {
+        Surface(modifier = Modifier.fillMaxSize(), color = Color.Black) {
             CalculatorApp(
                 viewModel = remember { CalculatorViewModel() },
                 layoutType = LayoutType.COVER,
                 isLandscape = false,
                 onOpenSettings = {},
-                onOpenConverter = {}
-            )
+                onOpenConverter = {})
         }
     }
 }
