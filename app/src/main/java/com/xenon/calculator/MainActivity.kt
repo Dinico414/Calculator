@@ -46,7 +46,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.core.view.WindowCompat
-import androidx.window.area.WindowAreaController
 import androidx.window.core.ExperimentalWindowApi
 import com.xenon.calculator.ui.layouts.ButtonLayout
 import com.xenon.calculator.ui.layouts.CalculatorScreen
@@ -91,12 +90,6 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val info = WindowAreaController.getOrCreate().windowAreaInfos.collectAsState(emptyList())
-            if (info.value.isNotEmpty()) {
-                val i = info.value.last()
-                Toast.makeText(this, i.toString(), Toast.LENGTH_LONG).show()
-            }
-
             ScreenEnvironment(themePreference = activeThemeForMainActivity) { layoutType, isLandscape ->
                 val isCoverScreen = layoutType == LayoutType.COVER
 
