@@ -432,8 +432,14 @@ fun CalculatorButton(
         targetValue = if (isPressed && !isScientificButton) 30 else 100,
         animationSpec = tween(durationMillis = if (isScientificButton) 0 else 350),
         label = "cornerRadiusAnimation",
+    )
+
+    val longPressDelay = 500
+    animateIntAsState(
+        targetValue = if (isPressed) 1 else 0,
+        animationSpec = tween(durationMillis = longPressDelay),
         finishedListener = { value ->
-            if (isPressed && value != 100) {
+            if (isPressed && value == 1) {
                 onLongClick()
                 longClickFired = true
             }
