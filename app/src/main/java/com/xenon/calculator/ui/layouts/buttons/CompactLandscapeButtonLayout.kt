@@ -135,11 +135,9 @@ fun CompactLandscapeButtonLayout(
                                     else -> viewModel.onButtonClick(originalButtonText)
                                 }
                             },
-                            onLongClick = {
-                                if (originalButtonText == "⌫") {
-                                    viewModel.onButtonClick("AC")
-                                }
-                            }
+                            onLongClick = if (originalButtonText == "⌫") {
+                                { viewModel.onButtonClick("AC") }
+                            } else null
                         )
                     }
                 }

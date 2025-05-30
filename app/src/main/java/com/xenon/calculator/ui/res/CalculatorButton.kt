@@ -42,28 +42,20 @@ fun CalculatorButton(
     isInverseActive: Boolean = false,
     fontFamily: FontFamily? = null,
     onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null,
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     val targetFontSize = when {
         isScientificButton -> when {
-            isLandscape -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains(
-                    "²"
-                )
-            ) 18.sp else 20.sp
-
-            else -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains(
-                    "²"
-                )
-            ) 18.sp else 20.sp
+            isLandscape -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) 18.sp else 20.sp
+            else -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) 18.sp else 20.sp
         }
-
         isNumber -> when {
             isLandscape -> if (isGlobalScientificModeActive) 26.sp else 28.sp
             else -> if (isGlobalScientificModeActive) 26.sp else 32.sp
         }
-
         else -> when { // Operators, AC, ()
             isLandscape -> if (isGlobalScientificModeActive) 26.sp else 28.sp
             else -> if (isGlobalScientificModeActive) 26.sp else 32.sp
@@ -96,25 +88,39 @@ fun CalculatorButton(
 
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+    var longClickFired = remember { false }
 
     val cornerRadiusPercent by animateIntAsState(
         targetValue = if (isPressed && !isScientificButton) 30 else 100,
         animationSpec = tween(durationMillis = if (isScientificButton) 0 else 350),
-        label = "cornerRadiusAnimation"
+        label = "cornerRadiusAnimation",
     )
 
+    val longPressDelay = 500
+    if (onLongClick != null) {
+        animateIntAsState(
+            targetValue = if (isPressed) 1 else 0,
+            animationSpec = tween(durationMillis = longPressDelay),
+            finishedListener = { value ->
+                if (isPressed && value == 1) {
+                    onLongClick()
+                    longClickFired = true
+                }
+            }
+        )
+    }
+
     Button(
-        onClick = onClick,
-        modifier = modifier.defaultMinSize(
-            minHeight = MediumButtonHeight, minWidth = MinMediumButtonHeight
-        ),
+        onClick = {
+            if (longClickFired) longClickFired = false
+            else onClick()
+        },
+        modifier = modifier.defaultMinSize(minHeight = MediumButtonHeight, minWidth = MinMediumButtonHeight),
         shape = RoundedCornerShape(percent = cornerRadiusPercent),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor, contentColor = contentColor
         ),
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = NoElevation, pressedElevation = NoElevation
-        ),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = NoElevation, pressedElevation = NoElevation),
         contentPadding = PaddingValues(horizontal = SmallPadding, vertical = SmallPadding),
         interactionSource = interactionSource
     ) {
