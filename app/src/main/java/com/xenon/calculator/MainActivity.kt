@@ -27,7 +27,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,6 +54,7 @@ import com.xenon.calculator.ui.res.NoCornerRadius
 import com.xenon.calculator.ui.res.NoElevation
 import com.xenon.calculator.ui.res.NoPadding
 import com.xenon.calculator.ui.res.SmallCornerRadius
+import com.xenon.calculator.ui.res.SmallElevation
 import com.xenon.calculator.ui.res.SmallMediumPadding
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.ui.theme.ScreenEnvironment
@@ -93,9 +94,9 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(
                             if (isCoverScreen) Color.Black
-                            else MaterialTheme.colorScheme.background
+                            else colorScheme.background
                         ),
-                    color = if (isCoverScreen) Color.Black else MaterialTheme.colorScheme.background
+                    color = if (isCoverScreen) Color.Black else colorScheme.background
                 ) {
                     Box(
                         modifier = Modifier
@@ -110,7 +111,7 @@ class MainActivity : ComponentActivity() {
                                 } else {
                                     Modifier
                                         .clip(RoundedCornerShape(topStart = LargeCornerRadius, topEnd = LargeCornerRadius))
-                                        .background(MaterialTheme.colorScheme.surfaceContainer)
+                                        .background(colorScheme.surfaceContainer)
                                 }
                             )
                     ) {
@@ -181,7 +182,7 @@ fun CalculatorApp(
                 .clip(RoundedCornerShape(if (isCoverScreenLayout) NoCornerRadius else MediumCornerRadius))
                 .background(
                     if (isCoverScreenLayout) Color.Black
-                    else MaterialTheme.colorScheme.secondaryContainer
+                    else colorScheme.secondaryContainer
                 )
         ) {
             CalculatorScreen(
@@ -195,13 +196,14 @@ fun CalculatorApp(
                     .align(Alignment.TopEnd)
                     .padding(top = MediumPadding, end = MediumPadding)
                     .clip(shape = CircleShape)
-                    .background(color = MaterialTheme.colorScheme.surfaceContainer)
+                    .background(color = colorScheme.surfaceContainer)
+                    .shadow(elevation = SmallElevation)
             ) {
                 IconButton(onClick = { showMenu = !showMenu }) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = "Menu",
-                        tint = MaterialTheme.colorScheme.onSurface,
+                        tint = colorScheme.onSurface,
                     )
                 }
                 DropdownMenu(
@@ -219,14 +221,14 @@ fun CalculatorApp(
                         )
                 ) {
                     DropdownMenuItem(
-                        text = { Text(stringResource(id = R.string.converter), color = if (isCoverScreenLayout) Color.White else MaterialTheme.colorScheme.onSurface) },
+                        text = { Text(stringResource(id = R.string.converter), color = if (isCoverScreenLayout) Color.White else colorScheme.onSurface) },
                         onClick = {
                             showMenu = false
                             onOpenConverter()
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text(stringResource(id = R.string.settings), color = if (isCoverScreenLayout) Color.White else MaterialTheme.colorScheme.onSurface) },
+                        text = { Text(stringResource(id = R.string.settings), color = if (isCoverScreenLayout) Color.White else colorScheme.onSurface) },
                         onClick = {
                             showMenu = false
                             onOpenSettings()
@@ -252,7 +254,7 @@ fun CalculatorApp(
 @Composable
 fun DefaultPreviewPortraitLight() {
     CalculatorTheme(darkTheme = false) {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+        Surface(modifier = Modifier.fillMaxSize(), color = colorScheme.background) {
             CalculatorApp(
                 viewModel = remember { CalculatorViewModel() },
                 layoutType = LayoutType.COMPACT,
@@ -268,7 +270,7 @@ fun DefaultPreviewPortraitLight() {
 @Composable
 fun DefaultPreviewPortraitDark() {
     CalculatorTheme(darkTheme = true) {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+        Surface(modifier = Modifier.fillMaxSize(), color = colorScheme.background) {
             CalculatorApp(
                 viewModel = remember { CalculatorViewModel() },
                 layoutType = LayoutType.COMPACT,

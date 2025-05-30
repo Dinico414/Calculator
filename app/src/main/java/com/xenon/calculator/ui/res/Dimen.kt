@@ -34,7 +34,7 @@ val LargeCornerRadius = 40.dp
 val FullCornerRadius = 100.0f
 
 val NoElevation = 0.dp
-val CardElevation = 2.dp
+val SmallElevation  = 2.dp
 
 val NoSpacing = 0.dp
 val SmallestSpacing = 1.dp
