@@ -1,5 +1,7 @@
 [versions]
-agp = "8.10.0"
+accompanistSystemuicontroller = "0.32.0"
+agp = "8.10.1"
+hazeMaterials = "1.6.2"
 kotlin = "2.0.21"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -16,10 +18,12 @@ xenonCommons = "1.3.2"
 
 [libraries]
 
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-compose-jvmstubs = { group = "androidx.navigation", name = "navigation-compose-jvmstubs", version.ref = "navigationCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
+haze-materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "hazeMaterials" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

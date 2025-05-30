@@ -2,8 +2,13 @@ package com.xenon.calculator.ui.layouts
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets // Import
+import androidx.compose.foundation.layout.WindowInsetsSides // Import
+import androidx.compose.foundation.layout.asPaddingValues // Import
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.only // Import
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing // Import
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
@@ -46,7 +51,9 @@ fun CollapsingAppBarLayout(
 
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     Scaffold(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .padding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues()),
         topBar = {
             LargeTopAppBar(
                 title = {},
@@ -88,7 +95,7 @@ fun CollapsingAppBarLayout(
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .padding(top=curHeight-collapsedHeight),
+                            .padding(top = curHeight - collapsedHeight),
                         contentAlignment = Alignment.Center
                     ) {
                         navigationIcon()

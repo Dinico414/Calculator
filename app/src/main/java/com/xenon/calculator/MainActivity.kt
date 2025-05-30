@@ -50,8 +50,8 @@ import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.ui.theme.ScreenEnvironment
 import com.xenon.calculator.ui.values.ButtonBoxPadding
 import com.xenon.calculator.ui.values.LargeCornerRadius
-import com.xenon.calculator.ui.values.MediumCornerRadius
 import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.MediumCornerRadius
 import com.xenon.calculator.ui.values.NoCornerRadius
 import com.xenon.calculator.ui.values.NoElevation
 import com.xenon.calculator.ui.values.NoPadding
@@ -95,23 +95,26 @@ class MainActivity : ComponentActivity() {
                         .background(
                             if (isCoverScreen) Color.Black
                             else colorScheme.background
-                        ),
-                    color = if (isCoverScreen) Color.Black else colorScheme.background
+                        ), color = if (isCoverScreen) Color.Black else colorScheme.background
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal).asPaddingValues())
+                            .padding(
+                                WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+                                    .asPaddingValues()
+                            )
                             .then(
                                 if (isCoverScreen) {
-                                    Modifier
-                                        .background(Color.Black)
-                                        .padding(horizontal = NoPadding)
+                                    Modifier.background(Color.Black).padding(horizontal = NoPadding)
                                         .clip(RoundedCornerShape(NoCornerRadius))
                                 } else {
-                                    Modifier
-                                        .clip(RoundedCornerShape(topStart = LargeCornerRadius, topEnd = LargeCornerRadius))
-                                        .background(colorScheme.surfaceContainer)
+                                    Modifier.clip(
+                                            RoundedCornerShape(
+                                                topStart = LargeCornerRadius,
+                                                topEnd = LargeCornerRadius
+                                            )
+                                        ).background(colorScheme.surfaceContainer)
                                 }
                             )
                     ) {
@@ -124,10 +127,10 @@ class MainActivity : ComponentActivity() {
                                 startActivity(intent)
                             },
                             onOpenConverter = {
-                                val intent = Intent(this@MainActivity, ConverterActivity::class.java)
+                                val intent =
+                                    Intent(this@MainActivity, ConverterActivity::class.java)
                                 startActivity(intent)
-                            }
-                        )
+                            })
                     }
                 }
             }
@@ -171,11 +174,9 @@ fun CalculatorApp(
                 .weight(0.35f)
                 .then(
                     if (isCoverScreenLayout) {
-                        Modifier
-                            .padding(horizontal = NoPadding, vertical = NoPadding)
+                        Modifier.padding(horizontal = NoPadding, vertical = NoPadding)
                     } else {
-                        Modifier
-                            .padding(horizontal = LargePadding, vertical = NoPadding)
+                        Modifier.padding(horizontal = LargePadding, vertical = NoPadding)
                             .padding(top = LargePadding)
                     }
                 )
@@ -188,15 +189,19 @@ fun CalculatorApp(
                 layoutType = layoutType,
                 modifier = Modifier.fillMaxSize()
             )
+
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(top = LargePadding, end = LargePadding)
-                    .clip(shape = CircleShape)
-                    .background(color = colorScheme.surfaceContainer)
-                    .shadow(elevation = SmallElevation)
             ) {
-                IconButton(onClick = { showMenu = !showMenu }) {
+                IconButton(
+                    onClick = { showMenu = !showMenu },
+                    modifier = Modifier
+                        .shadow(elevation = SmallElevation, shape = CircleShape)
+                        .clip(shape = CircleShape)
+                        .background(color = colorScheme.surfaceContainer)
+                ) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = "Menu",
@@ -210,27 +215,33 @@ fun CalculatorApp(
                     containerColor = Color.Transparent,
                     shadowElevation = NoElevation,
                     modifier = Modifier
-                        .padding(top = SmallMediumPadding, bottom = SmallMediumPadding)
+                        .padding(
+                            top = SmallMediumPadding, bottom = SmallMediumPadding
+                        )
                         .clip(RoundedCornerShape(SmallCornerRadius))
                         .background(colorScheme.surfaceContainer)
                         .hazeEffect(
                             state = hazeState, style = CupertinoMaterials.ultraThin()
                         )
                 ) {
-                    DropdownMenuItem(
-                        text = { Text(stringResource(id = R.string.converter), color = if (isCoverScreenLayout) Color.White else colorScheme.onSurface) },
-                        onClick = {
-                            showMenu = false
-                            onOpenConverter()
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(stringResource(id = R.string.settings), color = if (isCoverScreenLayout) Color.White else colorScheme.onSurface) },
-                        onClick = {
-                            showMenu = false
-                            onOpenSettings()
-                        }
-                    )
+                    DropdownMenuItem(text = {
+                        Text(
+                            stringResource(id = R.string.converter),
+                            color = if (isCoverScreenLayout) Color.White else colorScheme.onSurface
+                        )
+                    }, onClick = {
+                        showMenu = false
+                        onOpenConverter()
+                    })
+                    DropdownMenuItem(text = {
+                        Text(
+                            stringResource(id = R.string.settings),
+                            color = if (isCoverScreenLayout) Color.White else colorScheme.onSurface
+                        )
+                    }, onClick = {
+                        showMenu = false
+                        onOpenSettings()
+                    })
                 }
             }
         }
@@ -247,7 +258,9 @@ fun CalculatorApp(
 }
 
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light Mode Compact")
+@Preview(
+    showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light Mode Compact"
+)
 @Composable
 fun DefaultPreviewPortraitLight() {
     CalculatorTheme(darkTheme = false) {
@@ -257,13 +270,14 @@ fun DefaultPreviewPortraitLight() {
                 layoutType = LayoutType.COMPACT,
                 isLandscape = false,
                 onOpenSettings = {},
-                onOpenConverter = {}
-            )
+                onOpenConverter = {})
         }
     }
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode Compact")
+@Preview(
+    showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode Compact"
+)
 @Composable
 fun DefaultPreviewPortraitDark() {
     CalculatorTheme(darkTheme = true) {
@@ -273,8 +287,7 @@ fun DefaultPreviewPortraitDark() {
                 layoutType = LayoutType.COMPACT,
                 isLandscape = false,
                 onOpenSettings = {},
-                onOpenConverter = {}
-            )
+                onOpenConverter = {})
         }
     }
 }
@@ -289,8 +302,7 @@ fun CalculatorAppPreviewLandscape() {
                 layoutType = LayoutType.MEDIUM,
                 isLandscape = true,
                 onOpenSettings = {},
-                onOpenConverter = {}
-            )
+                onOpenConverter = {})
         }
     }
 }
@@ -300,14 +312,13 @@ fun CalculatorAppPreviewLandscape() {
 fun CalculatorAppPreviewCover() {
 
     CalculatorTheme(darkTheme = true) {
-        Surface(modifier = Modifier.fillMaxSize(), color = Color.Black ) {
+        Surface(modifier = Modifier.fillMaxSize(), color = Color.Black) {
             CalculatorApp(
                 viewModel = remember { CalculatorViewModel() },
                 layoutType = LayoutType.COVER,
                 isLandscape = false,
                 onOpenSettings = {},
-                onOpenConverter = {}
-            )
+                onOpenConverter = {})
         }
     }
 }

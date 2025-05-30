@@ -6,10 +6,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,9 +41,8 @@ import com.xenon.calculator.ui.res.ConverterTypeDropdown
 import com.xenon.calculator.ui.res.InputGroup
 import com.xenon.calculator.ui.res.XenonTextField
 import com.xenon.calculator.ui.values.LargeCornerRadius
-import com.xenon.calculator.ui.values.LargerPadding
-import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.MinMediumButtonHeight
 import com.xenon.calculator.ui.values.UnitDropdown
 import com.xenon.calculator.viewmodel.ConverterViewModel
@@ -98,15 +100,19 @@ fun CompactConverter(
                 .padding(contentPadding)
                 .fillMaxSize()
                 .hazeSource(hazeState)
-                .padding(horizontal = LargerPadding)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(LargeCornerRadius))
+                    .clip(RoundedCornerShape(topStart = LargeCornerRadius, topEnd = LargeCornerRadius))
                     .background(colorScheme.surfaceContainer)
                     .verticalScroll(rememberScrollState())
-                    .padding(vertical = LargePadding, horizontal = LargePadding),
+                    .padding(
+                        start = LargePadding,
+                        end = LargePadding,
+                        top = LargePadding,
+                        bottom = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding() + LargePadding
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(LargerSpacing)
             ) {

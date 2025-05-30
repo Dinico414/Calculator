@@ -16,7 +16,7 @@ class ConverterActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowCompat.setDecorFitsSystemWindows(window, false) // Correctly set for edge-to-edge
         sharedPreferenceManager = SharedPreferenceManager(applicationContext)
 
         converterViewModel = ViewModelProvider(
@@ -41,7 +41,7 @@ class ConverterActivity : ComponentActivity() {
         super.onResume()
 
         val storedTheme = sharedPreferenceManager.theme
-        val currentActivityTheme = sharedPreferenceManager.theme
+         val currentActivityTheme = sharedPreferenceManager.theme
         if (currentActivityTheme != storedTheme) {
             recreate()
         }

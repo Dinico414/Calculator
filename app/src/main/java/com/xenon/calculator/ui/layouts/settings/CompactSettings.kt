@@ -5,10 +5,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -38,9 +41,10 @@ import androidx.compose.ui.unit.dp
 import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
 import com.xenon.calculator.ui.values.ExtraLargePadding
 import com.xenon.calculator.ui.values.LargeCornerRadius
+import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.LargeSpacing
 import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.ui.values.MediumCornerRadius
-import com.xenon.calculator.ui.values.MediumSpacing
 import com.xenon.calculator.viewmodel.SettingsViewModel
 import com.xenon.calculator.viewmodel.ThemeSetting
 
@@ -53,14 +57,12 @@ fun CompactSettings(
 ) {
     val context = LocalContext.current
 
-
     val currentThemeTitle by viewModel.currentThemeTitle.collectAsState()
     val showThemeDialog by viewModel.showThemeDialog.collectAsState()
     val themeOptions = viewModel.themeOptions
     val dialogSelectedThemeIndex by viewModel.dialogPreviewThemeIndex.collectAsState()
     val currentLanguage by viewModel.currentLanguage.collectAsState()
     val showClearDataDialog by viewModel.showClearDataDialog.collectAsState()
-
 
     val packageManager = context.packageManager
     val packageName = context.packageName
@@ -73,23 +75,25 @@ fun CompactSettings(
     }
     val appVersion = packageInfo?.versionName ?: "N/A"
 
-    CollapsingAppBarLayout(title = { fontSize, color ->
-        Text("Settings", fontSize = fontSize, color = color)
-    }, navigationIcon = {
-        IconButton(onClick = onNavigateBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Navigate back")
+    CollapsingAppBarLayout(
+        title = { fontSize, color ->
+            Text("Settings", fontSize = fontSize, color = color)
+        },
+        navigationIcon = {
+            IconButton(onClick = onNavigateBack) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Navigate back")
+            }
         }
-    }) { paddingValues ->
+    ) { paddingValuesFromAppBar ->
         Column(
             modifier = Modifier
-                .padding(paddingValues)
                 .fillMaxSize()
-                .padding(horizontal = LargerPadding)
+                .padding(top = paddingValuesFromAppBar.calculateTopPadding())
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(LargeCornerRadius))
+                    .clip(RoundedCornerShape(topStart = LargeCornerRadius, topEnd = LargeCornerRadius))
                     .background(MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 Column(
@@ -97,14 +101,19 @@ fun CompactSettings(
                         .fillMaxWidth()
                         .weight(1f)
                         .verticalScroll(rememberScrollState())
-                        .padding(vertical = LargerPadding, horizontal = LargerPadding)
+                        .padding(
+                            start = LargePadding,
+                            end = LargePadding,
+                            top = LargePadding,
+                            bottom = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding() + LargePadding
+                        )
                 ) {
                     SettingsGroupTile(
                         title = "Theme",
                         subtitle = "Current: $currentThemeTitle",
                         onClick = { viewModel.onThemeSettingClicked() },
                     )
-                    Spacer(modifier = Modifier.height(MediumSpacing))
+                    Spacer(modifier = Modifier.height(LargeSpacing))
 
                     SettingsGroupTile(
                         title = "Language",
@@ -114,14 +123,14 @@ fun CompactSettings(
                     LaunchedEffect(Unit) {
                         viewModel.updateCurrentLanguage()
                     }
-                    Spacer(modifier = Modifier.height(MediumSpacing))
+                    Spacer(modifier = Modifier.height(LargeSpacing))
 
                     SettingsGroupTile(
                         title = "Data Management",
                         subtitle = "Clear app data and cache",
                         onClick = { viewModel.onClearDataClicked() },
                     )
-                    Spacer(modifier = Modifier.height(MediumSpacing))
+                    Spacer(modifier = Modifier.height(LargeSpacing))
 
                     SettingsGroupTile(
                         title = "Version",
@@ -131,6 +140,7 @@ fun CompactSettings(
                 }
             }
         }
+
         if (showThemeDialog) {
             ThemeSelectionDialog(
                 themeOptions = themeOptions,
@@ -139,16 +149,21 @@ fun CompactSettings(
                     viewModel.onThemeOptionSelectedInDialog(index)
                 },
                 onDismiss = { viewModel.dismissThemeDialog() },
-                onConfirm = { viewModel.applySelectedTheme() })
+                onConfirm = { viewModel.applySelectedTheme() }
+            )
         }
 
         if (showClearDataDialog) {
             ClearDataConfirmationDialog(
-                onConfirm = { viewModel.confirmClearData() },
-                onDismiss = { viewModel.dismissClearDataDialog() })
+                onConfirm = {
+                    viewModel.confirmClearData()
+                },
+                onDismiss = { viewModel.dismissClearDataDialog() }
+            )
         }
     }
 }
+
 
 @Composable
 fun SettingsGroupTile(
@@ -192,41 +207,48 @@ fun ThemeSelectionDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-    AlertDialog(onDismissRequest = onDismiss, title = { Text(text = "Select Theme") }, text = {
-        Column(Modifier.selectableGroup()) {
-            themeOptions.forEachIndexed { index, theme ->
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .selectable(
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Select Theme") },
+        text = {
+            Column(Modifier.selectableGroup()) {
+                themeOptions.forEachIndexed { index, theme ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .selectable(
+                                selected = (index == currentThemeIndex),
+                                onClick = { onThemeSelected(index) },
+                                role = Role.RadioButton
+                            )
+                            .padding(horizontal = LargerPadding),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
                             selected = (index == currentThemeIndex),
-                            onClick = { onThemeSelected(index) },
-                            role = Role.RadioButton
+                            onClick = null
                         )
-                        .padding(horizontal = LargerPadding),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
-                        selected = (index == currentThemeIndex), onClick = null
-                    )
-                    Text(
-                        text = theme.title,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(start = LargerPadding)
-                    )
+                        Text(
+                            text = theme.title,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(start = LargerPadding)
+                        )
+                    }
                 }
             }
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
         }
-    }, confirmButton = {
-        TextButton(onClick = onConfirm) {
-            Text("OK")
-        }
-    }, dismissButton = {
-        TextButton(onClick = onDismiss) {
-            Text("Cancel")
-        }
-    })
+    )
 }
 
 @Composable
@@ -247,5 +269,6 @@ fun ClearDataConfirmationDialog(
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
-        })
+        }
+    )
 }
