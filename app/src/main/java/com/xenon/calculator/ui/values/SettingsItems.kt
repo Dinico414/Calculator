@@ -6,6 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.xenon.calculator.R
 import com.xenon.calculator.ui.res.SettingsGroupTile
 import com.xenon.calculator.ui.res.SettingsSwitchTile
 import com.xenon.calculator.viewmodel.SettingsViewModel
@@ -22,15 +24,15 @@ fun SettingsItems(
     val context = LocalContext.current
 
     SettingsGroupTile(
-        title = "Theme",
-        subtitle = "Current: $currentThemeTitle",
+        title = stringResource(id = R.string.theme),
+        subtitle = "${stringResource(id = R.string.current)} $currentThemeTitle",
         onClick = { viewModel.onThemeSettingClicked() },
     )
     Spacer(modifier = Modifier.height(LargeSpacing))
 
     SettingsSwitchTile(
-        title = "Cover Screen Theme",
-        subtitle = "Select Cover Screen (${if (applyCoverTheme) "Active" else "Inactive"})",
+        title = stringResource(id = R.string.cover_screen_mode),
+        subtitle = "${stringResource(id = R.string.cover_screen_mode_description)} (${if (applyCoverTheme) stringResource(id = R.string.enabled) else stringResource(id = R.string.disabled)})",
         checked = coverThemeEnabled,
         onCheckedChange = { viewModel.setCoverThemeEnabled(!coverThemeEnabled) },
         onClick = { viewModel.onCoverThemeClicked() },
@@ -38,8 +40,8 @@ fun SettingsItems(
     Spacer(modifier = Modifier.height(LargeSpacing))
 
     SettingsGroupTile(
-        title = "Language",
-        subtitle = "Current: $currentLanguage",
+        title = stringResource(id = R.string.language),
+        subtitle = "${stringResource(id = R.string.current)} $currentLanguage",
         onClick = { viewModel.openLanguageSettings(context) },
     )
     LaunchedEffect(Unit) {
@@ -48,8 +50,8 @@ fun SettingsItems(
     Spacer(modifier = Modifier.height(LargeSpacing))
 
     SettingsGroupTile(
-        title = "Data Management",
-        subtitle = "Clear app data and cache",
+        title = stringResource(id = R.string.clear_data),
+        subtitle = stringResource(id = R.string.clear_data_description),
         onClick = { viewModel.onClearDataClicked() },
     )
     Spacer(modifier = Modifier.height(LargeSpacing))

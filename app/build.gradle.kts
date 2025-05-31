@@ -12,8 +12,8 @@ android {
         applicationId = "com.xenon.calculator"
         minSdk = 29
         targetSdk = 35
-        versionCode = 3
-        versionName = "1.4.8"
+        versionCode = 4
+        versionName = "1.4.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

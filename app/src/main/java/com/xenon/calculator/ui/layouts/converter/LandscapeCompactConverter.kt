@@ -40,7 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.xenon.calculator.R
-import com.xenon.calculator.ui.res.ActivityScreen
+import com.xenon.calculator.ui.layouts.ActivityScreen
 import com.xenon.calculator.ui.res.ConverterTypeDropdown
 import com.xenon.calculator.ui.res.InputGroup
 import com.xenon.calculator.ui.res.XenonTextField
@@ -53,6 +53,7 @@ import com.xenon.calculator.viewmodel.classes.ConverterType
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
@@ -270,7 +271,7 @@ fun LandscapeCompactConverter(
                     )
 
                     val referenceHeightForIcon =
-                        kotlin.math.max(group1Placeable.height, group2Placeable.height)
+                        max(group1Placeable.height, group2Placeable.height)
                     val iconButtonMinIntrinsicHeight =
                         iconButtonMeasurable.minIntrinsicHeight(iconButtonTargetWidth)
                     val iconButtonTargetHeight = (referenceHeightForIcon * 0.5f).roundToInt()
@@ -288,9 +289,9 @@ fun LandscapeCompactConverter(
                     )
                     val totalWidth =
                         group1Placeable.width + spacingPx + iconButtonPlaceable.width + spacingPx + group2Placeable.width
-                    val maxHeight = kotlin.math.max(
+                    val maxHeight = max(
                         group1Placeable.height,
-                        kotlin.math.max(iconButtonPlaceable.height, group2Placeable.height)
+                        max(iconButtonPlaceable.height, group2Placeable.height)
                     )
 
 

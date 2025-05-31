@@ -26,4 +26,10 @@
     <string name="confirm">Confirm</string>
     <string name="cover_dialog_title">Is this currently the cover screen?</string>
     <string name="cover_dialog_description">This will apply a more compact layout when you are on the Cover Display.</string>
+    <string name="cover_screen_mode">Cover Screen Mode</string>
+    <string name="enabled">Active</string>
+    <string name="disabled">Inactive</string>
+    <string name="clear_data_description">Clear app data and cache</string>
+    <string name="current">Current:</string>
+    <string name="cover_screen_mode_description">Selected Cover Screen </string>
 </resources>

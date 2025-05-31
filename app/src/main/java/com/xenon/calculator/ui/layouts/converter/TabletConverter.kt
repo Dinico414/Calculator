@@ -37,20 +37,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.xenon.calculator.R
-import com.xenon.calculator.ui.res.ActivityScreen
+import com.xenon.calculator.ui.layouts.ActivityScreen
 import com.xenon.calculator.ui.res.ConverterTypeDropdown
 import com.xenon.calculator.ui.res.InputGroup
 import com.xenon.calculator.ui.res.XenonTextField
 import com.xenon.calculator.ui.values.IconSizeLarge
 import com.xenon.calculator.ui.values.LargeCornerRadius
 import com.xenon.calculator.ui.values.LargePadding
-import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.UnitDropdown
 import com.xenon.calculator.viewmodel.ConverterViewModel
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
@@ -88,31 +88,26 @@ fun TabletConverter(
 
     ActivityScreen(
         title = { fontSize, color ->
-        Text(
-            stringResource(id = R.string.converter), fontSize = fontSize, color = color
-        )
-    }, navigationIcon = if (onNavigateBack != null) {
-        {
-            IconButton(onClick = onNavigateBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.navigate_back_description)
-                )
+            Text(
+                stringResource(id = R.string.converter), fontSize = fontSize, color = color
+            )
+        },
+        navigationIcon = if (onNavigateBack != null) {
+            {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.navigate_back_description)
+                    )
+                }
             }
-        }
-    } else {
-        null
-    }, appBarActions = {
-
-    },
-
+        } else {
+            null
+        },
+        appBarActions = {},
         isAppBarCollapsible = true,
-
-
-        contentModifier = Modifier
-            .hazeSource(hazeState)
-
-            .padding(horizontal = LargerPadding), content = { _ ->
+        contentModifier = Modifier.hazeSource(hazeState),
+        content = { _ ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -271,7 +266,7 @@ fun TabletConverter(
                     )
 
                     val referenceHeight =
-                        kotlin.math.max(group1Placeable.height, group2Placeable.height)
+                        max(group1Placeable.height, group2Placeable.height)
 
                     val iconButtonMinIntrinsicHeight =
                         iconButtonMeasurable.minIntrinsicHeight(iconButtonTargetWidth)
@@ -290,9 +285,9 @@ fun TabletConverter(
 
                     val totalWidth =
                         group1Placeable.width + spacingPx + iconButtonPlaceable.width + spacingPx + group2Placeable.width
-                    val maxHeight = kotlin.math.max(
+                    val maxHeight = max(
                         group1Placeable.height,
-                        kotlin.math.max(iconButtonPlaceable.height, group2Placeable.height)
+                        max(iconButtonPlaceable.height, group2Placeable.height)
                     )
 
                     layout(totalWidth, maxHeight) {
