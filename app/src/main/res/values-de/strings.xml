@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Rechner-Cp</string>
+    <string name="app_name">Rechner</string>
     <string name="settings">Einstellungen</string>
     <string name="abc_action_bar_up_description">zurück</string>
     <string name="general">Allgemein</string>

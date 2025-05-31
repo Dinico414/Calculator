@@ -1,61 +1,41 @@
 package com.xenon.calculator
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.view.WindowCompat
 import com.xenon.calculator.ui.layouts.ButtonLayout
 import com.xenon.calculator.ui.layouts.CalculatorScreen
 import com.xenon.calculator.ui.theme.ScreenEnvironment
-import com.xenon.calculator.ui.values.ButtonBoxPadding
-import com.xenon.calculator.ui.values.LargeCornerRadius
-import com.xenon.calculator.ui.values.LargePadding
-import com.xenon.calculator.ui.values.MediumCornerRadius
-import com.xenon.calculator.ui.values.NoCornerRadius
-import com.xenon.calculator.ui.values.NoElevation
-import com.xenon.calculator.ui.values.NoPadding
-import com.xenon.calculator.ui.values.SmallCornerRadius
-import com.xenon.calculator.ui.values.SmallElevation
-import com.xenon.calculator.ui.values.SmallMediumPadding
+import com.xenon.calculator.ui.values.*
 import com.xenon.calculator.viewmodel.CalculatorViewModel
 import com.xenon.calculator.viewmodel.LayoutType
 import dev.chrisbanes.haze.HazeState
@@ -64,11 +44,31 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.CupertinoMaterials
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 
+
+val OLD_APP_PACKAGE_NAMES = listOf(
+    "com.xenon.calculator.compose",
+    "com.xenon.calculator.compose.debug"
+)
+
 class MainActivity : ComponentActivity() {
     private val calculatorViewModel: CalculatorViewModel by viewModels()
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
     private var activeThemeForMainActivity: Int = 2
     private var coverEnabledState = false
+
+    private var showUninstallDialog by mutableStateOf(false)
+    private var
+
+            packageNameToDelete by mutableStateOf<String?>(null)
+
+
+    private val uninstallLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+
+        checkOldAppStatus()
+        if (packageNameToDelete == null) {
+            showUninstallDialog = false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +84,8 @@ class MainActivity : ComponentActivity() {
             activeThemeForMainActivity = 2
         }
         coverEnabledState = sharedPreferenceManager.coverThemeEnabled
+
+        checkOldAppStatus()
 
         setContent {
             val containerSize = LocalWindowInfo.current.containerSize
@@ -104,36 +106,49 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(
-                                WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+                                WindowInsets.safeDrawing
+                                    .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
                                     .asPaddingValues()
                             )
                             .then(
                                 if (isCoverScreen) {
-                                    Modifier.background(Color.Black).padding(horizontal = NoPadding)
+                                    Modifier
+                                        .background(Color.Black)
+                                        .padding(horizontal = NoPadding)
                                         .clip(RoundedCornerShape(NoCornerRadius))
                                 } else {
-                                    Modifier.clip(
+                                    Modifier
+                                        .clip(
                                             RoundedCornerShape(
                                                 topStart = LargeCornerRadius,
                                                 topEnd = LargeCornerRadius
                                             )
-                                        ).background(colorScheme.surfaceContainer)
+                                        )
+                                        .background(colorScheme.surfaceContainer)
                                 }
                             )
                     ) {
-                        CalculatorApp(
-                            viewModel = calculatorViewModel,
-                            layoutType = layoutType,
-                            isLandscape = isLandscape,
-                            onOpenSettings = {
-                                val intent = Intent(this@MainActivity, SettingsActivity::class.java)
-                                startActivity(intent)
-                            },
-                            onOpenConverter = {
-                                val intent =
-                                    Intent(this@MainActivity, ConverterActivity::class.java)
-                                startActivity(intent)
-                            })
+                        if (showUninstallDialog && packageNameToDelete != null) {
+                            UninstallOldAppDialog(
+                                onConfirm = {
+                                    packageNameToDelete?.let { requestUninstallOldApp(it) }
+                                }
+                            )
+                        } else {
+                            CalculatorApp(
+                                viewModel = calculatorViewModel,
+                                layoutType = layoutType,
+                                isLandscape = isLandscape,
+                                onOpenSettings = {
+                                    val intent = Intent(this@MainActivity, SettingsActivity::class.java)
+                                    startActivity(intent)
+                                },
+                                onOpenConverter = {
+                                    val intent =
+                                        Intent(this@MainActivity, ConverterActivity::class.java)
+                                    startActivity(intent)
+                                })
+                        }
                     }
                 }
             }
@@ -142,6 +157,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        checkOldAppStatus()
+        if (packageNameToDelete != null && !showUninstallDialog) {
+            showUninstallDialog = true
+        }
+
         val storedTheme = sharedPreferenceManager.theme
         if (activeThemeForMainActivity != storedTheme) {
             activeThemeForMainActivity = storedTheme
@@ -153,7 +174,65 @@ class MainActivity : ComponentActivity() {
             recreate()
         }
     }
+
+    private fun isPackageInstalled(packageName: String, pm: PackageManager): Boolean {
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                pm.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+            } else {
+                @Suppress("DEPRECATION")
+                pm.getPackageInfo(packageName, 0)
+            }
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
+
+    private fun checkOldAppStatus() {
+        var foundPackage: String? = null
+        for (packageName in OLD_APP_PACKAGE_NAMES) {
+            if (isPackageInstalled(packageName, packageManager)) {
+                foundPackage = packageName
+                break
+            }
+        }
+
+        packageNameToDelete = foundPackage
+        showUninstallDialog = foundPackage != null
+    }
+
+    private fun requestUninstallOldApp(packageName: String) {
+        val intent = Intent(Intent.ACTION_DELETE)
+        intent.data = Uri.parse("package:$packageName")
+        intent.putExtra(Intent.EXTRA_RETURN_RESULT, true)
+        uninstallLauncher.launch(intent)
+    }
 }
+
+@Composable
+fun UninstallOldAppDialog(
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = {},
+        title = { Text("With Something Bad comes Something better") },
+        text = {
+            Text(
+                "Hello there,\n" +
+                        "Say Goodbye to the old Version of Calculator, we are moving in to a newer, better and from the groundup newly build Version. The old one will not be supported anymore."
+            )
+        },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text("Good Bye")
+            }
+        },
+        dismissButton = {},
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+    )
+}
+
 
 @OptIn(ExperimentalHazeMaterialsApi::class)
 @Composable
@@ -184,7 +263,8 @@ fun CalculatorApp(
                     if (isCoverScreenLayout) {
                         Modifier.padding(horizontal = NoPadding, vertical = NoPadding)
                     } else {
-                        Modifier.padding(horizontal = LargePadding, vertical = NoPadding)
+                        Modifier
+                            .padding(horizontal = LargePadding, vertical = NoPadding)
                             .padding(top = LargePadding)
                     }
                 )

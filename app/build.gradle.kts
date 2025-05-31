@@ -13,14 +13,14 @@ android {
         minSdk = 29
         targetSdk = 35
         versionCode = 4
-        versionName = "1.4.9"
+        versionName = "1.5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         debug {
-            applicationIdSuffix = ".compose.debug"
+            applicationIdSuffix = ".debug"
             versionNameSuffix = "-d"
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -29,7 +29,6 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
         release {
-            applicationIdSuffix = ".compose"
              isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
