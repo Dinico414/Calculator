@@ -1,9 +1,7 @@
 package com.xenon.calculator
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -32,7 +30,6 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,12 +41,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.core.view.WindowCompat
 import com.xenon.calculator.ui.layouts.ButtonLayout
 import com.xenon.calculator.ui.layouts.CalculatorScreen
-import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.ui.theme.ScreenEnvironment
 import com.xenon.calculator.ui.values.ButtonBoxPadding
 import com.xenon.calculator.ui.values.LargeCornerRadius
@@ -267,71 +262,5 @@ fun CalculatorApp(
                 .fillMaxWidth()
                 .weight(0.65f)
         )
-    }
-}
-
-
-@Preview(
-    showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, name = "Light Mode Compact"
-)
-@Composable
-fun DefaultPreviewPortraitLight() {
-    CalculatorTheme(darkTheme = false) {
-        Surface(modifier = Modifier.fillMaxSize(), color = colorScheme.background) {
-            CalculatorApp(
-                viewModel = remember { CalculatorViewModel() },
-                layoutType = LayoutType.COMPACT,
-                isLandscape = false,
-                onOpenSettings = {},
-                onOpenConverter = {})
-        }
-    }
-}
-
-@Preview(
-    showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode Compact"
-)
-@Composable
-fun DefaultPreviewPortraitDark() {
-    CalculatorTheme(darkTheme = true) {
-        Surface(modifier = Modifier.fillMaxSize(), color = colorScheme.background) {
-            CalculatorApp(
-                viewModel = remember { CalculatorViewModel() },
-                layoutType = LayoutType.COMPACT,
-                isLandscape = false,
-                onOpenSettings = {},
-                onOpenConverter = {})
-        }
-    }
-}
-
-@Preview(showBackground = true, widthDp = 700, heightDp = 400, name = "Landscape Medium")
-@Composable
-fun CalculatorAppPreviewLandscape() {
-    CalculatorTheme(darkTheme = false) {
-        Surface(modifier = Modifier.fillMaxSize()) {
-            CalculatorApp(
-                viewModel = remember { CalculatorViewModel() },
-                layoutType = LayoutType.MEDIUM,
-                isLandscape = true,
-                onOpenSettings = {},
-                onOpenConverter = {})
-        }
-    }
-}
-
-@Preview(showBackground = true, widthDp = 418, heightDp = 800, name = "Cover Screen")
-@Composable
-fun CalculatorAppPreviewCover() {
-
-    CalculatorTheme(darkTheme = true) {
-        Surface(modifier = Modifier.fillMaxSize(), color = Color.Black) {
-            CalculatorApp(
-                viewModel = remember { CalculatorViewModel() },
-                layoutType = LayoutType.COVER,
-                isLandscape = false,
-                onOpenSettings = {},
-                onOpenConverter = {})
-        }
     }
 }

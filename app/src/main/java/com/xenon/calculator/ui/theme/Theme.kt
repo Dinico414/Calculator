@@ -110,22 +110,8 @@ fun CalculatorTheme(
             val window = (view.context as Activity).window
             WindowCompat.setDecorFitsSystemWindows(window, false)
 
-            // The deprecated properties are no longer needed.
-            // window.statusBarColor = Color.Transparent.toArgb()
-            // window.navigationBarColor = Color.Transparent.toArgb()
-
-            // It's good practice to set the system bar colors to transparent
-            // when using edge-to-edge. However, often the Material3 components
-            // handle drawing appropriate scrims if needed.
-            // If you still want to explicitly set them to transparent:
-            // window.statusBarColor = Color.Transparent.toArgb() // For API < 23 or if not fully transparent by default
-            // window.navigationBarColor = Color.Transparent.toArgb() // For API < 26 or if not fully transparent by default
-
-
             val insetsController = WindowCompat.getInsetsController(window, view)
-            // Set status bar icon colors (light/dark)
             insetsController.isAppearanceLightStatusBars = !darkTheme
-            // Set navigation bar icon colors (light/dark)
             insetsController.isAppearanceLightNavigationBars = !darkTheme
         }
     }

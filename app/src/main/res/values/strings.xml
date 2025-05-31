@@ -21,4 +21,6 @@
     <string name="converter_type_weight">Weight</string>
     <string name="converter_type_temperature">Temperature</string>
     <string name="converter_type_currency">Currency</string>
+    <string name="switch_units_description">Switch Units</string>
+    <string name="navigate_back_description">Back Action</string>
 </resources>

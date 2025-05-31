@@ -12,23 +12,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,18 +33,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
 import com.xenon.calculator.ui.values.ExtraLargePadding
 import com.xenon.calculator.ui.values.LargePadding
-import com.xenon.calculator.ui.values.LargeSpacing
 import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.ui.values.LargerSpacing
-import com.xenon.calculator.ui.values.MediumCornerRadius
 import com.xenon.calculator.ui.values.MediumPadding
 import com.xenon.calculator.viewmodel.SettingsViewModel
 import com.xenon.calculator.viewmodel.ThemeSetting
@@ -86,29 +80,31 @@ fun CoverSettings(
         viewModel.applyCoverTheme(containerSize)
     }
 
-    Scaffold(
-        containerColor = Color.Black, topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Settings", color = Color.White) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Navigate back",
-                            tint = Color.White
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color.Black,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
-                )
+    CollapsingAppBarLayout(
+        title = { fontSize, textColor ->
+            Text(
+                "Settings",
+                fontSize = fontSize,
+                color = textColor
             )
-        }) { paddingValues ->
+        },
+        navigationIcon = {
+            IconButton(onClick = onNavigateBack) {
+                Icon(
+                    Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Navigate back"
+                )
+            }
+        },
+        expandable = false,
+        expandedContainerColor = Color.Black,
+        collapsedContainerColor = Color.Black,
+        collapsedTextColor = Color.White,
+        navigationIconContentColor = Color.White
+    ) { paddingValuesFromAppBar ->
         Column(
             modifier = Modifier
-                .padding(paddingValues)
+                .padding(paddingValuesFromAppBar)
                 .verticalScroll(rememberScrollState())
                 .padding(vertical = MediumPadding)
                 .fillMaxWidth()
@@ -162,10 +158,11 @@ fun CoverSettings(
             }
 
             if (showCoverSelectionDialog) {
-                CoverCoverDisplaySelectionDialog (
-                    onConfirm = { viewModel.saveCoverDisplayMetrics(containerSize) },
-                    onDismiss = { viewModel.dismissCoverThemeDialog() }
-                )
+                CoverCoverDisplaySelectionDialog(onConfirm = {
+                    viewModel.saveCoverDisplayMetrics(
+                        containerSize
+                    )
+                }, onDismiss = { viewModel.dismissCoverThemeDialog() })
             }
 
             if (showClearDataDialog) {
@@ -243,8 +240,7 @@ fun CoverSwitchTile(
         }
         VerticalDivider()
         Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange
+            checked = checked, onCheckedChange = onCheckedChange
         )
     }
 }
@@ -338,8 +334,7 @@ fun CoverCoverDisplaySelectionDialog(
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
-        }
-    )
+        })
 }
 
 @Composable

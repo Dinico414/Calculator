@@ -1,6 +1,6 @@
 package com.xenon.calculator.ui.layouts.converter
 
-
+// Remove if not used: import androidx.compose.material.icons.filled.Info
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -16,16 +16,13 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,14 +37,14 @@ import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.xenon.calculator.R
-import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
+import com.xenon.calculator.ui.res.ActivityScreen
 import com.xenon.calculator.ui.res.ConverterTypeDropdown
 import com.xenon.calculator.ui.res.InputGroup
 import com.xenon.calculator.ui.res.XenonTextField
 import com.xenon.calculator.ui.values.IconSizeLarge
-import com.xenon.calculator.ui.values.LargeCornerRadius
 import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.UnitDropdown
@@ -91,43 +88,38 @@ fun LandscapeCompactConverter(
         label = "IconRotation"
     )
 
-
-    CollapsingAppBarLayout (
+    ActivityScreen(
         title = { fontSize, color ->
-            Text(stringResource(id = R.string.converter), fontSize = fontSize, color = color)
+            Text(
+                text = stringResource(id = R.string.converter), fontSize = fontSize, color = color
+            )
         },
-        navigationIcon = {
-            onNavigateBack?.let {
-                IconButton(onClick = it) {
+        navigationIcon = if (onNavigateBack != null) {
+            {
+                IconButton(onClick = onNavigateBack) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Navigate back",
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.navigate_back_description)
                     )
                 }
             }
+        } else {
+            null
         },
-        expandable = false
-    ) { contentPadding ->
-
-        Column(
-            modifier = Modifier
-                .padding(contentPadding)
-                .fillMaxSize()
-                .hazeSource(hazeState)
-                .padding(horizontal = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding() + LargePadding
-                )
-        ) {
+        appBarActions = {},
+        isAppBarCollapsible = false,
+        contentModifier = Modifier.hazeSource(hazeState),
+        content = { _ ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(topStart = LargeCornerRadius, topEnd = LargeCornerRadius))
-                    .background(colorScheme.surfaceContainer)
                     .verticalScroll(rememberScrollState())
                     .padding(
                         start = LargePadding,
                         end = LargePadding,
                         top = LargePadding,
-                        bottom = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding() + LargePadding
+                        bottom = WindowInsets.safeDrawing.asPaddingValues()
+                            .calculateBottomPadding() + LargePadding
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(LargerSpacing)
@@ -196,24 +188,21 @@ fun LandscapeCompactConverter(
                                 viewModel.onUnitsSwitch()
                                 accumulatedRotation += 180f
                             },
-
-
                             modifier = Modifier
                                 .width(64.dp)
                                 .clip(CircleShape)
-                                .background(colorScheme.tertiary)
+                                .background(MaterialTheme.colorScheme.tertiary)
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.swap),
-                                contentDescription = "Switch units",
-                                tint = colorScheme.onTertiary,
+                                contentDescription = stringResource(R.string.switch_units_description),
+                                tint = MaterialTheme.colorScheme.onTertiary,
                                 modifier = Modifier
                                     .rotate(rotationAngle)
                                     .width(IconSizeLarge)
                                     .height(IconSizeLarge)
                             )
                         }
-
 
                         InputGroup(modifier = Modifier.weight(1f)) {
                             UnitDropdown(
@@ -264,13 +253,14 @@ fun LandscapeCompactConverter(
 
                     val spacingPx = spacing.toPx().roundToInt()
 
-                    val iconButtonFixedWidth =
-                        iconButtonMeasurable.maxIntrinsicWidth(constraints.maxHeight)
+                    val iconButtonTargetWidth = 64.dp.toPx().roundToInt()
+
                     val availableWidthForGroups =
-                        constraints.maxWidth - iconButtonFixedWidth - (2 * spacingPx)
+                        (constraints.maxWidth - iconButtonTargetWidth - (2 * spacingPx)).coerceAtLeast(
+                            0
+                        )
                     val groupWidth =
                         if (availableWidthForGroups > 0) availableWidthForGroups / 2 else 0
-
 
                     val group1Placeable = group1Measurable.measure(
                         constraints.copy(minWidth = groupWidth, maxWidth = groupWidth)
@@ -279,22 +269,30 @@ fun LandscapeCompactConverter(
                         constraints.copy(minWidth = groupWidth, maxWidth = groupWidth)
                     )
 
-                    val referenceHeight = maxOf(group1Placeable.height, group2Placeable.height)
-                    val iconButtonTargetHeight = (referenceHeight * 0.5f).roundToInt()
+                    val referenceHeightForIcon =
+                        kotlin.math.max(group1Placeable.height, group2Placeable.height)
+                    val iconButtonMinIntrinsicHeight =
+                        iconButtonMeasurable.minIntrinsicHeight(iconButtonTargetWidth)
+                    val iconButtonTargetHeight = (referenceHeightForIcon * 0.5f).roundToInt()
+                        .coerceAtLeast(iconButtonMinIntrinsicHeight)
+                        .coerceAtMost(referenceHeightForIcon)
+
 
                     val iconButtonPlaceable = iconButtonMeasurable.measure(
-                        constraints.copy(
+                        Constraints(
+                            minWidth = iconButtonTargetWidth,
+                            maxWidth = iconButtonTargetWidth,
                             minHeight = iconButtonTargetHeight,
-                            maxHeight = iconButtonTargetHeight,
-                            minWidth = 0
+                            maxHeight = iconButtonTargetHeight
                         )
                     )
-
                     val totalWidth =
                         group1Placeable.width + spacingPx + iconButtonPlaceable.width + spacingPx + group2Placeable.width
-                    val maxHeight = maxOf(
-                        group1Placeable.height, iconButtonPlaceable.height, group2Placeable.height
+                    val maxHeight = kotlin.math.max(
+                        group1Placeable.height,
+                        kotlin.math.max(iconButtonPlaceable.height, group2Placeable.height)
                     )
+
 
                     layout(totalWidth, maxHeight) {
                         var currentX = 0
@@ -315,17 +313,18 @@ fun LandscapeCompactConverter(
                 }
             }
         }
-    }
+        // dialogs = { }
+    )
 }
 
 @Composable
-private fun fromUnitLabel(type: ConverterType): String {
+internal fun fromUnitLabel(type: ConverterType): String {
     val typeName = stringResource(id = type.displayNameResId)
     return stringResource(id = R.string.label_from, typeName.lowercase())
 }
 
 @Composable
-private fun toUnitLabel(type: ConverterType): String {
+internal fun toUnitLabel(type: ConverterType): String {
     val typeName = stringResource(id = type.displayNameResId)
     return stringResource(id = R.string.label_to, typeName.lowercase())
 }

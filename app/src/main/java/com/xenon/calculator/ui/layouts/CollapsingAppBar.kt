@@ -3,13 +3,14 @@ package com.xenon.calculator.ui.layouts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets // Import
-import androidx.compose.foundation.layout.WindowInsetsSides // Import
-import androidx.compose.foundation.layout.asPaddingValues // Import
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.only // Import
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing // Import
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
@@ -40,12 +41,14 @@ fun CollapsingAppBarLayout(
     collapsedHeight: Dp = 54.dp,
     title: @Composable (fontSize: TextUnit, color: Color) -> Unit = { _, _ -> },
     navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
     expandable: Boolean = true,
     expandedTextColor: Color = MaterialTheme.colorScheme.primary,
     collapsedTextColor: Color = MaterialTheme.colorScheme.onBackground,
     expandedContainerColor: Color = MaterialTheme.colorScheme.background,
     collapsedContainerColor: Color = MaterialTheme.colorScheme.background,
     navigationIconContentColor: Color = MaterialTheme.colorScheme.onBackground,
+    actionIconContentColor: Color = MaterialTheme.colorScheme.onBackground,
     content: @Composable (paddingValues: PaddingValues) -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
@@ -58,7 +61,11 @@ fun CollapsingAppBarLayout(
         modifier = modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .background(MaterialTheme.colorScheme.background)
-            .padding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal).asPaddingValues()),
+            .padding(
+                WindowInsets.safeDrawing.only(
+                    WindowInsetsSides.Horizontal
+                ).asPaddingValues()
+            ),
         topBar = {
             LargeTopAppBar(
                 title = {},
@@ -69,7 +76,7 @@ fun CollapsingAppBarLayout(
                     scrolledContainerColor = collapsedContainerColor,
                     navigationIconContentColor = navigationIconContentColor,
                     titleContentColor = Color.Transparent,
-                    actionIconContentColor = navigationIconContentColor,
+                    actionIconContentColor = actionIconContentColor,
                 ),
                 scrollBehavior = scrollBehavior
             )
@@ -106,12 +113,13 @@ fun CollapsingAppBarLayout(
                         navigationIcon()
                     }
                 },
+                actions = actions,
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.Transparent,
                     scrolledContainerColor = Color.Transparent,
                     navigationIconContentColor = navigationIconContentColor,
                     titleContentColor = interpolatedTextColor,
-                    actionIconContentColor = navigationIconContentColor
+                    actionIconContentColor = actionIconContentColor
                 ),
             )
         }

@@ -46,7 +46,6 @@ import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.ui.values.MediumSpacing
 import com.xenon.calculator.ui.values.UnitDropdown
 import com.xenon.calculator.viewmodel.ConverterViewModel
-import com.xenon.calculator.viewmodel.classes.ConverterType
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
@@ -310,17 +309,4 @@ fun CoverConverter(
             }
         }
     }
-}
-
-
-@Composable
-private fun fromUnitLabel(type: ConverterType): String {
-    val typeName = stringResource(id = type.displayNameResId)
-    return stringResource(id = R.string.label_from, typeName.lowercase())
-}
-
-@Composable
-private fun toUnitLabel(type: ConverterType): String {
-    val typeName = stringResource(id = type.displayNameResId)
-    return stringResource(id = R.string.label_to, typeName.lowercase())
 }
