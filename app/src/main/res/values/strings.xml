@@ -24,6 +24,6 @@
     <string name="switch_units_description">Switch Units</string>
     <string name="navigate_back_description">Back Action</string>
     <string name="confirm">Confirm</string>
-    <string name="cover_dialog_title">Is the current display the cover screen?</string>
-    <string name="cover_dialog_description">Will apply a custom more compact theme when on Cover Display.</string>
+    <string name="cover_dialog_title">Is this currently the cover screen?</string>
+    <string name="cover_dialog_description">This will apply a more compact layout when you are on the Cover Display.</string>
 </resources>

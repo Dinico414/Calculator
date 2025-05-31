@@ -22,4 +22,9 @@
     <string name="converter_type_weight">Gewicht</string>
     <string name="converter_type_temperature">Temperatur</string>
     <string name="converter_type_currency">Währung</string>
+    <string name="switch_units_description">Wechsel Einheiten</string>
+    <string name="navigate_back_description">Zurück Aktion</string>
+    <string name="confirm">Bestätigen</string>
+    <string name="cover_dialog_title">Ist dies aktuell der äußere Display?</string>
+    <string name="cover_dialog_description">Dies wird ein kompacteres Layout</string>
 </resources>
