@@ -42,11 +42,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.core.view.WindowCompat
-import androidx.window.core.ExperimentalWindowApi
 import com.xenon.calculator.ui.layouts.ButtonLayout
 import com.xenon.calculator.ui.layouts.CalculatorScreen
 import com.xenon.calculator.ui.theme.CalculatorTheme
@@ -73,8 +73,8 @@ class MainActivity : ComponentActivity() {
     private val calculatorViewModel: CalculatorViewModel by viewModels()
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
     private var activeThemeForMainActivity: Int = 2
+    private var coverEnabledState = false
 
-    @OptIn(ExperimentalWindowApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -88,9 +88,13 @@ class MainActivity : ComponentActivity() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             activeThemeForMainActivity = 2
         }
+        coverEnabledState = sharedPreferenceManager.coverThemeEnabled
 
         setContent {
-            ScreenEnvironment(themePreference = activeThemeForMainActivity) { layoutType, isLandscape ->
+            val containerSize = LocalWindowInfo.current.containerSize
+            val applyCoverTheme = sharedPreferenceManager.isCoverThemeApplied(containerSize)
+
+            ScreenEnvironment(activeThemeForMainActivity, applyCoverTheme) { layoutType, isLandscape ->
                 val isCoverScreen = layoutType == LayoutType.COVER
 
                 Surface(
@@ -146,6 +150,11 @@ class MainActivity : ComponentActivity() {
         val storedTheme = sharedPreferenceManager.theme
         if (activeThemeForMainActivity != storedTheme) {
             activeThemeForMainActivity = storedTheme
+            recreate()
+        }
+        val applyCoverTheme = sharedPreferenceManager.coverThemeEnabled
+        if (applyCoverTheme != coverEnabledState) {
+            coverEnabledState = applyCoverTheme
             recreate()
         }
     }

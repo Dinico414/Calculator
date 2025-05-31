@@ -2,14 +2,17 @@ package com.xenon.calculator.ui.layouts.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -22,9 +25,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -32,14 +37,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.xenon.calculator.ui.values.ExtraLargePadding
 import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.LargeSpacing
 import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.ui.values.LargerSpacing
+import com.xenon.calculator.ui.values.MediumCornerRadius
 import com.xenon.calculator.ui.values.MediumPadding
 import com.xenon.calculator.viewmodel.SettingsViewModel
 import com.xenon.calculator.viewmodel.ThemeSetting
@@ -58,6 +67,8 @@ fun CoverSettings(
     val dialogSelectedThemeIndex by viewModel.dialogPreviewThemeIndex.collectAsState()
     val currentLanguage by viewModel.currentLanguage.collectAsState()
     val showClearDataDialog by viewModel.showClearDataDialog.collectAsState()
+    val showCoverSelectionDialog by viewModel.showCoverSelectionDialog.collectAsState()
+    val coverThemeEnabled by viewModel.enableCoverTheme.collectAsState()
 
     val packageManager = context.packageManager
     val packageName = context.packageName
@@ -69,6 +80,11 @@ fun CoverSettings(
         }
     }
     val appVersion = packageInfo?.versionName ?: "N/A"
+
+    val containerSize = LocalWindowInfo.current.containerSize
+    val applyCoverTheme = remember(containerSize, coverThemeEnabled) {
+        viewModel.applyCoverTheme(containerSize)
+    }
 
     Scaffold(
         containerColor = Color.Black, topBar = {
@@ -104,6 +120,14 @@ fun CoverSettings(
                 onClick = { viewModel.onThemeSettingClicked() },
             )
 
+            CoverSwitchTile(
+                title = "Cover Screen Theme",
+                subtitle = "Select Cover Screen (${if (applyCoverTheme) "Active" else "Inactive"})",
+                checked = coverThemeEnabled,
+                onCheckedChange = { viewModel.setCoverThemeEnabled(!coverThemeEnabled) },
+                onClick = { viewModel.onCoverThemeClicked() },
+            )
+
             CoverSettingsGroupTile(
                 title = "Language",
                 subtitle = "Current: $currentLanguage",
@@ -135,6 +159,13 @@ fun CoverSettings(
                     },
                     onDismiss = { viewModel.dismissThemeDialog() },
                     onConfirm = { viewModel.applySelectedTheme() })
+            }
+
+            if (showCoverSelectionDialog) {
+                CoverCoverDisplaySelectionDialog (
+                    onConfirm = { viewModel.saveCoverDisplayMetrics(containerSize) },
+                    onDismiss = { viewModel.dismissCoverThemeDialog() }
+                )
             }
 
             if (showClearDataDialog) {
@@ -175,6 +206,46 @@ fun CoverSettingsGroupTile(
                 text = subtitle, style = MaterialTheme.typography.bodyMedium, color = Color.White
             )
         }
+    }
+}
+
+@Composable
+fun CoverSwitchTile(
+    title: String,
+    subtitle: String = "",
+    checked: Boolean = false,
+    onCheckedChange: ((enabled: Boolean) -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = LargePadding)
+            .background(Color.Black)
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable(onClick = onClick, role = Role.Button)
+                } else {
+                    Modifier
+                }
+            )
+            .padding(horizontal = LargerSpacing, vertical = ExtraLargePadding),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title, style = MaterialTheme.typography.titleMedium, color = Color.White
+            )
+            Text(
+                text = subtitle, style = MaterialTheme.typography.bodyMedium, color = Color.White
+            )
+        }
+        VerticalDivider()
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange
+        )
     }
 }
 
@@ -239,6 +310,36 @@ fun CoverThemeSelectionDialog(
                 Text("Cancel", color = Color.White)
             }
         })
+}
+
+@Composable
+fun CoverCoverDisplaySelectionDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        containerColor = Color.Black,
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Is the current display the cover screen?") },
+        text = {
+            val containerSize = LocalWindowInfo.current.containerSize
+            Column(Modifier.selectableGroup()) {
+                Text("Will apply a custom more compact theme when on Cover Display.")
+                Spacer(modifier = Modifier.height(2.dp))
+                Text("Screen size: ${containerSize.width}x${containerSize.height} px")
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text("Yes")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
 }
 
 @Composable

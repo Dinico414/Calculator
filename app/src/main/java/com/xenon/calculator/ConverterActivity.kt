@@ -4,6 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import com.xenon.calculator.ui.layouts.ConverterLayout
@@ -29,7 +33,10 @@ class ConverterActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            ScreenEnvironment(themePreference = activeThemeForConverterActivity) { layoutType, isLandscape ->
+            val containerSize = LocalWindowInfo.current.containerSize
+            val applyCoverTheme = sharedPreferenceManager.isCoverThemeApplied(containerSize)
+
+            ScreenEnvironment(activeThemeForConverterActivity, applyCoverTheme) { layoutType, isLandscape ->
                 ConverterLayout(
                     onNavigateBack = { finish() },
                     viewModel = converterViewModel,

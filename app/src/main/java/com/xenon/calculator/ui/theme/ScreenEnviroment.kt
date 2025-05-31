@@ -18,6 +18,7 @@ import com.xenon.calculator.viewmodel.LayoutType
 @Composable
 fun ScreenEnvironment(
     themePreference: Int,
+    coverTheme: Boolean,
     content: @Composable (layoutType: LayoutType, isLandscape: Boolean) -> Unit
 ) {
     val configuration = LocalConfiguration.current
@@ -34,7 +35,7 @@ fun ScreenEnvironment(
         val dimensionForLayout = if (isLandscape && !isTargetWidthMet) screenHeight else screenWidth
 
         val layoutType = when {
-            isTargetWidthMet -> LayoutType.COVER
+            isTargetWidthMet || coverTheme -> LayoutType.COVER
             dimensionForLayout < 320.dp -> LayoutType.SMALL
             dimensionForLayout < 600.dp -> LayoutType.COMPACT
             dimensionForLayout < 840.dp -> LayoutType.MEDIUM

@@ -6,7 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.ui.unit.IntSize
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
@@ -49,6 +51,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     private val _showClearDataDialog = MutableStateFlow(false)
     val showClearDataDialog: StateFlow<Boolean> = _showClearDataDialog.asStateFlow()
+
+    private val _showCoverSelectionDialog = MutableStateFlow(false)
+    val showCoverSelectionDialog: StateFlow<Boolean> = _showCoverSelectionDialog.asStateFlow()
+
+    private val _enableCoverTheme = MutableStateFlow(sharedPreferenceManager.coverThemeEnabled)
+    val enableCoverTheme: StateFlow<Boolean> = _enableCoverTheme.asStateFlow()
 
     // --- NEW: Flow for the currently active theme's night mode flag ---
     // This will drive the actual theme application in Compose
@@ -127,6 +135,29 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         val index = sharedPreferenceManager.theme
         _persistedThemeIndexFlow.value = index
         _dialogPreviewThemeIndex.value = index
+    }
+
+    fun setCoverThemeEnabled(enabled: Boolean) {
+        _enableCoverTheme.value = enabled
+        sharedPreferenceManager.coverThemeEnabled = enabled
+    }
+
+    fun onCoverThemeClicked() {
+        _showCoverSelectionDialog.value = true
+    }
+
+    fun dismissCoverThemeDialog() {
+        _showCoverSelectionDialog.value = false
+    }
+
+    fun saveCoverDisplayMetrics(displaySize: IntSize) {
+        sharedPreferenceManager.coverDisplaySize = displaySize
+        setCoverThemeEnabled(true)
+        _showCoverSelectionDialog.value = false
+    }
+
+    fun applyCoverTheme(displaySize: IntSize): Boolean {
+        return sharedPreferenceManager.isCoverThemeApplied(displaySize)
     }
 
     fun onClearDataClicked() {

@@ -2,6 +2,7 @@ package com.xenon.calculator.ui.layouts.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,8 +26,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
@@ -63,6 +67,8 @@ fun CompactSettings(
     val dialogSelectedThemeIndex by viewModel.dialogPreviewThemeIndex.collectAsState()
     val currentLanguage by viewModel.currentLanguage.collectAsState()
     val showClearDataDialog by viewModel.showClearDataDialog.collectAsState()
+    val showCoverSelectionDialog by viewModel.showCoverSelectionDialog.collectAsState()
+    val coverThemeEnabled by viewModel.enableCoverTheme.collectAsState()
 
     val packageManager = context.packageManager
     val packageName = context.packageName
@@ -74,6 +80,11 @@ fun CompactSettings(
         }
     }
     val appVersion = packageInfo?.versionName ?: "N/A"
+
+    val containerSize = LocalWindowInfo.current.containerSize
+    val applyCoverTheme = remember(containerSize, coverThemeEnabled) {
+        viewModel.applyCoverTheme(containerSize)
+    }
 
     CollapsingAppBarLayout(
         title = { fontSize, color ->
@@ -115,6 +126,15 @@ fun CompactSettings(
                     )
                     Spacer(modifier = Modifier.height(LargeSpacing))
 
+                    SettingsSwitchTile(
+                        title = "Cover Screen Theme",
+                        subtitle = "Select Cover Screen (${if (applyCoverTheme) "Active" else "Inactive"})",
+                        checked = coverThemeEnabled,
+                        onCheckedChange = { viewModel.setCoverThemeEnabled(!coverThemeEnabled) },
+                        onClick = { viewModel.onCoverThemeClicked() },
+                    )
+                    Spacer(modifier = Modifier.height(LargeSpacing))
+
                     SettingsGroupTile(
                         title = "Language",
                         subtitle = "Current: $currentLanguage",
@@ -150,6 +170,13 @@ fun CompactSettings(
                 },
                 onDismiss = { viewModel.dismissThemeDialog() },
                 onConfirm = { viewModel.applySelectedTheme() }
+            )
+        }
+
+        if (showCoverSelectionDialog) {
+            CoverDisplaySelectionDialog(
+                onConfirm = { viewModel.saveCoverDisplayMetrics(containerSize) },
+                onDismiss = { viewModel.dismissCoverThemeDialog() }
             )
         }
 
@@ -200,6 +227,48 @@ fun SettingsGroupTile(
 }
 
 @Composable
+fun SettingsSwitchTile(
+    title: String,
+    subtitle: String = "",
+    checked: Boolean = false,
+    onCheckedChange: ((enabled: Boolean) -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MediumCornerRadius))
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable(onClick = onClick, role = Role.Button)
+                } else {
+                    Modifier
+                }
+            )
+            .padding(horizontal = LargerPadding, vertical = ExtraLargePadding),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title, style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        VerticalDivider()
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange
+        )
+    }
+}
+
+@Composable
 fun ThemeSelectionDialog(
     themeOptions: Array<ThemeSetting>,
     currentThemeIndex: Int,
@@ -241,6 +310,35 @@ fun ThemeSelectionDialog(
         confirmButton = {
             TextButton(onClick = onConfirm) {
                 Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
+@Composable
+fun CoverDisplaySelectionDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Is the current display the cover screen?") },
+        text = {
+            val containerSize = LocalWindowInfo.current.containerSize
+            Column(Modifier.selectableGroup()) {
+                Text("Will apply a custom more compact theme when on Cover Display.")
+                Spacer(modifier = Modifier.height(2.dp))
+                Text("Screen size: ${containerSize.width}x${containerSize.height} px")
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text("Yes")
             }
         },
         dismissButton = {
