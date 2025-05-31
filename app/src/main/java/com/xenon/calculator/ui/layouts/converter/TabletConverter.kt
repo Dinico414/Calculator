@@ -19,7 +19,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,11 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.xenon.calculator.R
-import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
+import com.xenon.calculator.ui.res.ActivityScreen
 import com.xenon.calculator.ui.res.ConverterTypeDropdown
 import com.xenon.calculator.ui.res.InputGroup
 import com.xenon.calculator.ui.res.XenonTextField
@@ -56,6 +58,8 @@ import kotlin.math.roundToInt
 fun TabletConverter(
     onNavigateBack: (() -> Unit)? = null, viewModel: ConverterViewModel
 ) {
+    LocalContext.current
+
     val hazeState = remember { HazeState() }
 
     val selectedType by viewModel.selectedConverterType
@@ -82,33 +86,42 @@ fun TabletConverter(
         label = "IconRotation"
     )
 
-    CollapsingAppBarLayout(title = { fontSize, color ->
-        Text(stringResource(id = R.string.converter), fontSize = fontSize, color = color)
-    }, navigationIcon = {
-        onNavigateBack?.let {
-            IconButton(onClick = it) {
+    ActivityScreen(
+        title = { fontSize, color ->
+        Text(
+            stringResource(id = R.string.converter), fontSize = fontSize, color = color
+        )
+    }, navigationIcon = if (onNavigateBack != null) {
+        {
+            IconButton(onClick = onNavigateBack) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Navigate back"
+                    contentDescription = stringResource(R.string.navigate_back_description)
                 )
             }
         }
-    }) { contentPadding ->
+    } else {
+        null
+    }, appBarActions = {
 
-        Column(
-            modifier = Modifier
-                .padding(contentPadding)
-                .fillMaxSize()
-                .hazeSource(hazeState)
-                .padding(horizontal = LargerPadding)
-        ) {
+    },
+
+        isAppBarCollapsible = true,
+
+
+        contentModifier = Modifier
+            .hazeSource(hazeState)
+
+            .padding(horizontal = LargerPadding), content = { _ ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(LargeCornerRadius))
-                    .background(colorScheme.surfaceContainer)
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
                     .verticalScroll(rememberScrollState())
-                    .padding(vertical = LargePadding, horizontal = LargePadding),
+                    .padding(
+                        horizontal = LargePadding, vertical = LargePadding
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(LargerSpacing)
             ) {
@@ -119,7 +132,6 @@ fun TabletConverter(
                         }, hazeState = hazeState
                     )
                 }
-
 
                 val spacing = LargerSpacing
                 SubcomposeLayout(modifier = Modifier.fillMaxWidth()) { constraints ->
@@ -168,7 +180,7 @@ fun TabletConverter(
                                     viewModel.onValueChanged(
                                         newValue, ConverterViewModel.EditedField.FIELD1
                                     )
-                                }, label = stringResource(id = R.string.value_2)
+                                }, label = stringResource(id = R.string.value_1)
                             )
                         }
 
@@ -180,12 +192,12 @@ fun TabletConverter(
                             modifier = Modifier
                                 .width(64.dp)
                                 .clip(CircleShape)
-                                .background(colorScheme.tertiary)
+                                .background(MaterialTheme.colorScheme.tertiary)
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.swap),
-                                contentDescription = "Switch units",
-                                tint = colorScheme.onTertiary,
+                                contentDescription = stringResource(R.string.switch_units_description),
+                                tint = MaterialTheme.colorScheme.onTertiary,
                                 modifier = Modifier
                                     .rotate(rotationAngle)
                                     .width(IconSizeLarge)
@@ -242,13 +254,14 @@ fun TabletConverter(
 
                     val spacingPx = spacing.toPx().roundToInt()
 
-                    val iconButtonFixedWidth =
-                        iconButtonMeasurable.maxIntrinsicWidth(constraints.maxHeight)
+                    val iconButtonTargetWidth = 64.dp.toPx().roundToInt()
+
                     val availableWidthForGroups =
-                        constraints.maxWidth - iconButtonFixedWidth - (2 * spacingPx)
+                        (constraints.maxWidth - iconButtonTargetWidth - (2 * spacingPx)).coerceAtLeast(
+                            0
+                        )
                     val groupWidth =
                         if (availableWidthForGroups > 0) availableWidthForGroups / 2 else 0
-
 
                     val group1Placeable = group1Measurable.measure(
                         constraints.copy(minWidth = groupWidth, maxWidth = groupWidth)
@@ -257,21 +270,29 @@ fun TabletConverter(
                         constraints.copy(minWidth = groupWidth, maxWidth = groupWidth)
                     )
 
-                    val referenceHeight = maxOf(group1Placeable.height, group2Placeable.height)
+                    val referenceHeight =
+                        kotlin.math.max(group1Placeable.height, group2Placeable.height)
+
+                    val iconButtonMinIntrinsicHeight =
+                        iconButtonMeasurable.minIntrinsicHeight(iconButtonTargetWidth)
                     val iconButtonTargetHeight = (referenceHeight * 0.5f).roundToInt()
+                        .coerceAtLeast(iconButtonMinIntrinsicHeight).coerceAtMost(referenceHeight)
+
 
                     val iconButtonPlaceable = iconButtonMeasurable.measure(
-                        constraints.copy(
+                        Constraints(
+                            minWidth = iconButtonTargetWidth,
+                            maxWidth = iconButtonTargetWidth,
                             minHeight = iconButtonTargetHeight,
-                            maxHeight = iconButtonTargetHeight,
-                            minWidth = 0
+                            maxHeight = iconButtonTargetHeight
                         )
                     )
 
                     val totalWidth =
                         group1Placeable.width + spacingPx + iconButtonPlaceable.width + spacingPx + group2Placeable.width
-                    val maxHeight = maxOf(
-                        group1Placeable.height, iconButtonPlaceable.height, group2Placeable.height
+                    val maxHeight = kotlin.math.max(
+                        group1Placeable.height,
+                        kotlin.math.max(iconButtonPlaceable.height, group2Placeable.height)
                     )
 
                     layout(totalWidth, maxHeight) {
@@ -293,5 +314,6 @@ fun TabletConverter(
                 }
             }
         }
-    }
+        // dialogs = { }
+    )
 }

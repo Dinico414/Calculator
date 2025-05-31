@@ -15,7 +15,7 @@
     <string name="value_1">Value 1</string>
     <string name="value_2">Value 2</string>
     <string name="converter_type">Converter Type</string>
-    <string name="converter_type_volume">Volumen</string>
+    <string name="converter_type_volume">Volume</string>
     <string name="converter_type_area">Area</string>
     <string name="converter_type_length">Length</string>
     <string name="converter_type_weight">Weight</string>
@@ -23,4 +23,7 @@
     <string name="converter_type_currency">Currency</string>
     <string name="switch_units_description">Switch Units</string>
     <string name="navigate_back_description">Back Action</string>
+    <string name="confirm">Confirm</string>
+    <string name="cover_dialog_title">Is the current display the cover screen?</string>
+    <string name="cover_dialog_description">Will apply a custom more compact theme when on Cover Display.</string>
 </resources>

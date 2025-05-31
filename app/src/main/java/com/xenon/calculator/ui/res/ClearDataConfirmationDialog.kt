@@ -4,6 +4,9 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.xenon.calculator.R
 
 @Composable
 fun ClearDataConfirmationDialog(
@@ -11,17 +14,24 @@ fun ClearDataConfirmationDialog(
     onDismiss: () -> Unit,
 ) {
     AlertDialog(
+        containerColor = Color.Black,
         onDismissRequest = onDismiss,
-        title = { Text(text = "Clear Data") },
-        text = { Text(text = "Are you sure you want to clear all app data? This action cannot be undone and will restart the app.") },
+        title = { Text(text = stringResource(R.string.clear_data_dialog), color = Color.White) },
+        text = {
+            Text(
+                text = stringResource(R.string.clear_data_dialog),
+                color = Color.White
+            )
+        },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text("Confirm")
+                Text(stringResource(R.string.confirm), color = Color.White)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel), color = Color.White)
             }
-        })
+        }
+    )
 }

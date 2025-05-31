@@ -1,30 +1,26 @@
 package com.xenon.calculator.ui.layouts.settings
 
-import androidx.compose.foundation.background
+// Import WindowInsets and asPaddingValues if needed, ActivityScreen may handle some aspects
+// Import SwitchDefaults if you need to customize Switch colors for dark theme
+// Replace CollapsingAppBarLayout with ActivityScreen
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,16 +32,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
+import com.xenon.calculator.R
+import com.xenon.calculator.ui.res.ActivityScreen
+import com.xenon.calculator.ui.res.ClearDataConfirmationDialog
+import com.xenon.calculator.ui.res.CoverDisplaySelectionDialog
+import com.xenon.calculator.ui.res.ThemeSelectionDialog
 import com.xenon.calculator.ui.values.ExtraLargePadding
 import com.xenon.calculator.ui.values.LargePadding
-import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.MediumPadding
 import com.xenon.calculator.viewmodel.SettingsViewModel
-import com.xenon.calculator.viewmodel.ThemeSetting
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,98 +79,101 @@ fun CoverSettings(
         viewModel.applyCoverTheme(containerSize)
     }
 
-    CollapsingAppBarLayout(
-        title = { fontSize, textColor ->
-            Text(
-                "Settings",
-                fontSize = fontSize,
-                color = textColor
-            )
+    ActivityScreen(
+        title = { _, _ -> // FontSize and color are overridden by appBarTitleContentColor
+            Text("Settings") // Direct string, or use stringResource(R.string.settings_title)
         },
         navigationIcon = {
             IconButton(onClick = onNavigateBack) {
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Navigate back"
+                    contentDescription = stringResource(R.string.navigate_back_description) // Use string resource
                 )
             }
         },
-        expandable = false,
-        expandedContainerColor = Color.Black,
-        collapsedContainerColor = Color.Black,
-        collapsedTextColor = Color.White,
-        navigationIconContentColor = Color.White
-    ) { paddingValuesFromAppBar ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValuesFromAppBar)
-                .verticalScroll(rememberScrollState())
-                .padding(vertical = MediumPadding)
-                .fillMaxWidth()
-                .background(Color.Black)
-        ) {
-            CoverSettingsGroupTile(
-                title = "Theme",
-                subtitle = "Current: $currentThemeTitle",
-                onClick = { viewModel.onThemeSettingClicked() },
-            )
+        appBarActions = {
+        },
+        isAppBarCollapsible = false,
+        appBarCollapsedContainerColor = Color.Black,
 
-            CoverSwitchTile(
-                title = "Cover Screen Theme",
-                subtitle = "Select Cover Screen (${if (applyCoverTheme) "Active" else "Inactive"})",
-                checked = coverThemeEnabled,
-                onCheckedChange = { viewModel.setCoverThemeEnabled(!coverThemeEnabled) },
-                onClick = { viewModel.onCoverThemeClicked() },
-            )
 
-            CoverSettingsGroupTile(
-                title = "Language",
-                subtitle = "Current: $currentLanguage",
-                onClick = { viewModel.openLanguageSettings(context) },
-            )
-            LaunchedEffect(Unit) {
-                viewModel.updateCurrentLanguage()
+        contentModifier = Modifier
+        ,
+        content = { _ ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+
+                    .verticalScroll(rememberScrollState())
+                    .padding(vertical = MediumPadding)
+
+            ) {
+                CoverSettingsGroupTile(
+                    title = "Theme",
+                    subtitle = "Current: $currentThemeTitle",
+                    onClick = { viewModel.onThemeSettingClicked() },
+                )
+
+                CoverSwitchTile(
+                    title = "Cover Screen Theme",
+                    subtitle = "Select Cover Screen (${if (applyCoverTheme) "Active" else "Inactive"})",
+                    checked = coverThemeEnabled,
+                    onCheckedChange = { viewModel.setCoverThemeEnabled(!coverThemeEnabled) },
+                    onClick = { viewModel.onCoverThemeClicked() },
+                )
+
+                CoverSettingsGroupTile(
+                    title = "Language",
+                    subtitle = "Current: $currentLanguage",
+                    onClick = { viewModel.openLanguageSettings(context) },
+                )
+                LaunchedEffect(Unit) {
+                    viewModel.updateCurrentLanguage()
+                }
+
+                CoverSettingsGroupTile(
+                    title = "Data Management",
+                    subtitle = "Clear app data and cache",
+                    onClick = { viewModel.onClearDataClicked() },
+                )
+
+                CoverSettingsGroupTile(
+                    title = "Version",
+                    subtitle = "Version $appVersion",
+                    onClick = null,
+                )
             }
-
-            CoverSettingsGroupTile(
-                title = "Data Management",
-                subtitle = "Clear app data and cache",
-                onClick = { viewModel.onClearDataClicked() },
-            )
-
-            CoverSettingsGroupTile(
-                title = "Version",
-                subtitle = "Version $appVersion",
-                onClick = null,
-            )
-
-
+        },
+        dialogs = {
             if (showThemeDialog) {
-                CoverThemeSelectionDialog(
+                ThemeSelectionDialog(
                     themeOptions = themeOptions,
                     currentThemeIndex = dialogSelectedThemeIndex,
                     onThemeSelected = { index ->
                         viewModel.onThemeOptionSelectedInDialog(index)
                     },
                     onDismiss = { viewModel.dismissThemeDialog() },
-                    onConfirm = { viewModel.applySelectedTheme() })
+                    onConfirm = { viewModel.applySelectedTheme() }
+                )
             }
 
             if (showCoverSelectionDialog) {
-                CoverCoverDisplaySelectionDialog(onConfirm = {
-                    viewModel.saveCoverDisplayMetrics(
-                        containerSize
-                    )
-                }, onDismiss = { viewModel.dismissCoverThemeDialog() })
+                CoverDisplaySelectionDialog(
+                    onConfirm = {
+                        viewModel.saveCoverDisplayMetrics(containerSize)
+                    },
+                    onDismiss = { viewModel.dismissCoverThemeDialog() }
+                )
             }
 
             if (showClearDataDialog) {
-                CoverClearDataConfirmationDialog(
+                ClearDataConfirmationDialog(
                     onConfirm = { viewModel.confirmClearData() },
-                    onDismiss = { viewModel.dismissClearDataDialog() })
+                    onDismiss = { viewModel.dismissClearDataDialog() }
+                )
             }
         }
-    }
+    )
 }
 
 @Composable
@@ -183,8 +185,8 @@ fun CoverSettingsGroupTile(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = LargePadding)
-            .background(Color.Black)
+            .padding(horizontal = LargePadding) // Padding for the tile itself
+            // .background(Color.Black) // Background is handled by the parent Column/ActivityScreen
             .then(
                 if (onClick != null) {
                     Modifier.clickable(onClick = onClick, role = Role.Button)
@@ -192,15 +194,19 @@ fun CoverSettingsGroupTile(
                     Modifier
                 }
             )
-            .padding(horizontal = LargerSpacing, vertical = ExtraLargePadding),
+            .padding(horizontal = LargerSpacing, vertical = ExtraLargePadding), // Inner padding for content
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = title, style = MaterialTheme.typography.titleMedium, color = Color.White
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White // Explicitly white for cover theme
             )
             Text(
-                text = subtitle, style = MaterialTheme.typography.bodyMedium, color = Color.White
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White // Explicitly white for cover theme
             )
         }
     }
@@ -218,7 +224,6 @@ fun CoverSwitchTile(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = LargePadding)
-            .background(Color.Black)
             .then(
                 if (onClick != null) {
                     Modifier.clickable(onClick = onClick, role = Role.Button)
@@ -232,134 +237,27 @@ fun CoverSwitchTile(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = title, style = MaterialTheme.typography.titleMedium, color = Color.White
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White
             )
             Text(
-                text = subtitle, style = MaterialTheme.typography.bodyMedium, color = Color.White
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White
             )
         }
         VerticalDivider()
         Switch(
-            checked = checked, onCheckedChange = onCheckedChange
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.colorScheme.primary,
+                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+            )
         )
     }
 }
 
-@Composable
-fun CoverThemeSelectionDialog(
-    themeOptions: Array<ThemeSetting>,
-    currentThemeIndex: Int,
-    onThemeSelected: (Int) -> Unit,
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-) {
-    AlertDialog(
-        containerColor = Color.Black,
-        onDismissRequest = onDismiss,
-        title = { Text(text = "Select Theme", color = Color.White) },
-        text = {
-            Column(
-                Modifier
-                    .selectableGroup()
-                    .background(Color.Black)
-            ) {
-                themeOptions.forEachIndexed { index, theme ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(56.dp)
-                            .selectable(
-                                selected = (index == currentThemeIndex),
-                                onClick = { onThemeSelected(index) },
-                                role = Role.RadioButton
-                            )
-                            .padding(horizontal = LargerPadding),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = (index == currentThemeIndex),
-                            onClick = null,
-                            colors = RadioButtonDefaults.colors(
-                                selectedColor = Color.White,
-                                unselectedColor = Color.Gray,
-                                disabledSelectedColor = Color.DarkGray,
-                                disabledUnselectedColor = Color.DarkGray
-                            )
-                        )
-                        Text(
-                            text = theme.title,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(start = LargerPadding),
-                            color = Color.White
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text("OK", color = Color.White)
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel", color = Color.White)
-            }
-        })
-}
-
-@Composable
-fun CoverCoverDisplaySelectionDialog(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    AlertDialog(
-        containerColor = Color.Black,
-        onDismissRequest = onDismiss,
-        title = { Text(text = "Is the current display the cover screen?") },
-        text = {
-            val containerSize = LocalWindowInfo.current.containerSize
-            Column(Modifier.selectableGroup()) {
-                Text("Will apply a custom more compact theme when on Cover Display.")
-                Spacer(modifier = Modifier.height(2.dp))
-                Text("Screen size: ${containerSize.width}x${containerSize.height} px")
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text("Yes")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        })
-}
-
-@Composable
-fun CoverClearDataConfirmationDialog(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    AlertDialog(
-        containerColor = Color.Black,
-        onDismissRequest = onDismiss,
-        title = { Text(text = "Clear Data", color = Color.White) },
-        text = {
-            Text(
-                text = "Are you sure you want to clear all app data? This action cannot be undone and will restart the app.",
-                color = Color.White
-            )
-        },
-        confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text("Confirm", color = Color.White)
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel", color = Color.White)
-            }
-        })
-}

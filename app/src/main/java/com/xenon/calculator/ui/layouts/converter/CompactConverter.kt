@@ -1,6 +1,5 @@
 package com.xenon.calculator.ui.layouts.converter
 
-
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -22,7 +21,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,10 +32,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.xenon.calculator.R
-import com.xenon.calculator.ui.layouts.CollapsingAppBarLayout
+import com.xenon.calculator.ui.res.ActivityScreen
 import com.xenon.calculator.ui.res.ConverterTypeDropdown
 import com.xenon.calculator.ui.res.InputGroup
 import com.xenon.calculator.ui.res.XenonTextField
@@ -53,8 +53,11 @@ import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
 fun CompactConverter(
-    onNavigateBack: (() -> Unit)? = null, viewModel: ConverterViewModel
+    onNavigateBack: (() -> Unit)? = null,
+    viewModel: ConverterViewModel
 ) {
+    LocalContext.current
+
     val hazeState = remember { HazeState() }
 
     val selectedType by viewModel.selectedConverterType
@@ -81,45 +84,56 @@ fun CompactConverter(
         label = "IconRotation"
     )
 
-    CollapsingAppBarLayout(title = { fontSize, color ->
-        Text(stringResource(id = R.string.converter), fontSize = fontSize, color = color)
-    }, navigationIcon = {
-        onNavigateBack?.let {
-            IconButton(onClick = it) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Navigate back"
-                )
+    ActivityScreen(
+        title = { fontSize, color ->
+            Text(
+                stringResource(id = R.string.converter),
+                fontSize = fontSize,
+                color = color
+            )
+        },
+        navigationIcon = if (onNavigateBack != null) {
+            {
+                IconButton(onClick = onNavigateBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.navigate_back_description)
+                    )
+                }
             }
-        }
-    }) { contentPadding ->
+        } else {
+            null
+        },
+        appBarActions = {
+        },
 
-        Column(
-            modifier = Modifier
-                .padding(contentPadding)
-                .fillMaxSize()
-                .hazeSource(hazeState)
-        ) {
+        contentModifier = Modifier
+            .hazeSource(hazeState),
+        content = { _ ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(topStart = LargeCornerRadius, topEnd = LargeCornerRadius))
-                    .background(colorScheme.surfaceContainer)
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
                     .verticalScroll(rememberScrollState())
                     .padding(
                         start = LargePadding,
                         end = LargePadding,
                         top = LargePadding,
-                        bottom = WindowInsets.safeDrawing.asPaddingValues().calculateBottomPadding() + LargePadding
+                        bottom = WindowInsets.safeDrawing
+                            .asPaddingValues()
+                            .calculateBottomPadding() + LargePadding
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(LargerSpacing)
             ) {
                 InputGroup {
                     ConverterTypeDropdown(
-                        selectedType = selectedType, onTypeSelected = { newType ->
+                        selectedType = selectedType,
+                        onTypeSelected = { newType ->
                             viewModel.onConverterTypeChange(newType)
-                        }, hazeState = hazeState
+                        },
+                        hazeState = hazeState
                     )
                 }
 
@@ -128,46 +142,28 @@ fun CompactConverter(
                         label = fromUnitLabel(selectedType),
                         selectedConverterType = selectedType,
                         selectedVolumeUnit = fromVolumeUnit,
-                        onVolumeUnitSelected = { unit ->
-                            viewModel.onFromVolumeUnitChange(
-                                unit
-                            )
-                        },
+                        onVolumeUnitSelected = { unit -> viewModel.onFromVolumeUnitChange(unit) },
                         selectedLengthUnit = fromLengthUnit,
-                        onLengthUnitSelected = { unit ->
-                            viewModel.onFromLengthUnitChange(
-                                unit
-                            )
-                        },
+                        onLengthUnitSelected = { unit -> viewModel.onFromLengthUnitChange(unit) },
                         selectedTemperatureUnit = fromTemperatureUnit,
-                        onTemperatureUnitSelected = { unit ->
-                            viewModel.onFromTemperatureUnitChange(
-                                unit
-                            )
-                        },
+                        onTemperatureUnitSelected = { unit -> viewModel.onFromTemperatureUnitChange(unit) },
                         selectedCurrencyUnit = fromCurrencyUnit,
-                        onCurrencyUnitSelected = { unit ->
-                            viewModel.onFromCurrencyUnitChange(
-                                unit
-                            )
-                        },
+                        onCurrencyUnitSelected = { unit -> viewModel.onFromCurrencyUnitChange(unit) },
                         selectedAreaUnit = fromAreaUnit,
                         onAreaUnitSelected = { unit -> viewModel.onFromAreaUnitChange(unit) },
                         selectedWeightUnit = fromWeightUnit,
-                        onWeightUnitSelected = { unit ->
-                            viewModel.onFromWeightUnitChange(
-                                unit
-                            )
-                        },
+                        onWeightUnitSelected = { unit -> viewModel.onFromWeightUnitChange(unit) },
                         hazeState = hazeState,
                         modifier = Modifier.fillMaxWidth()
                     )
                     XenonTextField(
-                        value = value1, onValueChange = { newValue ->
+                        value = value1,
+                        onValueChange = { newValue ->
                             viewModel.onValueChanged(
                                 newValue, ConverterViewModel.EditedField.FIELD1
                             )
-                        }, label = stringResource(id = R.string.value_1)
+                        },
+                        label = stringResource(id = R.string.value_1)
                     )
                 }
 
@@ -180,12 +176,12 @@ fun CompactConverter(
                         .height(MinMediumButtonHeight)
                         .fillMaxWidth(0.5f)
                         .clip(CircleShape)
-                        .background(colorScheme.tertiary)
+                        .background(MaterialTheme.colorScheme.tertiary)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.swap),
-                        contentDescription = "Switch units",
-                        tint = colorScheme.onTertiary,
+                        contentDescription = stringResource(R.string.switch_units_description),
+                        tint = MaterialTheme.colorScheme.onTertiary,
                         modifier = Modifier.rotate(rotationAngle)
                     )
                 }
@@ -195,49 +191,32 @@ fun CompactConverter(
                         label = toUnitLabel(selectedType),
                         selectedConverterType = selectedType,
                         selectedVolumeUnit = toVolumeUnit,
-                        onVolumeUnitSelected = { unit ->
-                            viewModel.onToVolumeUnitChange(
-                                unit
-                            )
-                        },
+                        onVolumeUnitSelected = { unit -> viewModel.onToVolumeUnitChange(unit) },
                         selectedLengthUnit = toLengthUnit,
-                        onLengthUnitSelected = { unit ->
-                            viewModel.onToLengthUnitChange(
-                                unit
-                            )
-                        },
+                        onLengthUnitSelected = { unit -> viewModel.onToLengthUnitChange(unit) },
                         selectedTemperatureUnit = toTemperatureUnit,
-                        onTemperatureUnitSelected = { unit ->
-                            viewModel.onToTemperatureUnitChange(
-                                unit
-                            )
-                        },
+                        onTemperatureUnitSelected = { unit -> viewModel.onToTemperatureUnitChange(unit) },
                         selectedCurrencyUnit = toCurrencyUnit,
-                        onCurrencyUnitSelected = { unit ->
-                            viewModel.onToCurrencyUnitChange(
-                                unit
-                            )
-                        },
+                        onCurrencyUnitSelected = { unit -> viewModel.onToCurrencyUnitChange(unit) },
                         selectedAreaUnit = toAreaUnit,
                         onAreaUnitSelected = { unit -> viewModel.onToAreaUnitChange(unit) },
                         selectedWeightUnit = toWeightUnit,
-                        onWeightUnitSelected = { unit ->
-                            viewModel.onToWeightUnitChange(
-                                unit
-                            )
-                        },
+                        onWeightUnitSelected = { unit -> viewModel.onToWeightUnitChange(unit) },
                         hazeState = hazeState,
                         modifier = Modifier.fillMaxWidth()
                     )
                     XenonTextField(
-                        value = value2, onValueChange = { newValue ->
+                        value = value2,
+                        onValueChange = { newValue ->
                             viewModel.onValueChanged(
                                 newValue, ConverterViewModel.EditedField.FIELD2
                             )
-                        }, label = stringResource(id = R.string.value_2)
+                        },
+                        label = stringResource(id = R.string.value_2)
                     )
                 }
             }
         }
-    }
+        // dialogs = { }
+    )
 }
