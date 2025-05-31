@@ -27,15 +27,11 @@ fun ScreenEnvironment(
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val screenWidth = this.maxWidth
         val screenHeight = this.maxHeight
-        val targetCoverWidth = 418.30066.dp
-        val tolerance = 0.5.dp
-        val isTargetWidthMet =
-            (screenWidth >= targetCoverWidth - tolerance) && (screenWidth <= targetCoverWidth + tolerance)
 
-        val dimensionForLayout = if (isLandscape && !isTargetWidthMet) screenHeight else screenWidth
+        val dimensionForLayout = if (isLandscape) screenHeight else screenWidth
 
         val layoutType = when {
-            isTargetWidthMet || coverTheme -> LayoutType.COVER
+            coverTheme -> LayoutType.COVER
             dimensionForLayout < 320.dp -> LayoutType.SMALL
             dimensionForLayout < 600.dp -> LayoutType.COMPACT
             dimensionForLayout < 840.dp -> LayoutType.MEDIUM
