@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -44,7 +46,7 @@ fun SettingsSwitchTile(
                 }
             )
             .padding(horizontal = LargerPadding, vertical = ExtraLargePadding)
-            .height(IntrinsicSize.Min), // <--- ADD THIS LINE
+            .height(IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -61,7 +63,7 @@ fun SettingsSwitchTile(
         VerticalDivider(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(vertical = 5.dp),
+                .padding(vertical = 12.dp, horizontal = 8.dp),
             thickness = 1.dp,
             color = MaterialTheme.colorScheme.outlineVariant
         )

@@ -1,13 +1,18 @@
 package com.xenon.calculator.ui.layouts.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -18,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -38,7 +45,9 @@ import com.xenon.calculator.ui.res.CoverDisplaySelectionDialog
 import com.xenon.calculator.ui.res.ThemeSelectionDialog
 import com.xenon.calculator.ui.values.ExtraLargePadding
 import com.xenon.calculator.ui.values.LargePadding
+import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.ui.values.LargerSpacing
+import com.xenon.calculator.ui.values.MediumCornerRadius
 import com.xenon.calculator.ui.values.MediumPadding
 import com.xenon.calculator.ui.values.NoCornerRadius
 import com.xenon.calculator.viewmodel.SettingsViewModel
@@ -220,7 +229,6 @@ fun CoverSwitchTile(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = LargePadding)
             .then(
                 if (onClick != null) {
                     Modifier.clickable(onClick = onClick, role = Role.Button)
@@ -228,7 +236,8 @@ fun CoverSwitchTile(
                     Modifier
                 }
             )
-            .padding(horizontal = LargerSpacing, vertical = ExtraLargePadding),
+            .padding(horizontal = LargerPadding, vertical = ExtraLargePadding)
+            .height(IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -244,6 +253,13 @@ fun CoverSwitchTile(
                 color = Color.White
             )
         }
+        VerticalDivider(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(vertical = 12.dp, horizontal = 8.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant
+        )
           Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
