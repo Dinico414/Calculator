@@ -43,7 +43,8 @@ fun SettingsSwitchTile(
                     Modifier
                 }
             )
-            .padding(horizontal = LargerPadding, vertical = ExtraLargePadding),
+            .padding(horizontal = LargerPadding, vertical = ExtraLargePadding)
+            .height(IntrinsicSize.Min), // <--- ADD THIS LINE
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
