@@ -18,7 +18,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -46,6 +48,7 @@ fun CalculatorButton(
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val haptic = LocalHapticFeedback.current // Get haptic feedback instance
 
     val targetFontSize = when {
         isScientificButton -> when {
@@ -103,6 +106,7 @@ fun CalculatorButton(
             animationSpec = tween(durationMillis = longPressDelay),
             finishedListener = { value ->
                 if (isPressed && value == 1) {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     onLongClick()
                     longClickFired = true
                 }
@@ -112,8 +116,12 @@ fun CalculatorButton(
 
     Button(
         onClick = {
-            if (longClickFired) longClickFired = false
-            else onClick()
+            if (longClickFired) {
+                longClickFired = false
+            } else {
+                haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
+                onClick()
+            }
         },
         modifier = modifier.defaultMinSize(minHeight = MediumButtonHeight, minWidth = MinMediumButtonHeight),
         shape = RoundedCornerShape(percent = cornerRadiusPercent),
