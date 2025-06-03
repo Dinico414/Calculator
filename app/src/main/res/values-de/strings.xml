@@ -25,8 +25,8 @@
     <string name="switch_units_description">Wechsel Einheiten</string>
     <string name="navigate_back_description">Zurück Aktion</string>
     <string name="confirm">Bestätigen</string>
-    <string name="cover_dialog_title">Ist dies aktuell der äußere Display?</string>
-    <string name="cover_dialog_description">Dies wird ein kompacteres Layout</string>
+    <string name="cover_dialog_title">Ist dies aktuell der äußere Bildschirm?</string>
+    <string name="cover_dialog_description">Dies wird ein kompakteres Layout aktivieren</string>
     <string name="cover_screen_mode">Äußerer Bildschirm Modus</string>
     <string name="enabled">Aktiv</string>
     <string name="disabled">Inaktiv</string>
