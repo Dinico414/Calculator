@@ -3,83 +3,53 @@ package com.xenon.calculator.ui.layouts.buttons
 //import androidx.compose.animation.slideInVertically // Kept removed for simpler animation as discussed
 //import androidx.compose.animation.slideOutVertically // Kept removed for simpler animation as discussed
 import android.annotation.SuppressLint
-import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.xenon.calculator.R
 import com.xenon.calculator.ui.res.CalculatorButton
 import com.xenon.calculator.ui.theme.CalculatorTheme
+import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.LargeSpacing
 import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.LargestSpacing
-import com.xenon.calculator.ui.values.MediumIconButtonSize
-import com.xenon.calculator.ui.values.LargePadding
-import com.xenon.calculator.ui.values.MediumButtonHeight
 import com.xenon.calculator.ui.values.MediumSpacing
-import com.xenon.calculator.ui.values.MinMediumButtonHeight
-import com.xenon.calculator.ui.values.NoElevation
 import com.xenon.calculator.ui.values.NoPadding
 import com.xenon.calculator.ui.values.SmallButtonSizeSpacing
-import com.xenon.calculator.ui.values.SmallPadding
 import com.xenon.calculator.ui.values.SmallestPadding
 import com.xenon.calculator.viewmodel.CalculatorViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 
 val firaSansFamily = FontFamily(
     Font(R.font.fira_sans, FontWeight.Normal)
@@ -196,8 +166,7 @@ fun CompactButtonLayout(
                                     },
                                     onLongClick = if (buttonText == "⌫") {
                                         { viewModel.onButtonClick("AC") }
-                                    } else null
-                                )
+                                    } else null)
                             }
                         }
                         if (rowData != buttonRows.last()) {
@@ -248,37 +217,31 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
             isGlobalScientificModeActive = viewModel.isScientificMode,
             onClick = { viewModel.onButtonClick("!") })
 
-        Box(
+        IconButton(
+            onClick = { viewModel.toggleScientificMode() },
             modifier = Modifier
-                .size(MediumIconButtonSize)
-                .clip(CircleShape)
-                .background(
-                    color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.1f),
-                    shape = CircleShape
-                ), contentAlignment = Alignment.Center
+                .height(40.dp)
+                .width(52.dp)
+                .clip(RoundedCornerShape(100f)),
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.2f),
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            )
         ) {
-            IconButton(
-                onClick = { viewModel.toggleScientificMode() },
-                modifier = Modifier.matchParentSize(),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = Color.Transparent,
-                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                )
-            ) {
-                val rotationAngle by animateFloatAsState(
-                    targetValue = if (viewModel.isScientificMode) 0f else 180f,
-                    animationSpec = tween(durationMillis = 400),
-                    label = "IconRotation"
-                )
-                Icon(
-                    imageVector = Icons.Filled.KeyboardArrowUp,
-                    contentDescription = "Toggle Scientific Panel",
-                    modifier = Modifier.rotate(rotationAngle)
-                )
-            }
+            val rotationAngle by animateFloatAsState(
+                targetValue = if (viewModel.isScientificMode) 0f else 180f,
+                animationSpec = tween(durationMillis = 400),
+                label = "IconRotation"
+            )
+            Icon(
+                imageVector = Icons.Filled.KeyboardArrowUp,
+                contentDescription = "Toggle Scientific Panel",
+                modifier = Modifier.rotate(rotationAngle)
+            )
         }
     }
 }
+
 
 @Composable
 fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
@@ -314,7 +277,7 @@ fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = M
                 isGlobalScientificModeActive = viewModel.isScientificMode,
                 onClick = { viewModel.onButtonClick(text) })
         }
-        Spacer(Modifier.width(SmallButtonSizeSpacing))
+        Spacer(Modifier.width(52.dp))
     }
 }
 
@@ -360,7 +323,7 @@ fun ScientificButtonsRow3(
                     }
                 })
         }
-        Spacer(Modifier.width(SmallButtonSizeSpacing))
+        Spacer(Modifier.width(52.dp))
     }
 }
 
@@ -418,50 +381,141 @@ fun PreviewLandscapeScientific() {
 @Preview(showBackground = true, name = "Num Btn (Port, SciOff)")
 @Composable
 fun NumBtnPortSciOff() {
-    CalculatorTheme { Surface { CalculatorButton(text = "7", isScientificButton = false, isNumber = true, isGlobalScientificModeActive = false, onClick = {}) } }
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(
+                text = "7",
+                isScientificButton = false,
+                isNumber = true,
+                isGlobalScientificModeActive = false,
+                onClick = {})
+        }
+    }
 }
+
 @Preview(showBackground = true, name = "Num Btn (Port, SciOn)")
 @Composable
 fun NumBtnPortSciOn() {
-    CalculatorTheme { Surface { CalculatorButton(text = "7", isScientificButton = false, isNumber = true, isGlobalScientificModeActive = true, onClick = {}) } }
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(
+                text = "7",
+                isScientificButton = false,
+                isNumber = true,
+                isGlobalScientificModeActive = true,
+                onClick = {})
+        }
+    }
 }
-@Preview(showBackground = true, name = "Num Btn (Land, SciOff)", widthDp = 100, heightDp=60)
+
+@Preview(showBackground = true, name = "Num Btn (Land, SciOff)", widthDp = 100, heightDp = 60)
 @Composable
 fun NumBtnLandSciOff() {
-    CalculatorTheme { Surface { CalculatorButton(text = "7", isScientificButton = false, isNumber = true, isGlobalScientificModeActive = false, onClick = {}) } }
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(
+                text = "7",
+                isScientificButton = false,
+                isNumber = true,
+                isGlobalScientificModeActive = false,
+                onClick = {})
+        }
+    }
 }
-@Preview(showBackground = true, name = "Num Btn (Land, SciOn)", widthDp = 100, heightDp=60)
+
+@Preview(showBackground = true, name = "Num Btn (Land, SciOn)", widthDp = 100, heightDp = 60)
 @Composable
 fun NumBtnLandSciOn() {
-    CalculatorTheme { Surface { CalculatorButton(text = "7", isScientificButton = false, isNumber = true, isGlobalScientificModeActive = true, onClick = {}) } }
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(
+                text = "7",
+                isScientificButton = false,
+                isNumber = true,
+                isGlobalScientificModeActive = true,
+                onClick = {})
+        }
+    }
 }
 
 @Preview(showBackground = true, name = "Sci Panel Btn (Port)")
 @Composable
 fun SciPanelBtnPort() {
-    CalculatorTheme { Surface { CalculatorButton(text = "sin", isScientificButton = true, isNumber = false, isGlobalScientificModeActive = true, isOperator = true, onClick = {}) } }
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(
+                text = "sin",
+                isScientificButton = true,
+                isNumber = false,
+                isGlobalScientificModeActive = true,
+                isOperator = true,
+                onClick = {})
+        }
+    }
 }
-@Preview(showBackground = true, name = "Sci Panel Btn (Land)", widthDp = 100, heightDp=60)
+
+@Preview(showBackground = true, name = "Sci Panel Btn (Land)", widthDp = 100, heightDp = 60)
 @Composable
 fun SciPanelBtnLand() {
-    CalculatorTheme { Surface { CalculatorButton(text = "sin", isScientificButton = true, isNumber = false, isGlobalScientificModeActive = true, isOperator = true, onClick = {}) } }
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(
+                text = "sin",
+                isScientificButton = true,
+                isNumber = false,
+                isGlobalScientificModeActive = true,
+                isOperator = true,
+                onClick = {})
+        }
+    }
 }
-@Preview(showBackground = true, name = "Sci Panel Btn Long (Land)", widthDp = 100, heightDp=60)
+
+@Preview(showBackground = true, name = "Sci Panel Btn Long (Land)", widthDp = 100, heightDp = 60)
 @Composable
 fun SciPanelBtnLongLand() {
-    CalculatorTheme { Surface { CalculatorButton(text = "sin⁻¹", isScientificButton = true, isNumber = false, isGlobalScientificModeActive = true, isOperator = true, onClick = {}) } }
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(
+                text = "sin⁻¹",
+                isScientificButton = true,
+                isNumber = false,
+                isGlobalScientificModeActive = true,
+                isOperator = true,
+                onClick = {})
+        }
+    }
 }
 
 @Preview(showBackground = true, name = "Operator Btn (Port, SciOff)")
 @Composable
 fun OperatorBtnPortSciOff() {
-    CalculatorTheme { Surface { CalculatorButton(text = "+", isScientificButton = false, isNumber = false, isGlobalScientificModeActive = false, isOperator = true, onClick = {}) } }
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(
+                text = "+",
+                isScientificButton = false,
+                isNumber = false,
+                isGlobalScientificModeActive = false,
+                isOperator = true,
+                onClick = {})
+        }
+    }
 }
 
 @Preview(showBackground = true, name = "Operator Btn (Port, SciOn)")
 @Composable
 fun OperatorBtnPortSciOn() {
-    CalculatorTheme { Surface { CalculatorButton(text = "+", isScientificButton = false, isNumber = false, isGlobalScientificModeActive = true, isOperator = true, onClick = {}) } }
+    CalculatorTheme {
+        Surface {
+            CalculatorButton(
+                text = "+",
+                isScientificButton = false,
+                isNumber = false,
+                isGlobalScientificModeActive = true,
+                isOperator = true,
+                onClick = {})
+        }
+    }
 }
 
 // Preview for the backspace button with Fira Sans
@@ -476,8 +530,7 @@ fun BackspaceButtonPreview() {
                 isNumber = true,
                 isGlobalScientificModeActive = false,
                 fontFamily = firaSansFamily,
-                onClick = {}
-            )
+                onClick = {})
         }
     }
 }

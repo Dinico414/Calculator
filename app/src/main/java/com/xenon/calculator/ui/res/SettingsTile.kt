@@ -17,18 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
-// Assuming these are defined in your project, e.g., in a Dimens.kt or similar
-// import com.xenon.calculator.ui.values.ExtraLargePadding
-// import com.xenon.calculator.ui.values.LargePadding
-// import com.xenon.calculator.ui.values.LargerPadding
-// import com.xenon.calculator.ui.values.MediumCornerRadius
-import androidx.compose.ui.unit.dp // Added for default shape if your constants aren't found
-
-// Using placeholder Dp values if your constants are not resolved.
-// Replace with your actual definitions.
-val ExtraLargePadding: Dp = 24.dp
-val LargerPadding: Dp = 20.dp
-val MediumCornerRadius: Dp = 12.dp
+import com.xenon.calculator.ui.values.ExtraLargePadding
+import com.xenon.calculator.ui.values.LargerPadding
+import com.xenon.calculator.ui.values.MediumCornerRadius
 
 
 @Composable
@@ -40,7 +31,7 @@ fun SettingsTile(
     backgroundColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     subtitleColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    shape: Shape = RoundedCornerShape(MediumCornerRadius), // Default shape
+    shape: Shape = RoundedCornerShape(MediumCornerRadius),
     horizontalPadding: Dp = LargerPadding,
     verticalPadding: Dp = ExtraLargePadding
 ) {

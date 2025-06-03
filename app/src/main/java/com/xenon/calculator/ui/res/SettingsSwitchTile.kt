@@ -26,17 +26,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-// Assuming these are defined in your project, e.g., in a Dimens.kt or similar
-// import com.xenon.calculator.ui.values.ExtraLargePadding
-// import com.xenon.calculator.ui.values.LargePadding
-// import com.xenon.calculator.ui.values.LargerPadding
-// import com.xenon.calculator.ui.values.MediumCornerRadius
-
-// Using placeholder Dp values if your constants are not resolved.
-// Replace with your actual definitions from com.xenon.calculator.ui.values
-// val ExtraLargePadding: Dp = 24.dp // Already defined in SettingsTile.kt for this example
-// val LargerPadding: Dp = 20.dp // Already defined in SettingsTile.kt for this example
-// val MediumCornerRadius: Dp = 12.dp // Already defined in SettingsTile.kt for this example
+import com.xenon.calculator.ui.values.ExtraLargePadding
+import com.xenon.calculator.ui.values.LargerPadding
+import com.xenon.calculator.ui.values.MediumCornerRadius
 
 
 @Composable
@@ -50,7 +42,7 @@ fun SettingsSwitchTile(
     backgroundColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     subtitleColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    shape: Shape = RoundedCornerShape(MediumCornerRadius), // Default shape
+    shape: Shape = RoundedCornerShape(MediumCornerRadius),
     horizontalPadding: Dp = LargerPadding,
     verticalPadding: Dp = ExtraLargePadding,
     switchColors: SwitchColors = SwitchDefaults.colors()
@@ -87,9 +79,9 @@ fun SettingsSwitchTile(
         VerticalDivider(
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(vertical = 12.dp, horizontal = 8.dp),
+                .padding(vertical = 2.dp, horizontal = 8.dp),
             thickness = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant
+            color = MaterialTheme.colorScheme.outline
         )
         Switch(
             checked = checked,

@@ -15,16 +15,8 @@ val ButtonBoxPadding = (-48).dp
 val SmallTextFieldPadding = 40.dp
 val LargeTextFieldPadding = 50.dp
 
-val IconButtonSize = 48.dp
-val SmallButtonHeight = 36.dp
-val MediumIconButtonSize = 40.dp
 val MinMediumButtonHeight = 40.dp
 val MediumButtonHeight = 48.dp
-val LargeButtonHeight = 56.dp
-
-val SmallIconSize = 16.dp
-val MediumIconSize = 24.dp
-val LargeIconSize = 32.dp
 
 val ActionBarSize = 56.dp
 
@@ -63,3 +55,40 @@ val VerticalSpacerSmall = 8.dp
 val VerticalSpacerMedium = 16.dp
 val HorizontalSpacerSmall = 8.dp
 val HorizontalSpacerMedium = 16.dp
+
+val MinTargetSize = 48.dp
+
+val SmallIconSize = 20.dp
+val CompactIconSize = 24.dp
+val MediumIconSize = 24.dp
+val LargeIconSize = 32.dp
+val ExtraLargeIconSize = 40.dp
+
+val SmallButtonSize = 32.dp
+val CompactButtonSize = 40.dp
+val MediumButtonSize = 56.dp
+val LargeButtonSize = 96.dp
+val ExtraLargeButtonSize = 136 .dp
+
+val SmallNarrowButtonHeight = 32.dp
+val SmallNarrowButtonWidth = 28.dp
+val CompactNarrowButtonHeight = 40.dp
+val CompactNarrowButtonWidth = 32.dp
+val MediumNarrowButtonHeight = 56.dp
+val MediumNarrowButtonWidth = 48.dp
+val LargeNarrowButtonHeight = 96.dp
+val LargeNarrowButtonWidth = 64.dp
+val ExtraLargeNarrowButtonHeight = 136.dp
+val ExtraLargeNarrowButtonWidth = 104.dp
+
+val SmallWideButtonHeight = 32.dp
+val SmallWideButtonWidth = 40.dp
+val CompactWideButtonHeight = 40.dp
+val CompactWideButtonWidth = 52.dp
+val MediumWideButtonHeight = 56.dp
+val MediumWideButtonWidth = 72.dp
+val LargeWideButtonHeight = 96.dp
+val LargeWideButtonWidth = 128.dp
+val ExtraLargeWideButtonHeight = 136.dp
+val ExtraLargeWideButtonWidth = 184.dp
+
