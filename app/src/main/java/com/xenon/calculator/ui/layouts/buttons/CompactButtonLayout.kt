@@ -69,7 +69,7 @@ val firaSansFamily = FontFamily(
 )
 
 val ButtonWidth by remember(viewModel.layoutType) {
-    derivedStateOf { // Use derivedStateOf for more complex calculations if needed
+    derivedStateOf {
         when (viewModel.layoutType) {
             LayoutType.COVER -> SmallWideButtonWidth
             LayoutType.SMALL -> SmallWideButtonWidth
@@ -89,7 +89,6 @@ val ButtonHeight by remember(viewModel.layoutType) {
             LayoutType.COMPACT -> CompactWideButtonHeight
             LayoutType.MEDIUM -> MediumWideButtonHeight
             LayoutType.EXPANDED -> LargeWideButtonHeight
-            // Consider if this should be ExtraLargeWideButtonHeight as your comment suggests
             else -> ExtraLargeWideButtonWidth
         }
     }
