@@ -1,16 +1,15 @@
 package com.xenon.calculator.ui.values
 
+import android.os.Build // Import Build
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape // Keep this
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp // Keep this
 import com.xenon.calculator.R
 import com.xenon.calculator.ui.res.SettingsSwitchTile
 import com.xenon.calculator.ui.res.SettingsTile
@@ -27,14 +26,29 @@ fun SettingsItems(
     appVersion: String,
     innerGroupRadius: Dp = SmallestCornerRadius,
     outerGroupRadius: Dp = MediumCornerRadius,
-    innerGroupSpacing: Dp = MediumSpacing,
-    outerGroupSpacing: Dp = LargeSpacing
+    innerGroupSpacing: Dp = SmallSpacing,
+    outerGroupSpacing: Dp = LargerSpacing
 ) {
     val context = LocalContext.current
 
-    val innerGroupShapeTop = RoundedCornerShape(bottomStart = innerGroupRadius, bottomEnd = innerGroupRadius, topStart = outerGroupRadius, topEnd = outerGroupRadius)
-    val innerGroupShapeCenter = RoundedCornerShape(topStart = innerGroupRadius, topEnd = innerGroupRadius, bottomStart = innerGroupRadius, bottomEnd = innerGroupRadius)
-    val innerGroupShapeBottom = RoundedCornerShape(topStart = innerGroupRadius, topEnd = innerGroupRadius, bottomStart = outerGroupRadius, bottomEnd = outerGroupRadius)
+    val innerGroupShapeTop = RoundedCornerShape(
+        bottomStart = innerGroupRadius,
+        bottomEnd = innerGroupRadius,
+        topStart = outerGroupRadius,
+        topEnd = outerGroupRadius
+    )
+    val innerGroupShapeCenter = RoundedCornerShape(
+        topStart = innerGroupRadius,
+        topEnd = innerGroupRadius,
+        bottomStart = innerGroupRadius,
+        bottomEnd = innerGroupRadius
+    )
+    val innerGroupShapeBottom = RoundedCornerShape(
+        topStart = innerGroupRadius,
+        topEnd = innerGroupRadius,
+        bottomStart = outerGroupRadius,
+        bottomEnd = outerGroupRadius
+    )
 
     val standaloneItemShape = RoundedCornerShape(outerGroupRadius)
 
@@ -49,10 +63,14 @@ fun SettingsItems(
 
     SettingsSwitchTile(
         title = stringResource(id = R.string.cover_screen_mode),
-        subtitle = "${stringResource(id = R.string.cover_screen_mode_description)} (${if (applyCoverTheme) stringResource(id = R.string.enabled) else stringResource(id = R.string.disabled)})",
+        subtitle = "${stringResource(id = R.string.cover_screen_mode_description)} (${
+            if (applyCoverTheme) stringResource(
+                id = R.string.enabled
+            ) else stringResource(id = R.string.disabled)
+        })",
         checked = coverThemeEnabled,
         onCheckedChange = { viewModel.setCoverThemeEnabled(!coverThemeEnabled) },
-        onClick = { viewModel.onCoverThemeClicked() },
+        onClick = { viewModel.onCoverThemeClicked() }, // This should be for cover theme selection dialog
         shape = innerGroupShapeBottom
     )
 
@@ -61,9 +79,12 @@ fun SettingsItems(
     SettingsTile(
         title = stringResource(id = R.string.language),
         subtitle = "${stringResource(id = R.string.current)} $currentLanguage",
-        onClick = { viewModel.openLanguageSettings(context) },
+        onClick = { viewModel.onLanguageSettingClicked(context) }, // <--- CORRECTED HERE
         shape = standaloneItemShape
     )
+    // You might not need this LaunchedEffect here if language updates are handled
+    // robustly in the ViewModel and after activity restarts.
+    // Consider if viewModel.updateCurrentLanguage() in onResume of the Activity is sufficient.
     LaunchedEffect(Unit) {
         viewModel.updateCurrentLanguage()
     }
@@ -82,8 +103,8 @@ fun SettingsItems(
     SettingsTile(
         title = "Version",
         subtitle = "Version $appVersion",
-        onClick = null,
+        onClick = { viewModel.openAppInfo(context) },
+        onLongClick = { viewModel.openImpressum(context) },
         shape = innerGroupShapeBottom
     )
-
 }

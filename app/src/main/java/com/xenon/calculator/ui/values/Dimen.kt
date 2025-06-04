@@ -21,7 +21,8 @@ val MediumButtonHeight = 48.dp
 val ActionBarSize = 56.dp
 
 val NoCornerRadius = 0.dp
-val SmallestCornerRadius = 10.dp
+val SmallestCornerRadius = 5.dp
+val SmallerCornerRadius = 10.dp
 val SmallCornerRadius = 20.dp
 val MediumCornerRadius = 30.dp
 val LargeCornerRadius = 40.dp

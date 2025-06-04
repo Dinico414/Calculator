@@ -1,5 +1,6 @@
 package com.xenon.calculator.ui.layouts.settings
 
+import android.os.Build // Make sure Build is imported
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -26,6 +27,7 @@ import com.xenon.calculator.R
 import com.xenon.calculator.ui.layouts.ActivityScreen
 import com.xenon.calculator.ui.res.ClearDataConfirmationDialog
 import com.xenon.calculator.ui.res.CoverDisplaySelectionDialog
+import com.xenon.calculator.ui.res.LanguageSelectionDialog // Import your LanguageSelectionDialog
 import com.xenon.calculator.ui.res.ThemeSelectionDialog
 import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.SettingsItems
@@ -47,6 +49,12 @@ fun CompactSettings(
     val showClearDataDialog by viewModel.showClearDataDialog.collectAsState()
     val showCoverSelectionDialog by viewModel.showCoverSelectionDialog.collectAsState()
     val coverThemeEnabled by viewModel.enableCoverTheme.collectAsState()
+
+    // --- Collect Language Dialog States ---
+    val showLanguageDialog by viewModel.showLanguageDialog.collectAsState()
+    val availableLanguages by viewModel.availableLanguages.collectAsState() // Added
+    val selectedLanguageTagInDialog by viewModel.selectedLanguageTagInDialog.collectAsState() // Added
+
 
     val packageManager = context.packageManager
     val packageName = context.packageName
@@ -103,7 +111,7 @@ fun CompactSettings(
                 SettingsItems(
                     viewModel = viewModel,
                     currentThemeTitle = currentThemeTitle,
-                    applyCoverTheme = applyCoverTheme,
+                    applyCoverTheme = applyCoverTheme, // This might need to be a state if it changes reactively
                     coverThemeEnabled = coverThemeEnabled,
                     currentLanguage = currentLanguage,
                     appVersion = appVersion
@@ -139,6 +147,16 @@ fun CompactSettings(
                     onDismiss = { viewModel.dismissClearDataDialog() }
                 )
             }
-        }
-    )
+
+            // --- Add the Language Selection Dialog ---
+            if (showLanguageDialog && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                LanguageSelectionDialog(
+                    availableLanguages = availableLanguages, // Now correctly referenced
+                    currentLanguageTag = selectedLanguageTagInDialog, // Now correctly referenced
+                    onLanguageSelected = { tag -> viewModel.onLanguageSelectedInDialog(tag) },
+                    onDismiss = { viewModel.dismissLanguageDialog() },
+                    onConfirm = { viewModel.applySelectedLanguage() }
+                )
+            }
+        })
 }
