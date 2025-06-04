@@ -28,7 +28,7 @@ fun SettingsTile(
     subtitle: String,
     onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest,
+    backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     subtitleColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     shape: Shape = RoundedCornerShape(MediumCornerRadius),

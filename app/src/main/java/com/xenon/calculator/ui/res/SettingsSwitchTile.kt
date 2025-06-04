@@ -39,7 +39,7 @@ fun SettingsSwitchTile(
     onCheckedChange: ((enabled: Boolean) -> Unit)? = null,
     onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.surfaceContainerHighest,
+    backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     subtitleColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     shape: Shape = RoundedCornerShape(MediumCornerRadius),
@@ -81,7 +81,7 @@ fun SettingsSwitchTile(
                 .fillMaxHeight()
                 .padding(vertical = 2.dp, horizontal = 8.dp),
             thickness = 1.dp,
-            color = MaterialTheme.colorScheme.outline
+            color = MaterialTheme.colorScheme.outlineVariant
         )
         Switch(
             checked = checked,

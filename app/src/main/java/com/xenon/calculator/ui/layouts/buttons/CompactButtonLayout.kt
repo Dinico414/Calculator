@@ -28,9 +28,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,14 +37,11 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.xenon.calculator.R
 import com.xenon.calculator.ui.res.CalculatorButton
 import com.xenon.calculator.ui.theme.CalculatorTheme
 import com.xenon.calculator.ui.values.CompactWideButtonHeight
 import com.xenon.calculator.ui.values.CompactWideButtonWidth
-import com.xenon.calculator.ui.values.ExtraLargeWideButtonWidth
 import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.LargeSpacing
 import com.xenon.calculator.ui.values.LargeWideButtonHeight
@@ -54,46 +49,20 @@ import com.xenon.calculator.ui.values.LargeWideButtonWidth
 import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.LargestSpacing
 import com.xenon.calculator.ui.values.MediumSpacing
-import com.xenon.calculator.ui.values.MediumWideButtonHeight
-import com.xenon.calculator.ui.values.MediumWideButtonWidth
 import com.xenon.calculator.ui.values.NoPadding
 import com.xenon.calculator.ui.values.SmallButtonSizeSpacing
-import com.xenon.calculator.ui.values.SmallWideButtonHeight
-import com.xenon.calculator.ui.values.SmallWideButtonWidth
 import com.xenon.calculator.ui.values.SmallestPadding
 import com.xenon.calculator.viewmodel.CalculatorViewModel
-import com.xenon.calculator.viewmodel.LayoutType
 
 val firaSansFamily = FontFamily(
     Font(R.font.fira_sans, FontWeight.Normal)
 )
 
-val ButtonWidth by remember(viewModel.layoutType) {
-    derivedStateOf { // Use derivedStateOf for more complex calculations if needed
-        when (viewModel.layoutType) {
-            LayoutType.COVER -> SmallWideButtonWidth
-            LayoutType.SMALL -> SmallWideButtonWidth
-            LayoutType.COMPACT -> CompactWideButtonWidth
-            LayoutType.MEDIUM -> MediumWideButtonWidth
-            LayoutType.EXPANDED -> LargeWideButtonWidth
-            else -> ExtraLargeWideButtonWidth
-        }
-    }
-}
+val ButtonWidth = CompactWideButtonWidth
 
-val ButtonHeight by remember(viewModel.layoutType) {
-    derivedStateOf {
-        when (viewModel.layoutType) {
-            LayoutType.COVER -> SmallWideButtonHeight
-            LayoutType.SMALL -> SmallWideButtonHeight
-            LayoutType.COMPACT -> CompactWideButtonHeight
-            LayoutType.MEDIUM -> MediumWideButtonHeight
-            LayoutType.EXPANDED -> LargeWideButtonHeight
-            // Consider if this should be ExtraLargeWideButtonHeight as your comment suggests
-            else -> ExtraLargeWideButtonWidth
-        }
-    }
-}
+
+val ButtonHeight = CompactWideButtonHeight
+
 
 
 @Composable

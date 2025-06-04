@@ -21,7 +21,7 @@ fun InputGroup(
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(MediumCornerRadius))
-            .background(colorScheme.surfaceContainerHighest)
+            .background(colorScheme.secondaryContainer)
             .padding(horizontal = LargePadding, vertical = LargePadding),
         verticalArrangement = Arrangement.spacedBy(LargerSpacing),
         content = content
