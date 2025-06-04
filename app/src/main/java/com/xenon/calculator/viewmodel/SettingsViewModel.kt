@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.unit.IntSize
 import androidx.core.content.edit
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.jvm.java
 
 enum class ThemeSetting(val title: String, val nightModeFlag: Int) {
     LIGHT("Light", AppCompatDelegate.MODE_NIGHT_NO),
@@ -202,6 +204,24 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(intent)
+    }
+    fun openAppInfo(context: Context) {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", context.packageName, null)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(intent)
+    }
+
+    fun openImpressum(context: Context) {
+        Toast.makeText(context, "xenonware.com/impressum", Toast.LENGTH_LONG).show()
+
+        // val url = "http://xenonware.com/impressum"
+        // val intent = Intent(Intent.ACTION_VIEW).apply {
+        //     data = Uri.parse(url)
+        //     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        // }
+        // context.startActivity(intent)
     }
 
     private fun restartApplication(context: Context) {

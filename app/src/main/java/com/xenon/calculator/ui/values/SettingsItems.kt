@@ -2,7 +2,7 @@ package com.xenon.calculator.ui.values
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape // Keep this
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -30,9 +30,24 @@ fun SettingsItems(
 ) {
     val context = LocalContext.current
 
-    val innerGroupShapeTop = RoundedCornerShape(bottomStart = innerGroupRadius, bottomEnd = innerGroupRadius, topStart = outerGroupRadius, topEnd = outerGroupRadius)
-    val innerGroupShapeCenter = RoundedCornerShape(topStart = innerGroupRadius, topEnd = innerGroupRadius, bottomStart = innerGroupRadius, bottomEnd = innerGroupRadius)
-    val innerGroupShapeBottom = RoundedCornerShape(topStart = innerGroupRadius, topEnd = innerGroupRadius, bottomStart = outerGroupRadius, bottomEnd = outerGroupRadius)
+    val innerGroupShapeTop = RoundedCornerShape(
+        bottomStart = innerGroupRadius,
+        bottomEnd = innerGroupRadius,
+        topStart = outerGroupRadius,
+        topEnd = outerGroupRadius
+    )
+    val innerGroupShapeCenter = RoundedCornerShape(
+        topStart = innerGroupRadius,
+        topEnd = innerGroupRadius,
+        bottomStart = innerGroupRadius,
+        bottomEnd = innerGroupRadius
+    )
+    val innerGroupShapeBottom = RoundedCornerShape(
+        topStart = innerGroupRadius,
+        topEnd = innerGroupRadius,
+        bottomStart = outerGroupRadius,
+        bottomEnd = outerGroupRadius
+    )
 
     val standaloneItemShape = RoundedCornerShape(outerGroupRadius)
 
@@ -47,7 +62,11 @@ fun SettingsItems(
 
     SettingsSwitchTile(
         title = stringResource(id = R.string.cover_screen_mode),
-        subtitle = "${stringResource(id = R.string.cover_screen_mode_description)} (${if (applyCoverTheme) stringResource(id = R.string.enabled) else stringResource(id = R.string.disabled)})",
+        subtitle = "${stringResource(id = R.string.cover_screen_mode_description)} (${
+            if (applyCoverTheme) stringResource(
+                id = R.string.enabled
+            ) else stringResource(id = R.string.disabled)
+        })",
         checked = coverThemeEnabled,
         onCheckedChange = { viewModel.setCoverThemeEnabled(!coverThemeEnabled) },
         onClick = { viewModel.onCoverThemeClicked() },
@@ -80,8 +99,8 @@ fun SettingsItems(
     SettingsTile(
         title = "Version",
         subtitle = "Version $appVersion",
-        onClick = null,
+        onClick = { viewModel.openAppInfo(context) },
+        onLongClick = { viewModel.openImpressum(context) },
         shape = innerGroupShapeBottom
     )
-
 }

@@ -1,7 +1,8 @@
 package com.xenon.calculator.ui.res
 
+import androidx.compose.foundation.ExperimentalFoundationApi // Import this
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable // Import this
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,11 +23,13 @@ import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.ui.values.MediumCornerRadius
 
 
+@OptIn(ExperimentalFoundationApi::class) // Add this annotation
 @Composable
 fun SettingsTile(
     title: String,
     subtitle: String,
     onClick: (() -> Unit)?,
+    onLongClick: (() -> Unit)? = null, // Add onLongClick parameter
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
@@ -40,12 +43,11 @@ fun SettingsTile(
             .fillMaxWidth()
             .clip(shape)
             .background(backgroundColor)
-            .then(
-                if (onClick != null) {
-                    Modifier.clickable(onClick = onClick, role = Role.Button)
-                } else {
-                    Modifier
-                }
+            .combinedClickable( // Use combinedClickable
+                onClick = { onClick?.invoke() }, // Call the existing onClick
+                onLongClick = { onLongClick?.invoke() }, // Call the new onLongClick
+                role = Role.Button,
+                enabled = onClick != null || onLongClick != null // Enable if either is provided
             )
             .padding(horizontal = horizontalPadding, vertical = verticalPadding),
         verticalAlignment = Alignment.CenterVertically,
