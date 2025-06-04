@@ -81,7 +81,7 @@ fun SettingsSwitchTile(
                 .fillMaxHeight()
                 .padding(vertical = 2.dp, horizontal = 8.dp),
             thickness = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant
+            color = MaterialTheme.colorScheme.outline
         )
         Switch(
             checked = checked,
