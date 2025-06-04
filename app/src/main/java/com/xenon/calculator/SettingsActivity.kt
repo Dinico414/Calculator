@@ -1,9 +1,12 @@
 package com.xenon.calculator
 
+// import androidx.compose.runtime.remember // Not needed for applyCoverTheme here
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -29,15 +32,26 @@ class SettingsActivity : ComponentActivity() {
 
         setContent {
 
+            val activeNightMode by settingsViewModel.activeNightModeFlag.collectAsState()
+            LaunchedEffect(activeNightMode) {
+                AppCompatDelegate.setDefaultNightMode(activeNightMode)
+            }
+
             val persistedAppThemeIndex by settingsViewModel.persistedThemeIndex.collectAsState()
+
             val coverThemeEnabled by settingsViewModel.enableCoverTheme.collectAsState()
             val containerSize = LocalWindowInfo.current.containerSize
             val applyCoverTheme = remember(containerSize, coverThemeEnabled) {
                 settingsViewModel.applyCoverTheme(containerSize)
             }
 
+            val currentLanguage by settingsViewModel.currentLanguage.collectAsState()
+            LaunchedEffect(currentLanguage) {
+            }
+
             ScreenEnvironment(persistedAppThemeIndex, applyCoverTheme) { layoutType, isLandscape ->
-                SettingsLayout(
+
+            SettingsLayout(
                     onNavigateBack = { finish() },
                     viewModel = settingsViewModel,
                     isLandscape = isLandscape,
@@ -45,5 +59,10 @@ class SettingsActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        settingsViewModel.updateCurrentLanguage()
     }
 }

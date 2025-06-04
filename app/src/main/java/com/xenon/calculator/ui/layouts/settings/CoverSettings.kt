@@ -148,7 +148,7 @@ fun CoverSettings(
                 SettingsTile(
                     title = stringResource(id = R.string.language),
                     subtitle = "${stringResource(id = R.string.current)} $currentLanguage",
-                    onClick = { viewModel.openLanguageSettings(context) },
+                    onClick = { viewModel.onLanguageSettingClicked(context) },
                     modifier = Modifier.padding(horizontal = coverHorizontalPadding),
                     backgroundColor = coverBackgroundColor,
                     contentColor = coverContentColor,
