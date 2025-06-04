@@ -1,5 +1,6 @@
 package com.xenon.calculator.ui.values
 
+import android.os.Build // Import Build
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -69,7 +70,7 @@ fun SettingsItems(
         })",
         checked = coverThemeEnabled,
         onCheckedChange = { viewModel.setCoverThemeEnabled(!coverThemeEnabled) },
-        onClick = { viewModel.onCoverThemeClicked() },
+        onClick = { viewModel.onCoverThemeClicked() }, // This should be for cover theme selection dialog
         shape = innerGroupShapeBottom
     )
 
@@ -78,9 +79,12 @@ fun SettingsItems(
     SettingsTile(
         title = stringResource(id = R.string.language),
         subtitle = "${stringResource(id = R.string.current)} $currentLanguage",
-        onClick = { viewModel.openLanguageSettings(context) },
+        onClick = { viewModel.onLanguageSettingClicked(context) }, // <--- CORRECTED HERE
         shape = standaloneItemShape
     )
+    // You might not need this LaunchedEffect here if language updates are handled
+    // robustly in the ViewModel and after activity restarts.
+    // Consider if viewModel.updateCurrentLanguage() in onResume of the Activity is sufficient.
     LaunchedEffect(Unit) {
         viewModel.updateCurrentLanguage()
     }
