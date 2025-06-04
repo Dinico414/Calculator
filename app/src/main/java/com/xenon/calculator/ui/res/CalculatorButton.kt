@@ -110,14 +110,14 @@ fun CalculatorButton(
         label = "cornerRadiusAnimation",
     )
 
-    val longPressDelay = 500
+    val longPressDelay = 600
     if (onLongClick != null) {
         animateIntAsState(
             targetValue = if (isPressed) 1 else 0,
             animationSpec = tween(durationMillis = longPressDelay),
             finishedListener = { value ->
                 if (isPressed && value == 1) {
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    haptic.performHapticFeedback(HapticFeedbackType.Reject)
                     onLongClick()
                     longClickFired = true
                     longClickAnimationActive.value = true
@@ -128,7 +128,7 @@ fun CalculatorButton(
     val longClickAnimValue by animateFloatAsState(
         targetValue = if (longClickAnimationActive.value) 3f else 0f,
         animationSpec = tween(
-            durationMillis = 350 / 2,
+            durationMillis = 200 / 2,
             easing = FastOutSlowInEasing
         ),
         finishedListener = {
