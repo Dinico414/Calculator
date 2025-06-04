@@ -1,13 +1,20 @@
 package com.xenon.calculator.ui.res
 
 import android.content.res.Configuration
+import android.util.Log
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -15,7 +22,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -30,6 +39,7 @@ import com.xenon.calculator.ui.values.MediumButtonHeight
 import com.xenon.calculator.ui.values.MinMediumButtonHeight
 import com.xenon.calculator.ui.values.NoElevation
 import com.xenon.calculator.ui.values.SmallPadding
+import kotlin.math.abs
 
 @Composable
 fun CalculatorButton(
@@ -92,6 +102,7 @@ fun CalculatorButton(
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     var longClickFired = remember { false }
+    var longClickAnimationActive = remember { mutableStateOf(false) }
 
     val cornerRadiusPercent by animateIntAsState(
         targetValue = if (isPressed && !isScientificButton) 30 else 100,
@@ -109,10 +120,21 @@ fun CalculatorButton(
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     onLongClick()
                     longClickFired = true
+                    longClickAnimationActive.value = true
                 }
             }
         )
     }
+    val longClickAnimValue by animateFloatAsState(
+        targetValue = if (longClickAnimationActive.value) 3f else 0f,
+        animationSpec = tween(
+            durationMillis = 350 / 2,
+            easing = FastOutSlowInEasing
+        ),
+        finishedListener = {
+            longClickAnimationActive.value = false
+        }
+    )
 
     Button(
         onClick = {
@@ -123,7 +145,12 @@ fun CalculatorButton(
                 onClick()
             }
         },
-        modifier = modifier.defaultMinSize(minHeight = MediumButtonHeight, minWidth = MinMediumButtonHeight),
+        modifier = modifier
+            .defaultMinSize(
+                minWidth = MinMediumButtonHeight,
+                minHeight = MediumButtonHeight
+            )
+            .padding(abs(longClickAnimValue).dp),
         shape = RoundedCornerShape(percent = cornerRadiusPercent),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor, contentColor = contentColor
