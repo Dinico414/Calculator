@@ -74,7 +74,7 @@ fun CalculatorButton(
     val containerColor = when {
         isClear -> MaterialTheme.colorScheme.tertiary
         isSpecial -> MaterialTheme.colorScheme.inversePrimary
-        text == "INV" && isScientificButton -> if (isInverseActive) MaterialTheme.colorScheme.errorContainer else Color.Transparent
+        text == "INV" && isScientificButton -> if (isInverseActive) MaterialTheme.colorScheme.error else Color.Transparent
         isScientificButton -> Color.Transparent
         isOperator -> MaterialTheme.colorScheme.primary
         else -> MaterialTheme.colorScheme.secondaryContainer
@@ -83,7 +83,7 @@ fun CalculatorButton(
     val contentColor = when {
         isClear -> MaterialTheme.colorScheme.onPrimary
         isSpecial -> MaterialTheme.colorScheme.onSurface
-        text == "INV" && isScientificButton -> if (isInverseActive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+        text == "INV" && isScientificButton -> if (isInverseActive) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.onSurfaceVariant
         isScientificButton -> MaterialTheme.colorScheme.onSurfaceVariant
         isOperator -> MaterialTheme.colorScheme.onPrimary
         else -> MaterialTheme.colorScheme.onSurface

@@ -3,14 +3,12 @@ package com.xenon.calculator.ui.values
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape // Keep this
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp // Keep this
 import com.xenon.calculator.R
 import com.xenon.calculator.ui.res.SettingsSwitchTile
 import com.xenon.calculator.ui.res.SettingsTile
@@ -27,8 +25,8 @@ fun SettingsItems(
     appVersion: String,
     innerGroupRadius: Dp = SmallestCornerRadius,
     outerGroupRadius: Dp = MediumCornerRadius,
-    innerGroupSpacing: Dp = MediumSpacing,
-    outerGroupSpacing: Dp = LargeSpacing
+    innerGroupSpacing: Dp = SmallSpacing,
+    outerGroupSpacing: Dp = LargerSpacing
 ) {
     val context = LocalContext.current
 

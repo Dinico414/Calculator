@@ -91,7 +91,7 @@ fun CompactButtonLayout(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .animateContentSize(animationSpec = tween(durationMillis = 300)) // Faster content size animation
+                .animateContentSize(animationSpec = tween(durationMillis = 300))
         ) {
             val animatedScientificRowsInnerWeight by animateFloatAsState(
                 targetValue = if (viewModel.isScientificMode) 0.2f else 0f,
@@ -236,8 +236,8 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
                 .width(ButtonWidth)
                 .clip(RoundedCornerShape(100f)),
             colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.2f),
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                containerColor = MaterialTheme.colorScheme.inversePrimary,
+                contentColor = MaterialTheme.colorScheme.onSurface
             )
         ) {
             val rotationAngle by animateFloatAsState(
