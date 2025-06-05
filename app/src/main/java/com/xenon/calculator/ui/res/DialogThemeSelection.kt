@@ -41,12 +41,10 @@ fun ThemeSelectionDialog(
     onConfirm: () -> Unit,
 ) {
     AlertDialog(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         onDismissRequest = onDismiss,
         title = {
             Text(
                 text = stringResource(R.string.theme_dialog_title),
-                color = MaterialTheme.colorScheme.onSurface
             )
         },
         text = {
@@ -80,7 +78,6 @@ fun ThemeSelectionDialog(
                             )
                             Text(
                                 text = theme.title,
-                                color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier.padding(start = LargerPadding)
                             )
@@ -101,7 +98,8 @@ fun ThemeSelectionDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text((stringResource(R.string.cancel)), color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.cancel))
             }
-        })
+        }
+    )
 }

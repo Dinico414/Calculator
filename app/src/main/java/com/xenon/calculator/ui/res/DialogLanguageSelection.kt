@@ -11,8 +11,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -48,12 +48,10 @@ fun LanguageSelectionDialog(
     }
 
     AlertDialog(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         onDismissRequest = onDismiss,
         title = {
             Text(
                 text = stringResource(R.string.language_dialog_title),
-                color = MaterialTheme.colorScheme.onSurface
             )
         },
         text = {
@@ -91,7 +89,6 @@ fun LanguageSelectionDialog(
                             )
                             Text(
                                 text = languageOption.displayName,
-                                color = MaterialTheme.colorScheme.onSurface,
                                 style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier.padding(start = 16.dp)
                             )
@@ -114,10 +111,7 @@ fun LanguageSelectionDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(
-                    (stringResource(R.string.cancel)),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                Text(stringResource(R.string.cancel))
             }
         }
     )

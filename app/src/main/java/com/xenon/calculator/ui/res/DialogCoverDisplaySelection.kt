@@ -24,12 +24,10 @@ fun CoverDisplaySelectionDialog(
 ) {
     val context = LocalContext.current
     AlertDialog(
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         onDismissRequest = onDismiss,
         title = {
             Text(
                 text = stringResource(R.string.cover_screen_dialog_title),
-                color = MaterialTheme.colorScheme.onSurface
             )
         },
         text = {
@@ -37,7 +35,6 @@ fun CoverDisplaySelectionDialog(
             Column(Modifier.selectableGroup()) {
                 Text(
                     stringResource(R.string.cover_dialog_description),
-                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
@@ -48,12 +45,13 @@ fun CoverDisplaySelectionDialog(
         },
         confirmButton = {
             FilledTonalButton(onClick = onConfirm) {
-                Text(stringResource(R.string.ok))
+                Text(stringResource(R.string.yes))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
+                Text(stringResource(R.string.no))
             }
-        })
+        }
+    )
 }

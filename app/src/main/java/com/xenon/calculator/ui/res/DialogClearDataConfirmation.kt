@@ -26,7 +26,7 @@ fun ClearDataConfirmationDialog(
         },
         text = {
             Text(
-                text = stringResource(R.string.clear_data_description),
+                text = stringResource(R.string.clear_data_dialog_description),
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
         },

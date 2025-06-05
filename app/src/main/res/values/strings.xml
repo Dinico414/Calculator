@@ -19,7 +19,9 @@
 
     <string name="ok">OK</string>
     <string name="confirm">Confirm</string>
+    <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
+    <string name="no">No</string>
 
     <string name="theme_dialog_title">Select Theme</string>
     <string name="cover_screen_dialog_title">Is this currently the cover screen?</string>
