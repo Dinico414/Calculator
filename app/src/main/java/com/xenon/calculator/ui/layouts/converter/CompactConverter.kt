@@ -180,7 +180,7 @@ fun CompactConverter(
                         .background(MaterialTheme.colorScheme.tertiary)
                         .clickable(
                             onClick = {
-                                viewModel.onUnitsSwitch()
+                                viewModel.swapUnits()
                                 accumulatedRotation += 180f},
                             interactionSource = interactionSource,
                             indication = LocalIndication.current,

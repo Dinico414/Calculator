@@ -48,6 +48,7 @@ import com.xenon.calculator.ui.values.IconSizeSmall
 import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.MediumSpacing
 import com.xenon.calculator.ui.values.NoCornerRadius
+import com.xenon.calculator.ui.values.SmallNarrowButtonWidth
 import com.xenon.calculator.ui.values.UnitDropdown
 import com.xenon.calculator.viewmodel.ConverterViewModel
 import dev.chrisbanes.haze.HazeState
@@ -129,7 +130,7 @@ fun CoverConverter(
                     }, hazeState = hazeState
                 )
 
-                val spacing = LargerSpacing
+                val spacing = MediumSpacing
                 SubcomposeLayout(modifier = Modifier.fillMaxWidth()) { constraints ->
                     val subcomposeContent = @Composable {
 
@@ -188,12 +189,12 @@ fun CoverConverter(
                         val interactionSource = remember { MutableInteractionSource() }
                         Box(
                             modifier = Modifier
-                                .width(64.dp)
+                                .width(SmallNarrowButtonWidth)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.tertiary)
                                 .clickable(
                                     onClick = {
-                                        viewModel.onUnitsSwitch()
+                                        viewModel.swapUnits()
                                         accumulatedRotation += 180f
                                     },
                                     interactionSource = interactionSource,
@@ -206,8 +207,8 @@ fun CoverConverter(
                                 tint = MaterialTheme.colorScheme.onTertiary,
                                 modifier = Modifier
                                     .rotate(rotationAngle)
-                                    .width(IconSizeLarge)
-                                    .height(IconSizeLarge)
+                                    .width(IconSizeSmall)
+                                    .height(IconSizeSmall)
                             )
                         }
 

@@ -50,6 +50,7 @@ import com.xenon.calculator.ui.res.InputGroup
 import com.xenon.calculator.ui.res.XenonTextField
 import com.xenon.calculator.ui.values.IconSizeLarge
 import com.xenon.calculator.ui.values.LargeCornerRadius
+import com.xenon.calculator.ui.values.LargeNarrowButtonWidth
 import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.UnitDropdown
@@ -198,12 +199,12 @@ fun LandscapeCompactConverter(
                         val interactionSource = remember { MutableInteractionSource() }
                         Box(
                             modifier = Modifier
-                                .width(64.dp)
+                                .width(LargeNarrowButtonWidth)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.tertiary)
                                 .clickable(
                                     onClick = {
-                                        viewModel.onUnitsSwitch()
+                                        viewModel.swapUnits()
                                         accumulatedRotation += 180f
                                     },
                                     interactionSource = interactionSource,
