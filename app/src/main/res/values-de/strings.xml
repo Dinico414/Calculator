@@ -49,5 +49,118 @@
 
     <string name="system_default">System</string>
 
+<!-- Currency Units -->
+    <string name="currency_aed">AED VAE-Dirham</string>
+    <string name="currency_all">AL Albanischer Lek</string>
+    <string name="currency_amd">AM Armenischer Dram</string>
+    <string name="currency_aud">AU Australischer Dollar</string>
+    <string name="currency_azn">AZ Aserbaidschan-Manat</string>
+    <string name="currency_bam">BA Bosnien und Herzegowina Konvertible Mark</string>
+    <string name="currency_bgn">BG Bulgarischer Lew</string>
+    <string name="currency_brl">BR Brasilianischer Real</string>
+    <string name="currency_byn">BY Belarussischer Rubel</string>
+    <string name="currency_cad">CA Kanadischer Dollar</string>
+    <string name="currency_chf">CHF Schweizer Franken</string>
+    <string name="currency_cny">CN Chinesischer Yuan</string>
+    <string name="currency_czk">CZ Tschechische Krone</string>
+    <string name="currency_dkk">DK Dänische Krone</string>
+    <string name="currency_eur">€ Euro</string>
+    <string name="currency_gbp">£ Britisches Pfund</string>
+    <string name="currency_gel">GEL Georgischer Lari</string>
+    <string name="currency_hkd">HK Hongkong-Dollar</string>
+    <string name="currency_huf">HU Ungarischer Forint</string>
+    <string name="currency_inr">₹ Indische Rupie</string>
+    <string name="currency_isk">IS Isländische Krone</string>
+    <string name="currency_jpy">¥ Japanischer Yen</string>
+    <string name="currency_krw">₩ Südkoreanischer Won</string>
+    <string name="currency_mdl">MD Moldauischer Leu</string>
+    <string name="currency_mkd">MK Mazedonischer Denar</string>
+    <string name="currency_mxn">MX Mexikanischer Peso</string>
+    <string name="currency_nok">NO Norwegische Krone</string>
+    <string name="currency_nzd">NZ Neuseeland-Dollar</string>
+    <string name="currency_pln">PL Polnischer Zloty</string>
+    <string name="currency_ron">RO Rumänischer Leu</string>
+    <string name="currency_rsd">RS Serbischer Dinar</string>
+    <string name="currency_rub">RU Russischer Rubel</string>
+    <string name="currency_sek">SEK Schwedische Krone</string>
+    <string name="currency_sgd">SG Singapur-Dollar</string>
+    <string name="currency_try">TR Türkische Lira</string>
+    <string name="currency_uah">UA Ukrainische Hrywnja</string>
+    <string name="currency_usd">$ US-Dollar</string>
+    <string name="currency_zar">ZA Südafrikanischer Rand</string>
 
+    <!-- Area Units -->
+    <string name="area_square_kilometers">Quadratkilometer</string>
+    <string name="area_square_decameters">Quadratdekameter</string>
+    <string name="area_square_meters">Quadratmeter</string>
+    <string name="area_square_decimeters">Quadratdezimeter</string>
+    <string name="area_square_centimeters">Quadratzentimeter</string>
+    <string name="area_square_millimeters">Quadratmillimeter</string>
+    <string name="area_square_micrometers">Quadratmikrometer</string>
+    <string name="area_square_nanometers">Quadratnanometer</string>
+    <string name="area_square_miles">Quadratmeilen</string>
+    <string name="area_square_yards">Quadratyards</string>
+    <string name="area_square_feet">Quadratfuß</string>
+    <string name="area_square_inches">Quadratzoll</string>
+    <string name="area_hectares">Hektar</string>
+    <string name="area_acres">Morgen</string> <!-- Acres can also be "Acker" -->
+    <string name="area_ar">Ar</string>
+
+    <!-- Length Units -->
+    <string name="length_nanometers">Nanometer</string>
+    <string name="length_micrometers">Mikrometer</string>
+    <string name="length_millimeters">Millimeter</string>
+    <string name="length_centimeters">Zentimeter</string>
+    <string name="length_decimeters">Dezimeter</string>
+    <string name="length_meters">Meter</string>
+    <string name="length_decameters">Dekameter</string>
+    <string name="length_hectometers">Hektometer</string>
+    <string name="length_kilometers">Kilometer</string>
+    <string name="length_inches">Zoll</string>
+    <string name="length_feet">Fuß</string>
+    <string name="length_yards">Yards</string>
+    <string name="length_miles">Meilen</string>
+    <string name="length_seamiles">Seemeilen</string>
+    <string name="length_nautical_miles">Nautische Meilen</string>
+    <string name="length_light_years">Lichtjahre</string>
+    <string name="length_parsecs">Parsec</string>
+
+    <!-- Volume Units -->
+    <string name="volume_milliliters">Milliliter</string>
+    <string name="volume_liters">Liter</string>
+    <string name="volume_cubic_meters">Kubikmeter</string>
+    <string name="volume_cubic_decimeters">Kubikdezimeter</string>
+    <string name="volume_cubic_centimeters">Kubikzentimeter</string>
+    <string name="volume_cubic_millimeters">Kubikmillimeter</string>
+    <string name="volume_cubic_inches">Kubikzoll</string>
+    <string name="volume_cubic_feet">Kubikfuß</string>
+    <string name="volume_gallons_us">US-Gallonen</string>
+    <string name="volume_gallons_uk">UK-Gallonen</string>
+    <string name="volume_quart_us">US-Quart</string>
+    <string name="volume_quart_uk">UK-Quarts</string>
+    <string name="volume_teaspoon_us">US-Teelöffel</string>
+    <string name="volume_teaspoon_uk">UK-Teelöffel</string>
+    <string name="volume_tablespoon_us">US-Esslöffel</string>
+    <string name="volume_tablespoon_uk">UK-Esslöffel</string>
+    <string name="volume_pints_us">US-Pints</string>
+    <string name="volume_pints_uk">UK-Pints</string>
+    <string name="volume_cup_us">US-Tassen</string>
+    <string name="volume_cup_uk">UK-Tassen</string>
+    <string name="volume_fluid_ounce_us">US-Flüssigunzen</string>
+    <string name="volume_fluid_ounce_uk">UK-Flüssigunzen</string>
+
+    <!-- Weight Units -->
+    <string name="weight_metric_tonnes">Metrische Tonnen</string>
+    <string name="weight_kilograms">Kilogramm</string>
+    <string name="weight_grams">Gramm</string>
+    <string name="weight_milligrams">Milligramm</string>
+    <string name="weight_micrograms">Mikrogramm</string>
+    <string name="weight_nanograms">Nanogramm</string>
+    <string name="weight_imperial_tons">Imperial Tons (UK)</string>
+    <string name="weight_us_tons">US-Tonnen</string>
+    <string name="weight_pounds">Pfund</string>
+    <string name="weight_ounces">Unzen</string>
+    <string name="weight_grain">Korn</string>
+    <string name="weight_carats">Karat</string>
+    <string name="weight_stones">Stone</string>
 </resources>

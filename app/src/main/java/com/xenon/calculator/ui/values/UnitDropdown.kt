@@ -2,6 +2,7 @@ package com.xenon.calculator.ui.values
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.xenon.calculator.ui.res.GenericUnitDropdown
 import com.xenon.calculator.viewmodel.classes.AreaUnit
 import com.xenon.calculator.viewmodel.classes.ConverterType
@@ -32,35 +33,57 @@ fun UnitDropdown(
     modifier: Modifier = Modifier
 ) {
     when (selectedConverterType) {
-        ConverterType.VOLUME -> GenericUnitDropdown(
-            label,
-            VolumeUnit.entries.toTypedArray(),
-            selectedVolumeUnit,
-            onVolumeUnitSelected,
-            { it.displayName },
-            hazeState,
-            modifier
-        )
+        ConverterType.AREA -> {
+            val context = LocalContext.current
+            GenericUnitDropdown(
+                label,
+                AreaUnit.entries.toTypedArray(),
+                selectedAreaUnit,
+                onAreaUnitSelected,
+                { areaUnit -> areaUnit.getDisplayName(context) },
+                hazeState,
+                modifier
+            )
+        }
 
-        ConverterType.AREA -> GenericUnitDropdown(
-            label,
-            AreaUnit.entries.toTypedArray(),
-            selectedAreaUnit,
-            onAreaUnitSelected,
-            { it.displayName },
-            hazeState,
-            modifier
-        )
+        ConverterType.LENGTH -> {
+            val context = LocalContext.current
+            GenericUnitDropdown(
+                label,
+                LengthUnit.entries.toTypedArray(),
+                selectedLengthUnit,
+                onLengthUnitSelected,
+                { lengthUnit -> lengthUnit.getDisplayName(context) },
+                hazeState,
+                modifier
+            )
+        }
 
-        ConverterType.LENGTH -> GenericUnitDropdown(
-            label,
-            LengthUnit.entries.toTypedArray(),
-            selectedLengthUnit,
-            onLengthUnitSelected,
-            { it.displayName },
-            hazeState,
-            modifier
-        )
+        ConverterType.VOLUME -> {
+            val context = LocalContext.current
+            GenericUnitDropdown(
+                label,
+                VolumeUnit.entries.toTypedArray(),
+                selectedVolumeUnit,
+                onVolumeUnitSelected,
+                { volumeUnit -> volumeUnit.getDisplayName(context) },
+                hazeState,
+                modifier
+            )
+        }
+
+        ConverterType.WEIGHT -> {
+            val context = LocalContext.current
+            GenericUnitDropdown(
+                label,
+                WeightUnit.entries.toTypedArray(),
+                selectedWeightUnit,
+                onWeightUnitSelected,
+                { weightUnit -> weightUnit.getDisplayName(context) },
+                hazeState,
+                modifier
+            )
+        }
 
         ConverterType.TEMPERATURE -> GenericUnitDropdown(
             label,
@@ -72,24 +95,17 @@ fun UnitDropdown(
             modifier
         )
 
-        ConverterType.CURRENCY -> GenericUnitDropdown(
-            label,
-            CurrencyUnit.entries.toTypedArray(),
-            selectedCurrencyUnit,
-            onCurrencyUnitSelected,
-            { it.displayName },
-            hazeState,
-            modifier
-        )
-
-        ConverterType.WEIGHT -> GenericUnitDropdown(
-            label,
-            WeightUnit.entries.toTypedArray(),
-            selectedWeightUnit,
-            onWeightUnitSelected,
-            { it.displayName },
-            hazeState,
-            modifier
-        )
+        ConverterType.CURRENCY -> {
+            val context = LocalContext.current
+            GenericUnitDropdown(
+                label,
+                CurrencyUnit.entries.toTypedArray(),
+                selectedCurrencyUnit,
+                onCurrencyUnitSelected,
+                { currencyUnit -> currencyUnit.getDisplayName(context) },
+                hazeState,
+                modifier
+            )
+        }
     }
 }

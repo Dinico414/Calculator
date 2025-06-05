@@ -1,23 +1,30 @@
 package com.xenon.calculator.viewmodel.classes
 
+import androidx.annotation.StringRes
+import com.xenon.calculator.R
+
 enum class WeightUnit(
-    val displayName: String,
+    @StringRes val displayNameResId: Int,
     val toBaseFactor: Double
 ) {
-    METRIC_TONNES("Metric Tonnes", 1000.0 ), //T
-    KILOGRAMS("Kilograms", 1.0 ), //Kg
-    GRAMS("Grams", 1000.0 ), //g
-    MILLIGRAMS("Milligrams", 1000000.0 ), //mg
-    MICROGRAMS("Micrograms", 1000000000.0 ), //µg
-    NANOGRAMS("Nanograms", 1000000000000.0 ), //ng
-    IMPERIAL_TONS("Imperial Tons (UK)", 1016.0469088 ), //uk-T
-    US_TONS("US Tons", 907.18474 ), // us-T
-    POUNDS("Pounds", 0.45359237 ), //lb
-    OUNCES("Ounces", 0.028349523125 ), //oz
-    GRAIN("Grain", 0.00006479891 ), //gr
-    CARATS("Carats", 0.0002 ), //ct
-    STONES("Stones", 6.35029318 ); //st
+    METRIC_TONNES(R.string.weight_metric_tonnes, 1000.0),
+    KILOGRAMS(R.string.weight_kilograms, 1.0),
+    GRAMS(R.string.weight_grams, 0.001),
+    MILLIGRAMS(R.string.weight_milligrams, 1e-6),
+    MICROGRAMS(R.string.weight_micrograms, 1e-9),
+    NANOGRAMS(R.string.weight_nanograms, 1e-12),
+    IMPERIAL_TONS(R.string.weight_imperial_tons, 1016.0469088),
+    US_TONS(R.string.weight_us_tons, 907.18474),
+    POUNDS(R.string.weight_pounds, 0.45359237),
+    OUNCES(R.string.weight_ounces, 0.028349523125),
+    GRAIN(R.string.weight_grain, 0.00006479891),
+    CARATS(R.string.weight_carats, 0.0002),
+    STONES(R.string.weight_stones, 6.35029318);
 
-    fun fromBase(baseValue: Double): Double = baseValue * toBaseFactor
-    fun toBase(value: Double): Double = value / toBaseFactor
+    fun getDisplayName(context: android.content.Context): String {
+        return context.getString(displayNameResId)
+    }
+
+    fun fromBase(baseKilogramValue: Double): Double = baseKilogramValue / toBaseFactor
+    fun toBase(valueInThisUnit: Double): Double = valueInThisUnit * toBaseFactor
 }

@@ -1,30 +1,38 @@
 package com.xenon.calculator.viewmodel.classes
 
+import androidx.annotation.StringRes
+import com.xenon.calculator.R
+
 enum class VolumeUnit(
-    val displayName: String,
-    val toBaseFactor: Double) {
-    MILLILITERS("Milliliters", 1.0), //ml
-    LITERS("Liters", 1000.0), //l
-    CUBIC_METERS("Cubic Meters", 1_000_000.0), //m^3
-    CUBIC_DECIMETERS("Cubic Decimeters", 1_000.0), //dm^3
-    CUBIC_CENTIMETERS("Cubic Centimeters", 1.0), //cm^3
-    CUBIC_MILLIMETERS("Cubic Millimeters", 0.001), //mm^3
-    CUBIC_INCHES("Cubic Inches", 16.39), //in^3
-    CUBIC_FEET("Cubic Feet", 28.3168), //ft^3
-    GALLONS_US("US Gallons", 3785.41), //us-gal
-    GALLONS_UK("UK Gallons", 4546.09), //uk-gal
-    QUART_US("US Quart", 946.353), //qt
-    QUART_UK("UK Quarts", 1136.52), //uk-qt
-    TEASPOON_US("US Teaspoon", 4.93), //tsp
-    TEASPOON_UK("UK Teaspoon", 5.92), //uk-tsp
-    TABLESPOON_US("US Tablespoon", 14.786), //tbsp
-    TABLESPOON_UK("UK Tablespoon", 17.76), //uk-tbsp
-    PINTS_US("US Pints", 473.18), //pt
-    PINTS_UK("UK Pints", 568.26), //uk-pt
-    CUP_US("US Cups", 236.588), //cup
-    CUP_UK("UK Cups", 284.13), //uk-cup
-    FLUID_OUNCE_US("US Fluid Ounces", 29.5735), //fl-oz
-    FLUID_OUNCE_UK("UK Fluid Ounces", 28.41); //uk-fl-oz
+    @StringRes val displayNameResId: Int,
+    val toBaseFactor: Double
+) {
+    MILLILITERS(R.string.volume_milliliters, 1.0),
+    LITERS(R.string.volume_liters, 1000.0),
+    CUBIC_METERS(R.string.volume_cubic_meters, 1_000_000.0),
+    CUBIC_DECIMETERS(R.string.volume_cubic_decimeters, 1_000.0),
+    CUBIC_CENTIMETERS(R.string.volume_cubic_centimeters, 1.0),
+    CUBIC_MILLIMETERS(R.string.volume_cubic_millimeters, 0.001),
+    CUBIC_INCHES(R.string.volume_cubic_inches, 16.387064),
+    CUBIC_FEET(R.string.volume_cubic_feet, 28316.846592),
+    GALLONS_US(R.string.volume_gallons_us, 3785.41),
+    GALLONS_UK(R.string.volume_gallons_uk, 4546.09),
+    QUART_US(R.string.volume_quart_us, 946.353),
+    QUART_UK(R.string.volume_quart_uk, 1136.52),
+    TEASPOON_US(R.string.volume_teaspoon_us, 4.92892),
+    TEASPOON_UK(R.string.volume_teaspoon_uk, 5.91939),
+    TABLESPOON_US(R.string.volume_tablespoon_us, 14.7868),
+    TABLESPOON_UK(R.string.volume_tablespoon_uk, 17.7582),
+    PINTS_US(R.string.volume_pints_us, 473.176),
+    PINTS_UK(R.string.volume_pints_uk, 568.261),
+    CUP_US(R.string.volume_cup_us, 236.588),
+    CUP_UK(R.string.volume_cup_uk, 284.131),
+    FLUID_OUNCE_US(R.string.volume_fluid_ounce_us, 29.5735),
+    FLUID_OUNCE_UK(R.string.volume_fluid_ounce_uk, 28.4131);
+
+    fun getDisplayName(context: android.content.Context): String {
+        return context.getString(displayNameResId)
+    }
 
     fun fromBase(baseValue: Double): Double = baseValue / toBaseFactor
     fun toBase(value: Double): Double = value * toBaseFactor

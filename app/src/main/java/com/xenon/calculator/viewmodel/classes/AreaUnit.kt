@@ -1,24 +1,31 @@
 package com.xenon.calculator.viewmodel.classes
 
+import androidx.annotation.StringRes
+import com.xenon.calculator.R
+
 enum class AreaUnit(
-    val displayName: String,
+    @StringRes val displayNameResId: Int,
     val toBaseFactor: Double
 ) {
-    SQUARE_KILOMETERS("Square Kilometers", 1_000_000.0), //km^2
-    SQUARE_DECAMETERS("Square Decameters", 100.0), //dam^2
-    SQUARE_METERS("Square Meters", 1.0), //m^2
-    SQUARE_DECIMETERS("Square Decimeters", 0.01), //dm^2
-    SQUARE_CENTIMETERS("Square Centimeters", 0.000_1), //cm^2
-    SQUARE_MILLIMETERS("Square Millimeters", 0.000_000_1), //mm^2
-    SQUARE_MICROMETERS("Square Micrometers", 0.000_000_000_000_1), //µm^2
-    SQUARE_NANOMETERS("Square Nanometers", 0.000_000_000_000_000_000_1), //nm
-    SQUARE_MILES("Square Miles", 2_589_988.110336), //mi^2
-    SQUARE_YARDS("Square Yards", 0.83612736), //yd^2
-    SQUARE_FEET("Square Feet", 0.09290304), //ft^2
-    SQUARE_INCHES("Square Inches", 0.00064516), //in^2
-    HECTARES("Hectares", 10_000.0), //ha
-    ACRES("Acres", 4046.8564224), //ac
-    AR("Ar", 100_000.0); //Ar")
+    SQUARE_KILOMETERS(R.string.area_square_kilometers, 1_000_000.0),
+    SQUARE_DECAMETERS(R.string.area_square_decameters, 100.0),
+    SQUARE_METERS(R.string.area_square_meters, 1.0),
+    SQUARE_DECIMETERS(R.string.area_square_decimeters, 0.01),
+    SQUARE_CENTIMETERS(R.string.area_square_centimeters, 0.000_1),
+    SQUARE_MILLIMETERS(R.string.area_square_millimeters, 0.000_000_1),
+    SQUARE_MICROMETERS(R.string.area_square_micrometers, 0.000_000_000_000_1),
+    SQUARE_NANOMETERS(R.string.area_square_nanometers, 0.000_000_000_000_000_000_1),
+    SQUARE_MILES(R.string.area_square_miles, 2_589_988.110336),
+    SQUARE_YARDS(R.string.area_square_yards, 0.83612736),
+    SQUARE_FEET(R.string.area_square_feet, 0.09290304),
+    SQUARE_INCHES(R.string.area_square_inches, 0.00064516),
+    HECTARES(R.string.area_hectares, 10_000.0),
+    ACRES(R.string.area_acres, 4046.8564224),
+    AR(R.string.area_ar, 100_000.0);
+
+    fun getDisplayName(context: android.content.Context): String {
+        return context.getString(displayNameResId)
+    }
 
     fun fromBase(baseValue: Double): Double = baseValue / toBaseFactor
     fun toBase(value: Double): Double = value * toBaseFactor
