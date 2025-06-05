@@ -33,4 +33,5 @@
     <string name="clear_data_description">Löscht Appdaten und Cache</string>
     <string name="current">Aktuell:</string>
     <string name="cover_screen_mode_description">Ausgewählter äußere Bildschirm</string>
+    <string name="system_default">System</string>
 </resources>

@@ -2,6 +2,7 @@ package com.xenon.calculator.ui.layouts.buttons
 
 //import androidx.compose.animation.slideInVertically // Kept removed for simpler animation as discussed
 //import androidx.compose.animation.slideOutVertically // Kept removed for simpler animation as discussed
+
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -10,7 +11,12 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,12 +29,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,8 +49,6 @@ import com.xenon.calculator.ui.values.CompactWideButtonHeight
 import com.xenon.calculator.ui.values.CompactWideButtonWidth
 import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.LargeSpacing
-import com.xenon.calculator.ui.values.LargeWideButtonHeight
-import com.xenon.calculator.ui.values.LargeWideButtonWidth
 import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.LargestSpacing
 import com.xenon.calculator.ui.values.MediumSpacing
@@ -53,6 +56,7 @@ import com.xenon.calculator.ui.values.NoPadding
 import com.xenon.calculator.ui.values.SmallButtonSizeSpacing
 import com.xenon.calculator.ui.values.SmallestPadding
 import com.xenon.calculator.viewmodel.CalculatorViewModel
+
 
 val firaSansFamily = FontFamily(
     Font(R.font.fira_sans, FontWeight.Normal)
@@ -62,7 +66,6 @@ val ButtonWidth = CompactWideButtonWidth
 
 
 val ButtonHeight = CompactWideButtonHeight
-
 
 
 @Composable
@@ -194,13 +197,13 @@ fun CompactButtonLayout(
     }
 }
 
+
 @Composable
 fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.padding(horizontal = SmallestPadding),
         horizontalArrangement = Arrangement.spacedBy(MediumSpacing),
         verticalAlignment = Alignment.CenterVertically,
-
     ) {
         val firstButtonText = if (viewModel.isInverseMode) "x²" else "√"
         val scientificButtons1 = listOf(firstButtonText, "π", "^")
@@ -229,31 +232,34 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
             isGlobalScientificModeActive = viewModel.isScientificMode,
             onClick = { viewModel.onButtonClick("!") })
 
-        IconButton(
-            onClick = { viewModel.toggleScientificMode() },
+        val interactionSource = remember { MutableInteractionSource() }
+        Box(
             modifier = Modifier
                 .height(ButtonHeight)
                 .width(ButtonWidth)
-                .clip(RoundedCornerShape(100f)),
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.inversePrimary,
-                contentColor = MaterialTheme.colorScheme.onSurface
-            )
+                .clip(RoundedCornerShape(100f))
+                .background(MaterialTheme.colorScheme.inversePrimary)
+                .clickable(
+                    onClick = { viewModel.toggleScientificMode() },
+                    interactionSource = interactionSource,
+                    indication = LocalIndication.current,
+                ),
+            contentAlignment = Alignment.Center
         ) {
-            val rotationAngle by animateFloatAsState(
-                targetValue = if (viewModel.isScientificMode) 0f else 180f,
-                animationSpec = tween(durationMillis = 400),
-                label = "IconRotation"
-            )
-            Icon(
-                imageVector = Icons.Filled.KeyboardArrowUp,
-                contentDescription = "Toggle Scientific Panel",
-                modifier = Modifier.rotate(rotationAngle)
-            )
-        }
+        val rotationAngle by animateFloatAsState(
+            targetValue = if (viewModel.isScientificMode) 0f else 180f,
+            animationSpec = tween(durationMillis = 400),
+            label = "IconRotation"
+        )
+        Icon(
+            imageVector = Icons.Filled.KeyboardArrowUp,
+            contentDescription = "Toggle Scientific Panel",
+            modifier = Modifier.rotate(rotationAngle),
+            tint = MaterialTheme.colorScheme.onSurface
+        )
+    }
     }
 }
-
 
 @Composable
 fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
