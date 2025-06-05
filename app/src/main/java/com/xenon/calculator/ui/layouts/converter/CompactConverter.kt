@@ -2,8 +2,12 @@ package com.xenon.calculator.ui.layouts.converter
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -167,16 +171,22 @@ fun CompactConverter(
                     )
                 }
 
-                IconButton(
-                    onClick = {
-                        viewModel.onUnitsSwitch()
-                        accumulatedRotation += 180f
-                    },
+                val interactionSource = remember { MutableInteractionSource() }
+                Box(
                     modifier = Modifier
                         .height(MinMediumButtonHeight)
                         .fillMaxWidth(0.5f)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.tertiary)
+                        .clickable(
+                            onClick = {
+                                viewModel.onUnitsSwitch()
+                                accumulatedRotation += 180f},
+                            interactionSource = interactionSource,
+                            indication = LocalIndication.current,
+                        ),
+                    contentAlignment = Alignment.Center
+
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.swap),

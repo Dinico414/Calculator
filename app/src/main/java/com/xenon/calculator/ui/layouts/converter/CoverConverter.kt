@@ -2,8 +2,12 @@ package com.xenon.calculator.ui.layouts.converter
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -86,8 +90,8 @@ fun CoverConverter(
 
     ActivityScreen(
         title = { _, _ ->
-            Text(stringResource(id = R.string.converter))
-        },
+        Text(stringResource(id = R.string.converter))
+    },
         navigationIcon = if (onNavigateBack != null) {
             {
                 IconButton(onClick = onNavigateBack) {
@@ -179,15 +183,20 @@ fun CoverConverter(
                             )
                         }
 
-                        IconButton(
-                            onClick = {
-                                viewModel.onUnitsSwitch()
-                                accumulatedRotation += 180f
-                            },
+                        val interactionSource = remember { MutableInteractionSource() }
+                        Box(
                             modifier = Modifier
                                 .width(IconSizeLarge)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.tertiary)
+                                .clickable(
+                                    onClick = {
+                                        viewModel.onUnitsSwitch()
+                                        accumulatedRotation += 180f
+                                    },
+                                    interactionSource = interactionSource,
+                                    indication = LocalIndication.current,
+                                ), contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.swap),
@@ -268,8 +277,7 @@ fun CoverConverter(
                         constraints.copy(minWidth = columnWidth, maxWidth = columnWidth)
                     )
 
-                    val referenceHeight =
-                        max(column1Placeable.height, column2Placeable.height)
+                    val referenceHeight = max(column1Placeable.height, column2Placeable.height)
 
                     val iconButtonPlaceable = iconButtonMeasurable.measure(
                         Constraints.fixed(iconButtonTargetWidth, IconSizeLarge.toPx().roundToInt())
@@ -284,8 +292,7 @@ fun CoverConverter(
 
                         column1Placeable.placeRelative(0, columnY)
                         iconButtonPlaceable.placeRelative(
-                            column1Placeable.width + spacingPx,
-                            iconButtonY
+                            column1Placeable.width + spacingPx, iconButtonY
                         )
                         column2Placeable.placeRelative(
                             column1Placeable.width + spacingPx + iconButtonPlaceable.width + spacingPx,
@@ -294,6 +301,5 @@ fun CoverConverter(
                     }
                 }
             }
-        }
-    )
+        })
 }

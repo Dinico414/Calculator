@@ -3,8 +3,12 @@ package com.xenon.calculator.ui.layouts.converter
 // Remove if not used: import androidx.compose.material.icons.filled.Info
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -116,15 +120,18 @@ fun LandscapeCompactConverter(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(topStart = LargeCornerRadius, topEnd = LargeCornerRadius))
+                    .clip(
+                        RoundedCornerShape(
+                            topStart = LargeCornerRadius, topEnd = LargeCornerRadius
+                        )
+                    )
                     .background(MaterialTheme.colorScheme.surfaceContainer)
                     .verticalScroll(rememberScrollState())
                     .padding(
                         start = LargePadding,
                         end = LargePadding,
                         top = LargePadding,
-                        bottom = WindowInsets.safeDrawing
-                            .asPaddingValues()
+                        bottom = WindowInsets.safeDrawing.asPaddingValues()
                             .calculateBottomPadding() + LargePadding
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -189,15 +196,20 @@ fun LandscapeCompactConverter(
                             )
                         }
 
-                        IconButton(
-                            onClick = {
-                                viewModel.onUnitsSwitch()
-                                accumulatedRotation += 180f
-                            },
+                        val interactionSource = remember { MutableInteractionSource() }
+                        Box(
                             modifier = Modifier
                                 .width(64.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.tertiary)
+                                .clickable(
+                                    onClick = {
+                                        viewModel.onUnitsSwitch()
+                                        accumulatedRotation += 180f
+                                    },
+                                    interactionSource = interactionSource,
+                                    indication = LocalIndication.current,
+                                ), contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.swap),
@@ -275,8 +287,7 @@ fun LandscapeCompactConverter(
                         constraints.copy(minWidth = groupWidth, maxWidth = groupWidth)
                     )
 
-                    val referenceHeightForIcon =
-                        max(group1Placeable.height, group2Placeable.height)
+                    val referenceHeightForIcon = max(group1Placeable.height, group2Placeable.height)
                     val iconButtonMinIntrinsicHeight =
                         iconButtonMeasurable.minIntrinsicHeight(iconButtonTargetWidth)
                     val iconButtonTargetHeight = (referenceHeightForIcon * 0.5f).roundToInt()
