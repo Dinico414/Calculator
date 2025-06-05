@@ -2,18 +2,22 @@ package com.xenon.calculator.viewmodel.classes
 
 enum class WeightUnit(
     val displayName: String,
-    val toBase: (Double) -> Double,
-    val fromBase: (Double) -> Double
+    val toBaseFactor: Double
 ) {
-    KILOGRAMS("Kilograms", { it }, { it }),
-    GRAMS("Grams", { it / 1000.0 }, { it * 1000.0 }),
-    MILLIGRAMS("Milligrams", { it / 1_000_000.0 }, { it * 1_000_000.0 }),
-    MICROGRAMS("Micrograms", {it / 1_000_000_000.0 }, { it * 1_000_000_000.0 }),
-    METRIC_TONNES("Metric Tonnes", { it * 1000.0 }, { it / 1000.0 }),
-    IMPERIAL_TONS("Imperial Tons (UK)", { it * 1016.0469088 }, { it / 1016.0469088 }),
-    US_TONS("US Tons", { it * 907.18474 }, { it / 907.18474 }),
-    POUNDS("Pounds", { it * 0.45359237 }, { it / 0.45359237 }),
-    OUNCES("Ounces", { it * 0.028349523125 }, { it / 0.028349523125 }),
-    CARATS("Carats", { it * 0.0002 }, { it / 0.0002 }),
-    STONES("Stones", { it * 6.35029318 }, { it / 6.35029318 });
+    METRIC_TONNES("Metric Tonnes", 1000.0 ), //T
+    KILOGRAMS("Kilograms", 1.0 ), //Kg
+    GRAMS("Grams", 1000.0 ), //g
+    MILLIGRAMS("Milligrams", 1000000.0 ), //mg
+    MICROGRAMS("Micrograms", 1000000000.0 ), //µg
+    NANOGRAMS("Nanograms", 1000000000000.0 ), //ng
+    IMPERIAL_TONS("Imperial Tons (UK)", 1016.0469088 ), //uk-T
+    US_TONS("US Tons", 907.18474 ), // us-T
+    POUNDS("Pounds", 0.45359237 ), //lb
+    OUNCES("Ounces", 0.028349523125 ), //oz
+    GRAIN("Grain", 0.00006479891 ), //gr
+    CARATS("Carats", 0.0002 ), //ct
+    STONES("Stones", 6.35029318 ); //st
+
+    fun fromBase(baseValue: Double): Double = baseValue * toBaseFactor
+    fun toBase(value: Double): Double = value / toBaseFactor
 }

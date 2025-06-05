@@ -195,28 +195,22 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
             }
         }
 
-        // Swap the displayed values
         val tempValue = _value1.value
         _value1.value = _value2.value
         _value2.value = tempValue
 
-        // After swapping units and values, recalculate based on the new state.
-        // The last edited field determines which value is the source of truth.
         if (lastEditedField == EditedField.FIELD1) {
-            // Value1 was the source, now it's in value2 field with the new "toUnit"
-            // So we need to re-calculate value1 based on value2 (which has the original value1's number)
             val inputDouble = _value2.value.toDoubleOrNull()
             if (inputDouble != null) {
-                // Convert from the new "toUnit" (which is the old "fromUnit") back to the new "fromUnit" (which is the old "toUnit")
+
                 val result =
                     performConversion(inputDouble, getCurrentToUnit(), getCurrentFromUnit())
                 _value1.value = if (result != null) decimalFormat.format(result) else ""
             } else if (_value2.value.isEmpty()) {
                 _value1.value = ""
             }
-        } else { // lastEditedField == EditedField.FIELD2
-            // Value2 was the source, now it's in value1 field with the new "fromUnit"
-            // So we need to re-calculate value2 based on value1
+        } else {
+
             val inputDouble = _value1.value.toDoubleOrNull()
             if (inputDouble != null) {
                 val result =
@@ -228,110 +222,31 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-
-    // Consolidate unit change handlers
-    fun onFromUnitChange(newUnit: Any) {
-        when (newUnit) {
-            is VolumeUnit -> _fromVolumeUnit.value = newUnit
-            is LengthUnit -> _fromLengthUnit.value = newUnit
-            is TemperatureUnit -> _fromTemperatureUnit.value = newUnit
-            is CurrencyUnit -> _fromCurrencyUnit.value = newUnit
-            is AreaUnit -> _fromAreaUnit.value = newUnit
-            is WeightUnit -> _fromWeightUnit.value = newUnit
-        }
-        lastEditedField =
-            EditedField.FIELD2 // When "from" unit changes, "value2" is derived from "value1"
-        recalculateOnTypeOrUnitChange()
-    }
-
-    fun onToUnitChange(newUnit: Any) {
-        when (newUnit) {
-            is VolumeUnit -> _toVolumeUnit.value = newUnit
-            is LengthUnit -> _toLengthUnit.value = newUnit
-            is TemperatureUnit -> _toTemperatureUnit.value = newUnit
-            is CurrencyUnit -> _toCurrencyUnit.value = newUnit
-            is AreaUnit -> _toAreaUnit.value = newUnit
-            is WeightUnit -> _toWeightUnit.value = newUnit
-        }
-        lastEditedField =
-            EditedField.FIELD1 // When "to" unit changes, "value1" is derived from "value2"
-        recalculateOnTypeOrUnitChange()
-    }
-
-
-    // This function can be removed or simplified if `swapUnits` is the only way to switch.
-    // The `swapUnits` function already handles recalculation correctly.
-    // fun onUnitsSwitch() { ... } // Consider if this is still needed or if swapUnits is enough.
-    // If you keep it, ensure it calls recalculateOnTypeOrUnitChange or has correct logic.
-    // For now, I'll assume `swapUnits` is the primary method for this.
-    // If `onUnitsSwitch` is called from UI for a generic switch button, it should call `swapUnits`.
-
-    /**
-     * Recalculates conversions when converter type or a unit changes.
-     * It respects the last edited field to determine the source of truth for conversion.
-     */
     private fun recalculateOnTypeOrUnitChange() {
         if (lastEditedField == EditedField.FIELD1) {
-            // Value1 is the source of truth, recalculate value2
             val inputDouble = _value1.value.toDoubleOrNull()
             if (inputDouble != null) {
                 val result =
                     performConversion(inputDouble, getCurrentFromUnit(), getCurrentToUnit())
                 _value2.value = if (result != null) decimalFormat.format(result) else ""
             } else {
-                _value2.value = "" // Clear if source is invalid
+                _value2.value = ""
             }
-        } else { // lastEditedField == EditedField.FIELD2
-            // Value2 is the source of truth, recalculate value1
+        } else {
+
             val inputDouble = _value2.value.toDoubleOrNull()
             if (inputDouble != null) {
-                // Convert from "toUnit" back to "fromUnit"
+
                 val result =
                     performConversion(inputDouble, getCurrentToUnit(), getCurrentFromUnit())
                 _value1.value = if (result != null) decimalFormat.format(result) else ""
             } else {
-                _value1.value = "" // Clear if source is invalid
-            }
-        }
-    }
-
-
-    // The old recalculateForUnitChange might need adjustment or replacement
-    // by the more general recalculateOnTypeOrUnitChange
-    /*
-    private fun recalculateForUnitChange(fieldWhoseUnitChanged: EditedField) {
-        // This logic is now subtly different because the "source" value matters.
-        // Let's use the new recalculateOnTypeOrUnitChange,
-        // but ensure lastEditedField is set correctly before calling.
-
-        // If fieldWhoseUnitChanged is FIELD1 (i.e. fromUnit changed),
-        // we want to recalculate value1 based on value2.
-        // So, value2 becomes the source of truth.
-        if (fieldWhoseUnitChanged == EditedField.FIELD1) {
-            val value2Double = _value2.value.toDoubleOrNull()
-            if (value2Double != null) {
-                val result = performConversion(value2Double, getCurrentToUnit(), getCurrentFromUnit())
-                _value1.value = if (result != null) decimalFormat.format(result) else ""
-            } else {
-                 // If value2 is empty, and fromUnit changes, value1 should also be empty
-                 // or reflect that no conversion is possible.
                 _value1.value = ""
             }
-        } else { // fieldWhoseUnitChanged is FIELD2 (i.e. toUnit changed)
-            // We want to recalculate value2 based on value1.
-            // So, value1 becomes the source of truth.
-            val value1Double = _value1.value.toDoubleOrNull()
-            if (value1Double != null) {
-                val result = performConversion(value1Double, getCurrentFromUnit(), getCurrentToUnit())
-                _value2.value = if (result != null) decimalFormat.format(result) else ""
-            } else {
-                _value2.value = ""
-            }
         }
     }
-    */
 
-    // Simplified unit change handlers:
+
     fun onFromVolumeUnitChange(newUnit: VolumeUnit) {
         _fromVolumeUnit.value = newUnit; lastEditedField =
             EditedField.FIELD2; recalculateOnTypeOrUnitChange()
@@ -391,13 +306,6 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
         _toWeightUnit.value = newUnit; lastEditedField =
             EditedField.FIELD1; recalculateOnTypeOrUnitChange()
     }
-
-
-    // `onUnitsSwitch` seems to be a duplicate of `swapUnits`.
-    // Let's remove `onUnitsSwitch` and ensure `swapUnits` is used.
-    // If you had a specific reason for `onUnitsSwitch`, please clarify.
-    // fun onUnitsSwitch() { ... } // Removed, use swapUnits
-
 
     private fun getCurrentFromUnit(): Any {
         return when (_selectedConverterType.value) {
