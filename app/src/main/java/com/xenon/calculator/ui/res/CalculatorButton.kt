@@ -58,7 +58,7 @@ fun CalculatorButton(
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val haptic = LocalHapticFeedback.current // Get haptic feedback instance
+    val haptic = LocalHapticFeedback.current
 
     val targetFontSize = when {
         isScientificButton -> when {
@@ -69,7 +69,7 @@ fun CalculatorButton(
             isLandscape -> if (isGlobalScientificModeActive) 26.sp else 28.sp
             else -> if (isGlobalScientificModeActive) 26.sp else 32.sp
         }
-        else -> when { // Operators, AC, ()
+        else -> when {
             isLandscape -> if (isGlobalScientificModeActive) 26.sp else 28.sp
             else -> if (isGlobalScientificModeActive) 26.sp else 32.sp
         }

@@ -7,7 +7,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import com.xenon.calculator.R
@@ -28,8 +30,11 @@ fun SettingsItems(
     outerGroupRadius: Dp = MediumCornerRadius,
     innerGroupSpacing: Dp = SmallSpacing,
     outerGroupSpacing: Dp = LargerSpacing
+
 ) {
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
+
 
     val innerGroupShapeTop = RoundedCornerShape(
         bottomStart = innerGroupRadius,
@@ -70,7 +75,7 @@ fun SettingsItems(
         })",
         checked = coverThemeEnabled,
         onCheckedChange = { viewModel.setCoverThemeEnabled(!coverThemeEnabled) },
-        onClick = { viewModel.onCoverThemeClicked() }, // This should be for cover theme selection dialog
+        onClick = { viewModel.onCoverThemeClicked() },
         shape = innerGroupShapeBottom
     )
 
@@ -79,12 +84,9 @@ fun SettingsItems(
     SettingsTile(
         title = stringResource(id = R.string.language),
         subtitle = "${stringResource(id = R.string.current)} $currentLanguage",
-        onClick = { viewModel.onLanguageSettingClicked(context) }, // <--- CORRECTED HERE
+        onClick = { viewModel.onLanguageSettingClicked(context) },
         shape = standaloneItemShape
     )
-    // You might not need this LaunchedEffect here if language updates are handled
-    // robustly in the ViewModel and after activity restarts.
-    // Consider if viewModel.updateCurrentLanguage() in onResume of the Activity is sufficient.
     LaunchedEffect(Unit) {
         viewModel.updateCurrentLanguage()
     }
@@ -94,15 +96,18 @@ fun SettingsItems(
     SettingsTile(
         title = stringResource(id = R.string.clear_data),
         subtitle = stringResource(id = R.string.clear_data_description),
-        onClick = { viewModel.onClearDataClicked() },
+        onClick = {
+            viewModel.onClearDataClicked()
+            haptic.performHapticFeedback(HapticFeedbackType.Reject)
+        },
         shape = innerGroupShapeTop
     )
 
     Spacer(modifier = Modifier.height(innerGroupSpacing))
 
     SettingsTile(
-        title = "Version",
-        subtitle = "Version $appVersion",
+        title = stringResource(id = R.string.version),
+        subtitle = "v $appVersion",
         onClick = { viewModel.openAppInfo(context) },
         onLongClick = { viewModel.openImpressum(context) },
         shape = innerGroupShapeBottom

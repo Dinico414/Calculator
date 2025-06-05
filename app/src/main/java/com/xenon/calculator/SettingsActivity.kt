@@ -1,6 +1,5 @@
 package com.xenon.calculator
 
-// import androidx.compose.runtime.remember // Not needed for applyCoverTheme here
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent

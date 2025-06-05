@@ -8,7 +8,7 @@ import androidx.core.content.edit
 
 class SharedPreferenceManager(context: Context) {
 
-    private val prefsName = "CalculatorPrefs" // Ensure this matches usage in SettingsViewModel
+    private val prefsName = "CalculatorPrefs"
     private val themeKey = "app_theme" // 0: Light, 1: Dark, 2 (or other): System
     private val coverThemeEnabledKey = "cover_theme_enabled"
     private val coverDisplaySizeWKey = "cover_display_size_w"

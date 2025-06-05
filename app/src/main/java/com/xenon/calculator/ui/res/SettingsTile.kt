@@ -23,13 +23,13 @@ import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.ui.values.MediumCornerRadius
 
 
-@OptIn(ExperimentalFoundationApi::class) // Add this annotation
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SettingsTile(
     title: String,
     subtitle: String,
     onClick: (() -> Unit)?,
-    onLongClick: (() -> Unit)? = null, // Add onLongClick parameter
+    onLongClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
@@ -43,11 +43,11 @@ fun SettingsTile(
             .fillMaxWidth()
             .clip(shape)
             .background(backgroundColor)
-            .combinedClickable( // Use combinedClickable
-                onClick = { onClick?.invoke() }, // Call the existing onClick
-                onLongClick = { onLongClick?.invoke() }, // Call the new onLongClick
+            .combinedClickable(
+                onClick = { onClick?.invoke() },
+                onLongClick = { onLongClick?.invoke() },
                 role = Role.Button,
-                enabled = onClick != null || onLongClick != null // Enable if either is provided
+                enabled = onClick != null || onLongClick != null
             )
             .padding(horizontal = horizontalPadding, vertical = verticalPadding),
         verticalAlignment = Alignment.CenterVertically,

@@ -1,6 +1,5 @@
 package com.xenon.calculator.ui.layouts.converter
 
-// Remove if not used: import androidx.compose.material.icons.filled.Info
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.LocalIndication

@@ -26,7 +26,6 @@ open class CalculatorViewModel : ViewModel() {
         private set
 
     private var openParenthesesCount by mutableIntStateOf(0)
-        private set
 
     var isInverseMode by mutableStateOf(false)
         private set
@@ -44,8 +43,8 @@ open class CalculatorViewModel : ViewModel() {
             "AC" -> clear()
             "⌫" -> backspace()
             "=" -> calculate()
-            "π" -> appendConstant("π", Math.PI.toString())
-            "e" -> appendConstant("e", Math.E.toString())
+            "π" -> appendConstant(Math.PI.toString())
+            "e" -> appendConstant(Math.E.toString())
 
             "√" -> {
                 if (isInverseMode) {
@@ -104,7 +103,7 @@ open class CalculatorViewModel : ViewModel() {
         }
     }
 
-    private fun appendConstant(mxParserConst: String, displayValue: String) {
+    private fun appendConstant(displayValue: String) {
         currentInput += displayValue
     }
 
@@ -311,10 +310,10 @@ open class CalculatorViewModel : ViewModel() {
 
     fun onParenthesesClick() {
         val lastChar = currentInput.lastOrNull()
-        // More refined logic for when to open parenthesis
+
         if (currentInput.isEmpty() ||
             "+-×÷^%(".contains(lastChar ?: '(') ||
-            (currentInput.isNotEmpty() && currentInput.last().isLetter() && currentInput.endsWith("(") && currentInput.last() != 'e' && currentInput.last() != 'i') // after function like sin(
+            (currentInput.isNotEmpty() && currentInput.last().isLetter() && currentInput.endsWith("(") && currentInput.last() != 'e' && currentInput.last() != 'i')
         ) {
             appendOpenParenthesis()
         }

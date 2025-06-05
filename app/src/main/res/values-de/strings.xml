@@ -1,37 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Rechner</string>
+
     <string name="settings">Einstellungen</string>
-    <string name="abc_action_bar_up_description">zurück</string>
-    <string name="general">Allgemein</string>
-    <string name="language">Sprache</string>
-    <string name="theme">Theme</string>
-    <string name="clear_data">Alle Daten löschen</string>
-    <string name="clear_data_dialog">Alle Daten löschen?</string>
-    <string name="yes">Ja</string>
-    <string name="cancel">Abbruch</string>
     <string name="converter">Umrechner</string>
+
+    <string name="theme">Theme</string>
+    <string name="cover_screen_mode">Frontdisplay Modus</string>
+    <string name="language">Sprache</string>
+    <string name="clear_data">Alle Daten löschen</string>
+    <string name="version">Version</string>
+
+    <string name="current">Aktuell:</string>
+    <string name="cover_screen_mode_description">Ausgewählter Frontdisplay</string>
+    <string name="enabled">Aktiv</string>
+    <string name="disabled">Inaktiv</string>
+    <string name="clear_data_description">Löscht App Daten und Cache</string>
+
+    <string name="ok">Okay</string>
+    <string name="confirm">Bestätigen</string>
+    <string name="cancel">Abbruch</string>
+
+    <string name="theme_dialog_title">Wähle Theme</string>
+    <string name="cover_screen_dialog_title">Ist dies aktuell der Frontdisplay?</string>
+    <string name="language_dialog_title">Wähle Sprache</string>
+    <string name="clear_data_dialog_title">Alle Daten löschen?</string>
+
+    <string name="cover_dialog_description">Aktivieren, um ein kompakteres, randloses Layout anzuwenden, wenn das Frontdisplay verwendet wird.</string>
+    <string name="clear_data_dialog_description">Bist du sicher, dass du alle Daten löschen willst?</string>
+
     <string name="label_from">Von (%s)</string>
     <string name="label_to">Zu (%s)</string>
     <string name="value_1">Wert 1</string>
     <string name="value_2">Wert 2</string>
     <string name="converter_type">Umrechnungs Einheit</string>
+
     <string name="converter_type_volume">Volumen</string>
     <string name="converter_type_area">Fläche</string>
     <string name="converter_type_length">Länge</string>
     <string name="converter_type_weight">Gewicht</string>
     <string name="converter_type_temperature">Temperatur</string>
     <string name="converter_type_currency">Währung</string>
+
     <string name="switch_units_description">Wechsel Einheiten</string>
     <string name="navigate_back_description">Zurück Aktion</string>
-    <string name="confirm">Bestätigen</string>
-    <string name="cover_dialog_title">Ist dies aktuell der äußere Bildschirm?</string>
-    <string name="cover_dialog_description">Dies wird ein kompakteres Layout aktivieren</string>
-    <string name="cover_screen_mode">Äußerer Bildschirm Modus</string>
-    <string name="enabled">Aktiv</string>
-    <string name="disabled">Inaktiv</string>
-    <string name="clear_data_description">Löscht Appdaten und Cache</string>
-    <string name="current">Aktuell:</string>
-    <string name="cover_screen_mode_description">Ausgewählter äußere Bildschirm</string>
+
     <string name="system_default">System</string>
+
+
 </resources>

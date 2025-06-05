@@ -72,7 +72,6 @@ fun CoverSettings(
         kotlinx.coroutines.flow.MutableStateFlow(viewModel.applyCoverTheme(containerSize))
     }.collectAsState()
 
-    // Define the cover-specific styles
     val coverBackgroundColor = Color.Black
     val coverContentColor = Color.White
     val coverShape = RoundedCornerShape(NoCornerRadius)

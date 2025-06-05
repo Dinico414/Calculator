@@ -2,10 +2,10 @@ package com.xenon.calculator.viewmodel.classes
 
 enum class AreaUnit(
     val displayName: String,
-    val toBase: (Double) -> Double, // Function to convert this unit to square meters
-    val fromBase: (Double) -> Double  // Function to convert from square meters to this unit
+    val toBase: (Double) -> Double,
+    val fromBase: (Double) -> Double
 ) {
-    SQUARE_METERS("Square Meters", { it }, { it }), // Base unit
+    SQUARE_METERS("Square Meters", { it }, { it }),
     SQUARE_KILOMETERS("Square Kilometers", { it * 1_000_000.0 }, { it / 1_000_000.0 }),
     SQUARE_CENTIMETERS("Square Centimeters", { it / 10_000.0 }, { it * 10_000.0 }),
     SQUARE_MILLIMETERS("Square Millimeters", { it / 1_000_000.0 }, { it * 1_000_000.0 }),

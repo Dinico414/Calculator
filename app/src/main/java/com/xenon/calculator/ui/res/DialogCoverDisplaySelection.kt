@@ -5,11 +5,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
@@ -23,26 +24,36 @@ fun CoverDisplaySelectionDialog(
 ) {
     val context = LocalContext.current
     AlertDialog(
-        containerColor = Color.Black,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         onDismissRequest = onDismiss,
-        title = { Text(text = stringResource(R.string.cover_dialog_title), color = Color.White) },
+        title = {
+            Text(
+                text = stringResource(R.string.cover_screen_dialog_title),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        },
         text = {
             val containerSize = LocalWindowInfo.current.containerSize
-            Column(Modifier.selectableGroup()) { // Selectable group not strictly needed here
-                Text(stringResource(R.string.cover_dialog_description), color = Color.White)
-                Spacer(modifier = Modifier.height(8.dp)) // Increased spacer slightly
-                Text("Screen size: ${containerSize.width}x${containerSize.height} px", color = Color.LightGray)
+            Column(Modifier.selectableGroup()) {
+                Text(
+                    stringResource(R.string.cover_dialog_description),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    "Screen size: ${containerSize.width}x${containerSize.height} px",
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                )
             }
         },
         confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(stringResource(R.string.yes), color = Color.White)
+            FilledTonalButton(onClick = onConfirm) {
+                Text(stringResource(R.string.ok))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel), color = Color.White)
+                Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
             }
-        }
-    )
+        })
 }

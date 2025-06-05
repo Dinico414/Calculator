@@ -1,6 +1,6 @@
 package com.xenon.calculator.viewmodel.classes
 
-enum class CurrencyUnit(val displayName: String, val code: String) { // code is standard currency code
+enum class CurrencyUnit(val displayName: String, val code: String) {
     USD("US Dollar", "USD"),
     EUR("Euro", "EUR"),
     GBP("British Pound", "GBP"),
@@ -21,5 +21,5 @@ enum class CurrencyUnit(val displayName: String, val code: String) { // code is 
     RUB("Russian Ruble", "RUB"),
     BRL("Brazilian Real", "BRL"),
     ZAR("South African Rand", "ZAR");
-    // In a real app, conversion rates would be fetched dynamically
+
 }

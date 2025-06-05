@@ -6,19 +6,18 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.unit.IntSize
 import androidx.core.content.edit
-import androidx.core.os.LocaleListCompat // Import this
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.xenon.calculator.R // Import R
+import com.xenon.calculator.R
 import com.xenon.calculator.SharedPreferenceManager
-import com.xenon.calculator.ui.res.LanguageOption // Import LanguageOption
+import com.xenon.calculator.ui.res.LanguageOption
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +27,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.jvm.java
+//import androidx.core.net.toUri
 
 enum class ThemeSetting(val title: String, val nightModeFlag: Int) {
     LIGHT("Light", AppCompatDelegate.MODE_NIGHT_NO),
@@ -39,7 +39,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     private val sharedPreferenceManager = SharedPreferenceManager(application)
     val themeOptions = ThemeSetting.entries.toTypedArray()
 
-    // --- Existing Flows ---
     private val _persistedThemeIndexFlow = MutableStateFlow(sharedPreferenceManager.theme)
     val persistedThemeIndex: StateFlow<Int> = _persistedThemeIndexFlow.asStateFlow()
 
@@ -113,10 +112,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             }
         }
         updateCurrentLanguage()
-        prepareLanguageOptions() // Prepare language options
+        prepareLanguageOptions()
     }
-
-    // --- Existing Theme Methods ---
     fun onThemeOptionSelectedInDialog(index: Int) {
         if (index >= 0 && index < themeOptions.size) {
             _dialogPreviewThemeIndex.value = index
@@ -145,7 +142,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         _dialogPreviewThemeIndex.value = index
     }
 
-    // --- Existing Cover Theme Methods ---
     fun setCoverThemeEnabled(enabled: Boolean) {
         _enableCoverTheme.value = enabled
         sharedPreferenceManager.coverThemeEnabled = enabled
@@ -169,7 +165,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
         return sharedPreferenceManager.isCoverThemeApplied(displaySize)
     }
 
-    // --- Existing Clear Data Methods ---
     fun onClearDataClicked() {
         _showClearDataDialog.value = true
     }
@@ -189,9 +184,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             _persistedThemeIndexFlow.value = defaultThemeIndex
             _dialogPreviewThemeIndex.value = defaultThemeIndex
 
-            // Reset language to system default as well (for pre-Tiramisu)
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                setAppLocale("") // Empty string for system default
+                setAppLocale("")
             }
 
             restartApplication(getApplication())
@@ -204,10 +198,9 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
 
-    // --- Language Methods ---
     private fun getCurrentLocaleDisplayName(): String {
         val appLocale = AppCompatDelegate.getApplicationLocales().get(0)
-        return appLocale?.displayName ?: getApplication<Application>().getString(R.string.system_default) // Add string resource
+        return appLocale?.displayName ?: getApplication<Application>().getString(R.string.system_default)
     }
 
     private fun getAppLocaleTag(): String {
@@ -217,22 +210,18 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun updateCurrentLanguage() {
         _currentLanguage.value = getCurrentLocaleDisplayName()
-        _selectedLanguageTagInDialog.value = getAppLocaleTag() // Ensure dialog state is also updated
+        _selectedLanguageTagInDialog.value = getAppLocaleTag()
     }
 
     private fun prepareLanguageOptions() {
-        // Define your app's supported languages here.
-        // The "System (Default)" option should have an empty localeTag.
         val languages = mutableListOf(
-            LanguageOption(getApplication<Application>().getString(R.string.system_default), "") // System Default
+            LanguageOption(getApplication<Application>().getString(R.string.system_default), "")
         )
-        // Add other supported languages. For example:
-        // Make sure you have these strings in your resources
+
         val en = Locale("en")
         languages.add(LanguageOption(en.getDisplayLanguage(en), en.toLanguageTag()))
         val de = Locale("de")
         languages.add(LanguageOption(de.getDisplayLanguage(de), de.toLanguageTag()))
-        // Add more languages as needed
 
         _availableLanguages.value = languages
     }
@@ -246,8 +235,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             }
             context.startActivity(intent)
         } else {
-            // Show custom dialog for older versions
-            _selectedLanguageTagInDialog.value = getAppLocaleTag() // Initialize with current
+            _selectedLanguageTagInDialog.value = getAppLocaleTag()
             _showLanguageDialog.value = true
         }
     }
@@ -259,14 +247,13 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun applySelectedLanguage() {
         setAppLocale(_selectedLanguageTagInDialog.value)
         _showLanguageDialog.value = false
-        updateCurrentLanguage() // Refresh displayed language
-        // It's good practice to restart the activity for language changes to take full effect cleanly.
+        updateCurrentLanguage()
         restartApplication(getApplication())
     }
 
     private fun setAppLocale(localeTag: String) {
         val appLocale: LocaleListCompat = if (localeTag.isEmpty()) {
-            LocaleListCompat.getEmptyLocaleList() // System default
+            LocaleListCompat.getEmptyLocaleList()
         } else {
             LocaleListCompat.forLanguageTags(localeTag)
         }
@@ -275,11 +262,10 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun dismissLanguageDialog() {
         _showLanguageDialog.value = false
-        // Optionally, reset the dialog selection to the currently active language
         _selectedLanguageTagInDialog.value = getAppLocaleTag()
     }
 
-    // --- Utility Methods ---
+
     fun openAppInfo(context: Context) {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
             data = Uri.fromParts("package", context.packageName, null)
@@ -291,12 +277,12 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     fun openImpressum(context: Context) {
         Toast.makeText(context, "xenonware.com/impressum", Toast.LENGTH_LONG).show()
 
-        // val url = "http://xenonware.com/impressum"
-        // val intent = Intent(Intent.ACTION_VIEW).apply {
-        //     data = Uri.parse(url)
-        //     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        // }
-        // context.startActivity(intent)
+//         val url = "http://xenonware.com/impressum"
+//         val intent = Intent(Intent.ACTION_VIEW).apply {
+//             data = url.toUri()
+//             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//         }
+//         context.startActivity(intent)
     }
 
     private fun restartApplication(context: Context) {

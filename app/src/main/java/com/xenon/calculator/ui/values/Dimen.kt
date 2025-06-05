@@ -48,7 +48,7 @@ val IconSizeLarge = 32.dp
 val IconSizeExtraLarge = 48.dp
 
 
-val MinTouchTargetSize = 48.dp // Important for accessibility
+val MinTouchTargetSize = 48.dp
 val ListItemHeight = 72.dp
 val TextFieldDefaultHeight = 56.dp
 

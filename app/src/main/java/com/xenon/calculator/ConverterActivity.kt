@@ -21,7 +21,6 @@ class ConverterActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        WindowCompat.setDecorFitsSystemWindows(window, false) // Correctly set for edge-to-edge
         sharedPreferenceManager = SharedPreferenceManager(applicationContext)
 
         converterViewModel = ViewModelProvider(

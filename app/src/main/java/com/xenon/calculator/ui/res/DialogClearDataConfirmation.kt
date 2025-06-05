@@ -1,10 +1,12 @@
 package com.xenon.calculator.ui.res
 
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.xenon.calculator.R
 
@@ -14,23 +16,39 @@ fun ClearDataConfirmationDialog(
     onDismiss: () -> Unit,
 ) {
     AlertDialog(
-        containerColor = Color.Black,
+        containerColor = MaterialTheme.colorScheme.errorContainer,
         onDismissRequest = onDismiss,
-        title = { Text(text = stringResource(R.string.clear_data_dialog), color = Color.White) },
+        title = {
+            Text(
+                text = stringResource(R.string.clear_data_dialog_title),
+                color = MaterialTheme.colorScheme.onErrorContainer
+            )
+        },
         text = {
             Text(
-                text = stringResource(R.string.clear_data_dialog),
-                color = Color.White
+                text = stringResource(R.string.clear_data_description),
+                color = MaterialTheme.colorScheme.onErrorContainer
             )
         },
         confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(stringResource(R.string.confirm), color = Color.White)
+            FilledTonalButton(
+                onClick = onConfirm,
+                colors = ButtonDefaults.filledTonalButtonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
+                )
+            ) {
+                Text(
+                    stringResource(R.string.confirm)
+                )
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel), color = Color.White)
+                Text(
+                    stringResource(R.string.cancel),
+                    color = MaterialTheme.colorScheme.onErrorContainer
+                )
             }
         }
     )

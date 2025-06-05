@@ -52,8 +52,8 @@ fun CompactSettings(
 
     // --- Collect Language Dialog States ---
     val showLanguageDialog by viewModel.showLanguageDialog.collectAsState()
-    val availableLanguages by viewModel.availableLanguages.collectAsState() // Added
-    val selectedLanguageTagInDialog by viewModel.selectedLanguageTagInDialog.collectAsState() // Added
+    val availableLanguages by viewModel.availableLanguages.collectAsState()
+    val selectedLanguageTagInDialog by viewModel.selectedLanguageTagInDialog.collectAsState()
 
 
     val packageManager = context.packageManager
@@ -111,7 +111,7 @@ fun CompactSettings(
                 SettingsItems(
                     viewModel = viewModel,
                     currentThemeTitle = currentThemeTitle,
-                    applyCoverTheme = applyCoverTheme, // This might need to be a state if it changes reactively
+                    applyCoverTheme = applyCoverTheme,
                     coverThemeEnabled = coverThemeEnabled,
                     currentLanguage = currentLanguage,
                     appVersion = appVersion
@@ -148,11 +148,10 @@ fun CompactSettings(
                 )
             }
 
-            // --- Add the Language Selection Dialog ---
             if (showLanguageDialog && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                 LanguageSelectionDialog(
-                    availableLanguages = availableLanguages, // Now correctly referenced
-                    currentLanguageTag = selectedLanguageTagInDialog, // Now correctly referenced
+                    availableLanguages = availableLanguages,
+                    currentLanguageTag = selectedLanguageTagInDialog,
                     onLanguageSelected = { tag -> viewModel.onLanguageSelectedInDialog(tag) },
                     onDismiss = { viewModel.dismissLanguageDialog() },
                     onConfirm = { viewModel.applySelectedLanguage() }

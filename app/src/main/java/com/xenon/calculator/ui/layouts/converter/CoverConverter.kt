@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.dp
 import com.xenon.calculator.R
 import com.xenon.calculator.ui.layouts.ActivityScreen
 import com.xenon.calculator.ui.res.ConverterTypeDropdown
@@ -183,10 +184,11 @@ fun CoverConverter(
                             )
                         }
 
+
                         val interactionSource = remember { MutableInteractionSource() }
                         Box(
                             modifier = Modifier
-                                .width(IconSizeLarge)
+                                .width(64.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.tertiary)
                                 .clickable(
@@ -204,8 +206,8 @@ fun CoverConverter(
                                 tint = MaterialTheme.colorScheme.onTertiary,
                                 modifier = Modifier
                                     .rotate(rotationAngle)
-                                    .width(IconSizeSmall)
-                                    .height(IconSizeSmall)
+                                    .width(IconSizeLarge)
+                                    .height(IconSizeLarge)
                             )
                         }
 
@@ -255,51 +257,71 @@ fun CoverConverter(
                         return@SubcomposeLayout layout(0, 0) {}
                     }
 
-                    val column1Measurable = measurables[0]
+                    val group1Measurable = measurables[0]
                     val iconButtonMeasurable = measurables[1]
-                    val column2Measurable = measurables[2]
+                    val group2Measurable = measurables[2]
 
                     val spacingPx = spacing.toPx().roundToInt()
 
-                    val iconButtonTargetWidth = IconSizeLarge.toPx().roundToInt()
+                    val iconButtonTargetWidth = 64.dp.toPx().roundToInt()
 
-                    val availableWidthForColumns =
+                    val availableWidthForGroups =
                         (constraints.maxWidth - iconButtonTargetWidth - (2 * spacingPx)).coerceAtLeast(
                             0
                         )
-                    val columnWidth =
-                        if (availableWidthForColumns > 0) availableWidthForColumns / 2 else 0
+                    val groupWidth =
+                        if (availableWidthForGroups > 0) availableWidthForGroups / 2 else 0
 
-                    val column1Placeable = column1Measurable.measure(
-                        constraints.copy(minWidth = columnWidth, maxWidth = columnWidth)
+                    val group1Placeable = group1Measurable.measure(
+                        constraints.copy(minWidth = groupWidth, maxWidth = groupWidth)
                     )
-                    val column2Placeable = column2Measurable.measure(
-                        constraints.copy(minWidth = columnWidth, maxWidth = columnWidth)
+                    val group2Placeable = group2Measurable.measure(
+                        constraints.copy(minWidth = groupWidth, maxWidth = groupWidth)
                     )
 
-                    val referenceHeight = max(column1Placeable.height, column2Placeable.height)
+                    val referenceHeightForIcon = max(group1Placeable.height, group2Placeable.height)
+                    val iconButtonMinIntrinsicHeight =
+                        iconButtonMeasurable.minIntrinsicHeight(iconButtonTargetWidth)
+                    val iconButtonTargetHeight = (referenceHeightForIcon * 0.5f).roundToInt()
+                        .coerceAtLeast(iconButtonMinIntrinsicHeight)
+                        .coerceAtMost(referenceHeightForIcon)
+
 
                     val iconButtonPlaceable = iconButtonMeasurable.measure(
-                        Constraints.fixed(iconButtonTargetWidth, IconSizeLarge.toPx().roundToInt())
+                        Constraints(
+                            minWidth = iconButtonTargetWidth,
+                            maxWidth = iconButtonTargetWidth,
+                            minHeight = iconButtonTargetHeight,
+                            maxHeight = iconButtonTargetHeight
+                        )
+                    )
+                    val totalWidth =
+                        group1Placeable.width + spacingPx + iconButtonPlaceable.width + spacingPx + group2Placeable.width
+                    val maxHeight = max(
+                        group1Placeable.height,
+                        max(iconButtonPlaceable.height, group2Placeable.height)
                     )
 
 
-                    val totalHeight = referenceHeight
-
-                    layout(constraints.maxWidth, totalHeight) {
-                        val iconButtonY = (totalHeight - iconButtonPlaceable.height) / 2
-                        val columnY = (totalHeight - referenceHeight) / 2
-
-                        column1Placeable.placeRelative(0, columnY)
-                        iconButtonPlaceable.placeRelative(
-                            column1Placeable.width + spacingPx, iconButtonY
+                    layout(totalWidth, maxHeight) {
+                        var currentX = 0
+                        group1Placeable.placeRelative(
+                            currentX, (maxHeight - group1Placeable.height) / 2
                         )
-                        column2Placeable.placeRelative(
-                            column1Placeable.width + spacingPx + iconButtonPlaceable.width + spacingPx,
-                            columnY
+                        currentX += group1Placeable.width + spacingPx
+
+                        iconButtonPlaceable.placeRelative(
+                            currentX, (maxHeight - iconButtonPlaceable.height) / 2
+                        )
+                        currentX += iconButtonPlaceable.width + spacingPx
+
+                        group2Placeable.placeRelative(
+                            currentX, (maxHeight - group2Placeable.height) / 2
                         )
                     }
                 }
             }
-        })
+        }
+        // dialogs = { }
+    )
 }

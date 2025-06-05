@@ -1,7 +1,5 @@
 package com.xenon.calculator.ui.layouts.buttons
 
-//import androidx.compose.animation.slideInVertically // Kept removed for simpler animation as discussed
-//import androidx.compose.animation.slideOutVertically // Kept removed for simpler animation as discussed
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
@@ -536,7 +534,7 @@ fun OperatorBtnPortSciOn() {
     }
 }
 
-// Preview for the backspace button with Fira Sans
+
 @Preview(showBackground = true, name = "Backspace Button with Fira Sans")
 @Composable
 fun BackspaceButtonPreview() {
