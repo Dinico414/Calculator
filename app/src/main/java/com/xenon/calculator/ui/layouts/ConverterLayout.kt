@@ -24,53 +24,48 @@ fun ConverterLayout(
             LayoutType.COVER -> {
                 if (isLandscape) {
                     CoverConverter(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel
+                        onNavigateBack = onNavigateBack, viewModel = viewModel
                     )
                 } else {
                     CoverConverter(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel
+                        onNavigateBack = onNavigateBack, viewModel = viewModel
                     )
                 }
             }
 
             LayoutType.SMALL -> {
                 if (isLandscape) {
-                    LandscapeCompactConverter(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
+                    LandscapeCompactConverter(
+                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                    )
                 } else {
-                    CompactConverter(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
+                    LandscapeCompactConverter(
+                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                    )
                 }
             }
 
             LayoutType.COMPACT -> {
                 if (isLandscape) {
-                    LandscapeCompactConverter(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
+                    LandscapeCompactConverter(
+                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                    )
                 } else {
-                    CompactConverter(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
-                }}
-
-            LayoutType.MEDIUM -> {
-                if (isLandscape) {
-                    TabletConverter(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
-                } else {
-                    TabletConverter(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
+                    CompactConverter(
+                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                    )
                 }
             }
 
-            LayoutType.EXPANDED -> {
+            LayoutType.MEDIUM, LayoutType.EXPANDED -> {
                 if (isLandscape) {
-                    TabletConverter(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
+                    TabletConverter(
+                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                    )
                 } else {
-                    TabletConverter(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
+                    TabletConverter(
+                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                    )
                 }
             }
         }
