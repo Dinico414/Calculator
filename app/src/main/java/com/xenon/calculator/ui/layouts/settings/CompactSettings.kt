@@ -1,6 +1,6 @@
 package com.xenon.calculator.ui.layouts.settings
 
-import android.os.Build // Make sure Build is imported
+import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -27,10 +27,11 @@ import com.xenon.calculator.R
 import com.xenon.calculator.ui.layouts.ActivityScreen
 import com.xenon.calculator.ui.res.ClearDataConfirmationDialog
 import com.xenon.calculator.ui.res.CoverDisplaySelectionDialog
-import com.xenon.calculator.ui.res.LanguageSelectionDialog // Import your LanguageSelectionDialog
+import com.xenon.calculator.ui.res.LanguageSelectionDialog
 import com.xenon.calculator.ui.res.ThemeSelectionDialog
 import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.SettingsItems
+import com.xenon.calculator.viewmodel.LayoutType
 import com.xenon.calculator.viewmodel.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,9 +39,10 @@ import com.xenon.calculator.viewmodel.SettingsViewModel
 fun CompactSettings(
     onNavigateBack: () -> Unit,
     viewModel: SettingsViewModel,
+    layoutType: LayoutType,
+    isLandscape: Boolean
 ) {
     val context = LocalContext.current
-
     val currentThemeTitle by viewModel.currentThemeTitle.collectAsState()
     val showThemeDialog by viewModel.showThemeDialog.collectAsState()
     val themeOptions = viewModel.themeOptions
@@ -50,18 +52,16 @@ fun CompactSettings(
     val showCoverSelectionDialog by viewModel.showCoverSelectionDialog.collectAsState()
     val coverThemeEnabled by viewModel.enableCoverTheme.collectAsState()
 
-    // --- Collect Language Dialog States ---
     val showLanguageDialog by viewModel.showLanguageDialog.collectAsState()
     val availableLanguages by viewModel.availableLanguages.collectAsState()
     val selectedLanguageTagInDialog by viewModel.selectedLanguageTagInDialog.collectAsState()
-
 
     val packageManager = context.packageManager
     val packageName = context.packageName
     val packageInfo = remember {
         try {
             packageManager.getPackageInfo(packageName, 0)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
@@ -70,6 +70,14 @@ fun CompactSettings(
     val containerSize = LocalWindowInfo.current.containerSize
     val applyCoverTheme = remember(containerSize, coverThemeEnabled) {
         viewModel.applyCoverTheme(containerSize)
+    }
+
+    val isAppBarCollapsible = when (layoutType) {
+        LayoutType.SMALL -> false
+        LayoutType.COMPACT -> !isLandscape
+        LayoutType.MEDIUM -> true
+        LayoutType.EXPANDED -> true
+        else -> true
     }
 
     ActivityScreen(
@@ -88,11 +96,8 @@ fun CompactSettings(
                 )
             }
         },
-        appBarActions = {
-        },
-
-        isAppBarCollapsible = true,
-
+        appBarActions = {},
+        isAppBarCollapsible = isAppBarCollapsible,
         contentModifier = Modifier,
         content = { _ ->
             Column(
@@ -111,7 +116,9 @@ fun CompactSettings(
                 SettingsItems(
                     viewModel = viewModel,
                     currentThemeTitle = currentThemeTitle,
-                    applyCoverTheme = applyCoverTheme,
+                    applyCoverTheme = applyCoverTheme, // Note: LayoutType.COVER is handled by CoverSettings.
+                    // The applyCoverTheme logic here might be redundant
+                    // if CompactSettings is never used for Cover.
                     coverThemeEnabled = coverThemeEnabled,
                     currentLanguage = currentLanguage,
                     appVersion = appVersion

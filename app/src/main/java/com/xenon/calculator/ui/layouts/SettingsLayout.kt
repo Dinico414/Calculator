@@ -23,53 +23,84 @@ fun SettingsLayout(
             LayoutType.COVER -> {
                 if (isLandscape) {
                     CoverSettings(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel
+                        onNavigateBack = onNavigateBack, viewModel = viewModel
                     )
                 } else {
                     CoverSettings(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel
+                        onNavigateBack = onNavigateBack, viewModel = viewModel
                     )
                 }
             }
 
             LayoutType.SMALL -> {
                 if (isLandscape) {
-                    CompactSettings(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
+                    CompactSettings(
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = true
+                    )
                 } else {
-                    CompactSettings(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
+                    CompactSettings(
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = false
+                    )
                 }
             }
 
             LayoutType.COMPACT -> {
                 if (isLandscape) {
-                    CompactSettings(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
+                    CompactSettings(
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = true
+                    )
                 } else {
-                    CompactSettings(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
-                }}
+                    CompactSettings(
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = false
+                    )
+                }
+            }
 
             LayoutType.MEDIUM -> {
-             if (isLandscape) {
-                    CompactSettings(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
+                if (isLandscape) {
+                    CompactSettings(
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = true
+                    )
                 } else {
-                    CompactSettings(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
+                    CompactSettings(
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = false
+                    )
                 }
             }
 
             LayoutType.EXPANDED -> {
                 if (isLandscape) {
-                    CompactSettings(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
+                    CompactSettings(
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = true
+                    )
                 } else {
-                    CompactSettings(onNavigateBack = onNavigateBack,
-                        viewModel = viewModel)
+                    CompactSettings(
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = false
+                    )
                 }
             }
         }
