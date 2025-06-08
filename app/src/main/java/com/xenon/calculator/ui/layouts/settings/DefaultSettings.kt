@@ -82,12 +82,10 @@ fun DefaultSettings(
 
     ActivityScreen(
         title = { fontSize, color ->
-            Text(
-                text = stringResource(id = R.string.settings),
-                fontSize = fontSize,
-                color = color
-            )
-        },
+        Text(
+            text = stringResource(id = R.string.settings), fontSize = fontSize, color = color
+        )
+    },
         navigationIcon = {
             IconButton(onClick = onNavigateBack) {
                 Icon(
@@ -108,17 +106,14 @@ fun DefaultSettings(
                         start = LargePadding,
                         end = LargePadding,
                         top = LargePadding,
-                        bottom = WindowInsets.safeDrawing
-                            .asPaddingValues()
+                        bottom = WindowInsets.safeDrawing.asPaddingValues()
                             .calculateBottomPadding() + LargePadding
                     )
             ) {
                 SettingsItems(
                     viewModel = viewModel,
                     currentThemeTitle = currentThemeTitle,
-                    applyCoverTheme = applyCoverTheme, // Note: LayoutType.COVER is handled by CoverSettings.
-                    // The applyCoverTheme logic here might be redundant
-                    // if CompactSettings is never used for Cover.
+                    applyCoverTheme = applyCoverTheme,
                     coverThemeEnabled = coverThemeEnabled,
                     currentLanguage = currentLanguage,
                     appVersion = appVersion
@@ -138,21 +133,15 @@ fun DefaultSettings(
             }
 
             if (showCoverSelectionDialog) {
-                CoverDisplaySelectionDialog(
-                    onConfirm = {
-                        viewModel.saveCoverDisplayMetrics(containerSize)
-                    },
-                    onDismiss = { viewModel.dismissCoverThemeDialog() }
-                )
+                CoverDisplaySelectionDialog(onConfirm = {
+                    viewModel.saveCoverDisplayMetrics(containerSize)
+                }, onDismiss = { viewModel.dismissCoverThemeDialog() })
             }
 
             if (showClearDataDialog) {
-                ClearDataConfirmationDialog(
-                    onConfirm = {
-                        viewModel.confirmClearData()
-                    },
-                    onDismiss = { viewModel.dismissClearDataDialog() }
-                )
+                ClearDataConfirmationDialog(onConfirm = {
+                    viewModel.confirmClearData()
+                }, onDismiss = { viewModel.dismissClearDataDialog() })
             }
 
             if (showLanguageDialog && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
@@ -161,8 +150,7 @@ fun DefaultSettings(
                     currentLanguageTag = selectedLanguageTagInDialog,
                     onLanguageSelected = { tag -> viewModel.onLanguageSelectedInDialog(tag) },
                     onDismiss = { viewModel.dismissLanguageDialog() },
-                    onConfirm = { viewModel.applySelectedLanguage() }
-                )
+                    onConfirm = { viewModel.applySelectedLanguage() })
             }
         })
 }

@@ -1,6 +1,7 @@
 package com.xenon.calculator.ui.layouts.settings
 
 
+import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -29,6 +30,7 @@ import com.xenon.calculator.R
 import com.xenon.calculator.ui.layouts.ActivityScreen
 import com.xenon.calculator.ui.res.ClearDataConfirmationDialog
 import com.xenon.calculator.ui.res.CoverDisplaySelectionDialog
+import com.xenon.calculator.ui.res.LanguageSelectionDialog
 import com.xenon.calculator.ui.res.SettingsSwitchTile
 import com.xenon.calculator.ui.res.SettingsTile
 import com.xenon.calculator.ui.res.ThemeSelectionDialog
@@ -55,6 +57,10 @@ fun CoverSettings(
     val showClearDataDialog by viewModel.showClearDataDialog.collectAsState()
     val showCoverSelectionDialog by viewModel.showCoverSelectionDialog.collectAsState()
     val coverThemeEnabled by viewModel.enableCoverTheme.collectAsState()
+
+    val showLanguageDialog by viewModel.showLanguageDialog.collectAsState()
+    val availableLanguages by viewModel.availableLanguages.collectAsState()
+    val selectedLanguageTagInDialog by viewModel.selectedLanguageTagInDialog.collectAsState()
 
     val packageManager = context.packageManager
     val packageName = context.packageName
@@ -206,9 +212,18 @@ fun CoverSettings(
             }
 
             if (showClearDataDialog) {
-                ClearDataConfirmationDialog(
-                    onConfirm = { viewModel.confirmClearData() },
-                    onDismiss = { viewModel.dismissClearDataDialog() })
+                ClearDataConfirmationDialog(onConfirm = {
+                    viewModel.confirmClearData()
+                }, onDismiss = { viewModel.dismissClearDataDialog() })
+            }
+
+            if (showLanguageDialog && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                LanguageSelectionDialog(
+                    availableLanguages = availableLanguages,
+                    currentLanguageTag = selectedLanguageTagInDialog,
+                    onLanguageSelected = { tag -> viewModel.onLanguageSelectedInDialog(tag) },
+                    onDismiss = { viewModel.dismissLanguageDialog() },
+                    onConfirm = { viewModel.applySelectedLanguage() })
             }
         })
 }
