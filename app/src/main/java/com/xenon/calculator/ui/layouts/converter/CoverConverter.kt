@@ -43,9 +43,7 @@ import com.xenon.calculator.R
 import com.xenon.calculator.ui.layouts.ActivityScreen
 import com.xenon.calculator.ui.res.ConverterTypeDropdown
 import com.xenon.calculator.ui.res.XenonTextField
-import com.xenon.calculator.ui.values.IconSizeLarge
 import com.xenon.calculator.ui.values.IconSizeSmall
-import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.MediumSpacing
 import com.xenon.calculator.ui.values.NoCornerRadius
 import com.xenon.calculator.ui.values.SmallNarrowButtonWidth
@@ -70,17 +68,25 @@ fun CoverConverter(
     val value1 by viewModel.value1
     val value2 by viewModel.value2
 
+    val fromVolumeUnit by viewModel.fromVolumeUnit
+    val toVolumeUnit by viewModel.toVolumeUnit
+
+    val fromLengthUnit by viewModel.fromLengthUnit
+    val toLengthUnit by viewModel.toLengthUnit
+
     val fromTemperatureUnit by viewModel.fromTemperatureUnit
     val toTemperatureUnit by viewModel.toTemperatureUnit
+
     val fromCurrencyUnit by viewModel.fromCurrencyUnit
-    val fromVolumeUnit by viewModel.fromVolumeUnit
-    val fromLengthUnit by viewModel.fromLengthUnit
     val toCurrencyUnit by viewModel.toCurrencyUnit
+
     val fromWeightUnit by viewModel.fromWeightUnit
-    val toVolumeUnit by viewModel.toVolumeUnit
-    val toLengthUnit by viewModel.toLengthUnit
-    val fromAreaUnit by viewModel.fromAreaUnit
     val toWeightUnit by viewModel.toWeightUnit
+
+    val fromSpeedUnit by viewModel.fromSpeedUnit
+    val toSpeedUnit by viewModel.toSpeedUnit
+
+    val fromAreaUnit by viewModel.fromAreaUnit
     val toAreaUnit by viewModel.toAreaUnit
 
     var accumulatedRotation by remember { mutableFloatStateOf(0f) }
@@ -92,8 +98,8 @@ fun CoverConverter(
 
     ActivityScreen(
         title = { _, _ ->
-        Text(stringResource(id = R.string.converter))
-    },
+            Text(stringResource(id = R.string.converter))
+        },
         navigationIcon = if (onNavigateBack != null) {
             {
                 IconButton(onClick = onNavigateBack) {
@@ -141,15 +147,34 @@ fun CoverConverter(
                             UnitDropdown(
                                 label = fromUnitLabel(selectedType),
                                 selectedConverterType = selectedType,
+
                                 selectedVolumeUnit = fromVolumeUnit,
                                 onVolumeUnitSelected = { unit ->
                                     viewModel.onFromVolumeUnitChange(
                                         unit
                                     )
                                 },
+                                selectedAreaUnit = fromAreaUnit,
+                                onAreaUnitSelected = { unit ->
+                                    viewModel.onFromAreaUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedLengthUnit = fromLengthUnit,
                                 onLengthUnitSelected = { unit ->
                                     viewModel.onFromLengthUnitChange(
+                                        unit
+                                    )
+                                },
+                                selectedSpeedUnit = fromSpeedUnit,
+                                onSpeedUnitSelected = { unit ->
+                                    viewModel.onFromSpeedUnitChange(
+                                        unit
+                                    )
+                                },
+                                selectedWeightUnit = fromWeightUnit,
+                                onWeightUnitSelected = { unit ->
+                                    viewModel.onFromWeightUnitChange(
                                         unit
                                     )
                                 },
@@ -165,14 +190,7 @@ fun CoverConverter(
                                         unit
                                     )
                                 },
-                                selectedAreaUnit = fromAreaUnit,
-                                onAreaUnitSelected = { unit -> viewModel.onFromAreaUnitChange(unit) },
-                                selectedWeightUnit = fromWeightUnit,
-                                onWeightUnitSelected = { unit ->
-                                    viewModel.onFromWeightUnitChange(
-                                        unit
-                                    )
-                                },
+
                                 hazeState = hazeState,
                                 modifier = Modifier.fillMaxWidth()
                             )
@@ -219,10 +237,37 @@ fun CoverConverter(
                             UnitDropdown(
                                 label = toUnitLabel(selectedType),
                                 selectedConverterType = selectedType,
+
                                 selectedVolumeUnit = toVolumeUnit,
-                                onVolumeUnitSelected = { unit -> viewModel.onToVolumeUnitChange(unit) },
+                                onVolumeUnitSelected = { unit ->
+                                    viewModel.onToVolumeUnitChange(
+                                        unit
+                                    )
+                                },
+                                selectedAreaUnit = toAreaUnit,
+                                onAreaUnitSelected = { unit ->
+                                    viewModel.onToAreaUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedLengthUnit = toLengthUnit,
-                                onLengthUnitSelected = { unit -> viewModel.onToLengthUnitChange(unit) },
+                                onLengthUnitSelected = { unit ->
+                                    viewModel.onToLengthUnitChange(
+                                        unit
+                                    )
+                                },
+                                selectedSpeedUnit = toSpeedUnit,
+                                onSpeedUnitSelected = { unit ->
+                                    viewModel.onToSpeedUnitChange(
+                                        unit
+                                    )
+                                },
+                                selectedWeightUnit = toWeightUnit,
+                                onWeightUnitSelected = { unit ->
+                                    viewModel.onToWeightUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedTemperatureUnit = toTemperatureUnit,
                                 onTemperatureUnitSelected = { unit ->
                                     viewModel.onToTemperatureUnitChange(
@@ -235,10 +280,6 @@ fun CoverConverter(
                                         unit
                                     )
                                 },
-                                selectedAreaUnit = toAreaUnit,
-                                onAreaUnitSelected = { unit -> viewModel.onToAreaUnitChange(unit) },
-                                selectedWeightUnit = toWeightUnit,
-                                onWeightUnitSelected = { unit -> viewModel.onToWeightUnitChange(unit) },
                                 hazeState = hazeState,
                                 modifier = Modifier.fillMaxWidth()
                             )

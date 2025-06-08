@@ -43,6 +43,7 @@
     <string name="converter_type_weight">Weight</string>
     <string name="converter_type_temperature">Temperature</string>
     <string name="converter_type_currency">Currency</string>
+    <string name="converter_type_speed">Speed</string>
 
     <string name="switch_units_description">Switch Units</string>
     <string name="navigate_back_description">Back Action</string>
@@ -163,4 +164,19 @@
     <string name="weight_grain">Grain</string>
     <string name="weight_carats">Carats</string>
     <string name="weight_stones">Stones</string>
+
+    <!-- Speed Units -->
+    <string name="speed_meters_per_second">Meters/second</string>
+    <string name="speed_kilometers_per_hour">Kilometers/hour</string>
+    <string name="speed_miles_per_hour">Miles/hour</string>
+    <string name="speed_feet_per_second">Feet/second</string>
+    <string name="speed_knots">Knots</string>
+    <string name="speed_mach">Mach</string>
+    <string name="speed_meters_per_minute">meters/minute</string>
+    <string name="speed_meters_per_hour">meters/hour</string>
+    <string name="speed_kilometers_per_second">kilometers/second</string>
+    <string name="speed_kilometers_per_minute">kilometers/minute</string>
+    <string name="speed_inches_per_second">inches/second</string>
+    <string name="speed_yards_per_hour">yards/hour</string>
+    <string name="speed_light_speed">light speed(m/s)</string>
 </resources>

@@ -8,6 +8,7 @@ import com.xenon.calculator.viewmodel.classes.AreaUnit
 import com.xenon.calculator.viewmodel.classes.ConverterType
 import com.xenon.calculator.viewmodel.classes.CurrencyUnit
 import com.xenon.calculator.viewmodel.classes.LengthUnit
+import com.xenon.calculator.viewmodel.classes.SpeedUnit
 import com.xenon.calculator.viewmodel.classes.TemperatureUnit
 import com.xenon.calculator.viewmodel.classes.VolumeUnit
 import com.xenon.calculator.viewmodel.classes.WeightUnit
@@ -17,22 +18,45 @@ import dev.chrisbanes.haze.HazeState
 fun UnitDropdown(
     label: String,
     selectedConverterType: ConverterType,
+
     selectedVolumeUnit: VolumeUnit,
     onVolumeUnitSelected: (VolumeUnit) -> Unit,
-    selectedLengthUnit: LengthUnit,
-    onLengthUnitSelected: (LengthUnit) -> Unit,
-    selectedTemperatureUnit: TemperatureUnit,
-    onTemperatureUnitSelected: (TemperatureUnit) -> Unit,
-    selectedCurrencyUnit: CurrencyUnit,
-    onCurrencyUnitSelected: (CurrencyUnit) -> Unit,
+
     selectedAreaUnit: AreaUnit,
     onAreaUnitSelected: (AreaUnit) -> Unit,
+
+    selectedLengthUnit: LengthUnit,
+    onLengthUnitSelected: (LengthUnit) -> Unit,
+
+    selectedSpeedUnit: SpeedUnit,
+    onSpeedUnitSelected: (SpeedUnit) -> Unit,
+
     selectedWeightUnit: WeightUnit,
     onWeightUnitSelected: (WeightUnit) -> Unit,
+
+    selectedTemperatureUnit: TemperatureUnit,
+    onTemperatureUnitSelected: (TemperatureUnit) -> Unit,
+
+    selectedCurrencyUnit: CurrencyUnit,
+    onCurrencyUnitSelected: (CurrencyUnit) -> Unit,
+
     hazeState: HazeState,
     modifier: Modifier = Modifier
 ) {
     when (selectedConverterType) {
+        ConverterType.VOLUME -> {
+            val context = LocalContext.current
+            GenericUnitDropdown(
+                label,
+                VolumeUnit.entries.toTypedArray(),
+                selectedVolumeUnit,
+                onVolumeUnitSelected,
+                { volumeUnit -> volumeUnit.getDisplayName(context) },
+                hazeState,
+                modifier
+            )
+        }
+
         ConverterType.AREA -> {
             val context = LocalContext.current
             GenericUnitDropdown(
@@ -59,14 +83,14 @@ fun UnitDropdown(
             )
         }
 
-        ConverterType.VOLUME -> {
+        ConverterType.SPEED -> {
             val context = LocalContext.current
             GenericUnitDropdown(
                 label,
-                VolumeUnit.entries.toTypedArray(),
-                selectedVolumeUnit,
-                onVolumeUnitSelected,
-                { volumeUnit -> volumeUnit.getDisplayName(context) },
+                SpeedUnit.entries.toTypedArray(),
+                selectedSpeedUnit,
+                onSpeedUnitSelected,
+                { speedUnit -> speedUnit.getDisplayName(context) },
                 hazeState,
                 modifier
             )

@@ -11,6 +11,7 @@ import com.xenon.calculator.viewmodel.classes.AreaUnit
 import com.xenon.calculator.viewmodel.classes.ConverterType
 import com.xenon.calculator.viewmodel.classes.CurrencyUnit
 import com.xenon.calculator.viewmodel.classes.LengthUnit
+import com.xenon.calculator.viewmodel.classes.SpeedUnit // Import SpeedUnit
 import com.xenon.calculator.viewmodel.classes.TemperatureUnit
 import com.xenon.calculator.viewmodel.classes.VolumeUnit
 import com.xenon.calculator.viewmodel.classes.WeightUnit
@@ -36,10 +37,20 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
     private val _toVolumeUnit = mutableStateOf(VolumeUnit.MILLILITERS)
     val toVolumeUnit: State<VolumeUnit> = _toVolumeUnit
 
+    private val _fromAreaUnit = mutableStateOf(AreaUnit.SQUARE_METERS)
+    val fromAreaUnit: State<AreaUnit> = _fromAreaUnit
+    private val _toAreaUnit = mutableStateOf(AreaUnit.SQUARE_KILOMETERS)
+    val toAreaUnit: State<AreaUnit> = _toAreaUnit
+
     private val _fromLengthUnit = mutableStateOf(LengthUnit.METERS)
     val fromLengthUnit: State<LengthUnit> = _fromLengthUnit
     private val _toLengthUnit = mutableStateOf(LengthUnit.KILOMETERS)
     val toLengthUnit: State<LengthUnit> = _toLengthUnit
+
+    private val _fromSpeedUnit = mutableStateOf(SpeedUnit.METERS_PER_SECOND)
+    val fromSpeedUnit: State<SpeedUnit> = _fromSpeedUnit
+    private val _toSpeedUnit = mutableStateOf(SpeedUnit.KILOMETERS_PER_HOUR)
+    val toSpeedUnit: State<SpeedUnit> = _toSpeedUnit
 
     private val _fromTemperatureUnit = mutableStateOf(TemperatureUnit.CELSIUS)
     val fromTemperatureUnit: State<TemperatureUnit> = _fromTemperatureUnit
@@ -51,16 +62,10 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
     private val _toCurrencyUnit = mutableStateOf(CurrencyUnit.EUR)
     val toCurrencyUnit: State<CurrencyUnit> = _toCurrencyUnit
 
-    private val _fromAreaUnit = mutableStateOf(AreaUnit.SQUARE_METERS)
-    val fromAreaUnit: State<AreaUnit> = _fromAreaUnit
-    private val _toAreaUnit = mutableStateOf(AreaUnit.SQUARE_KILOMETERS)
-    val toAreaUnit: State<AreaUnit> = _toAreaUnit
-
     private val _fromWeightUnit = mutableStateOf(WeightUnit.KILOGRAMS)
     val fromWeightUnit: State<WeightUnit> = _fromWeightUnit
     private val _toWeightUnit = mutableStateOf(WeightUnit.POUNDS)
     val toWeightUnit: State<WeightUnit> = _toWeightUnit
-
 
     private val decimalFormat = DecimalFormat("#.######")
 
@@ -104,8 +109,22 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
                 } else null
             }
 
+            ConverterType.AREA -> {
+                if (fromUnit is AreaUnit && toUnit is AreaUnit) {
+                    val baseValue = fromUnit.toBase(value)
+                    toUnit.fromBase(baseValue)
+                } else null
+            }
+
             ConverterType.LENGTH -> {
                 if (fromUnit is LengthUnit && toUnit is LengthUnit) {
+                    val baseValue = fromUnit.toBase(value)
+                    toUnit.fromBase(baseValue)
+                } else null
+            }
+
+            ConverterType.SPEED -> {
+                if (fromUnit is SpeedUnit && toUnit is SpeedUnit) {
                     val baseValue = fromUnit.toBase(value)
                     toUnit.fromBase(baseValue)
                 } else null
@@ -120,15 +139,7 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
             }
 
             ConverterType.CURRENCY -> {
-
                 if (fromUnit is CurrencyUnit && toUnit is CurrencyUnit) {
-                    val baseValue = fromUnit.toBase(value)
-                    toUnit.fromBase(baseValue)
-                } else null
-            }
-
-            ConverterType.AREA -> {
-                if (fromUnit is AreaUnit && toUnit is AreaUnit) {
                     val baseValue = fromUnit.toBase(value)
                     toUnit.fromBase(baseValue)
                 } else null
@@ -169,9 +180,19 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
                     _toVolumeUnit.value; _toVolumeUnit.value = temp
             }
 
+            ConverterType.AREA -> {
+                val temp = _fromAreaUnit.value; _fromAreaUnit.value =
+                    _toAreaUnit.value; _toAreaUnit.value = temp
+            }
+
             ConverterType.LENGTH -> {
                 val temp = _fromLengthUnit.value; _fromLengthUnit.value =
                     _toLengthUnit.value; _toLengthUnit.value = temp
+            }
+
+            ConverterType.SPEED -> {
+                val temp = _fromSpeedUnit.value; _fromSpeedUnit.value =
+                    _toSpeedUnit.value; _toSpeedUnit.value = temp
             }
 
             ConverterType.TEMPERATURE -> {
@@ -184,39 +205,34 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
                     _toCurrencyUnit.value; _toCurrencyUnit.value = temp
             }
 
-            ConverterType.AREA -> {
-                val temp = _fromAreaUnit.value; _fromAreaUnit.value =
-                    _toAreaUnit.value; _toAreaUnit.value = temp
-            }
-
             ConverterType.WEIGHT -> {
                 val temp = _fromWeightUnit.value; _fromWeightUnit.value =
                     _toWeightUnit.value; _toWeightUnit.value = temp
             }
+
         }
 
         val tempValue = _value1.value
         _value1.value = _value2.value
         _value2.value = tempValue
 
-        if (lastEditedField == EditedField.FIELD1) {
+        // Recalculate based on the new unit arrangement and last edited field
+        if (lastEditedField == EditedField.FIELD1) { // If value1 was last edited, its content is now in value2
             val inputDouble = _value2.value.toDoubleOrNull()
             if (inputDouble != null) {
-
                 val result =
-                    performConversion(inputDouble, getCurrentToUnit(), getCurrentFromUnit())
+                    performConversion(inputDouble, getCurrentToUnit(), getCurrentFromUnit()) // Note: to and from are swapped here because values were swapped
                 _value1.value = if (result != null) decimalFormat.format(result) else ""
-            } else if (_value2.value.isEmpty()) {
+            } else if (_value2.value.isEmpty()) { // Handle empty input after swap
                 _value1.value = ""
             }
-        } else {
-
+        } else { // If value2 was last edited, its content is now in value1
             val inputDouble = _value1.value.toDoubleOrNull()
             if (inputDouble != null) {
                 val result =
                     performConversion(inputDouble, getCurrentFromUnit(), getCurrentToUnit())
                 _value2.value = if (result != null) decimalFormat.format(result) else ""
-            } else if (_value1.value.isEmpty()) {
+            } else if (_value1.value.isEmpty()) { // Handle empty input after swap
                 _value2.value = ""
             }
         }
@@ -230,90 +246,116 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
                     performConversion(inputDouble, getCurrentFromUnit(), getCurrentToUnit())
                 _value2.value = if (result != null) decimalFormat.format(result) else ""
             } else {
-                _value2.value = ""
+                _value2.value = "" // Clear the other field if input is invalid/empty
             }
-        } else {
-
+        } else { // lastEditedField == EditedField.FIELD2
             val inputDouble = _value2.value.toDoubleOrNull()
             if (inputDouble != null) {
-
                 val result =
-                    performConversion(inputDouble, getCurrentToUnit(), getCurrentFromUnit())
+                    performConversion(inputDouble, getCurrentToUnit(), getCurrentFromUnit()) // Note: to and from are swapped here
                 _value1.value = if (result != null) decimalFormat.format(result) else ""
             } else {
-                _value1.value = ""
+                _value1.value = "" // Clear the other field if input is invalid/empty
             }
         }
     }
 
 
     fun onFromVolumeUnitChange(newUnit: VolumeUnit) {
-        _fromVolumeUnit.value = newUnit; lastEditedField =
-            EditedField.FIELD2; recalculateOnTypeOrUnitChange()
+        _fromVolumeUnit.value = newUnit
+        // When 'from' unit changes, recalculate 'to' value (_value2) based on 'from' value (_value1)
+        lastEditedField = EditedField.FIELD1 // Treat as if _value1 was just edited
+        recalculateOnTypeOrUnitChange()
     }
 
     fun onToVolumeUnitChange(newUnit: VolumeUnit) {
-        _toVolumeUnit.value = newUnit; lastEditedField =
-            EditedField.FIELD1; recalculateOnTypeOrUnitChange()
+        _toVolumeUnit.value = newUnit
+        // When 'to' unit changes, recalculate 'to' value (_value2) based on 'from' value (_value1)
+        lastEditedField = EditedField.FIELD1 // Treat as if _value1 was just edited
+        recalculateOnTypeOrUnitChange()
     }
 
     fun onFromLengthUnitChange(newUnit: LengthUnit) {
-        _fromLengthUnit.value = newUnit; lastEditedField =
-            EditedField.FIELD2; recalculateOnTypeOrUnitChange()
+        _fromLengthUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
     }
 
     fun onToLengthUnitChange(newUnit: LengthUnit) {
-        _toLengthUnit.value = newUnit; lastEditedField =
-            EditedField.FIELD1; recalculateOnTypeOrUnitChange()
+        _toLengthUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
     }
 
     fun onFromTemperatureUnitChange(newUnit: TemperatureUnit) {
-        _fromTemperatureUnit.value = newUnit; lastEditedField =
-            EditedField.FIELD2; recalculateOnTypeOrUnitChange()
+        _fromTemperatureUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
     }
 
     fun onToTemperatureUnitChange(newUnit: TemperatureUnit) {
-        _toTemperatureUnit.value = newUnit; lastEditedField =
-            EditedField.FIELD1; recalculateOnTypeOrUnitChange()
+        _toTemperatureUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
     }
 
     fun onFromCurrencyUnitChange(newUnit: CurrencyUnit) {
-        _fromCurrencyUnit.value = newUnit; lastEditedField =
-            EditedField.FIELD2; recalculateOnTypeOrUnitChange()
+        _fromCurrencyUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
     }
 
     fun onToCurrencyUnitChange(newUnit: CurrencyUnit) {
-        _toCurrencyUnit.value = newUnit; lastEditedField =
-            EditedField.FIELD1; recalculateOnTypeOrUnitChange()
+        _toCurrencyUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
     }
 
     fun onFromAreaUnitChange(newUnit: AreaUnit) {
-        _fromAreaUnit.value = newUnit; lastEditedField =
-            EditedField.FIELD2; recalculateOnTypeOrUnitChange()
+        _fromAreaUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
     }
 
     fun onToAreaUnitChange(newUnit: AreaUnit) {
-        _toAreaUnit.value = newUnit; lastEditedField =
-            EditedField.FIELD1; recalculateOnTypeOrUnitChange()
+        _toAreaUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
     }
 
     fun onFromWeightUnitChange(newUnit: WeightUnit) {
-        _fromWeightUnit.value = newUnit; lastEditedField =
-            EditedField.FIELD2; recalculateOnTypeOrUnitChange()
+        _fromWeightUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
     }
 
     fun onToWeightUnitChange(newUnit: WeightUnit) {
-        _toWeightUnit.value = newUnit; lastEditedField =
-            EditedField.FIELD1; recalculateOnTypeOrUnitChange()
+        _toWeightUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
+    }
+
+    // Add handlers for Speed unit changes
+    fun onFromSpeedUnitChange(newUnit: SpeedUnit) {
+        _fromSpeedUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
+    }
+
+    fun onToSpeedUnitChange(newUnit: SpeedUnit) {
+        _toSpeedUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
     }
 
     private fun getCurrentFromUnit(): Any {
         return when (_selectedConverterType.value) {
             ConverterType.VOLUME -> _fromVolumeUnit.value
+            ConverterType.AREA -> _fromAreaUnit.value
             ConverterType.LENGTH -> _fromLengthUnit.value
+            ConverterType.SPEED -> _fromSpeedUnit.value
             ConverterType.TEMPERATURE -> _fromTemperatureUnit.value
             ConverterType.CURRENCY -> _fromCurrencyUnit.value
-            ConverterType.AREA -> _fromAreaUnit.value
             ConverterType.WEIGHT -> _fromWeightUnit.value
         }
     }
@@ -321,10 +363,11 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
     private fun getCurrentToUnit(): Any {
         return when (_selectedConverterType.value) {
             ConverterType.VOLUME -> _toVolumeUnit.value
+            ConverterType.AREA -> _toAreaUnit.value
             ConverterType.LENGTH -> _toLengthUnit.value
+            ConverterType.SPEED -> _toSpeedUnit.value
             ConverterType.TEMPERATURE -> _toTemperatureUnit.value
             ConverterType.CURRENCY -> _toCurrencyUnit.value
-            ConverterType.AREA -> _toAreaUnit.value
             ConverterType.WEIGHT -> _toWeightUnit.value
         }
     }

@@ -77,16 +77,25 @@ fun LandscapeCompactConverter(
 
     val fromVolumeUnit by viewModel.fromVolumeUnit
     val toVolumeUnit by viewModel.toVolumeUnit
-    val fromLengthUnit by viewModel.fromLengthUnit
-    val toLengthUnit by viewModel.toLengthUnit
-    val fromTemperatureUnit by viewModel.fromTemperatureUnit
-    val toTemperatureUnit by viewModel.toTemperatureUnit
-    val fromCurrencyUnit by viewModel.fromCurrencyUnit
-    val toCurrencyUnit by viewModel.toCurrencyUnit
+
     val fromAreaUnit by viewModel.fromAreaUnit
     val toAreaUnit by viewModel.toAreaUnit
+
+    val fromLengthUnit by viewModel.fromLengthUnit
+    val toLengthUnit by viewModel.toLengthUnit
+
+    val fromSpeedUnit by viewModel.fromSpeedUnit
+    val toSpeedUnit by viewModel.toSpeedUnit
+
     val fromWeightUnit by viewModel.fromWeightUnit
     val toWeightUnit by viewModel.toWeightUnit
+
+    val fromTemperatureUnit by viewModel.fromTemperatureUnit
+    val toTemperatureUnit by viewModel.toTemperatureUnit
+
+    val fromCurrencyUnit by viewModel.fromCurrencyUnit
+    val toCurrencyUnit by viewModel.toCurrencyUnit
+
 
     var accumulatedRotation by remember { mutableFloatStateOf(0f) }
     val rotationAngle by animateFloatAsState(
@@ -152,15 +161,36 @@ fun LandscapeCompactConverter(
                             UnitDropdown(
                                 label = fromUnitLabel(selectedType),
                                 selectedConverterType = selectedType,
+
                                 selectedVolumeUnit = fromVolumeUnit,
                                 onVolumeUnitSelected = { unit ->
                                     viewModel.onFromVolumeUnitChange(
                                         unit
                                     )
                                 },
+                                selectedAreaUnit = fromAreaUnit,
+                                onAreaUnitSelected = { unit ->
+                                    viewModel.onFromAreaUnitChange(
+                                        unit
+                                    )
+                                },
                                 selectedLengthUnit = fromLengthUnit,
                                 onLengthUnitSelected = { unit ->
                                     viewModel.onFromLengthUnitChange(
+                                        unit
+                                    )
+                                },
+
+                                selectedSpeedUnit = fromSpeedUnit,
+                                onSpeedUnitSelected = { unit ->
+                                    viewModel.onFromSpeedUnitChange(
+                                        unit
+                                    )
+                                },
+
+                                selectedWeightUnit = fromWeightUnit,
+                                onWeightUnitSelected = { unit ->
+                                    viewModel.onFromWeightUnitChange(
                                         unit
                                     )
                                 },
@@ -176,14 +206,8 @@ fun LandscapeCompactConverter(
                                         unit
                                     )
                                 },
-                                selectedAreaUnit = fromAreaUnit,
-                                onAreaUnitSelected = { unit -> viewModel.onFromAreaUnitChange(unit) },
-                                selectedWeightUnit = fromWeightUnit,
-                                onWeightUnitSelected = { unit ->
-                                    viewModel.onFromWeightUnitChange(
-                                        unit
-                                    )
-                                },
+
+
                                 hazeState = hazeState,
                                 modifier = Modifier.fillMaxWidth()
                             )
@@ -226,10 +250,41 @@ fun LandscapeCompactConverter(
                             UnitDropdown(
                                 label = toUnitLabel(selectedType),
                                 selectedConverterType = selectedType,
+
                                 selectedVolumeUnit = toVolumeUnit,
-                                onVolumeUnitSelected = { unit -> viewModel.onToVolumeUnitChange(unit) },
+                                onVolumeUnitSelected = { unit ->
+                                    viewModel.onToVolumeUnitChange(
+                                        unit
+                                    )
+                                },
+
+                                selectedAreaUnit = toAreaUnit,
+                                onAreaUnitSelected = { unit ->
+                                    viewModel.onToAreaUnitChange(
+                                        unit
+                                    )
+                                },
+
                                 selectedLengthUnit = toLengthUnit,
-                                onLengthUnitSelected = { unit -> viewModel.onToLengthUnitChange(unit) },
+                                onLengthUnitSelected = { unit ->
+                                    viewModel.onToLengthUnitChange(
+                                        unit
+                                    )
+                                },
+
+                                selectedSpeedUnit = toSpeedUnit,
+                                onSpeedUnitSelected = { unit ->
+                                    viewModel.onToSpeedUnitChange(
+                                        unit
+                                    )
+                                },
+                                selectedWeightUnit = toWeightUnit,
+                                onWeightUnitSelected = { unit ->
+                                    viewModel.onToWeightUnitChange(
+                                        unit
+                                    )
+                                },
+
                                 selectedTemperatureUnit = toTemperatureUnit,
                                 onTemperatureUnitSelected = { unit ->
                                     viewModel.onToTemperatureUnitChange(
@@ -242,10 +297,7 @@ fun LandscapeCompactConverter(
                                         unit
                                     )
                                 },
-                                selectedAreaUnit = toAreaUnit,
-                                onAreaUnitSelected = { unit -> viewModel.onToAreaUnitChange(unit) },
-                                selectedWeightUnit = toWeightUnit,
-                                onWeightUnitSelected = { unit -> viewModel.onToWeightUnitChange(unit) },
+
                                 hazeState = hazeState,
                                 modifier = Modifier.fillMaxWidth()
                             )
