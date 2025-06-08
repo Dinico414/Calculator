@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.xenon.calculator.ui.layouts.settings.CompactSettings
 import com.xenon.calculator.ui.layouts.settings.CoverSettings
+import com.xenon.calculator.ui.layouts.settings.DefaultSettings
 import com.xenon.calculator.viewmodel.LayoutType
 import com.xenon.calculator.viewmodel.SettingsViewModel
 
@@ -32,70 +32,16 @@ fun SettingsLayout(
                 }
             }
 
-            LayoutType.SMALL -> {
+            LayoutType.SMALL, LayoutType.COMPACT, LayoutType.MEDIUM, LayoutType.EXPANDED -> {
                 if (isLandscape) {
-                    CompactSettings(
+                    DefaultSettings(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel,
                         layoutType = layoutType,
                         isLandscape = true
                     )
                 } else {
-                    CompactSettings(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel,
-                        layoutType = layoutType,
-                        isLandscape = false
-                    )
-                }
-            }
-
-            LayoutType.COMPACT -> {
-                if (isLandscape) {
-                    CompactSettings(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel,
-                        layoutType = layoutType,
-                        isLandscape = true
-                    )
-                } else {
-                    CompactSettings(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel,
-                        layoutType = layoutType,
-                        isLandscape = false
-                    )
-                }
-            }
-
-            LayoutType.MEDIUM -> {
-                if (isLandscape) {
-                    CompactSettings(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel,
-                        layoutType = layoutType,
-                        isLandscape = true
-                    )
-                } else {
-                    CompactSettings(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel,
-                        layoutType = layoutType,
-                        isLandscape = false
-                    )
-                }
-            }
-
-            LayoutType.EXPANDED -> {
-                if (isLandscape) {
-                    CompactSettings(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel,
-                        layoutType = layoutType,
-                        isLandscape = true
-                    )
-                } else {
-                    CompactSettings(
+                    DefaultSettings(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel,
                         layoutType = layoutType,

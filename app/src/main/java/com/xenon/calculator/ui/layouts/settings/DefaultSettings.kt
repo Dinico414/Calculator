@@ -36,7 +36,7 @@ import com.xenon.calculator.viewmodel.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CompactSettings(
+fun DefaultSettings(
     onNavigateBack: () -> Unit,
     viewModel: SettingsViewModel,
     layoutType: LayoutType,
