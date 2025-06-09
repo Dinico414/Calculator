@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.xenon.calculator.ui.values.LargeCornerRadius // Keep this if it's your default
+import dev.chrisbanes.haze.HazeState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,6 +36,7 @@ fun ActivityScreen(
     screenBackgroundColor: Color = MaterialTheme.colorScheme.background,
     contentBackgroundColor: Color = MaterialTheme.colorScheme.surfaceContainer,
     contentCornerRadius: Dp = LargeCornerRadius,
+    modifier: Modifier = Modifier,
 
     contentModifier: Modifier = Modifier,
     content: @Composable (PaddingValues) -> Unit,
@@ -45,6 +47,7 @@ fun ActivityScreen(
         navigationIcon = {
             navigationIcon?.invoke()
         },
+        modifier = modifier,
         actions = appBarActions,
         expandable = isAppBarCollapsible,
         collapsedHeight = appBarCollapsedHeight,
@@ -53,7 +56,7 @@ fun ActivityScreen(
         expandedContainerColor = appBarExpandedContainerColor,
         collapsedContainerColor = appBarCollapsedContainerColor,
         navigationIconContentColor = appBarNavigationIconContentColor,
-        actionIconContentColor = appBarActionIconContentColor
+        actionIconContentColor = appBarActionIconContentColor,
     ) { paddingValuesFromAppBar ->
         Column(
             modifier = Modifier

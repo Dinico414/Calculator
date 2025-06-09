@@ -56,6 +56,7 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2025.05.01")
     implementation(composeBom)
     androidTestImplementation(composeBom)
+    implementation("dev.chrisbanes.haze:haze:1.6.4")
 
     implementation(libs.haze.materials)
     implementation (libs.accompanist.systemuicontroller)

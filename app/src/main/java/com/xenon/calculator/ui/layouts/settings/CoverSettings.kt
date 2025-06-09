@@ -205,7 +205,8 @@ fun CoverSettings(
                         viewModel.onThemeOptionSelectedInDialog(index)
                     },
                     onDismiss = { viewModel.dismissThemeDialog() },
-                    onConfirm = { viewModel.applySelectedTheme() })
+                    onConfirm = { viewModel.applySelectedTheme() },
+                )
             }
 
             if (showCoverSelectionDialog) {

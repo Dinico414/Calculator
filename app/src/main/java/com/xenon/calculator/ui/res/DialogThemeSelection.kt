@@ -1,9 +1,8 @@
 package com.xenon.calculator.ui.res
 
-// import dev.chrisbanes.haze.haze // Not strictly needed in this file if only using hazeEffect
-// import dev.chrisbanes.haze.hazeChild // Not strictly needed in this file
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import com.xenon.calculator.R
 import com.xenon.calculator.ui.values.LargerPadding
 import com.xenon.calculator.viewmodel.ThemeSetting
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeEffect
 
 @Composable
 fun DialogThemeSelection(
