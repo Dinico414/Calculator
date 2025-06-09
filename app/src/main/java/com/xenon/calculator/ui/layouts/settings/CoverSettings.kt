@@ -205,7 +205,6 @@ fun CoverSettings(
                         viewModel.onThemeOptionSelectedInDialog(index)
                     },
                     onDismiss = { viewModel.dismissThemeDialog() },
-                    hazeState = hazeState,
                     onConfirm = { viewModel.applySelectedTheme() })
             }
 
@@ -213,7 +212,7 @@ fun CoverSettings(
                 DialogCoverDisplaySelection(
                     onConfirm = {
                     viewModel.saveCoverDisplayMetrics(containerSize)
-                }, onDismiss = { viewModel.dismissCoverThemeDialog() }, hazeState = hazeState
+                }, onDismiss = { viewModel.dismissCoverThemeDialog() }
                 )
             }
 
@@ -221,7 +220,7 @@ fun CoverSettings(
                 DialogClearDataConfirmation(
                     onConfirm = {
                     viewModel.confirmClearData()
-                }, onDismiss = { viewModel.dismissClearDataDialog() }, hazeState = hazeState
+                }, onDismiss = { viewModel.dismissClearDataDialog() }
                 )
             }
 
@@ -231,7 +230,6 @@ fun CoverSettings(
                     currentLanguageTag = selectedLanguageTagInDialog,
                     onLanguageSelected = { tag -> viewModel.onLanguageSelectedInDialog(tag) },
                     onDismiss = { viewModel.dismissLanguageDialog() },
-                    hazeState = hazeState,
                     onConfirm = { viewModel.applySelectedLanguage() })
             }
         })
