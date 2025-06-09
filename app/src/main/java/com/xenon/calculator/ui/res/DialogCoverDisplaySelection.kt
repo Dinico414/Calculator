@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.shape.RoundedCornerShape // Added
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
@@ -12,27 +11,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip // Added
-import androidx.compose.ui.graphics.Color // Added
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.xenon.calculator.R
-import com.xenon.calculator.ui.values.SmallCornerRadius // Assuming you have this or define it
-import dev.chrisbanes.haze.HazeState // Added
-import dev.chrisbanes.haze.hazeEffect // Added
-import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi // Added
-import dev.chrisbanes.haze.materials.FluentMaterials // Added
 
-@OptIn(ExperimentalHazeMaterialsApi::class)
 @Composable
 fun DialogCoverDisplaySelection(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
-    hazeState: HazeState
 ) {
-    val context = LocalContext.current
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
