@@ -28,18 +28,20 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import com.xenon.calculator.R
 import com.xenon.calculator.ui.layouts.ActivityScreen
-import com.xenon.calculator.ui.res.ClearDataConfirmationDialog
-import com.xenon.calculator.ui.res.CoverDisplaySelectionDialog
-import com.xenon.calculator.ui.res.LanguageSelectionDialog
+import com.xenon.calculator.ui.res.DialogClearDataConfirmation
+import com.xenon.calculator.ui.res.DialogCoverDisplaySelection
+import com.xenon.calculator.ui.res.DialogLanguageSelection
+import com.xenon.calculator.ui.res.DialogThemeSelection
 import com.xenon.calculator.ui.res.SettingsSwitchTile
 import com.xenon.calculator.ui.res.SettingsTile
-import com.xenon.calculator.ui.res.ThemeSelectionDialog
 import com.xenon.calculator.ui.values.ExtraLargePadding
 import com.xenon.calculator.ui.values.LargePadding
 import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.MediumPadding
 import com.xenon.calculator.ui.values.NoCornerRadius
 import com.xenon.calculator.viewmodel.SettingsViewModel
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -194,35 +196,42 @@ fun CoverSettings(
             }
         },
         dialogs = {
+            val hazeState = rememberHazeState()
             if (showThemeDialog) {
-                ThemeSelectionDialog(
+                DialogThemeSelection(
                     themeOptions = themeOptions,
                     currentThemeIndex = dialogSelectedThemeIndex,
                     onThemeSelected = { index ->
                         viewModel.onThemeOptionSelectedInDialog(index)
                     },
                     onDismiss = { viewModel.dismissThemeDialog() },
+                    hazeState = hazeState,
                     onConfirm = { viewModel.applySelectedTheme() })
             }
 
             if (showCoverSelectionDialog) {
-                CoverDisplaySelectionDialog(onConfirm = {
+                DialogCoverDisplaySelection(
+                    onConfirm = {
                     viewModel.saveCoverDisplayMetrics(containerSize)
-                }, onDismiss = { viewModel.dismissCoverThemeDialog() })
+                }, onDismiss = { viewModel.dismissCoverThemeDialog() }, hazeState = hazeState
+                )
             }
 
             if (showClearDataDialog) {
-                ClearDataConfirmationDialog(onConfirm = {
+                DialogClearDataConfirmation(
+                    onConfirm = {
                     viewModel.confirmClearData()
-                }, onDismiss = { viewModel.dismissClearDataDialog() })
+                }, onDismiss = { viewModel.dismissClearDataDialog() }, hazeState = hazeState
+                )
             }
 
             if (showLanguageDialog && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                LanguageSelectionDialog(
+                DialogLanguageSelection(
                     availableLanguages = availableLanguages,
                     currentLanguageTag = selectedLanguageTagInDialog,
                     onLanguageSelected = { tag -> viewModel.onLanguageSelectedInDialog(tag) },
                     onDismiss = { viewModel.dismissLanguageDialog() },
+                    hazeState = hazeState,
                     onConfirm = { viewModel.applySelectedLanguage() })
             }
         })
