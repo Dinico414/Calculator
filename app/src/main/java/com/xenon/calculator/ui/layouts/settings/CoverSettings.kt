@@ -2,6 +2,7 @@ package com.xenon.calculator.ui.layouts.settings
 
 
 import android.os.Build
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -40,7 +41,8 @@ import com.xenon.calculator.ui.values.LargerSpacing
 import com.xenon.calculator.ui.values.MediumPadding
 import com.xenon.calculator.ui.values.NoCornerRadius
 import com.xenon.calculator.viewmodel.SettingsViewModel
-import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,11 +88,13 @@ fun CoverSettings(
     val coverHorizontalPadding = LargePadding
     val coverItemHorizontalPadding = LargerSpacing
     val coverVerticalPadding = ExtraLargePadding
+    val hazeState = rememberHazeState()
+
 
     ActivityScreen(
         title = { _, _ ->
-        Text(stringResource(id = R.string.settings))
-    },
+            Text(stringResource(id = R.string.settings))
+        },
         navigationIcon = {
             IconButton(onClick = onNavigateBack) {
                 Icon(
@@ -106,7 +110,7 @@ fun CoverSettings(
         screenBackgroundColor = Color.Black,
         contentBackgroundColor = Color.Black,
         contentCornerRadius = NoCornerRadius,
-        contentModifier = Modifier,
+        modifier = Modifier.hazeSource(hazeState),
         content = { _ ->
             Column(
                 modifier = Modifier
@@ -194,44 +198,58 @@ fun CoverSettings(
                     verticalPadding = coverVerticalPadding
                 )
             }
-        },
-        dialogs = {
-            val hazeState = rememberHazeState()
-            if (showThemeDialog) {
-                DialogThemeSelection(
-                    themeOptions = themeOptions,
-                    currentThemeIndex = dialogSelectedThemeIndex,
-                    onThemeSelected = { index ->
-                        viewModel.onThemeOptionSelectedInDialog(index)
-                    },
-                    onDismiss = { viewModel.dismissThemeDialog() },
-                    onConfirm = { viewModel.applySelectedTheme() },
-                )
-            }
-
-            if (showCoverSelectionDialog) {
-                DialogCoverDisplaySelection(
-                    onConfirm = {
-                    viewModel.saveCoverDisplayMetrics(containerSize)
-                }, onDismiss = { viewModel.dismissCoverThemeDialog() }
-                )
-            }
-
-            if (showClearDataDialog) {
-                DialogClearDataConfirmation(
-                    onConfirm = {
-                    viewModel.confirmClearData()
-                }, onDismiss = { viewModel.dismissClearDataDialog() }
-                )
-            }
-
-            if (showLanguageDialog && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                DialogLanguageSelection(
-                    availableLanguages = availableLanguages,
-                    currentLanguageTag = selectedLanguageTagInDialog,
-                    onLanguageSelected = { tag -> viewModel.onLanguageSelectedInDialog(tag) },
-                    onDismiss = { viewModel.dismissLanguageDialog() },
-                    onConfirm = { viewModel.applySelectedLanguage() })
-            }
         })
+
+    if (showThemeDialog) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .hazeEffect(hazeState)
+        ) {
+            DialogThemeSelection(
+                themeOptions = themeOptions,
+                currentThemeIndex = dialogSelectedThemeIndex,
+                onThemeSelected = { index ->
+                    viewModel.onThemeOptionSelectedInDialog(index)
+                },
+                onDismiss = { viewModel.dismissThemeDialog() },
+                onConfirm = { viewModel.applySelectedTheme() })
+        }
+    }
+    if (showCoverSelectionDialog) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .hazeEffect(hazeState)
+        ) {
+            DialogCoverDisplaySelection(onConfirm = {
+                viewModel.saveCoverDisplayMetrics(containerSize)
+            }, onDismiss = { viewModel.dismissCoverThemeDialog() })
+        }
+    }
+    if (showClearDataDialog) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .hazeEffect(hazeState)
+        ) {
+            DialogClearDataConfirmation(onConfirm = {
+                viewModel.confirmClearData()
+            }, onDismiss = { viewModel.dismissClearDataDialog() })
+        }
+    }
+    if (showLanguageDialog && Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .hazeEffect(hazeState)
+        ) {
+            DialogLanguageSelection(
+                availableLanguages = availableLanguages,
+                currentLanguageTag = selectedLanguageTagInDialog,
+                onLanguageSelected = { tag -> viewModel.onLanguageSelectedInDialog(tag) },
+                onDismiss = { viewModel.dismissLanguageDialog() },
+                onConfirm = { viewModel.applySelectedLanguage() })
+        }
+    }
 }
