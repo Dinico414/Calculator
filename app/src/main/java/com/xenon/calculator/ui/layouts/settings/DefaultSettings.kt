@@ -1,7 +1,6 @@
 package com.xenon.calculator.ui.layouts.settings
 
 import android.os.Build
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -37,7 +36,6 @@ import com.xenon.calculator.viewmodel.LayoutType
 import com.xenon.calculator.viewmodel.SettingsViewModel
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class)

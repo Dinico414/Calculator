@@ -13,7 +13,7 @@ android {
         minSdk = 29
         targetSdk = 35
         versionCode = 5
-        versionName = "1.7.1"
+        versionName = "1.7.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -56,7 +56,7 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2025.05.01")
     implementation(composeBom)
     androidTestImplementation(composeBom)
-    implementation("dev.chrisbanes.haze:haze:1.6.4")
+    implementation(libs.haze)
 
     implementation(libs.haze.materials)
     implementation (libs.accompanist.systemuicontroller)
