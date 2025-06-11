@@ -3,6 +3,7 @@ package com.xenon.calculator.ui.layouts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -49,7 +50,7 @@ fun CollapsingAppBarLayout(
     collapsedContainerColor: Color = MaterialTheme.colorScheme.background,
     navigationIconContentColor: Color = MaterialTheme.colorScheme.onBackground,
     actionIconContentColor: Color = MaterialTheme.colorScheme.onBackground,
-    content: @Composable (paddingValues: PaddingValues) -> Unit
+    content: @Composable (paddingValues: PaddingValues) -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val expandedHeight = remember(expandable) {
@@ -113,7 +114,18 @@ fun CollapsingAppBarLayout(
                         navigationIcon()
                     }
                 },
-                actions = actions,
+                actions = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(top = curHeight - collapsedHeight),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row {
+                            actions()
+                        }
+                    }
+                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color.Transparent,
                     scrolledContainerColor = Color.Transparent,
