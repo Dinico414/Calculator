@@ -100,7 +100,7 @@ fun CoverConverter(
     ActivityScreen(
         title = {fontWeight, _, _ ->
             Text(
-                stringResource(id = R.string.settings), fontWeight = FontWeight.Bold
+                stringResource(id = R.string.settings), fontWeight = FontWeight.SemiBold
             )
         },
         navigationIcon = if (onNavigateBack != null) {

@@ -100,7 +100,7 @@ fun CompactConverter(
     ActivityScreen(title = { fontWeight, fontSize, color ->
         Text(
             text = stringResource(id = R.string.converter),
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             fontSize = fontSize,
             color = color
         )

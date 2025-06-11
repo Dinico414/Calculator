@@ -88,7 +88,7 @@ fun CoverLandscapeDisplaySection(currentInput: String, result: String, modifier:
             text = result,
             style = MaterialTheme.typography.displaySmall.copy(
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 lineHeight = 0.8.em
             ),
             color = MaterialTheme.colorScheme.onSecondaryContainer,

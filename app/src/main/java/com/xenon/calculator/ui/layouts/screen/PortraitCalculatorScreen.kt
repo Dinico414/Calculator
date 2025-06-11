@@ -78,7 +78,7 @@ fun DisplaySection(currentInput: String, result: String, modifier: Modifier = Mo
             text = result,
             style = MaterialTheme.typography.displaySmall.copy(
                 fontSize = 36.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 lineHeight = 0.8.em
             ),
             color = MaterialTheme.colorScheme.onSecondaryContainer,

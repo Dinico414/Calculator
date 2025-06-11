@@ -161,7 +161,7 @@ fun CalculatorButton(
     ) {
         Text(
             text = text,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             fontFamily = fontFamily,
             fontSize = animatedFontSize.value.sp,
             maxLines = 1,
