@@ -74,6 +74,7 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.CupertinoMaterials
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.HazeMaterials
 
 
 val OLD_APP_PACKAGE_NAMES = listOf(
@@ -339,15 +340,12 @@ fun CalculatorApp(
                     onDismissRequest = { showMenu = false },
                     offset = DpOffset(x = NoPadding, y = ButtonBoxPadding),
                     containerColor = Color.Transparent,
-                    shadowElevation = NoElevation,
+                    shadowElevation = SmallElevation,
+                    shape = RoundedCornerShape(SmallCornerRadius),
                     modifier = Modifier
-                        .padding(
-                            top = SmallMediumPadding, bottom = SmallMediumPadding
-                        )
-                        .clip(RoundedCornerShape(SmallCornerRadius))
                         .background(colorScheme.surfaceContainer)
                         .hazeEffect(
-                            state = hazeState, style = CupertinoMaterials.ultraThin()
+                            state = hazeState, style = HazeMaterials.ultraThin()
                         )
                 ) {
                     DropdownMenuItem(text = {

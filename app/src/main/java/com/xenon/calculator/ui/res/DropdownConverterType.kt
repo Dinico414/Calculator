@@ -28,6 +28,7 @@ import com.xenon.calculator.ui.values.SmallMediumPadding
 import com.xenon.calculator.viewmodel.classes.ConverterType
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.materials.CupertinoMaterials
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.FluentMaterials
 
@@ -75,9 +76,9 @@ fun ConverterTypeDropdown(
             modifier = Modifier
                 .padding(top = SmallMediumPadding, bottom = SmallMediumPadding)
                 .clip(RoundedCornerShape(SmallCornerRadius))
-                .background(colorScheme.surfaceContainer)
+                .background(colorScheme.surface)
                 .hazeEffect(
-                    state = hazeState, style = FluentMaterials.thinAcrylic()
+                    state = hazeState, style = CupertinoMaterials.regular(colorScheme.surface)
                 )
         ) {
             items.forEach { type ->
