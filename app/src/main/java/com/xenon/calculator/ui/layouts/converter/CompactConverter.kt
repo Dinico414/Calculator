@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import com.xenon.calculator.R
 import com.xenon.calculator.ui.layouts.ActivityScreen
 import com.xenon.calculator.ui.res.ConverterTypeDropdown
@@ -96,13 +97,13 @@ fun CompactConverter(
         label = "IconRotation"
     )
 
-    ActivityScreen(
-        title = { fontSize, color ->
-            Text(
-                stringResource(id = R.string.converter),
-                fontSize = fontSize,
-                color = color
-            )
+    ActivityScreen(title = { fontWeight, fontSize, color ->
+        Text(
+            text = stringResource(id = R.string.converter),
+            fontWeight = FontWeight.Bold,
+            fontSize = fontSize,
+            color = color
+        )
         },
         navigationIcon = if (onNavigateBack != null) {
             {

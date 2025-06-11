@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -40,7 +41,7 @@ import androidx.compose.ui.unit.sp
 fun CollapsingAppBarLayout(
     modifier: Modifier = Modifier,
     collapsedHeight: Dp = 54.dp,
-    title: @Composable (fontSize: TextUnit, color: Color) -> Unit = { _, _ -> },
+    title: @Composable (fontWeight: FontWeight, fontSize: TextUnit, color: Color) -> Unit = { _, _, _ -> },
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     expandable: Boolean = true,
@@ -87,6 +88,7 @@ fun CollapsingAppBarLayout(
                 derivedStateOf { collapsedHeight.times(fraction) + expandedHeight.times(1 - fraction) }
             }
             val curFontSize by remember(fraction) { derivedStateOf { (24 * fraction + 45 * (1 - fraction)).sp } }
+            val curFontWeight by remember(fraction) { derivedStateOf { if (fraction == 1f) FontWeight.Bold else FontWeight.Normal } }
 
             val interpolatedTextColor by remember(fraction, expandedTextColor, collapsedTextColor) {
                 derivedStateOf {
@@ -101,7 +103,7 @@ fun CollapsingAppBarLayout(
                             .fillMaxHeight(),
                         contentAlignment = Alignment.Center
                     ) {
-                        title(curFontSize, interpolatedTextColor)
+                        title(curFontWeight, curFontSize, interpolatedTextColor)
                     }
                 },
                 navigationIcon = {

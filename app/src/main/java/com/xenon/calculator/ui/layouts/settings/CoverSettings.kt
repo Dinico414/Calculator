@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import com.xenon.calculator.R
 import com.xenon.calculator.ui.layouts.ActivityScreen
 import com.xenon.calculator.ui.res.DialogClearDataConfirmation
@@ -92,8 +93,10 @@ fun CoverSettings(
 
 
     ActivityScreen(
-        title = { _, _ ->
-            Text(stringResource(id = R.string.settings))
+        title = {fontWeight, _, _ ->
+            Text(
+                stringResource(id = R.string.settings), fontWeight = FontWeight.Bold
+            )
         },
         navigationIcon = {
             IconButton(onClick = onNavigateBack) {

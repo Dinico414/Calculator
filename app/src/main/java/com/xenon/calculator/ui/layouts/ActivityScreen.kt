@@ -13,16 +13,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight // Import FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import com.xenon.calculator.ui.values.LargeCornerRadius // Keep this if it's your default
-import dev.chrisbanes.haze.HazeState
+import com.xenon.calculator.ui.values.LargeCornerRadius
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActivityScreen(
-    title: @Composable (fontSize: TextUnit, color: Color) -> Unit,
+    title: @Composable (fontWeight: FontWeight, fontSize: TextUnit, color: Color) -> Unit, // Updated signature
     navigationIcon: @Composable (() -> Unit)? = null,
     appBarActions: @Composable RowScope.() -> Unit = {},
     isAppBarCollapsible: Boolean = true,
@@ -37,13 +37,14 @@ fun ActivityScreen(
     contentBackgroundColor: Color = MaterialTheme.colorScheme.surfaceContainer,
     contentCornerRadius: Dp = LargeCornerRadius,
     modifier: Modifier = Modifier,
-
     contentModifier: Modifier = Modifier,
     content: @Composable (PaddingValues) -> Unit,
     dialogs: @Composable () -> Unit = {}
 ) {
     CollapsingAppBarLayout(
-        title = title,
+        title = { fontWeight, fontSize, color -> // Pass the parameters through
+            title(fontWeight, fontSize, color)
+        },
         navigationIcon = {
             navigationIcon?.invoke()
         },

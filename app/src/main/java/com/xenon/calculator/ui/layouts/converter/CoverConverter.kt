@@ -37,6 +37,7 @@ import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.xenon.calculator.R
@@ -97,8 +98,10 @@ fun CoverConverter(
     )
 
     ActivityScreen(
-        title = { _, _ ->
-            Text(stringResource(id = R.string.converter))
+        title = {fontWeight, _, _ ->
+            Text(
+                stringResource(id = R.string.settings), fontWeight = FontWeight.Bold
+            )
         },
         navigationIcon = if (onNavigateBack != null) {
             {
