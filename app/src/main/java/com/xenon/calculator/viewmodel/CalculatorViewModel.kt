@@ -8,10 +8,6 @@ import androidx.lifecycle.ViewModel
 import org.mariuszgromada.math.mxparser.Expression
 import org.mariuszgromada.math.mxparser.mXparser
 
-enum class LayoutType {
-    COVER, SMALL, COMPACT, MEDIUM, EXPANDED
-}
-
 open class CalculatorViewModel : ViewModel() {
     var currentInput by mutableStateOf("")
         private set

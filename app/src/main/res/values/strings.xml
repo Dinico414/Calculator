@@ -16,12 +16,15 @@
     <string name="disabled">Inactive</string>
     <string name="clear_data_description">Clear app data and cache</string>
 
-
     <string name="ok">OK</string>
     <string name="confirm">Confirm</string>
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
     <string name="no">No</string>
+
+    <string name="error_restarting_app">Error restarting app</string>
+    <string name="error_clearing_data_failed">Error clearing data</string>
+    <string name="error_clearing_data_permission">Permission missing</string>
 
     <string name="theme_dialog_title">Select Theme</string>
     <string name="cover_screen_dialog_title">Is this currently the cover screen?</string>

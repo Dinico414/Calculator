@@ -23,6 +23,10 @@
     <string name="cancel">Abbruch</string>
     <string name="no">Nein</string>
 
+    <string name="error_restarting_app">Fehler beim Neustart</string>
+    <string name="error_clearing_data_failed">Fehler beim Löschen der Daten</string>
+    <string name="error_clearing_data_permission">Berechtigung fehlt</string>
+
     <string name="theme_dialog_title">Wähle Theme</string>
     <string name="cover_screen_dialog_title">Ist dies aktuell der Frontdisplay?</string>
     <string name="language_dialog_title">Wähle Sprache</string>
