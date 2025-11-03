@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -20,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,19 +37,21 @@ import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
-import com.xenon.calculator.R
-import com.xenonware.calculator.ui.layouts.ActivityScreen
+import com.xenon.mylibrary.ActivityScreen
+import com.xenon.mylibrary.res.XenonTextFieldV2
+import com.xenon.mylibrary.values.IconSizeSmall
+import com.xenon.mylibrary.values.MediumPadding
+import com.xenon.mylibrary.values.MediumSpacing
+import com.xenon.mylibrary.values.NoCornerRadius
+import com.xenon.mylibrary.values.NoSpacing
+import com.xenon.mylibrary.values.SmallNarrowButtonWidth
+import com.xenonware.calculator.R
 import com.xenonware.calculator.ui.res.ConverterTypeDropdown
-import com.xenonware.calculator.ui.res.XenonTextField
-import com.xenonware.calculator.ui.values.IconSizeSmall
-import com.xenonware.calculator.ui.values.MediumSpacing
-import com.xenonware.calculator.ui.values.NoCornerRadius
-import com.xenonware.calculator.ui.values.SmallNarrowButtonWidth
-import com.xenonware.calculator.ui.values.UnitDropdown
+import com.xenonware.calculator.ui.res.UnitDropdown
 import com.xenonware.calculator.viewmodel.ConverterViewModel
+import com.xenonware.calculator.viewmodel.LayoutType
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
@@ -59,11 +61,22 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
 fun CoverConverter(
-    onNavigateBack: (() -> Unit)? = null, viewModel: ConverterViewModel
+    onNavigateBack: (() -> Unit)? = null, viewModel: ConverterViewModel, isLandscape: Boolean, layoutType: LayoutType
 ) {
     LocalContext.current
 
+    val isAppBarCollapsible = when (layoutType) {
+        LayoutType.COVER -> false
+        LayoutType.SMALL -> false
+        LayoutType.COMPACT -> !isLandscape
+        LayoutType.MEDIUM -> true
+        LayoutType.EXPANDED -> true
+    }
+
     val hazeState = remember { HazeState() }
+
+    val coverScreenBackgroundColor = Color.Black
+    val coverScreenContentColor = Color.White
 
     val selectedType by viewModel.selectedConverterType
     val value1 by viewModel.value1
@@ -98,33 +111,27 @@ fun CoverConverter(
     )
 
     ActivityScreen(
-        title = { fontWeight, _, _ ->
-            Text(
-                stringResource(id = R.string.settings), fontWeight = FontWeight.SemiBold
+        titleText = stringResource(id = R.string.converter),
+        expandable = isAppBarCollapsible,
+        navigationIconStartPadding = MediumPadding,
+        navigationIconPadding = MediumPadding,
+        navigationIconSpacing = NoSpacing,
+        navigationIcon = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.navigate_back_description),
+                modifier = Modifier.size(24.dp)
             )
         },
-        navigationIcon = if (onNavigateBack != null) {
-            {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.navigate_back_description)
-                    )
-                }
-            }
-        } else {
-            null
-        },
-        appBarActions = {},
-        isAppBarCollapsible = false,
-        appBarCollapsedContainerColor = Color.Black,
-        appBarExpandedContainerColor = Color.Black,
-        screenBackgroundColor = Color.Black,
-        contentBackgroundColor = Color.Black,
-
-        contentModifier = Modifier.hazeSource(hazeState),
+        onNavigationIconClick = onNavigateBack,
+        hasNavigationIconExtraContent = false,
+        actions = {},
+        screenBackgroundColor = coverScreenBackgroundColor,
+        contentBackgroundColor = coverScreenBackgroundColor,
+        appBarNavigationIconContentColor = coverScreenContentColor,
         contentCornerRadius = NoCornerRadius,
-
+        contentModifier = Modifier
+            .hazeSource(hazeState),
         content = { _ ->
             Column(
                 modifier = Modifier
@@ -197,12 +204,14 @@ fun CoverConverter(
                                 hazeState = hazeState,
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            XenonTextField(
+                            XenonTextFieldV2(
                                 value = value1, onValueChange = { newValue ->
                                     viewModel.onValueChanged(
                                         newValue, ConverterViewModel.EditedField.FIELD1
                                     )
-                                }, label = stringResource(id = R.string.value_1)
+                                },
+                                placeholder = {Text(stringResource(id = R.string.value_1))},
+                                singleLine = true
                             )
                         }
 
@@ -286,12 +295,14 @@ fun CoverConverter(
                                 hazeState = hazeState,
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            XenonTextField(
+                            XenonTextFieldV2(
                                 value = value2, onValueChange = { newValue ->
                                     viewModel.onValueChanged(
                                         newValue, ConverterViewModel.EditedField.FIELD2
                                     )
-                                }, label = stringResource(id = R.string.value_2)
+                                },
+                                placeholder = {Text(stringResource(id = R.string.value_2))},
+                                singleLine = true
                             )
                         }
                     }

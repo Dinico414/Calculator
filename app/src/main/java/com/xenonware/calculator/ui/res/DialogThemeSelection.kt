@@ -29,8 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.xenon.calculator.R
-import com.xenonware.calculator.ui.values.LargerPadding
+import com.xenon.mylibrary.values.LargerPadding
+import com.xenonware.calculator.R
 import com.xenonware.calculator.viewmodel.ThemeSetting
 
 @Composable

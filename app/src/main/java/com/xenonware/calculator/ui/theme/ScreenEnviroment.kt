@@ -19,15 +19,22 @@ import com.xenonware.calculator.viewmodel.LayoutType
 fun ScreenEnvironment(
     themePreference: Int,
     coverTheme: Boolean,
+    blackedOutModeEnabled: Boolean,
     content: @Composable (layoutType: LayoutType, isLandscape: Boolean) -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    // This variable determines theme based on preference ONLY
+    // val useDarkTheme = when (themePreference) {
+    //     0 -> false // Light
+    //     1 -> true  // Dark
+    //     else -> isSystemInDarkTheme() // System
+    // }
+    val useDynamicColor = true
 
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val screenWidth = this.maxWidth
         val screenHeight = this.maxHeight
-
         val dimensionForLayout = if (isLandscape) screenHeight else screenWidth
 
         val layoutType = when {
@@ -38,31 +45,37 @@ fun ScreenEnvironment(
             else -> LayoutType.EXPANDED
         }
 
-        val appIsDarkTheme = if (layoutType == LayoutType.COVER) {
-            true
-        } else {
-            when (themePreference) {
+        // This variable correctly determines if the theme should effectively be dark,
+        // considering LayoutType.COVER
+        val appIsDarkTheme = when {
+            layoutType == LayoutType.COVER -> true
+            else -> when (themePreference) {
                 0 -> false
                 1 -> true
                 else -> isSystemInDarkTheme()
             }
         }
 
-        CalculatorTheme(darkTheme = appIsDarkTheme) {
+        XenonTheme(
+            darkTheme = appIsDarkTheme, // Use appIsDarkTheme here
+            useBlackedOutDarkTheme = if (appIsDarkTheme) blackedOutModeEnabled else false, // Also use appIsDarkTheme here
+            dynamicColor = useDynamicColor
+        ) {
             val systemUiController = rememberSystemUiController()
             val view = LocalView.current
 
             val systemBarColor =
-                if (layoutType == LayoutType.COVER) Color.Black else MaterialTheme.colorScheme.background
+                if (layoutType == LayoutType.COVER) Color.Black else MaterialTheme.colorScheme.surfaceDim
+            // darkIconsForSystemBars already correctly uses appIsDarkTheme
             val darkIconsForSystemBars =
                 if (layoutType == LayoutType.COVER) false else !appIsDarkTheme
 
             if (!view.isInEditMode) {
                 SideEffect {
                     systemUiController.setStatusBarColor(
-                        color = systemBarColor, darkIcons = darkIconsForSystemBars
+                        color = Color.Transparent,
+                        darkIcons = darkIconsForSystemBars
                     )
-
                     systemUiController.setNavigationBarColor(
                         color = Color.Transparent,
                         darkIcons = darkIconsForSystemBars,
@@ -70,7 +83,6 @@ fun ScreenEnvironment(
                     )
                 }
             }
-
             content(layoutType, isLandscape)
         }
     }

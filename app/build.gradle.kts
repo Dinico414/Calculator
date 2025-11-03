@@ -5,15 +5,15 @@ plugins {
 }
 
 android {
-    namespace = "com.xenon.calculator"
-    compileSdk = 35
+    namespace = "com.xenonware.calculator"
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.xenon.calculator"
+        applicationId = "com.xenonware.calculator"
         minSdk = 29
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 5
-        versionName = "1.7.7"
+        versionName = "1.8.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -83,4 +83,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.androidx.material.icons.extended)
+
 }

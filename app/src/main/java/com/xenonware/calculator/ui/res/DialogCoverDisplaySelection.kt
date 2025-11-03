@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.xenon.calculator.R
+import com.xenonware.calculator.R
 
 @Composable
 fun DialogCoverDisplaySelection(

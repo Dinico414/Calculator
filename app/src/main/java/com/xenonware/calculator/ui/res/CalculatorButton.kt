@@ -30,10 +30,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.xenonware.calculator.ui.values.MediumButtonHeight
-import com.xenonware.calculator.ui.values.MinMediumButtonHeight
-import com.xenonware.calculator.ui.values.NoElevation
-import com.xenonware.calculator.ui.values.SmallPadding
+import com.xenon.mylibrary.values.MediumButtonHeight
+import com.xenon.mylibrary.values.MinMediumButtonHeight
+import com.xenon.mylibrary.values.NoElevation
+import com.xenon.mylibrary.values.SmallPadding
 import kotlin.math.abs
 
 @Composable

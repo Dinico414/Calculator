@@ -19,8 +19,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.xenonware.calculator.ui.values.LargeTextFieldPadding
-import com.xenonware.calculator.ui.values.LargerPadding
+import com.xenon.mylibrary.values.LargeTextFieldPadding
+import com.xenon.mylibrary.values.LargerPadding
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
 
 @Composable

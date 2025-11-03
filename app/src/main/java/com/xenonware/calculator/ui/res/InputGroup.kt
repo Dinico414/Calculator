@@ -10,9 +10,8 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import com.xenonware.calculator.ui.values.LargerSpacing
-import com.xenonware.calculator.ui.values.MediumCornerRadius
-import com.xenonware.calculator.ui.values.LargePadding
+import com.xenon.mylibrary.values.MediumCornerRadius
+import com.xenon.mylibrary.values.MediumPadding
 
 @Composable
 fun InputGroup(
@@ -22,8 +21,8 @@ fun InputGroup(
         modifier = modifier
             .clip(RoundedCornerShape(MediumCornerRadius))
             .background(colorScheme.secondaryContainer)
-            .padding(horizontal = LargePadding, vertical = LargePadding),
-        verticalArrangement = Arrangement.spacedBy(LargerSpacing),
+            .padding(horizontal = MediumPadding, vertical = MediumPadding),
+        verticalArrangement = Arrangement.spacedBy(MediumPadding),
         content = content
     )
 }

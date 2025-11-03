@@ -4,6 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.lifecycle.ViewModelProvider
 import com.xenonware.calculator.ui.layouts.ConverterLayout
@@ -14,6 +18,10 @@ class ConverterActivity : ComponentActivity() {
 
     private lateinit var converterViewModel: ConverterViewModel
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
+    private var lastAppliedTheme: Int = -1
+    private var lastAppliedCoverThemeEnabled: Boolean =
+        false
+    private var lastAppliedBlackedOutMode: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,12 +36,15 @@ class ConverterActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val containerSize = LocalWindowInfo.current.containerSize
-            val applyCoverTheme = sharedPreferenceManager.isCoverThemeApplied(containerSize)
+            val currentContext = LocalContext.current
+            val currentContainerSize = LocalWindowInfo.current.containerSize
+            val applyCoverTheme =
+                sharedPreferenceManager.isCoverThemeApplied(currentContainerSize)
 
             ScreenEnvironment(
-                activeThemeForConverterActivity,
-                applyCoverTheme
+                themePreference = lastAppliedTheme,
+                coverTheme = applyCoverTheme, // Use the dynamically calculated value
+                blackedOutModeEnabled = lastAppliedBlackedOutMode
             ) { layoutType, isLandscape ->
                 ConverterLayout(
                     onNavigateBack = { finish() },

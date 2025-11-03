@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,18 +39,22 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import com.xenon.calculator.R
-import com.xenonware.calculator.ui.layouts.ActivityScreen
+import androidx.compose.ui.unit.dp
+import com.xenon.mylibrary.ActivityScreen
+import com.xenon.mylibrary.res.XenonTextFieldV2
+import com.xenon.mylibrary.values.LargeCornerRadius
+import com.xenon.mylibrary.values.LargePadding
+import com.xenon.mylibrary.values.LargerSpacing
+import com.xenon.mylibrary.values.LargestPadding
+import com.xenon.mylibrary.values.MediumPadding
+import com.xenon.mylibrary.values.MinMediumButtonHeight
+import com.xenon.mylibrary.values.NoSpacing
+import com.xenonware.calculator.R
 import com.xenonware.calculator.ui.res.ConverterTypeDropdown
 import com.xenonware.calculator.ui.res.InputGroup
-import com.xenonware.calculator.ui.res.XenonTextField
-import com.xenonware.calculator.ui.values.LargeCornerRadius
-import com.xenonware.calculator.ui.values.LargePadding
-import com.xenonware.calculator.ui.values.LargerSpacing
-import com.xenonware.calculator.ui.values.MinMediumButtonHeight
-import com.xenonware.calculator.ui.values.UnitDropdown
+import com.xenonware.calculator.ui.res.UnitDropdown
 import com.xenonware.calculator.viewmodel.ConverterViewModel
+import com.xenonware.calculator.viewmodel.LayoutType
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
@@ -59,9 +63,19 @@ import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 @Composable
 fun CompactConverter(
     onNavigateBack: (() -> Unit)? = null,
+    layoutType: LayoutType,
+    isLandscape: Boolean,
     viewModel: ConverterViewModel
 ) {
     LocalContext.current
+
+    val isAppBarCollapsible = when (layoutType) {
+        LayoutType.COVER -> false
+        LayoutType.SMALL -> false
+        LayoutType.COMPACT -> !isLandscape
+        LayoutType.MEDIUM -> true
+        LayoutType.EXPANDED -> true
+    }
 
     val hazeState = remember { HazeState() }
 
@@ -98,29 +112,21 @@ fun CompactConverter(
     )
 
     ActivityScreen(
-        title = { fontWeight, fontSize, color ->
-        Text(
-            text = stringResource(id = R.string.converter),
-            fontWeight = FontWeight.SemiBold,
-            fontSize = fontSize,
-            color = color
-        )
-    },
-        navigationIcon = if (onNavigateBack != null) {
-            {
-                IconButton(onClick = onNavigateBack) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.navigate_back_description)
-                    )
-                }
-            }
-        } else {
-            null
+        titleText = stringResource(id = R.string.converter),
+        expandable = isAppBarCollapsible,
+        navigationIconStartPadding = MediumPadding,
+        navigationIconPadding = MediumPadding,
+        navigationIconSpacing = NoSpacing,
+        navigationIcon = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.navigate_back_description),
+                modifier = Modifier.size(24.dp)
+            )
         },
-        appBarActions = {
-        },
-
+        onNavigationIconClick = onNavigateBack,
+        hasNavigationIconExtraContent = false,
+        actions = {},
         contentModifier = Modifier
             .hazeSource(hazeState),
         content = { _ ->
@@ -136,12 +142,12 @@ fun CompactConverter(
                     .background(MaterialTheme.colorScheme.surfaceContainer)
                     .verticalScroll(rememberScrollState())
                     .padding(
-                        start = LargePadding,
-                        end = LargePadding,
-                        top = LargePadding,
+                        start = LargestPadding,
+                        end = LargestPadding,
+                        top = LargestPadding,
                         bottom = WindowInsets.safeDrawing
                             .asPaddingValues()
-                            .calculateBottomPadding() + LargePadding
+                            .calculateBottomPadding() + LargestPadding
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(LargerSpacing)
@@ -189,14 +195,15 @@ fun CompactConverter(
                         hazeState = hazeState,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    XenonTextField(
+                    XenonTextFieldV2(
                         value = value1,
                         onValueChange = { newValue ->
                             viewModel.onValueChanged(
                                 newValue, ConverterViewModel.EditedField.FIELD1
                             )
                         },
-                        label = stringResource(id = R.string.value_1)
+                        placeholder = {Text(stringResource(id = R.string.value_1))},
+                        singleLine = true
                     )
                 }
 
@@ -258,14 +265,15 @@ fun CompactConverter(
                         hazeState = hazeState,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    XenonTextField(
+                    XenonTextFieldV2(
                         value = value2,
                         onValueChange = { newValue ->
                             viewModel.onValueChanged(
                                 newValue, ConverterViewModel.EditedField.FIELD2
                             )
                         },
-                        label = stringResource(id = R.string.value_2)
+                        placeholder = {Text(stringResource(id = R.string.value_2))},
+                        singleLine = true
                     )
                 }
             }

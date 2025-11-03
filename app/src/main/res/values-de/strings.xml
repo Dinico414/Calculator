@@ -22,6 +22,8 @@
     <string name="yes">Ja</string>
     <string name="cancel">Abbruch</string>
     <string name="no">Nein</string>
+    <string name="open_navigation_menu">Öffne Navigation</string>
+
 
     <string name="error_restarting_app">Fehler beim Neustart</string>
     <string name="error_clearing_data_failed">Fehler beim Löschen der Daten</string>
@@ -184,4 +186,18 @@
     <string name="speed_yards_per_hour">Yards/Stunde</string>
     <string name="speed_light_speed">Lichtgeschwindigkeit (m/s)</string>
 
+    <string name="developer_options_title">Developer Options</string>
+    <string name="dev_settings_description">Enable Alpha and Beta State Features</string>
+    <string name="developer_options">Developer Settings</string>
+    <string name="already_in_developer_mode">You are already in developer mode</string>
+    <string name="developer_mode_enabled">Developer mode enabled!</string>
+    <string name="taps_remaining_to_developer">You are now %d steps away from being a developer.</string>
+    <string name="show_dummy_profile_title">Enable Fake Google Profile</string>
+    <string name="restart_app_description">restart app</string>
+    <string name="blacked_out">Ausgeschwärzt</string>
+    <string name="blacked_out_description">Dunkelt Darkmode noch mehr ab.</string>
+    <string name="reset">Zurück\u200Bsetzen</string>
+    <string name="reset_settings">Alle Einstellungen zurücksetzen</string>
+    <string name="reset_settings_dialog_title">Alle Einstellungen zurücksetzen?</string>
+    <string name="reset_settings_dialog_description">Bist du sicher, dass du alle Einstellungen zurücksetzen willst?</string>
 </resources>

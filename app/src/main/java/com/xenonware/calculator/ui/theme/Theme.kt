@@ -2,17 +2,41 @@ package com.xenonware.calculator.ui.theme
 
 import android.app.Activity
 import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MotionScheme.Companion.expressive
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowCompat
+
+data class ExtendedMaterialColorScheme(
+    val inverseError: Color,
+    val inverseOnError: Color,
+    val inverseErrorContainer: Color,
+    val inverseOnErrorContainer: Color,
+)
+
+val LocalExtendedMaterialColorScheme = staticCompositionLocalOf<ExtendedMaterialColorScheme> {
+    error("No ExtendedMaterialColorScheme provided. Did you forget to wrap your Composable in TodolistTheme?")
+}
+
+val extendedMaterialColorScheme: ExtendedMaterialColorScheme
+    @Composable @ReadOnlyComposable get() = LocalExtendedMaterialColorScheme.current
+
 
 private val DarkColorScheme = darkColorScheme(
     primary = primaryDark,
@@ -90,20 +114,69 @@ private val LightColorScheme = lightColorScheme(
     surfaceContainerHighest = surfaceContainerHighestLight
 )
 
+fun Color.decreaseBrightness(factor: Float): Color {
+    val hsv = FloatArray(3)
+    ColorUtils.colorToHSL(this.toArgb(), hsv)
+
+    hsv[2] = hsv[2] * factor.coerceIn(0f, 1f)
+
+    return Color(ColorUtils.HSLToColor(hsv))
+}
+fun ColorScheme.toBlackedOut(): ColorScheme {
+    return this.copy(
+        background = surfaceDimDark.decreaseBrightness(0.5f),
+        surfaceContainer = Color.Black,
+        surfaceBright = surfaceDimDark
+    )
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun CalculatorTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+fun XenonTheme(
+    darkTheme: Boolean,
+    useBlackedOutDarkTheme: Boolean = false,
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+    val context = LocalContext.current
+
+    val baseColorScheme: ColorScheme = if (darkTheme) {
+        val baseDarkScheme = if (dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            dynamicDarkColorScheme(context)
+        } else {
+            DarkColorScheme
         }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        if (useBlackedOutDarkTheme) {
+            baseDarkScheme.toBlackedOut()
+        } else {
+            baseDarkScheme
+        }
+    } else {
+        if (dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            dynamicLightColorScheme(context)
+        } else {
+            LightColorScheme
+        }
     }
+
+    val extendedColorScheme = remember(darkTheme) {
+        if (darkTheme) {
+            ExtendedMaterialColorScheme(
+                inverseError = inverseErrorDark,
+                inverseOnError = inverseOnErrorDark,
+                inverseErrorContainer = inverseErrorContainerDark,
+                inverseOnErrorContainer = inverseOnErrorContainerDark
+            )
+        } else {
+            ExtendedMaterialColorScheme(
+                inverseError = inverseErrorLight,
+                inverseOnError = inverseOnErrorLight,
+                inverseErrorContainer = inverseErrorContainerLight,
+                inverseOnErrorContainer = inverseOnErrorContainerLight
+            )
+        }
+    }
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -116,9 +189,9 @@ fun CalculatorTheme(
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(LocalExtendedMaterialColorScheme provides extendedColorScheme) {
+        MaterialTheme(
+            colorScheme = baseColorScheme, typography = Typography, motionScheme = expressive(), content = content
+        )
+    }
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -27,21 +28,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import com.xenon.calculator.R
-import com.xenonware.calculator.ui.layouts.ActivityScreen
+import androidx.compose.ui.unit.dp
+import com.xenon.mylibrary.ActivityScreen
+import com.xenon.mylibrary.values.ExtraLargePadding
+import com.xenon.mylibrary.values.LargePadding
+import com.xenon.mylibrary.values.LargerSpacing
+import com.xenon.mylibrary.values.MediumPadding
+import com.xenon.mylibrary.values.NoCornerRadius
+import com.xenon.mylibrary.values.NoSpacing
+import com.xenonware.calculator.R
 import com.xenonware.calculator.ui.res.DialogClearDataConfirmation
 import com.xenonware.calculator.ui.res.DialogCoverDisplaySelection
 import com.xenonware.calculator.ui.res.DialogLanguageSelection
 import com.xenonware.calculator.ui.res.DialogThemeSelection
 import com.xenonware.calculator.ui.res.SettingsSwitchTile
 import com.xenonware.calculator.ui.res.SettingsTile
-import com.xenonware.calculator.ui.values.ExtraLargePadding
-import com.xenonware.calculator.ui.values.LargePadding
-import com.xenonware.calculator.ui.values.LargerSpacing
-import com.xenonware.calculator.ui.values.MediumPadding
-import com.xenonware.calculator.ui.values.NoCornerRadius
+import com.xenonware.calculator.viewmodel.LayoutType
 import com.xenonware.calculator.viewmodel.SettingsViewModel
+import com.xenonware.calculator.viewmodel.classes.SettingsItems
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -52,7 +56,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 fun CoverSettings(
     onNavigateBack: () -> Unit,
     viewModel: SettingsViewModel,
-) {
+    isLandscape: Boolean,
+    layoutType: LayoutType,
+    onNavigateToDeveloperOptions: () -> Unit,
+    ) {
     val context = LocalContext.current
 
     val currentThemeTitle by viewModel.currentThemeTitle.collectAsState()
@@ -80,9 +87,10 @@ fun CoverSettings(
     val appVersion = packageInfo?.versionName ?: "N/A"
 
     val containerSize = LocalWindowInfo.current.containerSize
-    val applyCoverTheme by remember(containerSize, coverThemeEnabled) {
-        MutableStateFlow(viewModel.applyCoverTheme(containerSize))
-    }.collectAsState()
+    val applyCoverThemeActual = remember(containerSize, coverThemeEnabled) {
+        viewModel.applyCoverTheme(containerSize) && coverThemeEnabled
+    }
+
 
     val coverBackgroundColor = Color.Black
     val coverContentColor = Color.White
@@ -90,29 +98,39 @@ fun CoverSettings(
     val coverHorizontalPadding = LargePadding
     val coverItemHorizontalPadding = LargerSpacing
     val coverVerticalPadding = ExtraLargePadding
+    val isAppBarCollapsible = when (layoutType) {
+        LayoutType.COVER -> false
+        LayoutType.SMALL -> false
+        LayoutType.COMPACT -> !isLandscape
+        LayoutType.MEDIUM -> true
+        LayoutType.EXPANDED -> true
+    }
     val hazeState = rememberHazeState()
 
+    val coverScreenBackgroundColor = Color.Black
+    val coverScreenContentColor = Color.White
 
     ActivityScreen(
-        title = { fontWeight, _, _ ->
-            Text(
-                stringResource(id = R.string.settings), fontWeight = FontWeight.SemiBold
+        titleText = stringResource(id = R.string.settings),
+
+        expandable = isAppBarCollapsible,
+
+        navigationIconStartPadding = MediumPadding,
+        navigationIconPadding = MediumPadding,
+        navigationIconSpacing = NoSpacing,
+        navigationIcon = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.navigate_back_description),
+                modifier = Modifier.size(24.dp)
             )
         },
-        navigationIcon = {
-            IconButton(onClick = onNavigateBack) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.navigate_back_description)
-                )
-            }
-        },
-        appBarActions = {},
-        isAppBarCollapsible = false,
-        appBarCollapsedContainerColor = Color.Black,
-        appBarExpandedContainerColor = Color.Black,
-        screenBackgroundColor = Color.Black,
-        contentBackgroundColor = Color.Black,
+        onNavigationIconClick = onNavigateBack,
+        hasNavigationIconExtraContent = false,
+        actions = {},
+        screenBackgroundColor = coverScreenBackgroundColor,
+        contentBackgroundColor = coverScreenBackgroundColor,
+        appBarNavigationIconContentColor = coverScreenContentColor,
         contentCornerRadius = NoCornerRadius,
         modifier = Modifier.hazeSource(hazeState),
         content = { _ ->
@@ -122,84 +140,21 @@ fun CoverSettings(
                     .verticalScroll(rememberScrollState())
                     .padding(vertical = MediumPadding)
             ) {
-                SettingsTile(
-                    title = stringResource(id = R.string.theme),
-                    subtitle = "${stringResource(id = R.string.current)} $currentThemeTitle",
-                    onClick = { viewModel.onThemeSettingClicked() },
-                    modifier = Modifier.padding(horizontal = coverHorizontalPadding),
-                    backgroundColor = coverBackgroundColor,
-                    contentColor = coverContentColor,
-                    subtitleColor = coverContentColor,
-                    shape = coverShape,
-                    horizontalPadding = coverItemHorizontalPadding,
-                    verticalPadding = coverVerticalPadding
-                )
-
-                SettingsSwitchTile(
-                    title = stringResource(id = R.string.cover_screen_mode),
-                    subtitle = "${stringResource(id = R.string.cover_screen_mode_description)} (${
-                        if (applyCoverTheme) stringResource(
-                            id = R.string.enabled
-                        ) else stringResource(id = R.string.disabled)
-                    })",
-                    checked = coverThemeEnabled,
-                    onCheckedChange = { viewModel.setCoverThemeEnabled(!coverThemeEnabled) },
-                    onClick = { viewModel.onCoverThemeClicked() },
-                    modifier = Modifier.padding(horizontal = coverHorizontalPadding),
-                    backgroundColor = coverBackgroundColor,
-                    contentColor = coverContentColor,
-                    subtitleColor = coverContentColor,
-                    shape = coverShape,
-                    horizontalPadding = coverItemHorizontalPadding,
-                    verticalPadding = coverVerticalPadding,
-                    switchColors = SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colorScheme.primary,
-                        checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
-                    )
-                )
-
-                SettingsTile(
-                    title = stringResource(id = R.string.language),
-                    subtitle = "${stringResource(id = R.string.current)} $currentLanguage",
-                    onClick = { viewModel.onLanguageSettingClicked(context) },
-                    modifier = Modifier.padding(horizontal = coverHorizontalPadding),
-                    backgroundColor = coverBackgroundColor,
-                    contentColor = coverContentColor,
-                    subtitleColor = coverContentColor,
-                    shape = coverShape,
-                    horizontalPadding = coverItemHorizontalPadding,
-                    verticalPadding = coverVerticalPadding
-                )
-                LaunchedEffect(Unit) {
-                    viewModel.updateCurrentLanguage()
-                }
-
-                SettingsTile(
-                    title = stringResource(id = R.string.clear_data),
-                    subtitle = stringResource(id = R.string.clear_data_description),
-                    onClick = { viewModel.onClearDataClicked() },
-                    modifier = Modifier.padding(horizontal = coverHorizontalPadding),
-                    backgroundColor = coverBackgroundColor,
-                    contentColor = coverContentColor,
-                    subtitleColor = coverContentColor,
-                    shape = coverShape,
-                    horizontalPadding = coverItemHorizontalPadding,
-                    verticalPadding = coverVerticalPadding
-                )
-
-                SettingsTile(
-                    title = "Version",
-                    subtitle = "Version $appVersion",
-                    onClick = null,
-                    modifier = Modifier.padding(horizontal = coverHorizontalPadding),
-                    backgroundColor = coverBackgroundColor,
-                    contentColor = coverContentColor,
-                    subtitleColor = coverContentColor,
-                    shape = coverShape,
-                    horizontalPadding = coverItemHorizontalPadding,
-                    verticalPadding = coverVerticalPadding
+                SettingsItems(
+                    viewModel = viewModel,
+                    currentThemeTitle = currentThemeTitle,
+                    applyCoverTheme = applyCoverThemeActual,
+                    coverThemeEnabled = coverThemeEnabled,
+                    currentLanguage = currentLanguage,
+                    appVersion = appVersion,
+                    tileBackgroundColor = coverScreenBackgroundColor,
+                    tileContentColor = coverScreenContentColor,
+                    tileSubtitleColor = coverScreenContentColor.copy(alpha = 0.7f),
+                    tileShapeOverride = RoundedCornerShape(NoCornerRadius),
+                    tileHorizontalPadding = MediumPadding,
+                    tileVerticalPadding = MediumPadding,
+                    useGroupStyling = false,
+                    onNavigateToDeveloperOptions = onNavigateToDeveloperOptions
                 )
             }
         })

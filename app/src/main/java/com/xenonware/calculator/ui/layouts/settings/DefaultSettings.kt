@@ -8,14 +8,13 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,15 +23,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import com.xenon.calculator.R
-import com.xenonware.calculator.ui.layouts.ActivityScreen
+import androidx.compose.ui.unit.dp
+import com.xenon.mylibrary.ActivityScreen
+import com.xenon.mylibrary.values.LargePadding
+import com.xenon.mylibrary.values.LargestPadding
+import com.xenon.mylibrary.values.MediumPadding
+import com.xenon.mylibrary.values.NoSpacing
+import com.xenonware.calculator.R
 import com.xenonware.calculator.ui.res.DialogClearDataConfirmation
 import com.xenonware.calculator.ui.res.DialogCoverDisplaySelection
 import com.xenonware.calculator.ui.res.DialogLanguageSelection
 import com.xenonware.calculator.ui.res.DialogThemeSelection
-import com.xenonware.calculator.ui.values.LargePadding
-import com.xenonware.calculator.ui.values.SettingsItems
+import com.xenonware.calculator.viewmodel.classes.SettingsItems
 import com.xenonware.calculator.viewmodel.LayoutType
 import com.xenonware.calculator.viewmodel.SettingsViewModel
 import dev.chrisbanes.haze.hazeEffect
@@ -45,8 +47,9 @@ fun DefaultSettings(
     onNavigateBack: () -> Unit,
     viewModel: SettingsViewModel,
     layoutType: LayoutType,
-    isLandscape: Boolean
-) {
+    isLandscape: Boolean,
+    onNavigateToDeveloperOptions: () -> Unit,
+    ) {
     val context = LocalContext.current
     val currentThemeTitle by viewModel.currentThemeTitle.collectAsState()
     val showThemeDialog by viewModel.showThemeDialog.collectAsState()
@@ -87,24 +90,23 @@ fun DefaultSettings(
     val hazeState = rememberHazeState()
 
     ActivityScreen(
-        title = { fontWeight, fontSize, color ->
-            Text(
-                text = stringResource(id = R.string.settings),
-                fontWeight = FontWeight.SemiBold,
-                fontSize = fontSize,
-                color = color
+        titleText = stringResource(id = R.string.settings),
+
+        expandable = isAppBarCollapsible,
+
+        navigationIconStartPadding = MediumPadding,
+        navigationIconPadding = MediumPadding,
+        navigationIconSpacing = NoSpacing,
+        navigationIcon = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.navigate_back_description),
+                modifier = Modifier.size(24.dp)
             )
         },
-        navigationIcon = {
-            IconButton(onClick = onNavigateBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = stringResource(R.string.navigate_back_description)
-                )
-            }
-        },
-        appBarActions = {},
-        isAppBarCollapsible = isAppBarCollapsible,
+        onNavigationIconClick = onNavigateBack,
+        hasNavigationIconExtraContent = false,
+        actions = {},
         modifier = Modifier.hazeSource(hazeState),
         content = { _ ->
             Column(
@@ -112,11 +114,11 @@ fun DefaultSettings(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(
-                        start = LargePadding,
-                        end = LargePadding,
-                        top = LargePadding,
+                        start = LargestPadding,
+                        end = LargestPadding,
+                        top = LargestPadding,
                         bottom = WindowInsets.safeDrawing.asPaddingValues()
-                            .calculateBottomPadding() + LargePadding
+                            .calculateBottomPadding() + LargestPadding
                     )
             ) {
                 SettingsItems(
@@ -125,7 +127,8 @@ fun DefaultSettings(
                     applyCoverTheme = applyCoverTheme,
                     coverThemeEnabled = coverThemeEnabled,
                     currentLanguage = currentLanguage,
-                    appVersion = appVersion
+                    appVersion = appVersion,
+                    onNavigateToDeveloperOptions = onNavigateToDeveloperOptions
                 )
             }
         }

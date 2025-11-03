@@ -38,6 +38,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,25 +48,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
-import com.xenon.calculator.R
+import com.xenon.mylibrary.values.ButtonBoxPadding
+import com.xenon.mylibrary.values.CompactButtonSize
+import com.xenon.mylibrary.values.LargeCornerRadius
+import com.xenon.mylibrary.values.LargePadding
+import com.xenon.mylibrary.values.MediumCornerRadius
+import com.xenon.mylibrary.values.NoCornerRadius
+import com.xenon.mylibrary.values.NoPadding
+import com.xenon.mylibrary.values.SmallCornerRadius
+import com.xenon.mylibrary.values.SmallElevation
 import com.xenonware.calculator.ui.layouts.ButtonLayout
-import com.xenonware.calculator.ui.layouts.CalculatorScreen
+import com.xenonware.calculator.ui.res.CalculatorScreen
 import com.xenonware.calculator.ui.theme.ScreenEnvironment
-import com.xenonware.calculator.ui.values.ButtonBoxPadding
-import com.xenonware.calculator.ui.values.CompactButtonSize
-import com.xenonware.calculator.ui.values.LargeCornerRadius
-import com.xenonware.calculator.ui.values.LargePadding
-import com.xenonware.calculator.ui.values.MediumCornerRadius
-import com.xenonware.calculator.ui.values.NoCornerRadius
-import com.xenonware.calculator.ui.values.NoPadding
-import com.xenonware.calculator.ui.values.SmallCornerRadius
-import com.xenonware.calculator.ui.values.SmallElevation
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
 import com.xenonware.calculator.viewmodel.LayoutType
 import dev.chrisbanes.haze.HazeState
@@ -84,6 +85,10 @@ class MainActivity : ComponentActivity() {
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
     private var activeThemeForMainActivity: Int = 2
     private var coverEnabledState = false
+    private var lastAppliedTheme: Int = -1
+    private var lastAppliedCoverThemeEnabled: Boolean =
+        false
+    private var lastAppliedBlackedOutMode: Boolean = false
 
     private var showUninstallDialog by mutableStateOf(false)
     private var
@@ -118,11 +123,15 @@ class MainActivity : ComponentActivity() {
         checkOldAppStatus()
 
         setContent {
-            val containerSize = LocalWindowInfo.current.containerSize
-            val applyCoverTheme = sharedPreferenceManager.isCoverThemeApplied(containerSize)
+            val currentContext = LocalContext.current
+            val currentContainerSize = LocalWindowInfo.current.containerSize
+            val applyCoverTheme =
+                sharedPreferenceManager.isCoverThemeApplied(currentContainerSize)
 
             ScreenEnvironment(
-                activeThemeForMainActivity, applyCoverTheme
+                themePreference = lastAppliedTheme,
+                coverTheme = applyCoverTheme,
+                blackedOutModeEnabled = lastAppliedBlackedOutMode
             ) { layoutType, isLandscape ->
                 val isCoverScreen = layoutType == LayoutType.COVER
 
@@ -328,7 +337,7 @@ fun CalculatorApp(
                         ), contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.MoreVert,
+                        imageVector = Icons.Filled.MoreVert,
                         contentDescription = "Menu",
                         tint = colorScheme.onSurface,
                     )

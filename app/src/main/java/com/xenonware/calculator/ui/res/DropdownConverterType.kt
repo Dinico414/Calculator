@@ -22,10 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.xenonware.calculator.ui.values.NoElevation
-import com.xenonware.calculator.ui.values.SmallCornerRadius
-import com.xenonware.calculator.ui.values.SmallMediumPadding
-import com.xenonware.calculator.viewmodel.classes.ConverterType
+import com.xenon.mylibrary.values.NoElevation
+import com.xenon.mylibrary.values.SmallCornerRadius
+import com.xenon.mylibrary.values.SmallMediumPadding
+import com.xenonware.calculator.util.ConverterType
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.materials.CupertinoMaterials

@@ -8,7 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.xenon.calculator.R
+import com.xenonware.calculator.R
 
 @Composable
 fun DialogClearDataConfirmation(

@@ -1,11 +1,14 @@
 package com.xenonware.calculator.ui.res
 
-import androidx.compose.foundation.ExperimentalFoundationApi // Import this
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable // Import this
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -18,10 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
-import com.xenonware.calculator.ui.values.ExtraLargePadding
-import com.xenonware.calculator.ui.values.LargerPadding
-import com.xenonware.calculator.ui.values.MediumCornerRadius
-
+import com.xenon.mylibrary.values.ExtraLargePadding
+import com.xenon.mylibrary.values.LargeCornerRadius
+import com.xenon.mylibrary.values.LargestPadding
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -31,11 +33,12 @@ fun SettingsTile(
     onClick: (() -> Unit)?,
     onLongClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
+    icon: (@Composable () -> Unit)? = null,
     backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     subtitleColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
-    shape: Shape = RoundedCornerShape(MediumCornerRadius),
-    horizontalPadding: Dp = LargerPadding,
+    shape: Shape = RoundedCornerShape(LargeCornerRadius),
+    horizontalPadding: Dp = LargestPadding,
     verticalPadding: Dp = ExtraLargePadding
 ) {
     Row(
@@ -49,20 +52,27 @@ fun SettingsTile(
                 role = Role.Button,
                 enabled = onClick != null || onLongClick != null
             )
-            .padding(horizontal = horizontalPadding, vertical = verticalPadding),
+            .padding(horizontal = horizontalPadding, vertical = verticalPadding)
+            .height(IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(ExtraLargePadding)
     ) {
+        icon?.let {
+            it()
+        }
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
                 color = contentColor
             )
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = subtitleColor
-            )
+            if (subtitle.isNotEmpty()) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = subtitleColor
+                )
+            }
         }
     }
 }

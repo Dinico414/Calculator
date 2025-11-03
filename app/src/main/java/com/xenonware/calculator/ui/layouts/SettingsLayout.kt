@@ -16,6 +16,7 @@ fun SettingsLayout(
     viewModel: SettingsViewModel,
     isLandscape: Boolean,
     layoutType: LayoutType,
+    onNavigateToDeveloperOptions: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -23,11 +24,19 @@ fun SettingsLayout(
             LayoutType.COVER -> {
                 if (isLandscape) {
                     CoverSettings(
-                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        isLandscape = true,
+                        layoutType = layoutType,
+                        onNavigateToDeveloperOptions = onNavigateToDeveloperOptions
                     )
                 } else {
                     CoverSettings(
-                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        isLandscape = false,
+                        layoutType = layoutType,
+                        onNavigateToDeveloperOptions = onNavigateToDeveloperOptions
                     )
                 }
             }
@@ -38,14 +47,16 @@ fun SettingsLayout(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel,
                         layoutType = layoutType,
-                        isLandscape = true
+                        isLandscape = true,
+                        onNavigateToDeveloperOptions = onNavigateToDeveloperOptions
                     )
                 } else {
                     DefaultSettings(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel,
                         layoutType = layoutType,
-                        isLandscape = false
+                        isLandscape = false,
+                        onNavigateToDeveloperOptions = onNavigateToDeveloperOptions
                     )
                 }
             }

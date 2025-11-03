@@ -5,16 +5,15 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
-// import androidx.lifecycle.ViewModel // Not needed if using AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.xenonware.calculator.viewmodel.classes.AreaUnit
-import com.xenonware.calculator.viewmodel.classes.ConverterType
-import com.xenonware.calculator.viewmodel.classes.CurrencyUnit
-import com.xenonware.calculator.viewmodel.classes.LengthUnit
-import com.xenonware.calculator.viewmodel.classes.SpeedUnit // Import SpeedUnit
-import com.xenonware.calculator.viewmodel.classes.TemperatureUnit
-import com.xenonware.calculator.viewmodel.classes.VolumeUnit
-import com.xenonware.calculator.viewmodel.classes.WeightUnit
+import com.xenonware.calculator.util.AreaUnit
+import com.xenonware.calculator.util.ConverterType
+import com.xenonware.calculator.util.CurrencyUnit
+import com.xenonware.calculator.util.LengthUnit
+import com.xenonware.calculator.util.SpeedUnit
+import com.xenonware.calculator.util.TemperatureUnit
+import com.xenonware.calculator.util.VolumeUnit
+import com.xenonware.calculator.util.WeightUnit
 import java.text.DecimalFormat
 
 class ConverterViewModel(application: Application) : AndroidViewModel(application) {

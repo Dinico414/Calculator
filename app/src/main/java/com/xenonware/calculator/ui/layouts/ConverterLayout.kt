@@ -24,11 +24,17 @@ fun ConverterLayout(
             LayoutType.COVER -> {
                 if (isLandscape) {
                     CoverConverter(
-                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = true
                     )
                 } else {
                     CoverConverter(
-                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = false
                     )
                 }
             }
@@ -36,11 +42,17 @@ fun ConverterLayout(
             LayoutType.SMALL -> {
                 if (isLandscape) {
                     LandscapeCompactConverter(
-                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = true
                     )
                 } else {
                     LandscapeCompactConverter(
-                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = false
                     )
                 }
             }
@@ -48,11 +60,17 @@ fun ConverterLayout(
             LayoutType.COMPACT -> {
                 if (isLandscape) {
                     LandscapeCompactConverter(
-                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = true
                     )
                 } else {
                     CompactConverter(
-                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = false
                     )
                 }
             }
@@ -60,11 +78,17 @@ fun ConverterLayout(
             LayoutType.MEDIUM, LayoutType.EXPANDED -> {
                 if (isLandscape) {
                     TabletConverter(
-                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = true
                     )
                 } else {
                     TabletConverter(
-                        onNavigateBack = onNavigateBack, viewModel = viewModel
+                        onNavigateBack = onNavigateBack,
+                        viewModel = viewModel,
+                        layoutType = layoutType,
+                        isLandscape = false
                     )
                 }
             }

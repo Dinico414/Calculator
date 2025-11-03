@@ -29,7 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.xenon.calculator.R
+import com.xenonware.calculator.R
 
 data class LanguageOption(val displayName: String, val localeTag: String)
 

@@ -43,9 +43,11 @@
             android:exported="true"
             android:label="@string/converter"
             android:theme="@style/Theme.Xenon"/>
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
+        <activity
+            android:name=".DevSettingsActivity"
+            android:exported="true"
+            android:label="@string/developer_options"
+            android:theme="@style/Theme.Xenon" />
     </application>
 
 </manifest>
