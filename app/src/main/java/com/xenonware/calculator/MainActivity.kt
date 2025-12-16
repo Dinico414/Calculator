@@ -64,6 +64,7 @@ import com.xenon.mylibrary.values.NoCornerRadius
 import com.xenon.mylibrary.values.NoPadding
 import com.xenon.mylibrary.values.SmallCornerRadius
 import com.xenon.mylibrary.values.SmallElevation
+import com.xenonware.calculator.data.SharedPreferenceManager
 import com.xenonware.calculator.ui.layouts.ButtonLayout
 import com.xenonware.calculator.ui.res.CalculatorScreen
 import com.xenonware.calculator.ui.theme.ScreenEnvironment

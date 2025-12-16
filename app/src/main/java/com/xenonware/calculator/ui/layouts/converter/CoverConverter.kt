@@ -1,6 +1,8 @@
 package com.xenonware.calculator.ui.layouts.converter
 
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
@@ -40,7 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.xenon.mylibrary.ActivityScreen
-import com.xenon.mylibrary.res.XenonTextFieldV2
+import com.xenon.mylibrary.res.XenonTextField
 import com.xenon.mylibrary.values.IconSizeSmall
 import com.xenon.mylibrary.values.MediumPadding
 import com.xenon.mylibrary.values.MediumSpacing
@@ -106,7 +108,10 @@ fun CoverConverter(
     var accumulatedRotation by remember { mutableFloatStateOf(0f) }
     val rotationAngle by animateFloatAsState(
         targetValue = accumulatedRotation,
-        animationSpec = tween(durationMillis = 300),
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,  // Gives a nice bounce
+            stiffness = Spring.StiffnessMediumLow               // Slower, more playful feel
+        ),
         label = "IconRotation"
     )
 
@@ -204,7 +209,7 @@ fun CoverConverter(
                                 hazeState = hazeState,
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            XenonTextFieldV2(
+                            XenonTextField(
                                 value = value1, onValueChange = { newValue ->
                                     viewModel.onValueChanged(
                                         newValue, ConverterViewModel.EditedField.FIELD1
@@ -295,7 +300,7 @@ fun CoverConverter(
                                 hazeState = hazeState,
                                 modifier = Modifier.fillMaxWidth()
                             )
-                            XenonTextFieldV2(
+                            XenonTextField(
                                 value = value2, onValueChange = { newValue ->
                                     viewModel.onValueChanged(
                                         newValue, ConverterViewModel.EditedField.FIELD2

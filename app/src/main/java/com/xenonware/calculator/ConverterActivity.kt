@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.lifecycle.ViewModelProvider
+import com.xenonware.calculator.data.SharedPreferenceManager
 import com.xenonware.calculator.ui.layouts.ConverterLayout
 import com.xenonware.calculator.ui.theme.ScreenEnvironment
 import com.xenonware.calculator.viewmodel.ConverterViewModel

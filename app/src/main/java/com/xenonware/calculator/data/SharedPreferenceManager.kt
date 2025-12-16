@@ -1,4 +1,4 @@
-package com.xenonware.calculator
+package com.xenonware.calculator.data
 
 import android.content.Context
 import android.content.SharedPreferences
