@@ -200,4 +200,8 @@
     <string name="reset_settings">Alle Einstellungen zurücksetzen</string>
     <string name="reset_settings_dialog_title">Alle Einstellungen zurücksetzen?</string>
     <string name="reset_settings_dialog_description">Bist du sicher, dass du alle Einstellungen zurücksetzen willst?</string>
+    <string name="more_infos">More infos</string>
+    <string name="app_version">App Version</string>
+    <string name="xenon_ui_version">Xenon-UI Version</string>
+    <string name="xenon_commons_version">Xenon-Commons Version</string>
 </resources>

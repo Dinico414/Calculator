@@ -3,7 +3,6 @@ package com.xenonware.calculator.ui.layouts.converter
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -67,10 +67,12 @@ fun CoverConverter(
 ) {
     LocalContext.current
 
-    val isAppBarCollapsible = when (layoutType) {
+    val configuration = LocalConfiguration.current
+    val appHeight = configuration.screenHeightDp.dp
+    val isAppBarExpandable = when (layoutType) {
         LayoutType.COVER -> false
         LayoutType.SMALL -> false
-        LayoutType.COMPACT -> !isLandscape
+        LayoutType.COMPACT -> !isLandscape && appHeight >= 460.dp
         LayoutType.MEDIUM -> true
         LayoutType.EXPANDED -> true
     }
@@ -117,7 +119,7 @@ fun CoverConverter(
 
     ActivityScreen(
         titleText = stringResource(id = R.string.converter),
-        expandable = isAppBarCollapsible,
+        expandable = isAppBarExpandable,
         navigationIconStartPadding = MediumPadding,
         navigationIconPadding = MediumPadding,
         navigationIconSpacing = NoSpacing,

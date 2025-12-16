@@ -1,4 +1,4 @@
-package com.xenonware.notes.ui.res
+package com.xenonware.calculator.ui.res
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -31,11 +31,11 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.xenon.mylibrary.QuicksandTitleVariable
+import com.xenon.mylibrary.res.GoogleProfilBorderNoGoogle
 import com.xenon.mylibrary.values.ExtraLargePadding
 import com.xenon.mylibrary.values.LargeCornerRadius
 import com.xenon.mylibrary.values.LargestPadding
 import com.xenonware.calculator.R
-import com.xenonware.calculator.ui.res.GoogleProfilBorder
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -72,7 +72,7 @@ fun SettingsGoogleTile(
         Box (
             contentAlignment = Alignment.Center,
         ) {
-            GoogleProfilBorder(
+            GoogleProfilBorderNoGoogle(
                 modifier = Modifier.size(48.dp),
             )
             Image(
