@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.xenonware.calculator.ui.res
 
 import androidx.compose.foundation.layout.fillMaxWidth

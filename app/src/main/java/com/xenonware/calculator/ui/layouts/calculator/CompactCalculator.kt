@@ -9,7 +9,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
@@ -19,13 +18,10 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.rounded.History
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -112,55 +108,7 @@ fun CompactCalculator(
             expandable = isAppBarExpandable,
             collapsedHeight = 0.dp,
             flexModel = "FlexTopContainer",
-            headerContent = {
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Row(Modifier
-                        .padding(
-                            WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
-                                .asPaddingValues()
-                            )
-                        .fillMaxSize()) {
-                        Icon(
-                            imageVector = Icons.Rounded.History,
-                            contentDescription = stringResource(R.string.navigate_back_description),
-                            modifier = Modifier.padding(16.dp).size(24.dp)
-                        )
-                    Column(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(vertical = 16.dp)
-                            .verticalScroll(rememberScrollState()),
-                    ) {
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-                        Text(text = "Test")
-
-                    }
-                }}
-            },
+            headerContent = {   },
             content = {
                 var showMenu by remember { mutableStateOf(false) }
                 val hazeState = remember { HazeState() }
