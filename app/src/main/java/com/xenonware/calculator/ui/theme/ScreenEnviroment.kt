@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.xenonware.calculator.viewmodel.LayoutType
 
-@Suppress("DEPRECATION")
 @Composable
 fun ScreenEnvironment(
     themePreference: Int,

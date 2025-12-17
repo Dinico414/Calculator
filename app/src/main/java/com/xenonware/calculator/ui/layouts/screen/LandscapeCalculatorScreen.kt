@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.xenon.mylibrary.theme.QuicksandTitleVariable
 import com.xenon.mylibrary.values.LargePadding
 import com.xenon.mylibrary.values.LargeTextFieldPadding
 import com.xenon.mylibrary.values.LargerPadding
@@ -87,6 +88,7 @@ fun CompactLandscapeDisplaySection(currentInput: String, result: String, modifie
             style = MaterialTheme.typography.displaySmall.copy(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold,
+                fontFamily = QuicksandTitleVariable,
                 lineHeight = 0.8.em
             ),
             color = MaterialTheme.colorScheme.onSecondaryContainer,

@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.xenon.mylibrary.theme.QuicksandTitleVariable
 import com.xenon.mylibrary.values.MediumButtonHeight
 import com.xenon.mylibrary.values.MinMediumButtonHeight
 import com.xenon.mylibrary.values.NoElevation
@@ -47,7 +48,8 @@ fun CalculatorButton(
     isNumber: Boolean,
     isGlobalScientificModeActive: Boolean,
     isInverseActive: Boolean = false,
-    fontFamily: FontFamily? = null,
+    fontFamily: FontFamily? = QuicksandTitleVariable,
+    fontWeight: FontWeight? = FontWeight.SemiBold,
     onClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
 ) {
@@ -86,12 +88,12 @@ fun CalculatorButton(
     }
 
     val contentColor = when {
-        isClear -> MaterialTheme.colorScheme.onPrimary
+        isClear -> MaterialTheme.colorScheme.onTertiary
         isSpecial -> MaterialTheme.colorScheme.onSurface
-        text == "INV" && isScientificButton -> if (isInverseActive) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.onSurfaceVariant
-        isScientificButton -> MaterialTheme.colorScheme.onSurfaceVariant
+        text == "INV" && isScientificButton -> if (isInverseActive) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.onSurface
+        isScientificButton -> MaterialTheme.colorScheme.onSurface
         isOperator -> MaterialTheme.colorScheme.onPrimary
-        else -> MaterialTheme.colorScheme.onSurface
+        else -> MaterialTheme.colorScheme.onSecondaryContainer
     }
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -156,7 +158,7 @@ fun CalculatorButton(
     ) {
         Text(
             text = text,
-            fontWeight = FontWeight.SemiBold,
+            fontWeight = fontWeight,
             fontFamily = fontFamily,
             fontSize = animatedFontSize.value.sp,
             maxLines = 1,

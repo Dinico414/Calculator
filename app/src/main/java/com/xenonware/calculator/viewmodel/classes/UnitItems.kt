@@ -1,8 +1,9 @@
-package com.xenonware.calculator.ui.res
+package com.xenonware.calculator.viewmodel.classes
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import com.xenonware.calculator.ui.res.GenericUnitDropdown
 import com.xenonware.calculator.util.AreaUnit
 import com.xenonware.calculator.util.ConverterType
 import com.xenonware.calculator.util.CurrencyUnit
@@ -14,7 +15,7 @@ import com.xenonware.calculator.util.WeightUnit
 import dev.chrisbanes.haze.HazeState
 
 @Composable
-fun UnitDropdown(
+fun UnitItems(
     label: String,
     selectedConverterType: ConverterType,
 

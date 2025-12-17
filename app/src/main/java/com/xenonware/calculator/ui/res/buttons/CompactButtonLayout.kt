@@ -4,8 +4,10 @@ package com.xenonware.calculator.ui.res.buttons
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -25,7 +27,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -77,7 +79,8 @@ fun CompactButtonLayout(
             .padding(LargePadding)
     ) {
         ScientificButtonsRow1(
-            viewModel, modifier = Modifier.height(SmallButtonSizeSpacing)
+            viewModel, modifier = Modifier
+                .height(SmallButtonSizeSpacing)
                 .fillMaxWidth()
         )
 
@@ -231,7 +234,8 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
 
         val interactionSource = remember { MutableInteractionSource() }
         Box(
-            modifier = Modifier.height(ButtonHeight)
+            modifier = Modifier
+                .height(ButtonHeight)
                 .width(ButtonWidth)
                 .clip(RoundedCornerShape(100f))
                 .background(MaterialTheme.colorScheme.inversePrimary)
@@ -239,21 +243,21 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
                     onClick = { viewModel.toggleScientificMode() },
                     interactionSource = interactionSource,
                     indication = LocalIndication.current,
-                ),
-            contentAlignment = Alignment.Center
+                ), contentAlignment = Alignment.Center
         ) {
-        val rotationAngle by animateFloatAsState(
-            targetValue = if (viewModel.isScientificMode) 0f else 180f,
-            animationSpec = tween(durationMillis = 400),
-            label = "IconRotation"
-        )
-        Icon(
-            imageVector = Icons.Filled.KeyboardArrowUp,
-            contentDescription = "Toggle Scientific Panel",
-            modifier = Modifier.rotate(rotationAngle),
-            tint = MaterialTheme.colorScheme.onSurface
-        )
-    }
+            val rotationAngle by animateFloatAsState(
+                targetValue = if (viewModel.isScientificMode) 0f else 180f, animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                ), label = "IconRotation"
+            )
+            Icon(
+                imageVector = Icons.Rounded.KeyboardArrowUp,
+                contentDescription = "Toggle Scientific Panel",
+                modifier = Modifier.rotate(rotationAngle),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }
 

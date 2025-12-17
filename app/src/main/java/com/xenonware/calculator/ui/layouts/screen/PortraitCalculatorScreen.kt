@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.xenon.mylibrary.theme.QuicksandTitleVariable
 import com.xenon.mylibrary.values.LargeTextFieldPadding
 import com.xenon.mylibrary.values.LargerPadding
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
@@ -78,6 +79,7 @@ fun DisplaySection(currentInput: String, result: String, modifier: Modifier = Mo
             style = MaterialTheme.typography.displaySmall.copy(
                 fontSize = 36.sp,
                 fontWeight = FontWeight.SemiBold,
+                fontFamily = QuicksandTitleVariable,
                 lineHeight = 0.8.em
             ),
             color = MaterialTheme.colorScheme.onSecondaryContainer,

@@ -42,7 +42,7 @@ fun <T> GenericUnitDropdown(
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
-        expanded = expanded, onExpandedChange = { expanded = !expanded }, modifier = modifier
+        expanded = expanded, onExpandedChange = { expanded = !expanded }, modifier = modifier,
     ) {
         TextField(
             value = getDisplayName(selectedUnit),

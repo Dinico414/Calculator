@@ -23,7 +23,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,9 +38,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.xenon.mylibrary.ActivityScreen
@@ -48,14 +49,13 @@ import com.xenon.mylibrary.values.LargeCornerRadius
 import com.xenon.mylibrary.values.LargerSpacing
 import com.xenon.mylibrary.values.LargestPadding
 import com.xenon.mylibrary.values.MediumPadding
-import com.xenon.mylibrary.values.MinMediumButtonHeight
 import com.xenon.mylibrary.values.NoSpacing
 import com.xenonware.calculator.R
 import com.xenonware.calculator.ui.res.ConverterTypeDropdown
 import com.xenonware.calculator.ui.res.InputGroup
-import com.xenonware.calculator.ui.res.UnitDropdown
 import com.xenonware.calculator.viewmodel.ConverterViewModel
 import com.xenonware.calculator.viewmodel.LayoutType
+import com.xenonware.calculator.viewmodel.classes.UnitItems
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
@@ -112,7 +112,7 @@ fun CompactConverter(
         targetValue = accumulatedRotation,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,  // Gives a nice bounce
-            stiffness = Spring.StiffnessMediumLow               // Slower, more playful feel
+            stiffness = Spring.StiffnessLow               // Slower, more playful feel
         ),
         label = "IconRotation"
     )
@@ -125,7 +125,7 @@ fun CompactConverter(
         navigationIconSpacing = NoSpacing,
         navigationIcon = {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                 contentDescription = stringResource(R.string.navigate_back_description),
                 modifier = Modifier.size(24.dp)
             )
@@ -169,7 +169,7 @@ fun CompactConverter(
                 }
 
                 InputGroup(modifier = Modifier.fillMaxWidth()) {
-                    UnitDropdown(
+                    UnitItems(
                         label = fromUnitLabel(selectedType),
                         selectedConverterType = selectedType,
 
@@ -217,7 +217,7 @@ fun CompactConverter(
                 val interactionSource = remember { MutableInteractionSource() }
                 Box(
                     modifier = Modifier.Companion
-                        .height(MinMediumButtonHeight)
+                        .height(96.dp)
                         .fillMaxWidth(0.5f)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.tertiary)
@@ -233,15 +233,19 @@ fun CompactConverter(
 
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.swap),
+                        imageVector = Icons.Rounded.Sync,
                         contentDescription = stringResource(R.string.switch_units_description),
                         tint = MaterialTheme.colorScheme.onTertiary,
-                        modifier = Modifier.rotate(rotationAngle)
+                        modifier = Modifier
+                            .rotate(45f)
+                            .rotate(rotationAngle)
+                            .graphicsLayer(scaleX = -1f)
+                            .size(32.dp)
                     )
                 }
 
                 InputGroup(modifier = Modifier.fillMaxWidth()) {
-                    UnitDropdown(
+                    UnitItems(
                         label = toUnitLabel(selectedType),
                         selectedConverterType = selectedType,
 

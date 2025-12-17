@@ -20,7 +20,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Sync
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,26 +36,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.xenon.mylibrary.ActivityScreen
 import com.xenon.mylibrary.res.XenonTextField
-import com.xenon.mylibrary.values.IconSizeSmall
 import com.xenon.mylibrary.values.MediumPadding
 import com.xenon.mylibrary.values.MediumSpacing
 import com.xenon.mylibrary.values.NoCornerRadius
 import com.xenon.mylibrary.values.NoSpacing
-import com.xenon.mylibrary.values.SmallNarrowButtonWidth
 import com.xenonware.calculator.R
 import com.xenonware.calculator.ui.res.ConverterTypeDropdown
-import com.xenonware.calculator.ui.res.UnitDropdown
 import com.xenonware.calculator.viewmodel.ConverterViewModel
 import com.xenonware.calculator.viewmodel.LayoutType
+import com.xenonware.calculator.viewmodel.classes.UnitItems
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
@@ -112,8 +111,8 @@ fun CoverConverter(
     val rotationAngle by animateFloatAsState(
         targetValue = accumulatedRotation,
         animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,  // Gives a nice bounce
-            stiffness = Spring.StiffnessMediumLow               // Slower, more playful feel
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
         ),
         label = "IconRotation"
     )
@@ -127,7 +126,7 @@ fun CoverConverter(
         navigationIconSpacing = NoSpacing,
         navigationIcon = {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                 contentDescription = stringResource(R.string.navigate_back_description),
                 modifier = Modifier.size(24.dp)
             )
@@ -163,7 +162,7 @@ fun CoverConverter(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(MediumSpacing)
                         ) {
-                            UnitDropdown(
+                            UnitItems(
                                 label = fromUnitLabel(selectedType),
                                 selectedConverterType = selectedType,
 
@@ -228,8 +227,9 @@ fun CoverConverter(
 
                         val interactionSource = remember { MutableInteractionSource() }
                         Box(
-                            modifier = Modifier.Companion
-                                .width(SmallNarrowButtonWidth)
+                            modifier = Modifier
+                                .height(56.dp)
+                                .width(48.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.tertiary)
                                 .clickable(
@@ -242,13 +242,14 @@ fun CoverConverter(
                                 ), contentAlignment = Alignment.Center
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.swap),
+                                imageVector = Icons.Rounded.Sync,
                                 contentDescription = stringResource(R.string.switch_units_description),
                                 tint = MaterialTheme.colorScheme.onTertiary,
                                 modifier = Modifier
+                                    .rotate(45f)
                                     .rotate(rotationAngle)
-                                    .width(IconSizeSmall)
-                                    .height(IconSizeSmall)
+                                    .graphicsLayer(scaleX = -1f)
+                                    .size(24.dp)
                             )
                         }
 
@@ -256,7 +257,7 @@ fun CoverConverter(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(MediumSpacing)
                         ) {
-                            UnitDropdown(
+                            UnitItems(
                                 label = toUnitLabel(selectedType),
                                 selectedConverterType = selectedType,
 
