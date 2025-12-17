@@ -4,6 +4,7 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.IntSize
 import com.xenonware.calculator.ui.layouts.calculator.CompactCalculator
+import com.xenonware.calculator.ui.layouts.calculator.CoverCalculator
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
 import com.xenonware.calculator.viewmodel.LayoutType
 
@@ -21,7 +22,7 @@ fun MainLayout(
     when (layoutType) {
         LayoutType.COVER -> {
             if (isLandscape) {
-                CompactCalculator(
+                CoverCalculator(
                     viewModel = viewModel,
                     isLandscape = true,
                     layoutType = layoutType,
@@ -30,7 +31,7 @@ fun MainLayout(
                     appSize = appSize
                 )
             } else {
-                CompactCalculator(
+                CoverCalculator(
                     viewModel = viewModel,
                     isLandscape = false,
                     layoutType = layoutType,
