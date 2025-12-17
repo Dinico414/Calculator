@@ -26,6 +26,7 @@ fun MainLayout(
                     isLandscape = true,
                     layoutType = layoutType,
                     onOpenSettings = onOpenSettings,
+                    onOpenConverter = onOpenConverter,
                     appSize = appSize
                 )
             } else {
@@ -34,6 +35,7 @@ fun MainLayout(
                     isLandscape = false,
                     layoutType = layoutType,
                     onOpenSettings = onOpenSettings,
+                    onOpenConverter = onOpenConverter,
                     appSize = appSize
                 )
             }
@@ -46,6 +48,7 @@ fun MainLayout(
                     isLandscape = true,
                     layoutType = layoutType,
                     onOpenSettings = onOpenSettings,
+                    onOpenConverter = onOpenConverter,
                     appSize = appSize
                 )
             } else {
@@ -54,6 +57,7 @@ fun MainLayout(
                     isLandscape = false,
                     layoutType = layoutType,
                     onOpenSettings = onOpenSettings,
+                    onOpenConverter = onOpenConverter,
                     appSize = appSize
                 )
             }
@@ -66,6 +70,7 @@ fun MainLayout(
                     isLandscape = true,
                     layoutType = layoutType,
                     onOpenSettings = onOpenSettings,
+                    onOpenConverter = onOpenConverter,
                     appSize = appSize
                 )
             } else {
@@ -74,6 +79,7 @@ fun MainLayout(
                     isLandscape = false,
                     layoutType = layoutType,
                     onOpenSettings = onOpenSettings,
+                    onOpenConverter = onOpenConverter,
                     appSize = appSize
                 )
             }
@@ -86,6 +92,7 @@ fun MainLayout(
                     isLandscape = true,
                     layoutType = layoutType,
                     onOpenSettings = onOpenSettings,
+                    onOpenConverter = onOpenConverter,
                     appSize = appSize
                 )
             } else {
@@ -94,6 +101,7 @@ fun MainLayout(
                     isLandscape = false,
                     layoutType = layoutType,
                     onOpenSettings = onOpenSettings,
+                    onOpenConverter = onOpenConverter,
                     appSize = appSize
                 )
             }
@@ -106,6 +114,7 @@ fun MainLayout(
                     isLandscape = true,
                     layoutType = layoutType,
                     onOpenSettings = onOpenSettings,
+                    onOpenConverter = onOpenConverter,
                     appSize = appSize
                 )
             } else {
@@ -114,6 +123,7 @@ fun MainLayout(
                     isLandscape = false,
                     layoutType = layoutType,
                     onOpenSettings = onOpenSettings,
+                    onOpenConverter = onOpenConverter,
                     appSize = appSize
                 )
             }

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -219,8 +220,9 @@ fun CoverConverter(
                                     )
                                 },
                                 placeholder = {Text(stringResource(id = R.string.value_1))},
-                                singleLine = true
-                            )
+                                singleLine = true,
+                                shape = RoundedCornerShape(16.dp),
+                                )
                         }
 
 
@@ -310,8 +312,9 @@ fun CoverConverter(
                                     )
                                 },
                                 placeholder = {Text(stringResource(id = R.string.value_2))},
-                                singleLine = true
-                            )
+                                singleLine = true,
+                                shape = RoundedCornerShape(16.dp),
+                                )
                         }
                     }
 

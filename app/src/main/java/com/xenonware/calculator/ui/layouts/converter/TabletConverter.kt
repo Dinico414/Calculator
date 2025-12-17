@@ -233,7 +233,8 @@ fun TabletConverter(
                                     )
                                 },
                                 placeholder = {Text(stringResource(id = R.string.value_1))},
-                                singleLine = true
+                                singleLine = true,
+                                shape = RoundedCornerShape(16.dp),
                             )
                         }
 
@@ -325,8 +326,9 @@ fun TabletConverter(
                                     )
                                 },
                                 placeholder = {Text(stringResource(id = R.string.value_2))},
-                                singleLine = true
-                            )
+                                singleLine = true,
+                                shape = RoundedCornerShape(16.dp),
+                                )
                         }
                     }
 

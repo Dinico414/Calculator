@@ -1,8 +1,6 @@
 package com.xenonware.calculator.ui.res
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,16 +17,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import com.xenon.mylibrary.values.NoElevation
-import com.xenon.mylibrary.values.SmallCornerRadius
-import com.xenon.mylibrary.values.SmallMediumPadding
-import com.xenon.mylibrary.values.SmallerCornerRadius
+import androidx.compose.ui.unit.dp
+import com.xenon.mylibrary.values.SmallElevation
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
-import dev.chrisbanes.haze.materials.CupertinoMaterials
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.HazeMaterials
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
@@ -56,7 +51,7 @@ fun <T> GenericUnitDropdown(
             modifier = Modifier
                 .menuAnchor(MenuAnchorType.PrimaryEditable)
                 .fillMaxWidth(),
-            shape = RoundedCornerShape(SmallCornerRadius),
+            shape = RoundedCornerShape(16.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = colorScheme.primary,
                 unfocusedContainerColor = colorScheme.primary.copy(alpha = 0.7f),
@@ -74,19 +69,18 @@ fun <T> GenericUnitDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             containerColor = Color.Transparent,
-            shadowElevation = NoElevation,
+            shape = RoundedCornerShape(16.dp),
             modifier = Modifier
-                .padding(top = SmallMediumPadding, bottom = SmallMediumPadding)
-                .clip(RoundedCornerShape(SmallCornerRadius))
-                .background(colorScheme.surface)
                 .hazeEffect(
-                    state = hazeState, style = CupertinoMaterials.regular(colorScheme.surface)
-                )
-        ) {
+                    state = hazeState, style = HazeMaterials.thin(colorScheme.primary)
+                ),
+            shadowElevation = SmallElevation,
+
+            ) {
             units.forEach { unit ->
                 DropdownMenuItem(text = {
                     Text(
-                        getDisplayName(unit), color = colorScheme.onSurface
+                        getDisplayName(unit), color = colorScheme.onPrimary
                     )
                 }, onClick = {
                     onUnitSelected(unit)
