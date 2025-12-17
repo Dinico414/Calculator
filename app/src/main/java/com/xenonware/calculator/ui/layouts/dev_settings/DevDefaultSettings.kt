@@ -52,9 +52,8 @@ fun DevDefaultSettings(
 
     ActivityScreen(
         titleText = stringResource(id = R.string.developer_options_title),
-
         expandable = isAppBarExpandable,
-
+        flexModel = null,
         navigationIconStartPadding = MediumPadding,
         navigationIconPadding = MediumPadding,
         navigationIconSpacing = NoSpacing,

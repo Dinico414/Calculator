@@ -69,7 +69,7 @@ fun CompactCalculator(
                         .fillMaxSize()
                         .padding(horizontal = ExtraLargePadding)
                 ) {
-                    
+
                 }
             }
         )

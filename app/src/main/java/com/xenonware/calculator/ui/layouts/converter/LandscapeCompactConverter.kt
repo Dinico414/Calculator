@@ -58,9 +58,9 @@ import com.xenonware.calculator.R
 import com.xenonware.calculator.ui.res.ConverterTypeDropdown
 import com.xenonware.calculator.ui.res.InputGroup
 import com.xenonware.calculator.ui.res.UnitDropdown
+import com.xenonware.calculator.util.ConverterType
 import com.xenonware.calculator.viewmodel.ConverterViewModel
 import com.xenonware.calculator.viewmodel.LayoutType
-import com.xenonware.calculator.util.ConverterType
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
@@ -125,6 +125,7 @@ fun LandscapeCompactConverter(
     ActivityScreen(
         titleText = stringResource(id = R.string.converter),
         expandable = isAppBarExpandable,
+        flexModel = null,
         navigationIconStartPadding = MediumPadding,
         navigationIconPadding = MediumPadding,
         navigationIconSpacing = NoSpacing,

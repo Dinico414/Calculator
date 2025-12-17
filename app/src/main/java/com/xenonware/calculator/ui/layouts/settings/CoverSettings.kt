@@ -30,13 +30,9 @@ import com.xenon.mylibrary.res.DialogClearDataConfirmation
 import com.xenon.mylibrary.res.DialogCoverDisplaySelection
 import com.xenon.mylibrary.res.DialogLanguageSelection
 import com.xenon.mylibrary.res.DialogResetSettingsConfirmation
-import com.xenon.mylibrary.res.DialogSignOut
 import com.xenon.mylibrary.res.DialogThemeSelection
 import com.xenon.mylibrary.res.DialogVersionNumber
 import com.xenon.mylibrary.res.ThemeSetting
-import com.xenon.mylibrary.values.ExtraLargePadding
-import com.xenon.mylibrary.values.LargePadding
-import com.xenon.mylibrary.values.LargerSpacing
 import com.xenon.mylibrary.values.MediumPadding
 import com.xenon.mylibrary.values.NoCornerRadius
 import com.xenon.mylibrary.values.NoSpacing
@@ -109,9 +105,8 @@ fun CoverSettings(
 
     ActivityScreen(
         titleText = stringResource(id = R.string.settings),
-
         expandable = isAppBarExpandable,
-
+        flexModel = null,
         navigationIconStartPadding = MediumPadding,
         navigationIconPadding = MediumPadding,
         navigationIconSpacing = NoSpacing,

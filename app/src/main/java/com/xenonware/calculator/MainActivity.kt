@@ -1,12 +1,9 @@
 package com.xenonware.calculator
 
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.LocalIndication
@@ -29,16 +26,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,12 +43,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.window.DialogProperties
-import androidx.core.net.toUri
+import androidx.compose.ui.unit.IntSize
 import androidx.core.view.WindowCompat
 import com.xenon.mylibrary.values.ButtonBoxPadding
 import com.xenon.mylibrary.values.CompactButtonSize
@@ -77,57 +70,35 @@ import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
 
 
-val OLD_APP_PACKAGE_NAMES = listOf(
-    "com.xenon.calculator.compose", "com.xenon.calculator.compose.debug"
-)
-
 class MainActivity : ComponentActivity() {
-    private val calculatorViewModel: CalculatorViewModel by viewModels()
+    private val viewModel: CalculatorViewModel by viewModels()
+
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
-    private var activeThemeForMainActivity: Int = 2
-    private var coverEnabledState = false
+
     private var lastAppliedTheme: Int = -1
-    private var lastAppliedCoverThemeEnabled: Boolean =
-        false
+    private var lastAppliedCoverThemeEnabled: Boolean = false
     private var lastAppliedBlackedOutMode: Boolean = false
 
-    private var showUninstallDialog by mutableStateOf(false)
-    private var
 
-            packageNameToDelete by mutableStateOf<String?>(null)
-
-
-    private val uninstallLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-
-            checkOldAppStatus()
-            if (packageNameToDelete == null) {
-                showUninstallDialog = false
-            }
-        }
-
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         sharedPreferenceManager = SharedPreferenceManager(applicationContext)
 
-        activeThemeForMainActivity = sharedPreferenceManager.theme
+        val initialThemePref = sharedPreferenceManager.theme
+        val initialCoverThemeEnabledSetting = sharedPreferenceManager.coverThemeEnabled
+        val initialBlackedOutMode = sharedPreferenceManager.blackedOutModeEnabled
 
-        if (activeThemeForMainActivity >= 0 && activeThemeForMainActivity < sharedPreferenceManager.themeFlag.size) {
-            AppCompatDelegate.setDefaultNightMode(sharedPreferenceManager.themeFlag[activeThemeForMainActivity])
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            activeThemeForMainActivity = 2
-        }
-        coverEnabledState = sharedPreferenceManager.coverThemeEnabled
+        updateAppCompatDelegateTheme(initialThemePref)
 
-        checkOldAppStatus()
+        lastAppliedTheme = initialThemePref
+        lastAppliedCoverThemeEnabled = initialCoverThemeEnabledSetting
+        lastAppliedBlackedOutMode = initialBlackedOutMode
 
         setContent {
-            val currentContext = LocalContext.current
             val currentContainerSize = LocalWindowInfo.current.containerSize
-            val applyCoverTheme =
-                sharedPreferenceManager.isCoverThemeApplied(currentContainerSize)
+            val applyCoverTheme = sharedPreferenceManager.isCoverThemeApplied(currentContainerSize)
 
             ScreenEnvironment(
                 themePreference = lastAppliedTheme,
@@ -153,43 +124,33 @@ class MainActivity : ComponentActivity() {
                             )
                             .then(
                                 if (isCoverScreen) {
-                                    Modifier
-                                        .background(Color.Black)
-                                        .padding(horizontal = NoPadding)
+                                    Modifier.background(Color.Black).padding(horizontal = NoPadding)
                                         .clip(RoundedCornerShape(NoCornerRadius))
                                 } else {
-                                    Modifier
-                                        .clip(
+                                    Modifier.clip(
                                             RoundedCornerShape(
                                                 topStart = LargeCornerRadius,
                                                 topEnd = LargeCornerRadius
                                             )
-                                        )
-                                        .background(colorScheme.surfaceContainer)
+                                        ).background(colorScheme.surfaceContainer)
                                 }
                             )
                     ) {
-                        if (showUninstallDialog && packageNameToDelete != null) {
-                            UninstallOldAppDialog(
-                                onConfirm = {
-                                    packageNameToDelete?.let { requestUninstallOldApp(it) }
-                                })
-                        } else {
-                            CalculatorApp(
-                                viewModel = calculatorViewModel,
-                                layoutType = layoutType,
-                                isLandscape = isLandscape,
-                                onOpenSettings = {
-                                    val intent =
-                                        Intent(this@MainActivity, SettingsActivity::class.java)
-                                    startActivity(intent)
-                                },
-                                onOpenConverter = {
-                                    val intent =
-                                        Intent(this@MainActivity, ConverterActivity::class.java)
-                                    startActivity(intent)
-                                })
-                        }
+                        XenonApp(
+                            viewModel = viewModel,
+                            layoutType = layoutType,
+                            isLandscape = isLandscape,
+                            onOpenSettings = {
+                                val intent = Intent(this@MainActivity, SettingsActivity::class.java)
+                                startActivity(intent)
+                            },
+                            onOpenConverter = {
+                                val intent =
+                                    Intent(this@MainActivity, ConverterActivity::class.java)
+                                startActivity(intent)
+                            },
+                            appSize = currentContainerSize
+                        )
                     }
                 }
             }
@@ -199,90 +160,43 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        checkOldAppStatus()
-        if (packageNameToDelete != null && !showUninstallDialog) {
-            showUninstallDialog = true
-        }
+        val currentThemePref = sharedPreferenceManager.theme
+        val currentCoverThemeEnabledSetting = sharedPreferenceManager.coverThemeEnabled
+        val currentBlackedOutMode = sharedPreferenceManager.blackedOutModeEnabled
 
-        val storedTheme = sharedPreferenceManager.theme
-        if (activeThemeForMainActivity != storedTheme) {
-            activeThemeForMainActivity = storedTheme
+        if (currentThemePref != lastAppliedTheme || currentCoverThemeEnabledSetting != lastAppliedCoverThemeEnabled || currentBlackedOutMode != lastAppliedBlackedOutMode) {
+            if (currentThemePref != lastAppliedTheme) {
+                updateAppCompatDelegateTheme(currentThemePref)
+            }
+
+            lastAppliedTheme = currentThemePref
+            lastAppliedCoverThemeEnabled = currentCoverThemeEnabledSetting
+            lastAppliedBlackedOutMode = currentBlackedOutMode
+
             recreate()
         }
-        val applyCoverTheme = sharedPreferenceManager.coverThemeEnabled
-        if (applyCoverTheme != coverEnabledState) {
-            coverEnabledState = applyCoverTheme
-            recreate()
+    }
+
+    private fun updateAppCompatDelegateTheme(themePref: Int) {
+        if (themePref >= 0 && themePref < sharedPreferenceManager.themeFlag.size) {
+            AppCompatDelegate.setDefaultNightMode(sharedPreferenceManager.themeFlag[themePref])
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
     }
 
-    private fun isPackageInstalled(packageName: String, pm: PackageManager): Boolean {
-        return try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                pm.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
-            } else {
-                @Suppress("DEPRECATION") pm.getPackageInfo(packageName, 0)
-            }
-            true
-        } catch (_: PackageManager.NameNotFoundException) {
-            false
-        }
-    }
-
-    private fun checkOldAppStatus() {
-        var foundPackage: String? = null
-        for (packageName in OLD_APP_PACKAGE_NAMES) {
-            if (isPackageInstalled(packageName, packageManager)) {
-                foundPackage = packageName
-                break
-            }
-        }
-
-        packageNameToDelete = foundPackage
-        showUninstallDialog = foundPackage != null
-    }
-
-    private fun requestUninstallOldApp(packageName: String) {
-        val intent = Intent(Intent.ACTION_DELETE)
-        intent.data = "package:$packageName".toUri()
-        intent.putExtra(Intent.EXTRA_RETURN_RESULT, true)
-        uninstallLauncher.launch(intent)
-    }
 }
-
-@Composable
-fun UninstallOldAppDialog(
-    onConfirm: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = {},
-        title = { Text("With Something Bad comes Something better") },
-        text = {
-            Text(
-                "Hello there,\n" + "Say Goodbye to the old Version of Calculator, we are moving in to a newer, better and from the ground up newly build Version. The old one will not be supported anymore."
-            )
-        },
-        confirmButton = {
-            Button(onClick = onConfirm) {
-                Text("Good Bye")
-            }
-        },
-        dismissButton = {},
-        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-    )
-}
-
 
 @OptIn(ExperimentalHazeMaterialsApi::class)
 @Composable
-fun CalculatorApp(
+fun XenonApp(
     viewModel: CalculatorViewModel,
-    layoutType: LayoutType,
     isLandscape: Boolean,
+    layoutType: LayoutType,
     onOpenSettings: () -> Unit,
-    onOpenConverter: () -> Unit
+    onOpenConverter: () -> Unit,
+    appSize: IntSize
 ) {
-
     var showMenu by remember { mutableStateOf(false) }
     val hazeState = remember { HazeState() }
     val isCoverScreenLayout = layoutType == LayoutType.COVER
@@ -302,8 +216,7 @@ fun CalculatorApp(
                     if (isCoverScreenLayout) {
                         Modifier.padding(horizontal = NoPadding, vertical = NoPadding)
                     } else {
-                        Modifier
-                            .padding(horizontal = LargePadding, vertical = NoPadding)
+                        Modifier.padding(horizontal = LargePadding, vertical = NoPadding)
                             .padding(top = LargePadding)
                     }
                 )

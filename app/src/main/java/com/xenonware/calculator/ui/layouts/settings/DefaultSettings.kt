@@ -30,7 +30,6 @@ import com.xenon.mylibrary.res.DialogClearDataConfirmation
 import com.xenon.mylibrary.res.DialogCoverDisplaySelection
 import com.xenon.mylibrary.res.DialogLanguageSelection
 import com.xenon.mylibrary.res.DialogResetSettingsConfirmation
-import com.xenon.mylibrary.res.DialogSignOut
 import com.xenon.mylibrary.res.DialogThemeSelection
 import com.xenon.mylibrary.res.DialogVersionNumber
 import com.xenon.mylibrary.res.ThemeSetting
@@ -39,9 +38,9 @@ import com.xenon.mylibrary.values.MediumPadding
 import com.xenon.mylibrary.values.NoSpacing
 import com.xenonware.calculator.BuildConfig
 import com.xenonware.calculator.R
-import com.xenonware.calculator.viewmodel.classes.SettingsItems
 import com.xenonware.calculator.viewmodel.LayoutType
 import com.xenonware.calculator.viewmodel.SettingsViewModel
+import com.xenonware.calculator.viewmodel.classes.SettingsItems
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
@@ -103,9 +102,8 @@ fun DefaultSettings(
 
     ActivityScreen(
         titleText = stringResource(id = R.string.settings),
-
         expandable = isAppBarExpandable,
-
+        flexModel = null,
         navigationIconStartPadding = MediumPadding,
         navigationIconPadding = MediumPadding,
         navigationIconSpacing = NoSpacing,

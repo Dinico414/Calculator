@@ -3,14 +3,9 @@ package com.xenonware.calculator.ui.layouts
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.IntSize
-import com.xenonware.calculator.ui.res.buttons.CoverButtonLayout
+import com.xenonware.calculator.ui.layouts.calculator.CompactCalculator
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
 import com.xenonware.calculator.viewmodel.LayoutType
-import com.xenonware.todolist.presentation.sign_in.SignInViewModel
-import com.xenonware.todolist.ui.layouts.todo.CompactTodo
-import com.xenonware.todolist.ui.layouts.todo.CoverTodo
-import com.xenonware.todolist.viewmodel.LayoutType
-import com.xenonware.todolist.viewmodel.TaskViewModel
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
