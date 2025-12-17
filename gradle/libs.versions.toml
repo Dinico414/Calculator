@@ -16,7 +16,7 @@ navigationCompose = "2.9.6"
 appcompat = "1.7.1"
 material3WindowSizeClassAndroid = "1.4.0"
 
-xenonCommons = "2.2.1"
+xenonCommons = "2.3.2"
 #noinspection UnusedVersionCatalogEntry
 xenonUi = "3.1"
 
