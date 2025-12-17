@@ -94,13 +94,14 @@ fun CompactCalculator(
 
         val configuration = LocalConfiguration.current
         val appHeight = configuration.screenHeightDp.dp
-        val isAppBarExpandable = when (layoutType) {
-            LayoutType.COVER -> false
-            LayoutType.SMALL -> false
-            LayoutType.COMPACT -> !isLandscape && appHeight >= 460.dp
-            LayoutType.MEDIUM -> true
-            LayoutType.EXPANDED -> true
-        }
+        val isAppBarExpandable = false
+//            when (layoutType) {
+//            LayoutType.COVER -> false
+//            LayoutType.SMALL -> false
+//            LayoutType.COMPACT -> !isLandscape && appHeight >= 460.dp
+//            LayoutType.MEDIUM -> true
+//            LayoutType.EXPANDED -> true
+//        }
         ActivityScreen(
             modifier = Modifier
                 .fillMaxSize()
@@ -109,7 +110,7 @@ fun CompactCalculator(
                 },
             titleText = "",
             expandable = isAppBarExpandable,
-            collapsedHeight = 32.dp,
+            collapsedHeight = 0.dp,
             flexModel = "FlexTopContainer",
             headerContent = {
                 Box(

@@ -4,11 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import com.xenonware.calculator.data.SharedPreferenceManager
 import com.xenonware.calculator.ui.layouts.ConverterLayout
@@ -17,41 +15,48 @@ import com.xenonware.calculator.viewmodel.ConverterViewModel
 
 class ConverterActivity : ComponentActivity() {
 
-    private lateinit var converterViewModel: ConverterViewModel
+    private lateinit var viewModel: ConverterViewModel
+
     private lateinit var sharedPreferenceManager: SharedPreferenceManager
+
     private var lastAppliedTheme: Int = -1
-    private var lastAppliedCoverThemeEnabled: Boolean =
-        false
+    private var lastAppliedCoverThemeEnabled: Boolean = false
     private var lastAppliedBlackedOutMode: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         sharedPreferenceManager = SharedPreferenceManager(applicationContext)
-
-        converterViewModel = ViewModelProvider(
+        viewModel = ViewModelProvider(
             this, ConverterViewModel.ConverterViewModelFactory(application)
         )[ConverterViewModel::class.java]
 
-        val activeThemeForConverterActivity = sharedPreferenceManager.theme
+        val initialThemePref = sharedPreferenceManager.theme
+        val initialCoverThemeEnabledSetting = sharedPreferenceManager.coverThemeEnabled
+        val initialBlackedOutMode = sharedPreferenceManager.blackedOutModeEnabled
+
+        updateAppCompatDelegateTheme(initialThemePref)
+
+        lastAppliedTheme = initialThemePref
+        lastAppliedCoverThemeEnabled = initialCoverThemeEnabledSetting
+        lastAppliedBlackedOutMode = initialBlackedOutMode
 
         enableEdgeToEdge()
 
         setContent {
-            val currentContext = LocalContext.current
             val currentContainerSize = LocalWindowInfo.current.containerSize
-            val applyCoverTheme =
-                sharedPreferenceManager.isCoverThemeApplied(currentContainerSize)
+            val applyCoverTheme = sharedPreferenceManager.isCoverThemeApplied(currentContainerSize)
 
             ScreenEnvironment(
                 themePreference = lastAppliedTheme,
-                coverTheme = applyCoverTheme, // Use the dynamically calculated value
+                coverTheme = applyCoverTheme,
                 blackedOutModeEnabled = lastAppliedBlackedOutMode
             ) { layoutType, isLandscape ->
                 ConverterLayout(
                     onNavigateBack = { finish() },
-                    viewModel = converterViewModel,
+                    viewModel = viewModel,
                     isLandscape = isLandscape,
-                    layoutType = layoutType
+                    layoutType = layoutType,
                 )
             }
         }
@@ -60,10 +65,28 @@ class ConverterActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        val storedTheme = sharedPreferenceManager.theme
-         val currentActivityTheme = sharedPreferenceManager.theme
-        if (currentActivityTheme != storedTheme) {
+        val currentThemePref = sharedPreferenceManager.theme
+        val currentCoverThemeEnabledSetting = sharedPreferenceManager.coverThemeEnabled
+        val currentBlackedOutMode = sharedPreferenceManager.blackedOutModeEnabled
+
+        if (currentThemePref != lastAppliedTheme || currentCoverThemeEnabledSetting != lastAppliedCoverThemeEnabled || currentBlackedOutMode != lastAppliedBlackedOutMode) {
+            if (currentThemePref != lastAppliedTheme) {
+                updateAppCompatDelegateTheme(currentThemePref)
+            }
+
+            lastAppliedTheme = currentThemePref
+            lastAppliedCoverThemeEnabled = currentCoverThemeEnabledSetting
+            lastAppliedBlackedOutMode = currentBlackedOutMode
+
             recreate()
         }
     }
+    private fun updateAppCompatDelegateTheme(themePref: Int) {
+        if (themePref >= 0 && themePref < sharedPreferenceManager.themeFlag.size) {
+            AppCompatDelegate.setDefaultNightMode(sharedPreferenceManager.themeFlag[themePref])
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        }
+    }
+
 }
