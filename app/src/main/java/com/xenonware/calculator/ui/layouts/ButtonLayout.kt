@@ -2,7 +2,6 @@ package com.xenonware.calculator.ui.layouts
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.xenonware.calculator.ui.layouts.calculator.CompactCalculator
 import com.xenonware.calculator.ui.res.buttons.CompactButtonLayout
 import com.xenonware.calculator.ui.res.buttons.CompactLandscapeButtonLayout
 import com.xenonware.calculator.ui.res.buttons.CoverButtonLayout
@@ -37,11 +36,11 @@ fun ButtonLayout(
         }
 
         LayoutType.COMPACT -> {
-            CompactCalculator(
-                viewModel = viewModel,
-                isLandscape = isLandscape,
-                modifier = modifier
-            )
+            if (isLandscape) {
+                CompactLandscapeButtonLayout(viewModel = viewModel, modifier = modifier)
+            } else {
+                CompactButtonLayout(viewModel = viewModel, modifier = modifier)
+            }
         }
 
         LayoutType.MEDIUM -> {
@@ -50,11 +49,11 @@ fun ButtonLayout(
 //            } else {
 //                MediumButtonLayout(viewModel = viewModel, modifier = modifier)
 //            }
-            CompactCalculator(
-                viewModel = viewModel,
-                isLandscape = isLandscape,
-                modifier = modifier
-            )
+            if (isLandscape) {
+                CompactLandscapeButtonLayout(viewModel = viewModel, modifier = modifier)
+            } else {
+                CompactButtonLayout(viewModel = viewModel, modifier = modifier)
+            }
         }
 
         LayoutType.EXPANDED -> {
@@ -63,11 +62,11 @@ fun ButtonLayout(
 //            } else {
 //                ExpandedButtonLayout(viewModel = viewModel, modifier = modifier)
 //            }
-            CompactCalculator(
-                viewModel = viewModel,
-                isLandscape = isLandscape,
-                modifier = modifier
-            )
+            if (isLandscape) {
+                CompactLandscapeButtonLayout(viewModel = viewModel, modifier = modifier)
+            } else {
+                CompactButtonLayout(viewModel = viewModel, modifier = modifier)
+            }
         }
     }
 }
