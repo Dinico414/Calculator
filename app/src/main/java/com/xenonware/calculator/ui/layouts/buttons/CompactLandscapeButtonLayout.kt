@@ -1,4 +1,4 @@
-package com.xenonware.calculator.ui.res.buttons
+package com.xenonware.calculator.ui.layouts.buttons
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

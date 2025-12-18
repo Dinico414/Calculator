@@ -1,6 +1,5 @@
-package com.xenonware.calculator.ui.res.buttons
+package com.xenonware.calculator.ui.layouts.buttons
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,14 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import com.xenon.mylibrary.values.LargePadding
 import com.xenon.mylibrary.values.MediumSpacing
 import com.xenonware.calculator.ui.res.CalculatorButton
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
 
 @Composable
-fun CoverButtonLayout(
+fun SmallLandscapeButtonLayout(
     viewModel: CalculatorViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -33,8 +31,7 @@ fun CoverButtonLayout(
     Row(
         modifier = modifier
             .fillMaxSize()
-            .padding(top = LargePadding)
-            .background(color = Color.Black),
+            .padding(LargePadding),
         horizontalArrangement = Arrangement.spacedBy(buttonSpacing)
     ) {
 
@@ -86,4 +83,3 @@ fun CoverButtonLayout(
         }
     }
 }
-

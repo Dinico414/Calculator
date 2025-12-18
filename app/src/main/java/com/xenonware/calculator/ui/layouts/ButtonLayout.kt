@@ -2,11 +2,11 @@ package com.xenonware.calculator.ui.layouts
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.xenonware.calculator.ui.res.buttons.CompactButtonLayout
-import com.xenonware.calculator.ui.res.buttons.CompactLandscapeButtonLayout
-import com.xenonware.calculator.ui.res.buttons.CoverButtonLayout
-import com.xenonware.calculator.ui.res.buttons.SmallButtonLayout
-import com.xenonware.calculator.ui.res.buttons.SmallLandscapeButtonLayout
+import com.xenonware.calculator.ui.layouts.buttons.CompactButtonLayout
+import com.xenonware.calculator.ui.layouts.buttons.CompactLandscapeButtonLayout
+import com.xenonware.calculator.ui.layouts.buttons.CoverButtonLayout
+import com.xenonware.calculator.ui.layouts.buttons.SmallButtonLayout
+import com.xenonware.calculator.ui.layouts.buttons.SmallLandscapeButtonLayout
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
 import com.xenonware.calculator.viewmodel.LayoutType
 
