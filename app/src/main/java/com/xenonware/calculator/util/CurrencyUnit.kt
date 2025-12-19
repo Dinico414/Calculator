@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import com.xenonware.calculator.R
 
 data class CurrencyData(
-    @StringRes val displayNameResId: Int,
+    @param:StringRes val displayNameResId: Int,
     val factor: Double
 )
 

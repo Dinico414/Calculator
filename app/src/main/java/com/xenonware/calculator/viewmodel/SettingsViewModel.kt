@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.xenonware.calculator.viewmodel
 
 import android.app.ActivityManager

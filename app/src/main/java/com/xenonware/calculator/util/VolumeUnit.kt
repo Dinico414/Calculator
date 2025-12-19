@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import com.xenonware.calculator.R
 
 enum class VolumeUnit(
-    @StringRes val displayNameResId: Int,
+    @param:StringRes val displayNameResId: Int,
     val toBaseFactor: Double
 ) {
     MILLILITERS(R.string.volume_milliliters, 1.0),

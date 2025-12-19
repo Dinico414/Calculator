@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import com.xenonware.calculator.R
 
 enum class WeightUnit(
-    @StringRes val displayNameResId: Int,
+    @param:StringRes val displayNameResId: Int,
     val toBaseFactor: Double
 ) {
     METRIC_TONNES(R.string.weight_metric_tonnes, 1000.0),

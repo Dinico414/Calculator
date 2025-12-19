@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import com.xenonware.calculator.R
 
 enum class AreaUnit(
-    @StringRes val displayNameResId: Int,
+    @param:StringRes val displayNameResId: Int,
     val toBaseFactor: Double
 ) {
     SQUARE_KILOMETERS(R.string.area_square_kilometers, 1_000_000.0),

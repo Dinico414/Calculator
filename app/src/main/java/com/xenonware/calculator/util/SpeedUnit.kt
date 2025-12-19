@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import com.xenonware.calculator.R
 
 enum class SpeedUnit(
-    @StringRes val displayNameResId: Int,
+    @param:StringRes val displayNameResId: Int,
     val toBaseFactor: Double
 ) {
     METERS_PER_SECOND(R.string.speed_meters_per_second, 1.0),

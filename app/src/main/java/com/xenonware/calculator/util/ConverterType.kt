@@ -3,7 +3,7 @@ package com.xenonware.calculator.util
 import androidx.annotation.StringRes
 import com.xenonware.calculator.R
 
-enum class ConverterType(@StringRes val displayNameResId: Int) {
+enum class ConverterType(@param:StringRes val displayNameResId: Int) {
     VOLUME(R.string.converter_type_volume),
     AREA(R.string.converter_type_area),
     LENGTH(R.string.converter_type_length),

@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import com.xenonware.calculator.R
 
 enum class LengthUnit(
-    @StringRes val displayNameResId: Int,
+    @param:StringRes val displayNameResId: Int,
     val toBaseFactor: Double
 ) {
     NANOMETERS(R.string.length_nanometers, 1e-9),

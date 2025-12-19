@@ -69,6 +69,7 @@ val ButtonWidth = CompactWideButtonWidth
 
 val ButtonHeight = CompactWideButtonHeight
 
+@Suppress("KotlinConstantConditions")
 @Composable
 fun ButtonLayout(
     viewModel: CalculatorViewModel,
@@ -217,15 +218,15 @@ private fun ScientificColumn(
                 horizontalArrangement = Arrangement.spacedBy(buttonSpacing)
             ) {
                 rowData.forEach { originalText ->
-                    val displayText = when {
-                        originalText == "INV" -> "INV"
-                        originalText == viewModel.angleUnit.name -> viewModel.angleUnit.name
-                        originalText == "√" && viewModel.isInverseMode -> "x²"
-                        originalText == "sin" && viewModel.isInverseMode -> "sin⁻¹"
-                        originalText == "cos" && viewModel.isInverseMode -> "cos⁻¹"
-                        originalText == "tan" && viewModel.isInverseMode -> "tan⁻¹"
-                        originalText == "ln" && viewModel.isInverseMode -> "eˣ"
-                        originalText == "log" && viewModel.isInverseMode -> "10ˣ"
+                    val displayText = when (originalText) {
+                        "INV" -> "INV"
+                        viewModel.angleUnit.name -> viewModel.angleUnit.name
+                        "√" if viewModel.isInverseMode -> "x²"
+                        "sin" if viewModel.isInverseMode -> "sin⁻¹"
+                        "cos" if viewModel.isInverseMode -> "cos⁻¹"
+                        "tan" if viewModel.isInverseMode -> "tan⁻¹"
+                        "ln" if viewModel.isInverseMode -> "eˣ"
+                        "log" if viewModel.isInverseMode -> "10ˣ"
                         else -> originalText
                     }
 
