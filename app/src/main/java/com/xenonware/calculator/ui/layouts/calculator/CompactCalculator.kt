@@ -117,7 +117,11 @@ fun CompactCalculator(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .hazeSource(hazeState),
+                        .hazeSource(hazeState)
+                        .padding(
+                        WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
+                            .asPaddingValues()
+                    ),
                     verticalArrangement = Arrangement.Bottom
                 ) {
                     Box(
@@ -212,11 +216,8 @@ fun CompactCalculator(
                         layoutType = layoutType,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(0.65f)
-                            .padding(
-                                WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
-                                    .asPaddingValues()
-                            )
+                            .weight(0.65f),
+
                     )
                 }
             })

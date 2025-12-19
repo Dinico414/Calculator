@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.xenonware.calculator.ui.theme
 
 import android.content.res.Configuration
