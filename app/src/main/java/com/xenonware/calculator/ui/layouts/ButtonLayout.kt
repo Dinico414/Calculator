@@ -137,7 +137,8 @@ private fun CompactPortraitLayout(
         ScientificButtonsRow1(
             viewModel = viewModel, modifier = Modifier
                 .height(SmallButtonSizeSpacing)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            isInverseMode = viewModel.isInverseMode
         )
 
         val spacerHeight by animateDpAsState(
@@ -296,6 +297,7 @@ private fun NumericOperatorsColumn(
                         isScientificButton = false,
                         isNumber = isNumber,
                         isGlobalScientificModeActive = viewModel.isScientificMode,
+                        fontWeight = if (text == "⌫") FontWeight.SemiBold else FontWeight.Normal,
                         fontFamily = if (text == "⌫") firaSansFamily else QuicksandTitleVariable,
                         onClick = {
                             if (text == "( )") viewModel.onParenthesesClick()
@@ -345,6 +347,7 @@ private fun CommonButtonGrid(
                         isScientificButton = false,
                         isNumber = isNumber || text == "⌫",
                         isGlobalScientificModeActive = isScientificMode,
+                        fontWeight = if (text == "⌫") FontWeight.SemiBold else FontWeight.Normal,
                         fontFamily = if (text == "⌫") firaSansFamily else QuicksandTitleVariable,
                         onClick = {
                             if (text == "( )") viewModel.onParenthesesClick()
@@ -370,7 +373,7 @@ private fun CommonButtonGrid(
 
 
 @Composable
-fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
+fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = Modifier, isInverseMode: Boolean, ) {
     Row(
         modifier = modifier.padding(horizontal = SmallestPadding),
         horizontalArrangement = Arrangement.spacedBy(MediumSpacing),
@@ -411,7 +414,8 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
                 .clip(RoundedCornerShape(100f))
                 .background(MaterialTheme.colorScheme.inversePrimary)
                 .clickable(
-                    onClick = { viewModel.toggleScientificMode() },
+                    onClick = { viewModel.toggleScientificMode()
+                        if (isInverseMode) viewModel.toggleInverseMode() },
                     interactionSource = interactionSource,
                     indication = LocalIndication.current,
                 ), contentAlignment = Alignment.Center
