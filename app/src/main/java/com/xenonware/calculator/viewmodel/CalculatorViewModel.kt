@@ -12,6 +12,13 @@ open class CalculatorViewModel : ViewModel() {
     var currentInput by mutableStateOf("")
         private set
 
+    val displayInput: String
+        get() = currentInput
+            .replace("^2", "²")
+            .replace("asin(", "sin⁻¹(")
+            .replace("acos(", "cos⁻¹(")
+            .replace("atan(", "tan⁻¹(")
+
     var result by mutableStateOf("")
         private set
 
@@ -39,7 +46,22 @@ open class CalculatorViewModel : ViewModel() {
             "AC" -> clear()
             "⌫" -> backspace()
             "=" -> calculate()
-            "π" -> appendConstant(Math.PI.toString())
+            "π" -> {
+                val lastChar = currentInput.lastOrNull()
+                val shouldInsertMultiplier = lastChar != null && (
+                        lastChar.isDigit() ||
+                                lastChar == ')' ||
+                                lastChar == '!' ||
+                                lastChar == 'π' ||
+                                lastChar == 'e'
+                        )
+
+                if (shouldInsertMultiplier && currentInput.isNotEmpty()) {
+                    currentInput += "*π"
+                } else {
+                    currentInput += "π"
+                }
+            }
             "e" -> appendConstant(Math.E.toString())
 
             "√" -> {

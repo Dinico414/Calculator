@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import com.xenon.mylibrary.theme.QuicksandTitleVariable
 import com.xenon.mylibrary.values.CompactWideButtonHeight
 import com.xenon.mylibrary.values.CompactWideButtonWidth
 import com.xenon.mylibrary.values.LargePadding
@@ -295,7 +296,7 @@ private fun NumericOperatorsColumn(
                         isScientificButton = false,
                         isNumber = isNumber,
                         isGlobalScientificModeActive = viewModel.isScientificMode,
-                        fontFamily = if (text == "⌫") firaSansFamily else null,
+                        fontFamily = if (text == "⌫") firaSansFamily else QuicksandTitleVariable,
                         onClick = {
                             if (text == "( )") viewModel.onParenthesesClick()
                             else viewModel.onButtonClick(text)
@@ -344,7 +345,7 @@ private fun CommonButtonGrid(
                         isScientificButton = false,
                         isNumber = isNumber || text == "⌫",
                         isGlobalScientificModeActive = isScientificMode,
-                        fontFamily = if (text == "⌫") firaSansFamily else null,
+                        fontFamily = if (text == "⌫") firaSansFamily else QuicksandTitleVariable,
                         onClick = {
                             if (text == "( )") viewModel.onParenthesesClick()
                             else viewModel.onButtonClick(text)

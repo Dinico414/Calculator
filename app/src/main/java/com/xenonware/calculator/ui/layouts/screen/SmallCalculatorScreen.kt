@@ -44,7 +44,7 @@ fun SmallCalculatorScreen(viewModel: CalculatorViewModel) {
                 .weight(1f)
         ) {
             CoverLandscapeDisplaySection(
-                currentInput = viewModel.currentInput,
+                currentInput = viewModel.displayInput,
                 result = viewModel.result,
                 modifier = Modifier
                     .fillMaxSize()

@@ -44,7 +44,7 @@ fun LandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
                 .padding(end = LargeTextFieldPadding)
         ) {
             CompactLandscapeDisplaySection(
-                currentInput = viewModel.currentInput,
+                currentInput = viewModel.displayInput,
                 result = viewModel.result,
                 modifier = Modifier
                     .fillMaxSize()
