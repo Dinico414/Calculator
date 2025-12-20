@@ -59,13 +59,22 @@ fun CalculatorButton(
 
     val targetFontSize = when {
         isScientificButton -> when {
-            isLandscape -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) 18.sp else 20.sp
-            else -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) 18.sp else 20.sp
+            isLandscape -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains(
+                    "²"
+                )
+            ) 18.sp else 20.sp
+
+            else -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains(
+                    "²"
+                )
+            ) 18.sp else 20.sp
         }
+
         isNumber -> when {
             isLandscape -> if (isGlobalScientificModeActive) 26.sp else 28.sp
             else -> if (isGlobalScientificModeActive) 26.sp else 32.sp
         }
+
         else -> when {
             isLandscape -> if (isGlobalScientificModeActive) 26.sp else 28.sp
             else -> if (isGlobalScientificModeActive) 26.sp else 32.sp
@@ -119,19 +128,14 @@ fun CalculatorButton(
                     longClickFired = true
                     longClickAnimationActive.value = true
                 }
-            }
-        )
+            })
     }
     val longClickAnimValue by animateFloatAsState(
-        targetValue = if (longClickAnimationActive.value) 3f else 0f,
-        animationSpec = tween(
-            durationMillis = 200 / 2,
-            easing = FastOutSlowInEasing
-        ),
-        finishedListener = {
+        targetValue = if (longClickAnimationActive.value) 3f else 0f, animationSpec = tween(
+            durationMillis = 200 / 2, easing = FastOutSlowInEasing
+        ), finishedListener = {
             longClickAnimationActive.value = false
-        }
-    )
+        })
 
     Button(
         onClick = {
@@ -144,15 +148,16 @@ fun CalculatorButton(
         },
         modifier = modifier
             .defaultMinSize(
-                minWidth = MinMediumButtonHeight,
-                minHeight = MediumButtonHeight
+                minWidth = MinMediumButtonHeight, minHeight = MediumButtonHeight
             )
             .padding(abs(longClickAnimValue).dp),
         shape = RoundedCornerShape(percent = cornerRadiusPercent),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor, contentColor = contentColor
         ),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = NoElevation, pressedElevation = NoElevation),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = NoElevation, pressedElevation = NoElevation
+        ),
         contentPadding = PaddingValues(horizontal = SmallPadding, vertical = SmallPadding),
         interactionSource = interactionSource
     ) {

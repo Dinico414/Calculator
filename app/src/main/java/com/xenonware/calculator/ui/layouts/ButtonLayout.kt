@@ -91,15 +91,15 @@ fun ButtonLayout(
 
         Row(
             modifier = modifier.fillMaxSize().padding(
-                    top = LargePadding,
-                    start = if (layoutType == LayoutType.COVER && !isLandscape) NoPadding else LargePadding,
-                    end = if (layoutType == LayoutType.COVER && !isLandscape) NoPadding else LargePadding,
-                    bottom = if (layoutType == LayoutType.COVER && !isLandscape) NoPadding else LargePadding
-                ).let {
-                    if (layoutType == LayoutType.COVER && !isLandscape) {
-                        it.background(Color.Black)
-                    } else it
-                }, horizontalArrangement = Arrangement.spacedBy(buttonSpacing)
+                top = LargePadding,
+                start = if (layoutType == LayoutType.COVER && !isLandscape) NoPadding else LargePadding,
+                end = if (layoutType == LayoutType.COVER && !isLandscape) NoPadding else LargePadding,
+                bottom = if (layoutType == LayoutType.COVER && !isLandscape) NoPadding else LargePadding
+            ).let {
+                if (layoutType == LayoutType.COVER && !isLandscape) {
+                    it.background(Color.Black)
+                } else it
+            }, horizontalArrangement = Arrangement.spacedBy(buttonSpacing)
         ) {
             // Scientific column (only in compact+ landscape)
             if (showScientificButtons) {
@@ -417,8 +417,7 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
         ) {
             val rotationAngle by animateFloatAsState(
                 targetValue = if (viewModel.isScientificMode) 0f else 180f, animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow
+                    dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessLow
                 ), label = "IconRotation"
             )
             Icon(
