@@ -2,6 +2,7 @@ package com.xenonware.calculator.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -277,18 +278,25 @@ open class CalculatorViewModel : ViewModel() {
         openParenthesesCount = 0
 
         try {
-
             val expressionString = tempInput
                 .replace("×", "*")
                 .replace("÷", "/")
                 .replace("%", "#")
 
-
             val expression = Expression(expressionString)
 
             if (expression.checkSyntax()) {
                 val calculatedResult = expression.calculate()
-                result = if (calculatedResult.isNaN()) "Error: NaN" else formatResult(calculatedResult)
+                if (calculatedResult.isNaN()) {
+                    result = "Error: NaN"
+                } else {
+                    val formatted = formatResult(calculatedResult)
+                    result = formatted
+
+                    // Add to history only on success
+                    _history.add(0, tempInput to formatted)  // newest first
+                    if (_history.size > 50) _history.removeAt(_history.lastIndex)  // optional limit
+                }
             } else {
                 result = "Error: Syntax (${expression.errorMessage})"
             }
@@ -296,6 +304,14 @@ open class CalculatorViewModel : ViewModel() {
             result = "Error: Calc"
             e.printStackTrace()
         }
+    }
+    private val _history = mutableStateListOf<Pair<String, String>>()
+    val history: List<Pair<String, String>> = _history  // read-only exposure
+
+
+    // Optional: clear history
+    fun clearHistory() {
+        _history.clear()
     }
 
     private fun formatResult(value: Double): String {
