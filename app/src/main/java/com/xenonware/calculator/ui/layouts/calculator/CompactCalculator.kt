@@ -119,7 +119,7 @@ fun CompactCalculator(
                     val currentHistory = viewModel.history
 
                     HistoryLog(
-                        history = currentHistory,
+                        history = viewModel.history,
                         fraction = fraction,
                         modifier = Modifier.fillMaxSize()
                     )

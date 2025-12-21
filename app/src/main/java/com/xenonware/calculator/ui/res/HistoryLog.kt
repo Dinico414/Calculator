@@ -13,13 +13,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.xenon.mylibrary.theme.QuicksandTitleVariable
+import com.xenonware.calculator.viewmodel.classes.HistoryItem
+
 @Composable
 fun HistoryLog(
-    history: List<Pair<String, String>>,
+    history: List<HistoryItem>,
     fraction: Float,
     modifier: Modifier = Modifier
 ) {
-
     if (history.isEmpty()) {
         Text(
             text = "No history yet",
@@ -37,8 +39,8 @@ fun HistoryLog(
     ) {
         items(
             items = history,
-            key = { it.first + it.second }
-        ) { (expr, res) ->
+            key = { it.id }
+        ) { entry ->
             Column(
                 horizontalAlignment = Alignment.End,
                 modifier = Modifier
@@ -46,15 +48,17 @@ fun HistoryLog(
                     .padding(vertical = 8.dp, horizontal = 4.dp)
             ) {
                 Text(
-                    text = expr,
+                    text = entry.expression,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = fraction * 0.6f),
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Light
                 )
                 Text(
-                    text = "= $res",
+                    text = "= ${entry.result}",
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = fraction),
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
+                    fontFamily = QuicksandTitleVariable,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         }

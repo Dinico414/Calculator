@@ -6,10 +6,12 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.xenonware.calculator.viewmodel.classes.HistoryItem
 import org.mariuszgromada.math.mxparser.Expression
 import org.mariuszgromada.math.mxparser.mXparser
 
 open class CalculatorViewModel : ViewModel() {
+
     var currentInput by mutableStateOf("")
         private set
 
@@ -294,8 +296,8 @@ open class CalculatorViewModel : ViewModel() {
                     result = formatted
 
                     // Add to history only on success
-                    _history.add(0, tempInput to formatted)  // newest first
-                    if (_history.size > 50) _history.removeAt(_history.lastIndex)  // optional limit
+                    _history.add(0, HistoryItem(expression = tempInput, result = formatted))
+
                 }
             } else {
                 result = "Error: Syntax (${expression.errorMessage})"
@@ -305,8 +307,8 @@ open class CalculatorViewModel : ViewModel() {
             e.printStackTrace()
         }
     }
-    private val _history = mutableStateListOf<Pair<String, String>>()
-    val history: List<Pair<String, String>> = _history  // read-only exposure
+    private val _history = mutableStateListOf<HistoryItem>()
+    val history: List<HistoryItem> = _history
 
 
     // Optional: clear history
