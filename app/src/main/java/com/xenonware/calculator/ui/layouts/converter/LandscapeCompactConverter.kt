@@ -124,7 +124,6 @@ fun LandscapeCompactConverter(
     ActivityScreen(
         titleText = stringResource(id = R.string.converter),
         expandable = isAppBarExpandable,
-        flexModel = null,
         navigationIconStartPadding = MediumPadding,
         navigationIconPadding = MediumPadding,
         navigationIconSpacing = NoSpacing,
