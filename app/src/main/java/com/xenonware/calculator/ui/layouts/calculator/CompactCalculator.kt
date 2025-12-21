@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CurrencyExchange
+import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,6 +59,7 @@ import com.xenon.mylibrary.values.SmallElevation
 import com.xenonware.calculator.R
 import com.xenonware.calculator.ui.layouts.ButtonLayout
 import com.xenonware.calculator.ui.res.CalculatorScreen
+import com.xenonware.calculator.ui.res.HistoryLog
 import com.xenonware.calculator.ui.res.MenuItem
 import com.xenonware.calculator.ui.res.XenonDropDown
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
@@ -86,16 +88,11 @@ fun CompactCalculator(
         val deviceConfig = LocalDeviceConfig.current
         val application = LocalContext.current.applicationContext as Application
 
+        var expand by remember { mutableStateOf(false) }
+
         val configuration = LocalConfiguration.current
         val appHeight = configuration.screenHeightDp.dp
-        val isAppBarExpandable = false
-//            when (layoutType) {
-//            LayoutType.COVER -> false
-//            LayoutType.SMALL -> false
-//            LayoutType.COMPACT -> !isLandscape && appHeight >= 460.dp
-//            LayoutType.MEDIUM -> true
-//            LayoutType.EXPANDED -> true
-//        }
+
         ActivityScreen(
             modifier = Modifier
                 .fillMaxSize()
@@ -103,10 +100,31 @@ fun CompactCalculator(
                 .onSizeChanged { newSize ->
                 },
             titleText = "",
-            expandable = isAppBarExpandable,
             collapsedHeight = 0.dp,
-            flexModel = "FlexTopContainer",
-            headerContent = { },
+            flexModel = "TopContainer",
+            expand = expand,
+            expandedHeight = LocalConfiguration.current.screenHeightDp.dp.times(0.25f),
+
+        headerContent = {fraction ->
+                Box(
+                    modifier = Modifier
+                        .padding(
+                            WindowInsets.safeDrawing
+                                .only(WindowInsetsSides.Horizontal)
+                                .asPaddingValues()
+                        )
+                        .padding(horizontal = LargePadding)
+                        .padding(top = LargePadding)
+                ) {
+                    val currentHistory = viewModel.history
+
+                    HistoryLog(
+                        history = currentHistory,
+                        fraction = fraction,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            },
             content = {
                 var showMenu by remember { mutableStateOf(false) }
                 val hazeState = remember { HazeState() }
@@ -144,6 +162,32 @@ fun CompactCalculator(
                             modifier = Modifier.fillMaxSize()
                         )
 
+                        Box(
+                            modifier = Modifier
+                                .align (Alignment.TopStart)
+                                .padding(top = LargePadding, start = LargePadding)
+                        ) {
+                            val interactionSource = remember { MutableInteractionSource() }
+
+                            Box(
+                                modifier = Modifier
+                                    .clip(shape = CircleShape)
+                                    .size(CompactButtonSize)
+                                    .clickable(
+                                        onClick = { expand = !expand },
+                                        interactionSource = interactionSource,
+                                        indication = LocalIndication.current,
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.History,
+                                    contentDescription = "History",
+                                    tint = colorScheme.onSecondaryContainer,
+                                )
+                            }
+                        }
+
 
                         Box(
                             modifier = Modifier
@@ -173,6 +217,7 @@ fun CompactCalculator(
                                     )
                                 )
                             }
+
                             Box(
                                 modifier = Modifier
                                     .shadow(elevation = if (showMenu) NoElevation else SmallElevation, shape = CircleShape)

@@ -97,8 +97,6 @@ fun CoverCalculator(
             appBarNavigationIconContentColor = coverScreenContentColor,
             contentCornerRadius = NoCornerRadius,
             collapsedHeight = 0.dp,
-            flexModel = "FlexTopContainer",
-            headerContent = { },
             content = {
                 var showMenu by remember { mutableStateOf(false) }
                 val hazeState = remember { HazeState() }
