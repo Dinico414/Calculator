@@ -116,8 +116,6 @@ fun CompactCalculator(
                         .padding(horizontal = LargePadding)
                         .padding(top = LargePadding)
                 ) {
-                    val currentHistory = viewModel.history
-
                     HistoryLog(
                         history = viewModel.history,
                         fraction = fraction,
