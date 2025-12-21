@@ -119,6 +119,7 @@ fun CompactCalculator(
                     HistoryLog(
                         history = viewModel.history,
                         fraction = fraction,
+                        onClearHistory = { viewModel.clearHistory() },
                         modifier = Modifier.fillMaxSize()
                     )
                 }
