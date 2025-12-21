@@ -15,25 +15,28 @@ import com.xenonware.calculator.data.SharedPreferenceManager
 import com.xenonware.calculator.ui.layouts.MainLayout
 import com.xenonware.calculator.ui.theme.ScreenEnvironment
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
+import com.xenonware.calculator.viewmodel.CalculatorViewModelFactory
 import com.xenonware.calculator.viewmodel.LayoutType
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 
 
 class MainActivity : ComponentActivity() {
-    private val viewModel: CalculatorViewModel by viewModels()
+    private val sharedPreferenceManager: SharedPreferenceManager by lazy {
+        SharedPreferenceManager(applicationContext)
+    }
 
-    private lateinit var sharedPreferenceManager: SharedPreferenceManager
+    private val viewModel: CalculatorViewModel by viewModels {
+        CalculatorViewModelFactory(sharedPreferenceManager)
+    }
 
     private var lastAppliedTheme: Int = -1
     private var lastAppliedCoverThemeEnabled: Boolean = false
     private var lastAppliedBlackedOutMode: Boolean = false
 
-
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        sharedPreferenceManager = SharedPreferenceManager(applicationContext)
 
         val initialThemePref = sharedPreferenceManager.theme
         val initialCoverThemeEnabledSetting = sharedPreferenceManager.coverThemeEnabled
@@ -63,8 +66,7 @@ class MainActivity : ComponentActivity() {
                         startActivity(intent)
                     },
                     onOpenConverter = {
-                        val intent =
-                            Intent(this@MainActivity, ConverterActivity::class.java)
+                        val intent = Intent(this@MainActivity, ConverterActivity::class.java)
                         startActivity(intent)
                     },
                     appSize = currentContainerSize

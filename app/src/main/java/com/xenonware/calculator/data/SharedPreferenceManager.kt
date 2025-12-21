@@ -5,7 +5,10 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.unit.IntSize
 import androidx.core.content.edit
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.xenonware.calculator.viewmodel.ThemeSetting
+import com.xenonware.calculator.viewmodel.classes.HistoryItem
 import kotlin.math.max
 import kotlin.math.min
 
@@ -19,6 +22,8 @@ class SharedPreferenceManager(context: Context) {
     private val blackedOutModeKey = "blacked_out_mode_enabled"
     private val developerModeKey = "developer_mode_enabled"
     private val showDummyProfileKey = "show_dummy_profile_enabled"
+    private val historyKey = "calculation_history"
+    private val gson = Gson()
 
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
@@ -61,6 +66,26 @@ class SharedPreferenceManager(context: Context) {
     var showDummyProfileEnabled: Boolean
         get() = sharedPreferences.getBoolean(showDummyProfileKey, false)
         set(value) = sharedPreferences.edit { putBoolean(showDummyProfileKey, value) }
+
+    fun saveHistory(history: List<HistoryItem>) {
+        val json = gson.toJson(history)
+        sharedPreferences.edit { putString(historyKey, json) }
+    }
+
+    fun loadHistory(): List<HistoryItem> {
+        val json = sharedPreferences.getString(historyKey, null) ?: return emptyList()
+        return try {
+            val type = object : TypeToken<List<HistoryItem>>() {}.type
+            gson.fromJson(json, type)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    fun clearHistory() {
+        sharedPreferences.edit { remove(historyKey) }
+    }
 
     fun isCoverThemeApplied(currentDisplaySize: IntSize): Boolean {
         if (!coverThemeEnabled) return false

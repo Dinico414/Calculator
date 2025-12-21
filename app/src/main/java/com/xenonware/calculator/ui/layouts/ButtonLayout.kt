@@ -1,6 +1,5 @@
 package com.xenonware.calculator.ui.layouts
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
@@ -517,55 +516,55 @@ fun ScientificButtonsRow3(
     }
 }
 
-@SuppressLint("ViewModelConstructorInComposable")
-@Preview(showBackground = true, name = "Portrait - Common Mode")
-@Composable
-fun PreviewPortraitCommon() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            val sampleViewModel = CalculatorViewModel()
-            CompactPortraitLayout(viewModel = sampleViewModel)
-        }
-    }
-}
-
-@SuppressLint("ViewModelConstructorInComposable")
-@Preview(showBackground = true, name = "Portrait - Scientific Mode")
-@Composable
-fun PreviewPortraitScientific() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            val sampleViewModel = CalculatorViewModel()
-            sampleViewModel.toggleScientificMode()
-            CompactPortraitLayout(viewModel = sampleViewModel)
-        }
-    }
-}
-
-@SuppressLint("ViewModelConstructorInComposable")
-@Preview(showBackground = true, name = "Landscape - Common Mode", widthDp = 800, heightDp = 360)
-@Composable
-fun PreviewLandscapeCommon() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            val sampleViewModel = CalculatorViewModel()
-            CompactPortraitLayout(viewModel = sampleViewModel)
-        }
-    }
-}
-
-@SuppressLint("ViewModelConstructorInComposable")
-@Preview(showBackground = true, name = "Landscape - Scientific Mode", widthDp = 800, heightDp = 360)
-@Composable
-fun PreviewLandscapeScientific() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            val sampleViewModel = CalculatorViewModel()
-            sampleViewModel.toggleScientificMode()
-            CompactPortraitLayout(viewModel = sampleViewModel)
-        }
-    }
-}
+//@SuppressLint("ViewModelConstructorInComposable")
+//@Preview(showBackground = true, name = "Portrait - Common Mode")
+//@Composable
+//fun PreviewPortraitCommon() {
+//    XenonTheme(darkTheme = false) {
+//        Surface {
+//            val sampleViewModel = CalculatorViewModel()
+//            CompactPortraitLayout(viewModel = sampleViewModel)
+//        }
+//    }
+//}
+//
+//@SuppressLint("ViewModelConstructorInComposable")
+//@Preview(showBackground = true, name = "Portrait - Scientific Mode")
+//@Composable
+//fun PreviewPortraitScientific() {
+//    XenonTheme(darkTheme = false) {
+//        Surface {
+//            val sampleViewModel = CalculatorViewModel()
+//            sampleViewModel.toggleScientificMode()
+//            CompactPortraitLayout(viewModel = sampleViewModel)
+//        }
+//    }
+//}
+//
+//@SuppressLint("ViewModelConstructorInComposable")
+//@Preview(showBackground = true, name = "Landscape - Common Mode", widthDp = 800, heightDp = 360)
+//@Composable
+//fun PreviewLandscapeCommon() {
+//    XenonTheme(darkTheme = false) {
+//        Surface {
+//            val sampleViewModel = CalculatorViewModel()
+//            CompactPortraitLayout(viewModel = sampleViewModel)
+//        }
+//    }
+//}
+//
+//@SuppressLint("ViewModelConstructorInComposable")
+//@Preview(showBackground = true, name = "Landscape - Scientific Mode", widthDp = 800, heightDp = 360)
+//@Composable
+//fun PreviewLandscapeScientific() {
+//    XenonTheme(darkTheme = false) {
+//        Surface {
+//            val sampleViewModel = CalculatorViewModel()
+//            sampleViewModel.toggleScientificMode()
+//            CompactPortraitLayout(viewModel = sampleViewModel)
+//        }
+//    }
+//}
 
 @Preview(showBackground = true, name = "Num Btn (Port, SciOff)")
 @Composable

@@ -6,11 +6,16 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.xenonware.calculator.data.SharedPreferenceManager
 import com.xenonware.calculator.viewmodel.classes.HistoryItem
+import kotlinx.coroutines.launch
 import org.mariuszgromada.math.mxparser.Expression
 import org.mariuszgromada.math.mxparser.mXparser
 
-open class CalculatorViewModel : ViewModel() {
+open class CalculatorViewModel(
+    private val sharedPreferenceManager: SharedPreferenceManager
+) : ViewModel() {
 
     var currentInput by mutableStateOf("")
         private set
@@ -267,6 +272,28 @@ open class CalculatorViewModel : ViewModel() {
         }
     }
 
+    private val _history = mutableStateListOf<HistoryItem>()
+    val history: List<HistoryItem> = _history
+
+    private val maxHistorySize = 100
+
+    init {
+        mXparser.setRadiansMode()
+        loadHistoryFromPreferences()
+    }
+
+    private fun loadHistoryFromPreferences() {
+        val savedHistory = sharedPreferenceManager.loadHistory()
+        _history.clear()
+        _history.addAll(savedHistory.takeLast(maxHistorySize)) // Ensure max 100 even if corrupted
+    }
+
+    private fun saveHistoryToPreferences() {
+        viewModelScope.launch {
+            sharedPreferenceManager.saveHistory(_history.toList())
+        }
+    }
+
     private fun calculate() {
         if (currentInput.isBlank()) {
             result = ""
@@ -295,9 +322,17 @@ open class CalculatorViewModel : ViewModel() {
                     val formatted = formatResult(calculatedResult)
                     result = formatted
 
-                    // Add to history only on success
-                    _history.add(0, HistoryItem(expression = tempInput, result = formatted))
+                    // Add new entry at the beginning (newest on top)
+                    val newItem = HistoryItem(expression = tempInput, result = formatted)
+                    _history.add(0, newItem)
 
+                    // Enforce max 100 items
+                    if (_history.size > maxHistorySize) {
+                        _history.removeAt(_history.size - 1) // Remove oldest
+                    }
+
+                    // Save to persistent storage
+                    saveHistoryToPreferences()
                 }
             } else {
                 result = "Error: Syntax (${expression.errorMessage})"
@@ -307,15 +342,12 @@ open class CalculatorViewModel : ViewModel() {
             e.printStackTrace()
         }
     }
-    private val _history = mutableStateListOf<HistoryItem>()
-    val history: List<HistoryItem> = _history
 
-
-    // Optional: clear history
     fun clearHistory() {
         _history.clear()
+        sharedPreferenceManager.clearHistory()
     }
-
+    
     private fun formatResult(value: Double): String {
         return if (value.isInfinite()) {
             "Error: Infinity"
