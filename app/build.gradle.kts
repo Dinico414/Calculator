@@ -51,6 +51,19 @@ android {
         compose = true
         buildConfig = true
     }
+    applicationVariants.all {
+        outputs.all {
+            val outputFileName = if (buildType.name == "release") {
+                "Calculator.apk"
+            } else if (buildType.name == "debug") {
+                "Calculator-${buildType.name}.apk"
+            } else {
+                "Calculator-${buildType.name}.apk"
+            }
+            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
+                outputFileName
+        }
+    }
 }
 
 dependencies {
