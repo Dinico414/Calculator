@@ -88,7 +88,7 @@ fun HistoryLog(
                 val listState = rememberLazyListState()
                 val coroutineScope = rememberCoroutineScope()
 
-                val isAtBottom by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
+                val isAtBottom by remember { derivedStateOf { !listState.canScrollBackward } }
                 val isAtTop by remember { derivedStateOf { !listState.canScrollForward } }
 
                 LaunchedEffect(history.size) {

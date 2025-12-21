@@ -108,13 +108,7 @@ fun CompactCalculator(
         headerContent = {fraction ->
                 Box(
                     modifier = Modifier
-                        .padding(
-                            WindowInsets.safeDrawing
-                                .only(WindowInsetsSides.Horizontal)
-                                .asPaddingValues()
-                        )
                         .padding(horizontal = LargePadding)
-                        .padding(top = LargePadding)
                 ) {
                     HistoryLog(
                         history = viewModel.history,
