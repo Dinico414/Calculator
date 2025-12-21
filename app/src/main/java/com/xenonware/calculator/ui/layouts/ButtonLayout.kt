@@ -53,7 +53,6 @@ import com.xenon.mylibrary.values.LargerSpacing
 import com.xenon.mylibrary.values.LargestSpacing
 import com.xenon.mylibrary.values.MediumSpacing
 import com.xenon.mylibrary.values.NoPadding
-import com.xenon.mylibrary.values.SmallButtonSizeSpacing
 import com.xenon.mylibrary.values.SmallestPadding
 import com.xenonware.calculator.R
 import com.xenonware.calculator.ui.res.CalculatorButton
@@ -135,8 +134,9 @@ private fun CompactPortraitLayout(
             .padding(LargePadding)
     ) {
         ScientificButtonsRow1(
-            viewModel = viewModel, modifier = Modifier
-                .height(SmallButtonSizeSpacing)
+            viewModel = viewModel,
+            modifier = Modifier
+                .weight(0.1f)
                 .fillMaxWidth(),
             isInverseMode = viewModel.isInverseMode
         )
@@ -174,8 +174,12 @@ private fun CompactPortraitLayout(
                         .fillMaxWidth()
                 ) {
                     Column(modifier = Modifier.fillMaxHeight()) {
-                        ScientificButtonsRow2(viewModel = viewModel, modifier = Modifier.weight(1f))
+                        ScientificButtonsRow2(
+                            viewModel = viewModel,
+                            modifier = Modifier.weight(1f))
+
                         Spacer(Modifier.height(MediumSpacing))
+
                         ScientificButtonsRow3(
                             viewModel = viewModel,
                             isInverseMode = viewModel.isInverseMode,
@@ -373,15 +377,18 @@ private fun CommonButtonGrid(
 
 
 @Composable
-fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = Modifier, isInverseMode: Boolean, ) {
+fun ScientificButtonsRow1(
+    viewModel: CalculatorViewModel,
+    modifier: Modifier = Modifier,
+    isInverseMode: Boolean,
+) {
     Row(
         modifier = modifier.padding(horizontal = SmallestPadding),
         horizontalArrangement = Arrangement.spacedBy(MediumSpacing),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val firstButtonText = if (viewModel.isInverseMode) "x²" else "√"
-        val scientificButtons1 = listOf(firstButtonText, "π", "^")
-
+        val scientificButtons1 = listOf(firstButtonText, "π", "^", "!")
 
         scientificButtons1.forEach { text ->
             CalculatorButton(
@@ -395,16 +402,6 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
                 isGlobalScientificModeActive = viewModel.isScientificMode,
                 onClick = { viewModel.onButtonClick(text) })
         }
-        CalculatorButton(
-            text = "!",
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            isOperator = true,
-            isScientificButton = true,
-            isNumber = false,
-            isGlobalScientificModeActive = viewModel.isScientificMode,
-            onClick = { viewModel.onButtonClick("!") })
 
         val interactionSource = remember { MutableInteractionSource() }
         Box(
@@ -414,8 +411,10 @@ fun ScientificButtonsRow1(viewModel: CalculatorViewModel, modifier: Modifier = M
                 .clip(RoundedCornerShape(100f))
                 .background(MaterialTheme.colorScheme.inversePrimary)
                 .clickable(
-                    onClick = { viewModel.toggleScientificMode()
-                        if (isInverseMode) viewModel.toggleInverseMode() },
+                    onClick = {
+                        viewModel.toggleScientificMode()
+                        if (isInverseMode) viewModel.toggleInverseMode()
+                    },
                     interactionSource = interactionSource,
                     indication = LocalIndication.current,
                 ), contentAlignment = Alignment.Center
@@ -444,20 +443,13 @@ fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = M
         horizontalArrangement = Arrangement.spacedBy(MediumSpacing),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CalculatorButton(
-            text = viewModel.angleUnit.name,
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            isOperator = true,
-            isScientificButton = true,
-            isNumber = false,
-            isGlobalScientificModeActive = viewModel.isScientificMode,
-            onClick = { viewModel.toggleAngleUnit() })
-
-        val trigButtons = listOf("sin", "cos", "tan")
+              val trigButtons = listOf(viewModel.angleUnit.name, "sin", "cos", "tan")
         trigButtons.forEach { text ->
-            val buttonDisplayText = if (viewModel.isInverseMode) "$text⁻¹" else text
+            val buttonDisplayText = when {
+                text == viewModel.angleUnit.name -> text
+                viewModel.isInverseMode -> "$text⁻¹"
+                else -> text
+            }
             CalculatorButton(
                 text = buttonDisplayText,
                 modifier = Modifier
@@ -467,7 +459,13 @@ fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = M
                 isScientificButton = true,
                 isNumber = false,
                 isGlobalScientificModeActive = viewModel.isScientificMode,
-                onClick = { viewModel.onButtonClick(text) })
+                onClick = {
+                    if (text == viewModel.angleUnit.name) {
+                        viewModel.toggleAngleUnit()
+                    } else {
+                        viewModel.onButtonClick(text)
+                    }
+                })
         }
         Spacer(Modifier.width(ButtonWidth))
     }
