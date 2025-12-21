@@ -120,6 +120,7 @@ fun CompactCalculator(
                         history = viewModel.history,
                         fraction = fraction,
                         onClearHistory = { viewModel.clearHistory() },
+                        hazeState = remember { HazeState() },
                         modifier = Modifier.fillMaxSize()
                     )
                 }

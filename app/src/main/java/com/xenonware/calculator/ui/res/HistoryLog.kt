@@ -1,5 +1,6 @@
 package com.xenonware.calculator.ui.res
 
+import android.os.Build
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -15,31 +16,41 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ClearAll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xenon.mylibrary.theme.QuicksandTitleVariable
 import com.xenonware.calculator.viewmodel.classes.HistoryItem
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.HazeMaterials
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class,
+    ExperimentalHazeMaterialsApi::class
+)
 @Composable
 fun HistoryLog(
     history: List<HistoryItem>,
     fraction: Float,
     onClearHistory: () -> Unit,
+    hazeState: HazeState,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
@@ -76,10 +87,17 @@ fun HistoryLog(
                     }
                 }
 
-                Box {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+
                     LazyColumn(
                         state = listState,
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .hazeSource(hazeState)
+                        ,
                         horizontalAlignment = Alignment.End,
                         reverseLayout = true,
                         verticalArrangement = Arrangement.Bottom
@@ -100,13 +118,13 @@ fun HistoryLog(
                             ) {
                                 Text(
                                     text = entry.expression,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = fraction * 0.6f),
+                                    color = colorScheme.onSurface.copy(alpha = fraction * 0.6f),
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Light
                                 )
                                 Text(
                                     text = "= ${entry.result}",
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = fraction),
+                                    color = colorScheme.onSurface.copy(alpha = fraction),
                                     fontSize = 24.sp,
                                     fontFamily = QuicksandTitleVariable,
                                     fontWeight = FontWeight.SemiBold
@@ -120,11 +138,22 @@ fun HistoryLog(
                         modifier = Modifier
                             .align(Alignment.TopStart)
                             .padding(8.dp)
+                            .clip(CircleShape)
+                            .hazeEffect(
+                                state = hazeState,
+                                style = HazeMaterials.ultraThin(
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                        colorScheme.surfaceDim
+                                    } else {
+                                        colorScheme.surfaceDim
+                                    }
+                                )
+                            )
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.ClearAll,
                             contentDescription = "Clear history",
-                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = fraction * 0.8f)
+                            tint = colorScheme.onSurface.copy(alpha = fraction * 0.8f)
                         )
                     }
                 }
