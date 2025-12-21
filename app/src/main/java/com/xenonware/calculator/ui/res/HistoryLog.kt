@@ -1,5 +1,12 @@
 package com.xenonware.calculator.ui.res
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +34,7 @@ import com.xenon.mylibrary.theme.QuicksandTitleVariable
 import com.xenonware.calculator.viewmodel.classes.HistoryItem
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HistoryLog(
     history: List<HistoryItem>,
@@ -35,87 +43,90 @@ fun HistoryLog(
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
-        if (history.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "No history yet",
-                    color = Color.Gray.copy(alpha = fraction),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        } else {
-            val listState = rememberLazyListState()
-            val coroutineScope = rememberCoroutineScope()
+        AnimatedContent(
+            targetState = history.isEmpty(),
+            transitionSpec = {
+                fadeIn(tween(300)).togetherWith(fadeOut(tween(200)))
+            },
+            label = "HistoryStateTransition"
+        ) { isEmpty ->
+            if (isEmpty) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "No history yet",
+                        color = Color.Gray.copy(alpha = fraction),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            } else {
+                val listState = rememberLazyListState()
+                val coroutineScope = rememberCoroutineScope()
 
-            // Scroll to bottom (index 0 due to reverseLayout) when a new item is added
-            // Only if user was already near the bottom (within 2 items)
-            LaunchedEffect(history.size) {
-                if (history.isNotEmpty()) {
-                    val firstVisible = listState.firstVisibleItemIndex
-                    val visibleItems = listState.layoutInfo.visibleItemsInfo.size
-
-                    // If user is near the "newest" end (top of reversed list)
-                    if (firstVisible <= 2) {
+                LaunchedEffect(history.size) {
+                    if (history.isNotEmpty() && listState.firstVisibleItemIndex <= 2) {
                         coroutineScope.launch {
-                            // Smooth scroll to the very top (newest item)
                             listState.animateScrollToItem(0)
                         }
                     }
                 }
-            }
 
-            Box {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.End,
-                    reverseLayout = true, // Newest at bottom → index 0 is newest
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    items(
-                        items = history,
-                        key = { it.id }
-                    ) { entry ->
-                        Column(
-                            horizontalAlignment = Alignment.End,
-                            modifier = Modifier
-                                .animateItem()
-                                .padding(vertical = 8.dp, horizontal = 4.dp)
-                        ) {
-                            Text(
-                                text = entry.expression,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = fraction * 0.6f),
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Light
-                            )
-                            Text(
-                                text = "= ${entry.result}",
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = fraction),
-                                fontSize = 24.sp,
-                                fontFamily = QuicksandTitleVariable,
-                                fontWeight = FontWeight.SemiBold
-                            )
+                Box {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.End,
+                        reverseLayout = true,
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        items(
+                            items = history,
+                            key = { it.id }
+                        ) { entry ->
+                            Column(
+                                horizontalAlignment = Alignment.End,
+                                modifier = Modifier
+                                    .animateItem(
+                                        fadeInSpec = tween(300),
+                                        fadeOutSpec = tween(300),
+                                        placementSpec = tween(400)
+                                    )
+                                    .padding(vertical = 8.dp, horizontal = 4.dp)
+                            ) {
+                                Text(
+                                    text = entry.expression,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = fraction * 0.6f),
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Light
+                                )
+                                Text(
+                                    text = "= ${entry.result}",
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = fraction),
+                                    fontSize = 24.sp,
+                                    fontFamily = QuicksandTitleVariable,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
                         }
                     }
-                }
 
-                IconButton(
-                    onClick = onClearHistory,
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.ClearAll,
-                        contentDescription = "Clear history",
-                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = fraction * 0.8f)
-                    )
+                    IconButton(
+                        onClick = onClearHistory,
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.ClearAll,
+                            contentDescription = "Clear history",
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = fraction * 0.8f)
+                        )
+                    }
                 }
             }
         }
