@@ -22,7 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ClearAll
+import androidx.compose.material.icons.rounded.DeleteSweep
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xenon.mylibrary.theme.QuicksandTitleVariable
+import com.xenon.mylibrary.values.CompactButtonSize
 import com.xenonware.calculator.viewmodel.classes.HistoryItem
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
@@ -151,7 +152,7 @@ fun HistoryLog(
                                 Brush.verticalGradient(
                                     colors = listOf(
                                         Color.Transparent,
-                                        colorScheme.background.copy(alpha = fraction)
+                                        colorScheme.surfaceDim.copy(alpha = fraction)
                                     )
                                 )
                             )
@@ -166,7 +167,7 @@ fun HistoryLog(
                             .background(
                                 Brush.verticalGradient(
                                     colors = listOf(
-                                        colorScheme.background.copy(alpha = fraction),
+                                        colorScheme.surfaceDim.copy(alpha = fraction),
                                         Color.Transparent
                                     )
                                 )
@@ -189,12 +190,12 @@ fun HistoryLog(
                                     }
                                 )
                             )
-                            .size(48.dp)
+                            .size(CompactButtonSize)
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.ClearAll,
+                            imageVector = Icons.Rounded.DeleteSweep,
                             contentDescription = "Clear history",
-                            tint = colorScheme.onSurface.copy(alpha = fraction * 0.8f)
+                            tint = colorScheme.error.copy(alpha = fraction * 0.8f)
                         )
                     }
                 }
