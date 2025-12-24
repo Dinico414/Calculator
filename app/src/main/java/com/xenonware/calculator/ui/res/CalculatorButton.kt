@@ -45,6 +45,7 @@ fun CalculatorButton(
     isSpecial: Boolean = false,
     isClear: Boolean = false,
     isScientificButton: Boolean,
+    isHistoryMode: Boolean = false,
     isNumber: Boolean,
     isGlobalScientificModeActive: Boolean,
     isInverseActive: Boolean = false,
@@ -56,31 +57,49 @@ fun CalculatorButton(
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val haptic = LocalHapticFeedback.current
-
     val targetFontSize = when {
         isScientificButton -> when {
-            isLandscape -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains(
-                    "²"
-                )
-            ) 18.sp else 20.sp
+            isLandscape -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) {
+                if (isHistoryMode) 16.sp else 18.sp
+            } else {
+                if (isHistoryMode) 18.sp else 20.sp
+            }
 
-            else -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains(
-                    "²"
-                )
-            ) 18.sp else 20.sp
+            else -> if (text.length > 2 || text.contains("⁻¹") || text.contains("ˣ") || text.contains("²")) {
+                if (isHistoryMode) 16.sp else 18.sp
+            } else {
+                if (isHistoryMode) 18.sp else 20.sp
+            }
         }
 
         isNumber -> when {
-            isLandscape -> if (isGlobalScientificModeActive) 26.sp else 28.sp
-            else -> if (isGlobalScientificModeActive) 26.sp else 32.sp
+            isLandscape -> if (isGlobalScientificModeActive) {
+                if (isHistoryMode) 20.sp else 26.sp
+            } else {
+                if (isHistoryMode) 24.sp else 28.sp
+            }
+
+            else -> if (isGlobalScientificModeActive) {
+                if (isHistoryMode) 22.sp else 26.sp
+            } else {
+                if (isHistoryMode) 24.sp else 32.sp
+            }
         }
 
         else -> when {
-            isLandscape -> if (isGlobalScientificModeActive) 26.sp else 28.sp
-            else -> if (isGlobalScientificModeActive) 26.sp else 32.sp
+            isLandscape -> if (isGlobalScientificModeActive) {
+                if (isHistoryMode) 20.sp else 26.sp
+            } else {
+                if (isHistoryMode) 26.sp else 28.sp
+            }
+
+            else -> if (isGlobalScientificModeActive) {
+                if (isHistoryMode) 22.sp else 26.sp
+            } else {
+                if (isHistoryMode) 24.sp else 32.sp
+            }
         }
     }
-
     val animatedFontSize by animateDpAsState(
         targetValue = targetFontSize.value.dp,
         animationSpec = tween(durationMillis = 300),

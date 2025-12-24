@@ -29,7 +29,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -41,7 +40,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.xenon.mylibrary.theme.QuicksandTitleVariable
 import com.xenon.mylibrary.values.CompactWideButtonHeight
@@ -55,7 +53,6 @@ import com.xenon.mylibrary.values.NoPadding
 import com.xenon.mylibrary.values.SmallestPadding
 import com.xenonware.calculator.R
 import com.xenonware.calculator.ui.res.CalculatorButton
-import com.xenonware.calculator.ui.theme.XenonTheme
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
 import com.xenonware.calculator.viewmodel.LayoutType
 
@@ -71,10 +68,11 @@ val ButtonHeight = CompactWideButtonHeight
 @Suppress("KotlinConstantConditions")
 @Composable
 fun ButtonLayout(
+    modifier: Modifier = Modifier,
     viewModel: CalculatorViewModel,
     layoutType: LayoutType,
-    isLandscape: Boolean,
-    modifier: Modifier = Modifier
+    isHistoryMode: Boolean = false,
+    isLandscape: Boolean
 ) {
     val isCompactOrLarger =
         layoutType in listOf(LayoutType.COMPACT, LayoutType.MEDIUM, LayoutType.EXPANDED)
@@ -84,7 +82,7 @@ fun ButtonLayout(
 
 
     if (isCompactOrLarger && !isLandscape) {
-        CompactPortraitLayout(viewModel = viewModel, modifier = modifier)
+        CompactPortraitLayout(viewModel = viewModel, modifier = modifier, isHistoryMode = isHistoryMode)
     } else {
         val showScientificButtons = isCompactOrLarger && isLandscape
 
@@ -107,7 +105,8 @@ fun ButtonLayout(
                     modifier = Modifier
                         .weight(3f)
                         .fillMaxHeight(),
-                    buttonSpacing = buttonSpacing
+                    buttonSpacing = buttonSpacing,
+                    isHistoryMode = isHistoryMode,
                 )
             }
 
@@ -117,7 +116,8 @@ fun ButtonLayout(
                 modifier = Modifier
                     .weight(if (showScientificButtons) 5f else 1f)
                     .fillMaxHeight(),
-                buttonSpacing = buttonSpacing
+                buttonSpacing = buttonSpacing,
+                isHistoryMode = isHistoryMode,
             )
         }
     }
@@ -125,7 +125,7 @@ fun ButtonLayout(
 
 @Composable
 private fun CompactPortraitLayout(
-    viewModel: CalculatorViewModel, modifier: Modifier = Modifier
+    viewModel: CalculatorViewModel, modifier: Modifier = Modifier, isHistoryMode: Boolean = false
 ) {
     Column(
         modifier = modifier
@@ -137,7 +137,8 @@ private fun CompactPortraitLayout(
             modifier = Modifier
                 .weight(0.1f)
                 .fillMaxWidth(),
-            isInverseMode = viewModel.isInverseMode
+            isInverseMode = viewModel.isInverseMode,
+            isHistoryMode = isHistoryMode,
         )
 
         val spacerHeight by animateDpAsState(
@@ -175,14 +176,16 @@ private fun CompactPortraitLayout(
                     Column(modifier = Modifier.fillMaxHeight()) {
                         ScientificButtonsRow2(
                             viewModel = viewModel,
-                            modifier = Modifier.weight(1f))
+                            modifier = Modifier.weight(1f),
+                            isHistoryMode = isHistoryMode,)
 
                         Spacer(Modifier.height(MediumSpacing))
 
                         ScientificButtonsRow3(
                             viewModel = viewModel,
                             isInverseMode = viewModel.isInverseMode,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                                    isHistoryMode = isHistoryMode,
                         )
                         Spacer(Modifier.height(LargeSpacing))
                     }
@@ -195,7 +198,8 @@ private fun CompactPortraitLayout(
                     modifier = Modifier
                         .weight(commonWeight.coerceAtLeast(0.001f))
                         .fillMaxHeight(),
-                    isScientificMode = viewModel.isScientificMode
+                    isScientificMode = viewModel.isScientificMode,
+                    isHistoryMode = isHistoryMode,
                 )
             }
         }
@@ -204,7 +208,7 @@ private fun CompactPortraitLayout(
 
 @Composable
 private fun ScientificColumn(
-    viewModel: CalculatorViewModel, modifier: Modifier = Modifier, buttonSpacing: Dp
+    viewModel: CalculatorViewModel, modifier: Modifier = Modifier, buttonSpacing: Dp, isHistoryMode: Boolean = false
 ) {
     Column(
         modifier = modifier, verticalArrangement = Arrangement.spacedBy(buttonSpacing)
@@ -248,6 +252,7 @@ private fun ScientificColumn(
                         isNumber = false,
                         isGlobalScientificModeActive = true,
                         isInverseActive = isInv && viewModel.isInverseMode,
+                        isHistoryMode = isHistoryMode,
                         onClick = {
                             when {
                                 isInv -> viewModel.toggleInverseMode()
@@ -263,7 +268,7 @@ private fun ScientificColumn(
 
 @Composable
 private fun NumericOperatorsColumn(
-    viewModel: CalculatorViewModel, modifier: Modifier = Modifier, buttonSpacing: Dp
+    viewModel: CalculatorViewModel, modifier: Modifier = Modifier, buttonSpacing: Dp, isHistoryMode: Boolean = false,
 ) {
     Column(
         modifier = modifier, verticalArrangement = Arrangement.spacedBy(buttonSpacing)
@@ -300,6 +305,7 @@ private fun NumericOperatorsColumn(
                         isScientificButton = false,
                         isNumber = isNumber,
                         isGlobalScientificModeActive = viewModel.isScientificMode,
+                        isHistoryMode = isHistoryMode,
                         fontWeight = if (text == "⌫") FontWeight.SemiBold else FontWeight.Normal,
                         fontFamily = if (text == "⌫") firaSansFamily else QuicksandTitleVariable,
                         onClick = {
@@ -317,7 +323,7 @@ private fun NumericOperatorsColumn(
 
 @Composable
 private fun CommonButtonGrid(
-    viewModel: CalculatorViewModel, modifier: Modifier = Modifier, isScientificMode: Boolean
+    viewModel: CalculatorViewModel, modifier: Modifier = Modifier, isScientificMode: Boolean, isHistoryMode: Boolean = false
 ) {
     Column(modifier = modifier) {
         val rows = listOf(
@@ -348,6 +354,7 @@ private fun CommonButtonGrid(
                         isSpecial = text == "=",
                         isClear = text == "AC",
                         isScientificButton = false,
+                        isHistoryMode = isHistoryMode,
                         isNumber = isNumber || text == "⌫",
                         isGlobalScientificModeActive = isScientificMode,
                         fontWeight = if (text == "⌫") FontWeight.SemiBold else FontWeight.Normal,
@@ -380,6 +387,7 @@ fun ScientificButtonsRow1(
     viewModel: CalculatorViewModel,
     modifier: Modifier = Modifier,
     isInverseMode: Boolean,
+    isHistoryMode: Boolean = false
 ) {
     Row(
         modifier = modifier.padding(horizontal = SmallestPadding),
@@ -396,6 +404,7 @@ fun ScientificButtonsRow1(
                     .weight(1f)
                     .fillMaxHeight(),
                 isOperator = true,
+                isHistoryMode = isHistoryMode,
                 isScientificButton = true,
                 isNumber = false,
                 isGlobalScientificModeActive = viewModel.isScientificMode,
@@ -434,7 +443,7 @@ fun ScientificButtonsRow1(
 }
 
 @Composable
-fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = Modifier) {
+fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = Modifier, isHistoryMode: Boolean = false) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -457,6 +466,7 @@ fun ScientificButtonsRow2(viewModel: CalculatorViewModel, modifier: Modifier = M
                 isOperator = true,
                 isScientificButton = true,
                 isNumber = false,
+                isHistoryMode = isHistoryMode,
                 isGlobalScientificModeActive = viewModel.isScientificMode,
                 onClick = {
                     if (text == viewModel.angleUnit.name) {
@@ -475,6 +485,7 @@ fun ScientificButtonsRow3(
     viewModel: CalculatorViewModel,
     isInverseMode: Boolean,
     modifier: Modifier = Modifier,
+    isHistoryMode: Boolean = false
 ) {
     Row(
         modifier = modifier
@@ -497,6 +508,7 @@ fun ScientificButtonsRow3(
                 isOperator = true,
                 isScientificButton = true,
                 isNumber = false,
+                isHistoryMode = isHistoryMode,
                 isGlobalScientificModeActive = viewModel.isScientificMode,
                 isInverseActive = text == "INV" && isInverseMode,
                 onClick = {
@@ -513,212 +525,5 @@ fun ScientificButtonsRow3(
                 })
         }
         Spacer(Modifier.width(ButtonWidth))
-    }
-}
-
-//@SuppressLint("ViewModelConstructorInComposable")
-//@Preview(showBackground = true, name = "Portrait - Common Mode")
-//@Composable
-//fun PreviewPortraitCommon() {
-//    XenonTheme(darkTheme = false) {
-//        Surface {
-//            val sampleViewModel = CalculatorViewModel()
-//            CompactPortraitLayout(viewModel = sampleViewModel)
-//        }
-//    }
-//}
-//
-//@SuppressLint("ViewModelConstructorInComposable")
-//@Preview(showBackground = true, name = "Portrait - Scientific Mode")
-//@Composable
-//fun PreviewPortraitScientific() {
-//    XenonTheme(darkTheme = false) {
-//        Surface {
-//            val sampleViewModel = CalculatorViewModel()
-//            sampleViewModel.toggleScientificMode()
-//            CompactPortraitLayout(viewModel = sampleViewModel)
-//        }
-//    }
-//}
-//
-//@SuppressLint("ViewModelConstructorInComposable")
-//@Preview(showBackground = true, name = "Landscape - Common Mode", widthDp = 800, heightDp = 360)
-//@Composable
-//fun PreviewLandscapeCommon() {
-//    XenonTheme(darkTheme = false) {
-//        Surface {
-//            val sampleViewModel = CalculatorViewModel()
-//            CompactPortraitLayout(viewModel = sampleViewModel)
-//        }
-//    }
-//}
-//
-//@SuppressLint("ViewModelConstructorInComposable")
-//@Preview(showBackground = true, name = "Landscape - Scientific Mode", widthDp = 800, heightDp = 360)
-//@Composable
-//fun PreviewLandscapeScientific() {
-//    XenonTheme(darkTheme = false) {
-//        Surface {
-//            val sampleViewModel = CalculatorViewModel()
-//            sampleViewModel.toggleScientificMode()
-//            CompactPortraitLayout(viewModel = sampleViewModel)
-//        }
-//    }
-//}
-
-@Preview(showBackground = true, name = "Num Btn (Port, SciOff)")
-@Composable
-fun NumBtnPortSciOff() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            CalculatorButton(
-                text = "7",
-                isScientificButton = false,
-                isNumber = true,
-                isGlobalScientificModeActive = false,
-                onClick = {})
-        }
-    }
-}
-
-@Preview(showBackground = true, name = "Num Btn (Port, SciOn)")
-@Composable
-fun NumBtnPortSciOn() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            CalculatorButton(
-                text = "7",
-                isScientificButton = false,
-                isNumber = true,
-                isGlobalScientificModeActive = true,
-                onClick = {})
-        }
-    }
-}
-
-@Preview(showBackground = true, name = "Num Btn (Land, SciOff)", widthDp = 100, heightDp = 60)
-@Composable
-fun NumBtnLandSciOff() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            CalculatorButton(
-                text = "7",
-                isScientificButton = false,
-                isNumber = true,
-                isGlobalScientificModeActive = false,
-                onClick = {})
-        }
-    }
-}
-
-@Preview(showBackground = true, name = "Num Btn (Land, SciOn)", widthDp = 100, heightDp = 60)
-@Composable
-fun NumBtnLandSciOn() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            CalculatorButton(
-                text = "7",
-                isScientificButton = false,
-                isNumber = true,
-                isGlobalScientificModeActive = true,
-                onClick = {})
-        }
-    }
-}
-
-@Preview(showBackground = true, name = "Sci Panel Btn (Port)")
-@Composable
-fun SciPanelBtnPort() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            CalculatorButton(
-                text = "sin",
-                isScientificButton = true,
-                isNumber = false,
-                isGlobalScientificModeActive = true,
-                isOperator = true,
-                onClick = {})
-        }
-    }
-}
-
-@Preview(showBackground = true, name = "Sci Panel Btn (Land)", widthDp = 100, heightDp = 60)
-@Composable
-fun SciPanelBtnLand() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            CalculatorButton(
-                text = "sin",
-                isScientificButton = true,
-                isNumber = false,
-                isGlobalScientificModeActive = true,
-                isOperator = true,
-                onClick = {})
-        }
-    }
-}
-
-@Preview(showBackground = true, name = "Sci Panel Btn Long (Land)", widthDp = 100, heightDp = 60)
-@Composable
-fun SciPanelBtnLongLand() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            CalculatorButton(
-                text = "sin⁻¹",
-                isScientificButton = true,
-                isNumber = false,
-                isGlobalScientificModeActive = true,
-                isOperator = true,
-                onClick = {})
-        }
-    }
-}
-
-@Preview(showBackground = true, name = "Operator Btn (Port, SciOff)")
-@Composable
-fun OperatorBtnPortSciOff() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            CalculatorButton(
-                text = "+",
-                isScientificButton = false,
-                isNumber = false,
-                isGlobalScientificModeActive = false,
-                isOperator = true,
-                onClick = {})
-        }
-    }
-}
-
-@Preview(showBackground = true, name = "Operator Btn (Port, SciOn)")
-@Composable
-fun OperatorBtnPortSciOn() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            CalculatorButton(
-                text = "+",
-                isScientificButton = false,
-                isNumber = false,
-                isGlobalScientificModeActive = true,
-                isOperator = true,
-                onClick = {})
-        }
-    }
-}
-
-
-@Preview(showBackground = true, name = "Backspace Button with Fira Sans")
-@Composable
-fun BackspaceButtonPreview() {
-    XenonTheme(darkTheme = false) {
-        Surface {
-            CalculatorButton(
-                text = "⌫",
-                isScientificButton = false,
-                isNumber = true,
-                isGlobalScientificModeActive = false,
-                fontFamily = firaSansFamily,
-                onClick = {})
-        }
     }
 }

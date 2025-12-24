@@ -249,6 +249,7 @@ fun CompactCalculator(
                         viewModel = viewModel,
                         isLandscape = isLandscape,
                         layoutType = layoutType,
+                        isHistoryMode = expand,
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(0.65f),
