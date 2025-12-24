@@ -1,7 +1,6 @@
 package com.xenonware.calculator.ui.layouts.screen
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
@@ -42,8 +40,7 @@ fun LandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
                 .padding(start = LargeTextFieldPadding, end = LargeTextFieldPadding)
         ) {
             CompactLandscapeDisplaySection(
-                currentInput = viewModel.displayInput,
-                result = viewModel.result,
+                viewModel = viewModel,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(LargerPadding)
@@ -59,15 +56,17 @@ fun LandscapeCalculatorScreen(viewModel: CalculatorViewModel) {
 }
 
 @Composable
-fun CompactLandscapeDisplaySection(currentInput: String, result: String, modifier: Modifier = Modifier) {
-    Log.d("CalculatorDebug", "LandscapeDisplaySection Composing. Input: '$currentInput', Result: '$result'")
+fun CompactLandscapeDisplaySection(
+    viewModel: CalculatorViewModel,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = currentInput,
+            text = viewModel.displayInputWithSeparators,
             style = MaterialTheme.typography.displaySmall.copy(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Light,
@@ -82,7 +81,7 @@ fun CompactLandscapeDisplaySection(currentInput: String, result: String, modifie
         )
 
         Text(
-            text = result,
+            text = viewModel.result,
             style = MaterialTheme.typography.displaySmall.copy(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -99,36 +98,3 @@ fun CompactLandscapeDisplaySection(currentInput: String, result: String, modifie
         )
     }
 }
-
-@Preview(showBackground = true, name = "Landscape Display Section", widthDp = 800, heightDp = 150)
-@Composable
-fun LandscapeDisplaySectionPreview() {
-    MaterialTheme {
-        Box(modifier = Modifier
-            .background(MaterialTheme.colorScheme.secondaryContainer)
-            .padding(16.dp)) {
-            CompactLandscapeDisplaySection(
-                currentInput = "12345 * (67890 + 123)",
-                result = "836854335"
-            )
-        }
-    }
-}
-//
-//@Preview(showBackground = true, name = "Compact Landscape Calculator Screen Phone", widthDp = 720, heightDp = 360)
-//@Composable
-//fun CompactLandscapeCalculatorScreenPhonePreview() {
-//    val fakeViewModel = remember { CalculatorViewModel() }
-//    MaterialTheme {
-//        LandscapeCalculatorScreen(viewModel = fakeViewModel)
-//    }
-//}
-//
-//@Preview(showBackground = true, name = "Compact Landscape Calculator Screen Tablet", device = Devices.TABLET, widthDp = 1280, heightDp = 800)
-//@Composable
-//fun CompactLandscapeCalculatorScreenTabletPreview() {
-//    val fakeViewModel = remember { CalculatorViewModel() }
-//    MaterialTheme {
-//        LandscapeCalculatorScreen(viewModel = fakeViewModel)
-//    }
-//}

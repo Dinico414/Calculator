@@ -215,23 +215,22 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
         _value1.value = _value2.value
         _value2.value = tempValue
 
-        // Recalculate based on the new unit arrangement and last edited field
-        if (lastEditedField == EditedField.FIELD1) { // If value1 was last edited, its content is now in value2
+        if (lastEditedField == EditedField.FIELD1) {
             val inputDouble = _value2.value.toDoubleOrNull()
             if (inputDouble != null) {
                 val result =
-                    performConversion(inputDouble, getCurrentToUnit(), getCurrentFromUnit()) // Note: to and from are swapped here because values were swapped
+                    performConversion(inputDouble, getCurrentToUnit(), getCurrentFromUnit())
                 _value1.value = if (result != null) decimalFormat.format(result) else ""
-            } else if (_value2.value.isEmpty()) { // Handle empty input after swap
+            } else if (_value2.value.isEmpty()) {
                 _value1.value = ""
             }
-        } else { // If value2 was last edited, its content is now in value1
+        } else {
             val inputDouble = _value1.value.toDoubleOrNull()
             if (inputDouble != null) {
                 val result =
                     performConversion(inputDouble, getCurrentFromUnit(), getCurrentToUnit())
                 _value2.value = if (result != null) decimalFormat.format(result) else ""
-            } else if (_value1.value.isEmpty()) { // Handle empty input after swap
+            } else if (_value1.value.isEmpty()) {
                 _value2.value = ""
             }
         }
@@ -245,16 +244,16 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
                     performConversion(inputDouble, getCurrentFromUnit(), getCurrentToUnit())
                 _value2.value = if (result != null) decimalFormat.format(result) else ""
             } else {
-                _value2.value = "" // Clear the other field if input is invalid/empty
+                _value2.value = ""
             }
-        } else { // lastEditedField == EditedField.FIELD2
+        } else {
             val inputDouble = _value2.value.toDoubleOrNull()
             if (inputDouble != null) {
                 val result =
-                    performConversion(inputDouble, getCurrentToUnit(), getCurrentFromUnit()) // Note: to and from are swapped here
+                    performConversion(inputDouble, getCurrentToUnit(), getCurrentFromUnit())
                 _value1.value = if (result != null) decimalFormat.format(result) else ""
             } else {
-                _value1.value = "" // Clear the other field if input is invalid/empty
+                _value1.value = ""
             }
         }
     }
@@ -262,15 +261,13 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun onFromVolumeUnitChange(newUnit: VolumeUnit) {
         _fromVolumeUnit.value = newUnit
-        // When 'from' unit changes, recalculate 'to' value (_value2) based on 'from' value (_value1)
-        lastEditedField = EditedField.FIELD1 // Treat as if _value1 was just edited
+        lastEditedField = EditedField.FIELD1
         recalculateOnTypeOrUnitChange()
     }
 
     fun onToVolumeUnitChange(newUnit: VolumeUnit) {
         _toVolumeUnit.value = newUnit
-        // When 'to' unit changes, recalculate 'to' value (_value2) based on 'from' value (_value1)
-        lastEditedField = EditedField.FIELD1 // Treat as if _value1 was just edited
+        lastEditedField = EditedField.FIELD1
         recalculateOnTypeOrUnitChange()
     }
 

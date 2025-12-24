@@ -36,9 +36,8 @@ fun PortraitCalculatorScreen(viewModel: CalculatorViewModel) {
                 .weight(1f)
                 .padding(top = LargeTextFieldPadding)
         ) {
-            DisplaySection(
-                currentInput = viewModel.displayInput,
-                result = viewModel.result,
+            CompactPortraitDisplaySection(
+                viewModel = viewModel,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(LargerPadding)
@@ -52,21 +51,23 @@ fun PortraitCalculatorScreen(viewModel: CalculatorViewModel) {
         )
     }
 }
-
 @Composable
-fun DisplaySection(currentInput: String, result: String, modifier: Modifier = Modifier) {
+fun CompactPortraitDisplaySection(
+    viewModel: CalculatorViewModel,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.Bottom
     ) {
-
         Text(
-            text = currentInput,
+            text = viewModel.displayInputWithSeparators,
             style = MaterialTheme.typography.displaySmall.copy(
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Light,
-                lineHeight = 0.8.em),
+                lineHeight = 0.8.em
+            ),
             color = MaterialTheme.colorScheme.onSecondaryContainer,
             textAlign = TextAlign.Start,
             maxLines = 3,
@@ -74,8 +75,9 @@ fun DisplaySection(currentInput: String, result: String, modifier: Modifier = Mo
                 .fillMaxHeight()
                 .weight(0.5f)
         )
+
         Text(
-            text = result,
+            text = viewModel.result,
             style = MaterialTheme.typography.displaySmall.copy(
                 fontSize = 36.sp,
                 fontWeight = FontWeight.SemiBold,

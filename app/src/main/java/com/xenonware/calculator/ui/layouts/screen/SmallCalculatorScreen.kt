@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.xenon.mylibrary.theme.QuicksandTitleVariable
 import com.xenon.mylibrary.values.LargePadding
-import com.xenon.mylibrary.values.LargeTextFieldPadding
 import com.xenon.mylibrary.values.LargerPadding
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
 
@@ -44,11 +43,9 @@ fun SmallCalculatorScreen(viewModel: CalculatorViewModel) {
                 .weight(1f)
         ) {
             CoverLandscapeDisplaySection(
-                currentInput = viewModel.displayInput,
-                result = viewModel.result,
+                viewModel = viewModel,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(end = LargeTextFieldPadding)
                     .padding(LargerPadding)
             )
         }
@@ -62,15 +59,17 @@ fun SmallCalculatorScreen(viewModel: CalculatorViewModel) {
 }
 
 @Composable
-fun CoverLandscapeDisplaySection(currentInput: String, result: String, modifier: Modifier = Modifier) {
-    Log.d("CalculatorDebug", "LandscapeDisplaySection Composing. Input: '$currentInput', Result: '$result'")
+fun CoverLandscapeDisplaySection(
+    viewModel: CalculatorViewModel,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = currentInput,
+            text = viewModel.displayInputWithSeparators,
             style = MaterialTheme.typography.displaySmall.copy(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Light,
@@ -86,7 +85,7 @@ fun CoverLandscapeDisplaySection(currentInput: String, result: String, modifier:
         )
 
         Text(
-            text = result,
+            text = viewModel.result,
             style = MaterialTheme.typography.displaySmall.copy(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold,

@@ -115,6 +115,7 @@ fun CompactCalculator(
                 ) {
                     HistoryLog(
                         history = viewModel.history,
+                        viewModel = viewModel,
                         fraction = fraction,
                         onClearHistory = { viewModel.clearHistory() },
                         hazeState = remember { HazeState() },

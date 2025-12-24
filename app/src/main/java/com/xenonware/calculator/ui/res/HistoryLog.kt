@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xenon.mylibrary.theme.QuicksandTitleVariable
 import com.xenon.mylibrary.values.CompactButtonSize
+import com.xenonware.calculator.viewmodel.CalculatorViewModel
 import com.xenonware.calculator.viewmodel.classes.HistoryItem
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
@@ -58,6 +59,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HistoryLog(
     history: List<HistoryItem>,
+    viewModel: CalculatorViewModel,
     fraction: Float,
     onClearHistory: () -> Unit,
     hazeState: HazeState,
@@ -126,7 +128,7 @@ fun HistoryLog(
                                     .padding(vertical = 8.dp, horizontal = 4.dp)
                             ) {
                                 Text(
-                                    text = entry.expression,
+                                    text = viewModel.formatExpressionForDisplay(entry.expression),
                                     color = colorScheme.onSurface.copy(alpha = fraction * 0.6f),
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Light

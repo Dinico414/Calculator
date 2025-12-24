@@ -12,6 +12,8 @@ import com.xenonware.calculator.viewmodel.classes.HistoryItem
 import kotlinx.coroutines.launch
 import org.mariuszgromada.math.mxparser.Expression
 import org.mariuszgromada.math.mxparser.mXparser
+import java.util.Locale
+
 
 open class CalculatorViewModel(
     private val sharedPreferenceManager: SharedPreferenceManager
@@ -19,13 +21,6 @@ open class CalculatorViewModel(
 
     var currentInput by mutableStateOf("")
         private set
-
-    val displayInput: String
-        get() = currentInput
-            .replace("^2", "²")
-            .replace("asin(", "sin⁻¹(")
-            .replace("acos(", "cos⁻¹(")
-            .replace("atan(", "tan⁻¹(")
 
     var result by mutableStateOf("")
         private set
@@ -37,6 +32,91 @@ open class CalculatorViewModel(
         private set
 
     private var openParenthesesCount by mutableIntStateOf(0)
+
+    private fun String.addThousandsSeparators(): String {
+        val clean = this.replace(Regex("[^\\d.-]"), "")
+
+        if (clean.isEmpty()) return this
+
+        val parts = clean.split(".")
+        val integerPart = parts[0]
+        val decimalPart = if (parts.size > 1) ".${parts[1]}" else ""
+
+        val sign = if (integerPart.startsWith("-")) "-" else ""
+        val absInteger = integerPart.removePrefix("-")
+
+        val formattedInteger = absInteger.reversed()
+            .chunked(3)
+            .joinToString(",")
+            .reversed()
+
+        return sign + formattedInteger + decimalPart
+    }
+    fun formatExpressionForDisplay(expression: String): String {
+        val tokens = mutableListOf<String>()
+        var current = ""
+        for (char in expression) {
+            if ("+-×÷^%()!√πe".contains(char) || (char.isLetter() && current.lastOrNull()?.isDigit() == true)) {
+                if (current.isNotEmpty()) {
+                    tokens.add(current)
+                    current = ""
+                }
+                tokens.add(char.toString())
+            } else {
+                current += char
+            }
+        }
+        if (current.isNotEmpty()) tokens.add(current)
+
+        val formattedTokens = tokens.map { token ->
+            when {
+                token.matches(Regex("-?\\d*\\.?\\d*")) && token.any { it.isDigit() } -> {
+                    token.addThousandsSeparators()
+                }
+                else -> token
+            }
+        }
+
+        return formattedTokens.joinToString("")
+            .replace("^2", "²")
+            .replace("asin(", "sin⁻¹(")
+            .replace("acos(", "cos⁻¹(")
+            .replace("atan(", "tan⁻¹(")
+    }
+
+    val displayInputWithSeparators: String
+        get() {
+            val tokens = mutableListOf<String>()
+            var current = ""
+            for (char in currentInput) {
+                if ("+-×÷^%()!√πe".contains(char) || (char.isLetter() && current.lastOrNull()?.isDigit() == true)) {
+                    if (current.isNotEmpty()) {
+                        tokens.add(current)
+                        current = ""
+                    }
+                    tokens.add(char.toString())
+                } else {
+                    current += char
+                }
+            }
+            if (current.isNotEmpty()) tokens.add(current)
+
+            val formattedTokens = tokens.map { token ->
+                when {
+                    token.matches(Regex("-?\\d*\\.?\\d*")) && token.any { it.isDigit() } -> {
+                        token.addThousandsSeparators()
+                    }
+                    else -> token
+                }
+            }
+
+            return formattedTokens.joinToString("")
+                .replace("^2", "²")
+                .replace("asin(", "sin⁻¹(")
+                .replace("acos(", "cos⁻¹(")
+                .replace("atan(", "tan⁻¹(")
+        }
+
 
     var isInverseMode by mutableStateOf(false)
         private set
@@ -285,7 +365,7 @@ open class CalculatorViewModel(
     private fun loadHistoryFromPreferences() {
         val savedHistory = sharedPreferenceManager.loadHistory()
         _history.clear()
-        _history.addAll(savedHistory.takeLast(maxHistorySize)) // Ensure max 100 even if corrupted
+        _history.addAll(savedHistory.takeLast(maxHistorySize))
     }
 
     private fun saveHistoryToPreferences() {
@@ -322,16 +402,13 @@ open class CalculatorViewModel(
                     val formatted = formatResult(calculatedResult)
                     result = formatted
 
-                    // Add new entry at the beginning (newest on top)
                     val newItem = HistoryItem(expression = tempInput, result = formatted)
                     _history.add(0, newItem)
 
-                    // Enforce max 100 items
                     if (_history.size > maxHistorySize) {
-                        _history.removeAt(_history.size - 1) // Remove oldest
+                        _history.removeAt(_history.size - 1)
                     }
 
-                    // Save to persistent storage
                     saveHistoryToPreferences()
                 }
             } else {
@@ -347,17 +424,30 @@ open class CalculatorViewModel(
         _history.clear()
         sharedPreferenceManager.clearHistory()
     }
-    
+
+
     private fun formatResult(value: Double): String {
-        return if (value.isInfinite()) {
-            "Error: Infinity"
-        } else if (value == value.toLong().toDouble() && !value.toString().contains("E", ignoreCase = true)) {
-            value.toLong().toString()
+        if (value.isInfinite()) {
+            return "Error: Infinity"
+        }
+        if (value.isNaN()) {
+            return "Error: NaN"
+        }
+
+        if (value == value.toLong().toDouble() && !value.toString().contains("E", ignoreCase = true)) {
+            return value.toLong().toString().addThousandsSeparators()
+        }
+
+        val formatted = String.format(Locale.US, "%.10f", value).trimEnd('0').trimEnd('.')
+
+        return if (formatted.contains(".")) {
+            val parts = formatted.split(".")
+            val integerPart = parts[0].addThousandsSeparators()
+            if (parts.size > 1) "$integerPart.${parts[1]}" else integerPart
         } else {
-            String.format("%.10f", value).trimEnd('0').trimEnd('.')
+            formatted.addThousandsSeparators()
         }
     }
-
     fun toggleScientificMode() {
         isScientificMode = !isScientificMode
     }
