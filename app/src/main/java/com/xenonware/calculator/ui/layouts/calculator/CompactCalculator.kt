@@ -2,6 +2,9 @@ package com.xenonware.calculator.ui.layouts.calculator
 
 import android.annotation.SuppressLint
 import android.app.Application
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -163,10 +166,29 @@ fun CompactCalculator(
                         ) {
                             val interactionSource = remember { MutableInteractionSource() }
 
+                            val animatedElevation by animateDpAsState(
+                                targetValue = if (!expand) NoElevation else SmallElevation,
+                                animationSpec = tween(durationMillis = 1000),
+                                label = "elevation"
+                            )
+
+                            val animatedBackgroundColor by animateColorAsState(
+                                targetValue = if (!expand) colorScheme.secondaryContainer else colorScheme.primary,
+                                animationSpec = tween(durationMillis = 1000),
+                                label = "background color"
+                            )
+                            val animatedIconColor by animateColorAsState(
+                                targetValue = if (!expand) colorScheme.onSecondaryContainer else colorScheme.onPrimary,
+                                animationSpec = tween(durationMillis = 500),
+                                label = "icon color"
+                            )
+
                             Box(
                                 modifier = Modifier
+                                    .shadow(elevation = animatedElevation, shape = CircleShape)
                                     .clip(shape = CircleShape)
                                     .size(CompactButtonSize)
+                                    .background(color = animatedBackgroundColor)
                                     .clickable(
                                         onClick = { expand = !expand },
                                         interactionSource = interactionSource,
@@ -177,7 +199,7 @@ fun CompactCalculator(
                                 Icon(
                                     imageVector = Icons.Rounded.History,
                                     contentDescription = "History",
-                                    tint = colorScheme.onSecondaryContainer,
+                                    tint = animatedIconColor,
                                 )
                             }
                         }

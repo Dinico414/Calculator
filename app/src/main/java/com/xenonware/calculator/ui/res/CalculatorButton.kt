@@ -90,7 +90,7 @@ fun CalculatorButton(
             isLandscape -> if (isGlobalScientificModeActive) {
                 if (isHistoryMode) 20.sp else 26.sp
             } else {
-                if (isHistoryMode) 26.sp else 28.sp
+                if (isHistoryMode) 24.sp else 28.sp
             }
 
             else -> if (isGlobalScientificModeActive) {
