@@ -43,7 +43,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xenon.mylibrary.theme.QuicksandTitleVariable
-import com.xenon.mylibrary.values.CompactButtonSize
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
 import com.xenonware.calculator.viewmodel.classes.HistoryItem
 import dev.chrisbanes.haze.HazeState
@@ -192,7 +191,7 @@ fun HistoryLog(
                                     }
                                 )
                             )
-                            .size(CompactButtonSize)
+                            .size(48.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.DeleteSweep,
