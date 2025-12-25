@@ -126,12 +126,16 @@ fun AutoSizeTextWithScroll(
     scrollState: ScrollState,
     modifier: Modifier = Modifier
 ) {
-    var fontSize by remember { mutableStateOf(maxFontSize) } // ← No key! Persists across text changes
-    var shouldScroll by remember { mutableStateOf(false) }
+    var fontSize by remember { mutableStateOf(maxFontSize) }
+    var readyToMeasure by remember { mutableStateOf(false) }
 
     val textMeasurer = rememberTextMeasurer()
     val density = LocalDensity.current
     val safeMarginPx = with(density) { 64.dp.toPx() }
+
+    LaunchedEffect(Unit) {
+        readyToMeasure = true
+    }
 
     Text(
         text = text,
@@ -142,9 +146,9 @@ fun AutoSizeTextWithScroll(
         overflow = TextOverflow.Visible,
         maxLines = 1,
         modifier = modifier
-            .horizontalScroll(scrollState, enabled = shouldScroll)
+            .horizontalScroll(scrollState, enabled = fontSize <= minFontSize)
             .onSizeChanged { size ->
-                if (size.width <= 0) return@onSizeChanged
+                if (!readyToMeasure || size.width <= 0 || text.isEmpty()) return@onSizeChanged
 
                 val availableWidth = (size.width - safeMarginPx).coerceAtLeast(1f).toInt()
                 val constraints = Constraints(maxWidth = availableWidth)
@@ -161,18 +165,24 @@ fun AutoSizeTextWithScroll(
                 )
 
                 when {
-                    layoutResult.didOverflowWidth && fontSize.value > minFontSize.value -> {
+                    layoutResult.didOverflowWidth && fontSize > minFontSize -> {
                         fontSize = (fontSize.value - 1f).coerceAtLeast(minFontSize.value).sp
-                        shouldScroll = false
                     }
-                    layoutResult.didOverflowWidth -> {
-                        shouldScroll = true // At min size, still overflows → scroll
-                    }
-                    else -> {
-                        shouldScroll = false
-                        // Optional: allow growing back when deleting
-                        if (fontSize < maxFontSize) {
-                            fontSize = maxFontSize // instantly grow back when space allows
+
+                    !layoutResult.didOverflowWidth && fontSize < maxFontSize -> {
+                        val nextSize = (fontSize.value + 1f).coerceAtMost(maxFontSize.value).sp
+                        val testResult = textMeasurer.measure(
+                            text = text,
+                            style = androidx.compose.ui.text.TextStyle(
+                                fontSize = nextSize,
+                                fontWeight = FontWeight.ExtraLight
+                            ),
+                            constraints = constraints,
+                            maxLines = 1,
+                            softWrap = false
+                        )
+                        if (!testResult.didOverflowWidth) {
+                            fontSize = nextSize
                         }
                     }
                 }
