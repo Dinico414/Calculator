@@ -215,7 +215,7 @@ fun CompactConverter(
 
                 val interactionSource = remember { MutableInteractionSource() }
                 Box(
-                    modifier = Modifier.Companion
+                    modifier = Modifier
                         .height(96.dp)
                         .fillMaxWidth(0.5f)
                         .clip(CircleShape)
