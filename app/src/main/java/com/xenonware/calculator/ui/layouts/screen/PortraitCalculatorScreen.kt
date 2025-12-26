@@ -27,11 +27,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.xenon.mylibrary.theme.QuicksandTitleVariable
 import com.xenon.mylibrary.values.LargeTextFieldPadding
@@ -74,7 +72,6 @@ fun CompactPortraitDisplaySection(
     val scrollState = rememberScrollState()
     val inputText = viewModel.displayInputWithSeparators
 
-    // Instantly scroll to the end when input changes
     LaunchedEffect(inputText) {
         scrollState.scrollTo(scrollState.maxValue)
     }
@@ -91,8 +88,8 @@ fun CompactPortraitDisplaySection(
         ) {
             AutoSizeTextWithScroll(
                 text = inputText,
-                maxFontSize = 52.sp,
-                minFontSize = 28.sp,
+                maxFontSize = 64.sp,
+                minFontSize = 24.sp,
                 scrollState = scrollState,
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
@@ -106,7 +103,6 @@ fun CompactPortraitDisplaySection(
                 fontSize = 36.sp,
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = QuicksandTitleVariable,
-                lineHeight = 0.8.em
             ),
             color = MaterialTheme.colorScheme.onSecondaryContainer,
             textAlign = TextAlign.End,
@@ -143,7 +139,6 @@ fun AutoSizeTextWithScroll(
         fontWeight = FontWeight.ExtraLight,
         fontSize = fontSize,
         softWrap = false,
-        overflow = TextOverflow.Visible,
         maxLines = 1,
         modifier = modifier
             .horizontalScroll(scrollState, enabled = fontSize <= minFontSize)
