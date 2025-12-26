@@ -111,7 +111,7 @@ fun CompactPortraitDisplaySection(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
                     .fillMaxHeight()
-                    .width(64.dp)
+                    .width(32.dp)
                     .graphicsLayer { alpha = if (isAtStart) 0f else fraction }
                     .background(
                         Brush.horizontalGradient(
@@ -127,7 +127,7 @@ fun CompactPortraitDisplaySection(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .fillMaxHeight()
-                    .width(64.dp)
+                    .width(32.dp)
                     .graphicsLayer { alpha = if (isAtEnd) 0f else fraction }
                     .background(
                         Brush.horizontalGradient(
