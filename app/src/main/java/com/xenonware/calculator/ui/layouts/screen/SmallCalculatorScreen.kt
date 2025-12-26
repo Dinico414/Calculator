@@ -2,6 +2,7 @@ package com.xenonware.calculator.ui.layouts.screen
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,11 +11,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,8 +44,7 @@ fun SmallCalculatorScreen(viewModel: CalculatorViewModel) {
     val screenHeight = configuration.screenHeightDp.dp
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         Box(
             modifier = Modifier
@@ -43,8 +52,7 @@ fun SmallCalculatorScreen(viewModel: CalculatorViewModel) {
                 .weight(1f)
         ) {
             CoverLandscapeDisplaySection(
-                viewModel = viewModel,
-                modifier = Modifier
+                viewModel = viewModel, modifier = Modifier
                     .fillMaxSize()
                     .padding(LargerPadding)
             )
@@ -60,29 +68,68 @@ fun SmallCalculatorScreen(viewModel: CalculatorViewModel) {
 
 @Composable
 fun CoverLandscapeDisplaySection(
+    modifier: Modifier = Modifier,
     viewModel: CalculatorViewModel,
-    modifier: Modifier = Modifier
+    fraction: Float = 1f,
 ) {
+    val scrollState = rememberScrollState()
+    val inputText = viewModel.displayInputWithSeparators
+
+    LaunchedEffect(inputText) {
+        scrollState.scrollTo(scrollState.maxValue)
+    }
+
+    val isAtStart by remember { derivedStateOf { scrollState.value == 0 } }
+    val isAtEnd by remember { derivedStateOf { !scrollState.canScrollForward } }
     Row(
-        modifier = modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = viewModel.displayInputWithSeparators,
-            style = MaterialTheme.typography.displaySmall.copy(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Light,
-                lineHeight = 0.8.em
-            ),
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-            textAlign = TextAlign.Start,
-            maxLines = 4,
+        Box(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-                .padding(end = LargePadding)
-        )
+                .fillMaxWidth()
+                .weight(0.5f)
+                .padding(end = LargerPadding)
+        ) {
+            AutoSizeTextWithScroll(
+                text = inputText,
+                maxFontSize = 64.sp,
+                minFontSize = 24.sp,
+                scrollState = scrollState,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxWidth()
+            )
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .fillMaxHeight()
+                    .width(32.dp)
+                    .graphicsLayer { alpha = if (isAtStart) 0f else fraction }
+                    .background(
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = fraction),
+                                Color.Transparent
+                            )
+                        )
+                    ))
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .width(32.dp)
+                    .graphicsLayer { alpha = if (isAtEnd) 0f else fraction }
+                    .background(
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                MaterialTheme.colorScheme.secondaryContainer.copy(alpha = fraction)
+                            )
+                        )
+                    ))
+        }
 
         Text(
             text = viewModel.result,
@@ -96,7 +143,7 @@ fun CoverLandscapeDisplaySection(
             textAlign = TextAlign.End,
             maxLines = 4,
             modifier = Modifier
-                .weight(1f)
+                .weight(0.5f)
                 .fillMaxHeight()
                 .padding(start = LargePadding)
         )

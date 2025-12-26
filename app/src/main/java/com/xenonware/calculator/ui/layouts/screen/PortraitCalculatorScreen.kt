@@ -73,9 +73,9 @@ fun PortraitCalculatorScreen(viewModel: CalculatorViewModel) {
 
 @Composable
 fun CompactPortraitDisplaySection(
+    modifier: Modifier = Modifier,
     viewModel: CalculatorViewModel,
     fraction: Float = 1f,
-    modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
     val inputText = viewModel.displayInputWithSeparators
@@ -96,7 +96,7 @@ fun CompactPortraitDisplaySection(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.5f)
-        ) {
+         ) {
             AutoSizeTextWithScroll(
                 text = inputText,
                 maxFontSize = 64.sp,
@@ -169,7 +169,7 @@ fun AutoSizeTextWithScroll(
 
     val textMeasurer = rememberTextMeasurer()
     val density = LocalDensity.current
-    val safeMarginPx = with(density) { 64.dp.toPx() }
+    val safeMarginPx = with(density) {64.dp.toPx() }
 
     LaunchedEffect(Unit) {
         readyToMeasure = true
