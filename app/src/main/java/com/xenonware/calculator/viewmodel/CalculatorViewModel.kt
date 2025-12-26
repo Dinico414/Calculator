@@ -145,10 +145,10 @@ open class CalculatorViewModel(
                                 lastChar == 'e'
                         )
 
-                if (shouldInsertMultiplier && currentInput.isNotEmpty()) {
-                    currentInput += "*π"
+                currentInput += if (shouldInsertMultiplier && currentInput.isNotEmpty()) {
+                    "*π"
                 } else {
-                    currentInput += "π"
+                    "π"
                 }
             }
             "e" -> appendConstant(Math.E.toString())
@@ -412,28 +412,30 @@ open class CalculatorViewModel(
         }
     }
 
-    // This is now only used for history and initial result
     private fun formatResultForHistory(value: Double): String {
         if (value.isInfinite()) return "Error: Infinity"
         if (value.isNaN()) return "Error: NaN"
 
-        return if (value == value.toLong().toDouble()) {
-            value.toLong().toString().addThousandsSeparators()
-        } else {
-            String.format(Locale.US, "%.10f", value)
-                .trimEnd('0')
-                .trimEnd('.')
-                .let { formatted ->
-                    if (formatted.contains(".")) {
-                        val parts = formatted.split(".")
-                        val integerPart = parts[0].addThousandsSeparators()
-                        if (parts.size > 1 && parts[1].isNotEmpty()) {
-                            "$integerPart.${parts[1]}"
-                        } else integerPart
-                    } else {
-                        formatted.addThousandsSeparators()
-                    }
-                }
+        val absValue = kotlin.math.abs(value)
+        val sign = if (value < 0) "-" else ""
+
+        return when {
+            absValue == 0.0 -> "0"
+
+            absValue < 1e10 && absValue >= 1e-4 && absValue == absValue.toLong().toDouble() -> {
+                // Clean integer display with thousands separators
+                (sign + absValue.toLong().toString()).addThousandsSeparators()
+            }
+
+            else -> {
+                // Scientific notation
+                val sci = String.format(Locale.US, "%.10E", value)
+                val parts = sci.split("E")
+                var mantissa = parts[0].trimEnd('0').trimEnd('.')
+
+                // Ensure mantissa has decimal if needed? No — we want clean like 1E+10, not 1.E+10
+                sign + mantissa + "E" + parts[1]
+            }
         }
     }
 
