@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -41,6 +42,8 @@ import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.xenon.mylibrary.ActivityScreen
@@ -63,7 +66,10 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
 fun CoverConverter(
-    onNavigateBack: (() -> Unit)? = null, viewModel: ConverterViewModel, isLandscape: Boolean, layoutType: LayoutType
+    onNavigateBack: (() -> Unit)? = null,
+    viewModel: ConverterViewModel,
+    isLandscape: Boolean,
+    layoutType: LayoutType
 ) {
     LocalContext.current
 
@@ -109,12 +115,9 @@ fun CoverConverter(
 
     var accumulatedRotation by remember { mutableFloatStateOf(0f) }
     val rotationAngle by animateFloatAsState(
-        targetValue = accumulatedRotation,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        ),
-        label = "IconRotation"
+        targetValue = accumulatedRotation, animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
+        ), label = "IconRotation"
     )
 
     ActivityScreen(
@@ -137,8 +140,7 @@ fun CoverConverter(
         contentBackgroundColor = coverScreenBackgroundColor,
         appBarNavigationIconContentColor = coverScreenContentColor,
         contentCornerRadius = NoCornerRadius,
-        contentModifier = Modifier
-            .hazeSource(hazeState),
+        contentModifier = Modifier.hazeSource(hazeState),
         content = { _ ->
             Column(
                 modifier = Modifier
@@ -212,15 +214,20 @@ fun CoverConverter(
                                 modifier = Modifier.fillMaxWidth()
                             )
                             XenonTextField(
-                                value = value1, onValueChange = { newValue ->
+                                value = value1,
+                                onValueChange = { newValue ->
                                     viewModel.onValueChanged(
                                         newValue, ConverterViewModel.EditedField.FIELD1
                                     )
                                 },
-                                placeholder = {Text(stringResource(id = R.string.value_1))},
+                                placeholder = { Text(stringResource(id = R.string.value_1)) },
                                 singleLine = true,
                                 shape = RoundedCornerShape(16.dp),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Decimal,
+                                    imeAction = ImeAction.Done
                                 )
+                            )
                         }
 
 
@@ -306,15 +313,19 @@ fun CoverConverter(
                                 modifier = Modifier.fillMaxWidth()
                             )
                             XenonTextField(
-                                value = value2, onValueChange = { newValue ->
+                                value = value2,
+                                onValueChange = { newValue ->
                                     viewModel.onValueChanged(
                                         newValue, ConverterViewModel.EditedField.FIELD2
                                     )
                                 },
-                                placeholder = {Text(stringResource(id = R.string.value_2))},
+                                placeholder = { Text(stringResource(id = R.string.value_2)) },
                                 singleLine = true,
                                 shape = RoundedCornerShape(16.dp),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Done
                                 )
+                            )
                         }
                     }
 
