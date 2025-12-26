@@ -80,7 +80,7 @@ open class CalculatorViewModel(
         }
 
         return formattedTokens.joinToString("")
-            .replace("^2", "²")
+            .replace("^²", "²")  // Only convert the special square marker
             .replace("asin(", "sin⁻¹(")
             .replace("acos(", "cos⁻¹(")
             .replace("atan(", "tan⁻¹(")
@@ -113,7 +113,7 @@ open class CalculatorViewModel(
             }
 
             return formattedTokens.joinToString("")
-                .replace("^2", "²")
+                .replace("^²", "²")  // Only convert the special square marker
                 .replace("asin(", "sin⁻¹(")
                 .replace("acos(", "cos⁻¹(")
                 .replace("atan(", "tan⁻¹(")
@@ -155,22 +155,12 @@ open class CalculatorViewModel(
 
             "√" -> {
                 if (isInverseMode) {
-                    if (currentInput.isNotEmpty() && (currentInput.last().isDigit() || currentInput.last() == ')')) {
-                        appendOperator("^2")
-                    } else if (currentInput.isEmpty() || !currentInput.last().isDigit() && currentInput.last() != ')') {
-                        appendOperator("^2")
-                    }
+                    appendSquare()  // inverse sqrt = x² button behavior
                 } else {
                     appendFunction("√(")
                 }
             }
-            "x²" -> {
-                if (currentInput.isNotEmpty() && (currentInput.last().isDigit() || currentInput.last() == ')')) {
-                    appendOperator("^2")
-                } else if (currentInput.isEmpty() || !currentInput.last().isDigit() && currentInput.last() != ')') {
-                    appendOperator("^2")
-                }
-            }
+            "x²" -> appendSquare()
             "^" -> appendOperator("^")
             "!" -> appendFactorial()
 
@@ -208,6 +198,20 @@ open class CalculatorViewModel(
         }
     }
 
+    private fun appendSquare() {
+        val validBefore = currentInput.isNotEmpty() &&
+                (currentInput.last().isDigit() ||
+                        currentInput.last() == ')' ||
+                        currentInput.last() == '!' ||
+                        currentInput.last() == 'π' ||
+                        currentInput.last() == 'e')
+
+        if (validBefore || currentInput.isEmpty()) {
+            currentInput += "^²"  // special internal marker for dedicated square button
+        }
+        // If not valid before, we still allow it (user can square a new term)
+    }
+
     private fun appendConstant(displayValue: String) {
         currentInput += displayValue
     }
@@ -241,18 +245,10 @@ open class CalculatorViewModel(
             if (op == "-") {
                 currentInput += op
             }
-            if (op == "^2") return
-            if (currentInput.isEmpty() && op != "-") return
+            return
         }
 
         val lastChar = currentInput.lastOrNull()
-
-        if (op == "^2") {
-            if (lastChar != null && (lastChar.isDigit() || lastChar == ')' || lastChar == 'π' || lastChar == 'e')) {
-                currentInput += op
-            }
-            return
-        }
 
         if (lastChar != null && (lastChar.isDigit() || lastChar == ')' || lastChar == 'π' || lastChar == 'e')) {
             currentInput += op
@@ -327,15 +323,14 @@ open class CalculatorViewModel(
 
     private fun backspace() {
         if (currentInput.isNotEmpty()) {
-            val removedChar = currentInput.last()
-            currentInput = if (currentInput.endsWith("^2")) {
-                currentInput.dropLast(2)
-            } else {
-                currentInput.dropLast(1)
+            currentInput = when {
+                currentInput.endsWith("^²") -> currentInput.dropLast(2)  // special square marker
+                else -> currentInput.dropLast(1)
             }
 
-            if (removedChar == '(') {
-                if(openParenthesesCount > 0) openParenthesesCount--
+            val removedChar = if (currentInput.length < currentInput.length) currentInput.last() else ' '
+            if (removedChar == '(' && openParenthesesCount > 0) {
+                openParenthesesCount--
             } else if (removedChar == ')') {
                 openParenthesesCount++
             }
@@ -378,6 +373,7 @@ open class CalculatorViewModel(
 
         try {
             val expressionString = tempInput
+                .replace("^²", "^2")  // Convert special square marker back to normal power for calculation
                 .replace("×", "*")
                 .replace("÷", "/")
                 .replace("%", "#")
@@ -389,8 +385,6 @@ open class CalculatorViewModel(
                 if (calculatedResult.isNaN()) {
                     result = "Error: NaN"
                 } else {
-                    // Only format with full commas + decimals here
-                    // UI will decide scientific later
                     val formatted = formatResultForHistory(calculatedResult)
                     result = formatted
 
@@ -423,17 +417,14 @@ open class CalculatorViewModel(
             absValue == 0.0 -> "0"
 
             absValue < 1e10 && absValue >= 1e-4 && absValue == absValue.toLong().toDouble() -> {
-                // Clean integer display with thousands separators
                 (sign + absValue.toLong().toString()).addThousandsSeparators()
             }
 
             else -> {
-                // Scientific notation
                 val sci = String.format(Locale.US, "%.10E", value)
                 val parts = sci.split("E")
                 var mantissa = parts[0].trimEnd('0').trimEnd('.')
 
-                // Ensure mantissa has decimal if needed? No — we want clean like 1E+10, not 1.E+10
                 sign + mantissa + "E" + parts[1]
             }
         }
