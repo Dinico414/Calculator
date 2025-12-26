@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xenon.mylibrary.theme.QuicksandTitleVariable
-import com.xenon.mylibrary.values.LargePadding
 import com.xenon.mylibrary.values.LargeTextFieldPadding
 import com.xenon.mylibrary.values.LargerPadding
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
@@ -87,7 +86,7 @@ fun CompactLandscapeDisplaySection(
                 .fillMaxWidth()
                 .weight(0.5f)
                 .padding(end = LargerPadding)
-         ) {
+        ) {
             AutoSizeTextWithScroll(
                 text = inputText,
                 maxFontSize = 64.sp,
@@ -111,8 +110,7 @@ fun CompactLandscapeDisplaySection(
                                 Color.Transparent
                             )
                         )
-                    )
-            )
+                    ))
 
             Box(
                 modifier = Modifier
@@ -127,24 +125,29 @@ fun CompactLandscapeDisplaySection(
                                 MaterialTheme.colorScheme.secondaryContainer.copy(alpha = fraction)
                             )
                         )
-                    )
-            )
+                    ))
         }
 
-        Text(
-            text = viewModel.result,
-            style = MaterialTheme.typography.displaySmall.copy(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold,
-                fontFamily = QuicksandTitleVariable,
-            ),
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-            textAlign = TextAlign.End,
-            maxLines = 3,
+        Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .weight(0.5f)
-                .fillMaxHeight()
-                .padding(start = LargePadding)
-        )
+        ) {
+            Text(
+                text = viewModel.result,
+                style = MaterialTheme.typography.displaySmall.copy(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = QuicksandTitleVariable,
+                ),
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                textAlign = TextAlign.End,
+                maxLines = 1,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxWidth()
+                    .padding(start = LargerPadding)
+            )
+        }
     }
 }

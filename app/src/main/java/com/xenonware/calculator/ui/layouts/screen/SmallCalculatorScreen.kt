@@ -29,10 +29,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.xenon.mylibrary.theme.QuicksandTitleVariable
-import com.xenon.mylibrary.values.LargePadding
 import com.xenon.mylibrary.values.LargerPadding
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
 
@@ -131,21 +129,26 @@ fun CoverLandscapeDisplaySection(
                     ))
         }
 
-        Text(
-            text = viewModel.result,
-            style = MaterialTheme.typography.displaySmall.copy(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold,
-                fontFamily = QuicksandTitleVariable,
-                lineHeight = 0.8.em
-            ),
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-            textAlign = TextAlign.End,
-            maxLines = 4,
+        Box(
             modifier = Modifier
+                .fillMaxWidth()
                 .weight(0.5f)
-                .fillMaxHeight()
-                .padding(start = LargePadding)
-        )
+        ) {
+            Text(
+                text = viewModel.result,
+                style = MaterialTheme.typography.displaySmall.copy(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = QuicksandTitleVariable,
+                ),
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                textAlign = TextAlign.End,
+                maxLines = 1,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxWidth()
+                    .padding(start = LargerPadding)
+            )
+        }
     }
 }

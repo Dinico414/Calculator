@@ -96,7 +96,7 @@ fun CompactPortraitDisplaySection(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.5f)
-         ) {
+        ) {
             AutoSizeTextWithScroll(
                 text = inputText,
                 maxFontSize = 64.sp,
@@ -120,8 +120,7 @@ fun CompactPortraitDisplaySection(
                                 Color.Transparent
                             )
                         )
-                    )
-            )
+                    ))
 
             Box(
                 modifier = Modifier
@@ -136,26 +135,32 @@ fun CompactPortraitDisplaySection(
                                 MaterialTheme.colorScheme.secondaryContainer.copy(alpha = fraction)
                             )
                         )
-                    )
-            )
+                    ))
         }
 
-        Text(
-            text = viewModel.result,
-            style = MaterialTheme.typography.displaySmall.copy(
-                fontSize = 36.sp,
-                fontWeight = FontWeight.SemiBold,
-                fontFamily = QuicksandTitleVariable,
-            ),
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-            textAlign = TextAlign.End,
-            maxLines = 3,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.5f)
-        )
+        ) {
+            Text(
+                text = viewModel.result,
+                style = MaterialTheme.typography.displaySmall.copy(
+                    fontSize = 36.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    fontFamily = QuicksandTitleVariable,
+                ),
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                textAlign = TextAlign.End,
+                maxLines = 1,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxWidth()
+            )
+        }
     }
 }
+
 @Composable
 fun AutoSizeTextWithScroll(
     text: String,
@@ -169,7 +174,7 @@ fun AutoSizeTextWithScroll(
 
     val textMeasurer = rememberTextMeasurer()
     val density = LocalDensity.current
-    val safeMarginPx = with(density) {64.dp.toPx() }
+    val safeMarginPx = with(density) { 64.dp.toPx() }
 
     LaunchedEffect(Unit) {
         readyToMeasure = true
@@ -191,14 +196,9 @@ fun AutoSizeTextWithScroll(
                 val constraints = Constraints(maxWidth = availableWidth)
 
                 val layoutResult = textMeasurer.measure(
-                    text = text,
-                    style = androidx.compose.ui.text.TextStyle(
-                        fontSize = fontSize,
-                        fontWeight = FontWeight.ExtraLight
-                    ),
-                    constraints = constraints,
-                    maxLines = 1,
-                    softWrap = false
+                    text = text, style = androidx.compose.ui.text.TextStyle(
+                        fontSize = fontSize, fontWeight = FontWeight.ExtraLight
+                    ), constraints = constraints, maxLines = 1, softWrap = false
                 )
 
                 when {
@@ -209,20 +209,14 @@ fun AutoSizeTextWithScroll(
                     !layoutResult.didOverflowWidth && fontSize < maxFontSize -> {
                         val nextSize = (fontSize.value + 1f).coerceAtMost(maxFontSize.value).sp
                         val testResult = textMeasurer.measure(
-                            text = text,
-                            style = androidx.compose.ui.text.TextStyle(
-                                fontSize = nextSize,
-                                fontWeight = FontWeight.ExtraLight
-                            ),
-                            constraints = constraints,
-                            maxLines = 1,
-                            softWrap = false
+                            text = text, style = androidx.compose.ui.text.TextStyle(
+                                fontSize = nextSize, fontWeight = FontWeight.ExtraLight
+                            ), constraints = constraints, maxLines = 1, softWrap = false
                         )
                         if (!testResult.didOverflowWidth) {
                             fontSize = nextSize
                         }
                     }
                 }
-            }
-    )
+            })
 }
