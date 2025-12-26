@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -25,11 +24,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.xenon.mylibrary.theme.QuicksandTitleVariable
 import com.xenon.mylibrary.values.LargeTextFieldPadding
 import com.xenon.mylibrary.values.LargerPadding
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
@@ -70,6 +66,7 @@ fun CompactLandscapeDisplaySection(
 ) {
     val scrollState = rememberScrollState()
     val inputText = viewModel.displayInputWithSeparators
+    val rawResult = viewModel.result
 
     LaunchedEffect(inputText) {
         scrollState.scrollTo(scrollState.maxValue)
@@ -89,8 +86,8 @@ fun CompactLandscapeDisplaySection(
         ) {
             AutoSizeTextWithScroll(
                 text = inputText,
-                maxFontSize = 64.sp,
-                minFontSize = 24.sp,
+                maxFontSize = 36.sp,
+                minFontSize = 18.sp,
                 scrollState = scrollState,
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
@@ -133,20 +130,10 @@ fun CompactLandscapeDisplaySection(
                 .fillMaxWidth()
                 .weight(0.5f)
         ) {
-            Text(
-                text = viewModel.result,
-                style = MaterialTheme.typography.displaySmall.copy(
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = QuicksandTitleVariable,
-                ),
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                textAlign = TextAlign.End,
-                maxLines = 1,
-                modifier = Modifier
+            SmartResultText(
+                rawResult = rawResult, modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .fillMaxWidth()
-                    .padding(start = LargerPadding)
             )
         }
     }

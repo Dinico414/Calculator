@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,6 +43,7 @@ import com.xenon.mylibrary.theme.QuicksandTitleVariable
 import com.xenon.mylibrary.values.LargeTextFieldPadding
 import com.xenon.mylibrary.values.LargerPadding
 import com.xenonware.calculator.viewmodel.CalculatorViewModel
+import java.util.Locale
 
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
@@ -79,6 +81,7 @@ fun CompactPortraitDisplaySection(
 ) {
     val scrollState = rememberScrollState()
     val inputText = viewModel.displayInputWithSeparators
+    val rawResult = viewModel.result
 
     LaunchedEffect(inputText) {
         scrollState.scrollTo(scrollState.maxValue)
@@ -143,21 +146,115 @@ fun CompactPortraitDisplaySection(
                 .fillMaxWidth()
                 .weight(0.5f)
         ) {
-            Text(
-                text = viewModel.result,
-                style = MaterialTheme.typography.displaySmall.copy(
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = QuicksandTitleVariable,
-                ),
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                textAlign = TextAlign.End,
-                maxLines = 1,
-                modifier = Modifier
+            SmartResultText(
+                rawResult = rawResult, modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .fillMaxWidth()
             )
         }
+    }
+}
+
+@Composable
+fun SmartResultText(
+    rawResult: String, modifier: Modifier = Modifier
+) {
+    if (rawResult.isEmpty() || rawResult.startsWith("Error")) {
+        Text(
+            text = rawResult,
+            style = MaterialTheme.typography.displaySmall.copy(
+                fontSize = 36.sp,
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = QuicksandTitleVariable,
+            ),
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            textAlign = TextAlign.End,
+            maxLines = 1,
+            modifier = modifier
+        )
+        return
+    }
+
+    val number = rawResult.replace(",", "").toDoubleOrNull() ?: return Text(
+        text = rawResult, modifier = modifier
+    )
+
+    val fullText = if (number == number.toLong().toDouble()) {
+        number.toLong().toString().addThousandsSeparators()
+    } else {
+        String.format(Locale.US, "%.10f", number).trimEnd('0').trimEnd('.').let {
+                if (it.contains(".")) {
+                    val parts = it.split(".")
+                    parts[0].addThousandsSeparators() + if (parts.size > 1 && parts[1].isNotEmpty()) ".${parts[1]}" else ""
+                } else it.addThousandsSeparators()
+            }
+    }
+
+    val sciText = String.format(Locale.US, "%.9E", number).uppercase().let { str ->
+            if (str.contains(".")) {
+                str.replace(Regex("0+E([+-]?)"), "E$1").replace(Regex("\\.0+E"), "E").trimEnd('0')
+                    .trimEnd('.')
+            } else str
+        }
+
+    val textMeasurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+    val safeMarginPx = with(density) { 64.dp.toPx() }
+
+    var containerWidth by remember { mutableIntStateOf(0) }
+
+    val style = MaterialTheme.typography.displaySmall.copy(
+        fontSize = 36.sp,
+        fontWeight = FontWeight.SemiBold,
+        fontFamily = QuicksandTitleVariable,
+    )
+
+    Box(
+        modifier = modifier.onSizeChanged { size ->
+            containerWidth = size.width
+        }) {
+        if (containerWidth <= 0) {
+            Text(
+                text = fullText,
+                style = style,
+                textAlign = TextAlign.End,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+            return@Box
+        }
+
+        val availableWidth = (containerWidth - safeMarginPx).coerceAtLeast(1F).toInt()
+
+        val fullLayout = textMeasurer.measure(
+            text = fullText,
+            style = style,
+            constraints = Constraints(maxWidth = availableWidth),
+            maxLines = 1,
+            softWrap = false
+        )
+
+        val sciLayout = textMeasurer.measure(
+            text = sciText,
+            style = style,
+            constraints = Constraints(maxWidth = availableWidth),
+            maxLines = 1,
+            softWrap = false
+        )
+
+        val chosenText = when {
+            !fullLayout.didOverflowWidth -> fullText
+            !sciLayout.didOverflowWidth -> sciText
+            else -> sciText
+        }
+
+        Text(
+            text = chosenText,
+            style = style,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            textAlign = TextAlign.End,
+            maxLines = 1,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
@@ -219,4 +316,20 @@ fun AutoSizeTextWithScroll(
                     }
                 }
             })
+}
+
+fun String.addThousandsSeparators(): String {
+    val clean = this.replace(Regex("[^\\d.-]"), "")
+    if (clean.isEmpty()) return this
+
+    val parts = clean.split(".")
+    val integerPart = parts[0]
+    val decimalPart = if (parts.size > 1) ".${parts[1]}" else ""
+
+    val sign = if (integerPart.startsWith("-")) "-" else ""
+    val absInteger = integerPart.removePrefix("-")
+
+    val formattedInteger = absInteger.reversed().chunked(3).joinToString(",").reversed()
+
+    return sign + formattedInteger + decimalPart
 }

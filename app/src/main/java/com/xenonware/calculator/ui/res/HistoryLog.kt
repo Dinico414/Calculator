@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xenon.mylibrary.theme.QuicksandTitleVariable
@@ -62,7 +63,8 @@ fun HistoryLog(
     fraction: Float,
     onClearHistory: () -> Unit,
     hazeState: HazeState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    fadeBoxHeight: Dp = 64.dp
 ) {
     Box(modifier = modifier) {
         AnimatedContent(
@@ -147,7 +149,7 @@ fun HistoryLog(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .fillMaxWidth()
-                            .height(64.dp)
+                            .height(fadeBoxHeight)
                             .graphicsLayer { alpha = if (isAtBottom) 0f else fraction }
                             .background(
                                 Brush.verticalGradient(
@@ -163,7 +165,7 @@ fun HistoryLog(
                         modifier = Modifier
                             .align(Alignment.TopCenter)
                             .fillMaxWidth()
-                            .height(64.dp)
+                            .height(fadeBoxHeight)
                             .graphicsLayer { alpha = if (isAtTop) 0f else fraction }
                             .background(
                                 Brush.verticalGradient(

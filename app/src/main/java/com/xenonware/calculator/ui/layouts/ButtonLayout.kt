@@ -61,11 +61,8 @@ val firaSansFamily = FontFamily(
 )
 
 val ButtonWidth = CompactWideButtonWidth
-
-
 val ButtonHeight = CompactWideButtonHeight
 
-@Suppress("KotlinConstantConditions")
 @Composable
 fun ButtonLayout(
     modifier: Modifier = Modifier,
@@ -74,32 +71,68 @@ fun ButtonLayout(
     isHistoryMode: Boolean = false,
     isLandscape: Boolean
 ) {
-    val isCompactOrLarger =
-        layoutType in listOf(LayoutType.COMPACT, LayoutType.MEDIUM, LayoutType.EXPANDED)
+    // ===================================================================
+    // LAYOUT TYPE CLARITY
+    // ===================================================================
+    // LayoutType.COVER      → Small/cover screen (e.g., folded phone cover display)
+    // LayoutType.COMPACT    → Normal phone portrait
+    // LayoutType.MEDIUM     → Larger phone or small tablet
+    // LayoutType.EXPANDED   → Tablet or desktop window
+    //
+    // "Compact and up" means COMPACT, MEDIUM, or EXPANDED → has more space
+    // ===================================================================
 
-    // Common spacing
+    val isCompactOrLarger = layoutType in listOf(
+        LayoutType.COMPACT,
+        LayoutType.MEDIUM,
+        LayoutType.EXPANDED
+    )
+
+    val isCoverScreen = layoutType == LayoutType.COVER
+    val isSmallScreenPortrait = isCoverScreen && !isLandscape
+
+    // Common spacing used across layouts
     val buttonSpacing = MediumSpacing
 
+    // ===================================================================
+    // MAIN LAYOUT DECISION
+    // ===================================================================
 
     if (isCompactOrLarger && !isLandscape) {
-        CompactPortraitLayout(viewModel = viewModel, modifier = modifier, isHistoryMode = isHistoryMode)
+        // → COMPACT AND UP IN PORTRAIT
+        // Special portrait layout with top scientific row + toggleable panel
+        CompactPortraitLayout(
+            viewModel = viewModel,
+            modifier = modifier,
+            isHistoryMode = isHistoryMode
+        )
     } else {
-        val showScientificButtons = isCompactOrLarger && isLandscape
+        // → ALL OTHER CASES:
+        //   • Cover screen (portrait or landscape)
+        //   • Any layout in landscape (including compact+)
+        //
+        // Uses a horizontal Row layout:
+        //   - Optional scientific column on the left (only in landscape on compact+)
+        //   - Main numeric + operators column on the right
+        val showScientificColumn = isCompactOrLarger && isLandscape
 
         Row(
-            modifier = modifier.fillMaxSize().padding(
-                top = LargePadding,
-                start = if (layoutType == LayoutType.COVER && !isLandscape) NoPadding else LargePadding,
-                end = if (layoutType == LayoutType.COVER && !isLandscape) NoPadding else LargePadding,
-                bottom = if (layoutType == LayoutType.COVER && !isLandscape) NoPadding else LargePadding
-            ).let {
-                if (layoutType == LayoutType.COVER && !isLandscape) {
-                    it.background(Color.Black)
-                } else it
-            }, horizontalArrangement = Arrangement.spacedBy(buttonSpacing)
+            modifier = modifier
+                .fillMaxSize()
+                .padding(
+                    top = LargePadding,
+                    start = if (isSmallScreenPortrait) NoPadding else LargePadding,
+                    end = if (isSmallScreenPortrait) NoPadding else LargePadding,
+                    bottom = if (isSmallScreenPortrait) NoPadding else LargePadding
+                )
+                .let {
+                    // Cover screen gets full black background (typical for foldable cover)
+                    if (isSmallScreenPortrait) it.background(Color.Black) else it
+                },
+            horizontalArrangement = Arrangement.spacedBy(buttonSpacing)
         ) {
-            // Scientific column (only in compact+ landscape)
-            if (showScientificButtons) {
+            // Scientific column — only shown in landscape on compact or larger devices
+            if (showScientificColumn) {
                 ScientificColumn(
                     viewModel = viewModel,
                     modifier = Modifier
@@ -110,11 +143,10 @@ fun ButtonLayout(
                 )
             }
 
-            // Main numeric + operators column
             NumericOperatorsColumn(
                 viewModel = viewModel,
                 modifier = Modifier
-                    .weight(if (showScientificButtons) 5f else 1f)
+                    .weight(if (showScientificColumn) 5f else 1f)
                     .fillMaxHeight(),
                 buttonSpacing = buttonSpacing,
                 isHistoryMode = isHistoryMode,

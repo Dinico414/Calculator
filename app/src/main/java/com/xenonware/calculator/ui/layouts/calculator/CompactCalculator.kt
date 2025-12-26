@@ -119,7 +119,8 @@ fun CompactCalculator(
                         fraction = fraction,
                         onClearHistory = { viewModel.clearHistory() },
                         hazeState = remember { HazeState() },
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        fadeBoxHeight = if (!isLandscape) 64.dp else 24.dp
                     )
                 }
             },
@@ -184,6 +185,7 @@ fun CompactCalculator(
                                 label = "icon color"
                             )
 
+                            if (layoutType != LayoutType.SMALL)
                             Box(
                                 modifier = Modifier
                                     .shadow(elevation = animatedElevation, shape = CircleShape)

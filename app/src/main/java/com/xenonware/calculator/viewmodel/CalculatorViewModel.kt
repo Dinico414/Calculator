@@ -14,7 +14,6 @@ import org.mariuszgromada.math.mxparser.Expression
 import org.mariuszgromada.math.mxparser.mXparser
 import java.util.Locale
 
-
 open class CalculatorViewModel(
     private val sharedPreferenceManager: SharedPreferenceManager
 ) : ViewModel() {
@@ -22,6 +21,8 @@ open class CalculatorViewModel(
     var currentInput by mutableStateOf("")
         private set
 
+    // We keep result as the raw formatted string from calculation
+    // The UI will now decide how to display it (full vs scientific)
     var result by mutableStateOf("")
         private set
 
@@ -52,6 +53,7 @@ open class CalculatorViewModel(
 
         return sign + formattedInteger + decimalPart
     }
+
     fun formatExpressionForDisplay(expression: String): String {
         val tokens = mutableListOf<String>()
         var current = ""
@@ -116,7 +118,6 @@ open class CalculatorViewModel(
                 .replace("acos(", "cos⁻¹(")
                 .replace("atan(", "tan⁻¹(")
         }
-
 
     var isInverseMode by mutableStateOf(false)
         private set
@@ -184,9 +185,7 @@ open class CalculatorViewModel(
                     appendFunction("ln(")
                 }
             }
-            "eˣ" -> {
-                appendFunction("exp(")
-            }
+            "eˣ" -> appendFunction("exp(")
             "log" -> {
                 if (isInverseMode) {
                     currentInput += "10^("
@@ -242,15 +241,8 @@ open class CalculatorViewModel(
             if (op == "-") {
                 currentInput += op
             }
-
-            if (op == "^2" && currentInput.isNotEmpty() && (currentInput.last().isDigit() || currentInput.last() == ')')) {
-                currentInput += op
-                return
-            } else if (op == "^2") {
-                return
-            }
+            if (op == "^2") return
             if (currentInput.isEmpty() && op != "-") return
-
         }
 
         val lastChar = currentInput.lastOrNull()
@@ -262,7 +254,6 @@ open class CalculatorViewModel(
             return
         }
 
-
         if (lastChar != null && (lastChar.isDigit() || lastChar == ')' || lastChar == 'π' || lastChar == 'e')) {
             currentInput += op
         } else if (lastChar != null && "(+-×÷^%".contains(lastChar) && op == "-") {
@@ -273,7 +264,6 @@ open class CalculatorViewModel(
             }
         }
     }
-
 
     private fun appendDecimal() {
         if (currentInput.isEmpty()) {
@@ -399,7 +389,9 @@ open class CalculatorViewModel(
                 if (calculatedResult.isNaN()) {
                     result = "Error: NaN"
                 } else {
-                    val formatted = formatResult(calculatedResult)
+                    // Only format with full commas + decimals here
+                    // UI will decide scientific later
+                    val formatted = formatResultForHistory(calculatedResult)
                     result = formatted
 
                     val newItem = HistoryItem(expression = tempInput, result = formatted)
@@ -420,34 +412,36 @@ open class CalculatorViewModel(
         }
     }
 
+    // This is now only used for history and initial result
+    private fun formatResultForHistory(value: Double): String {
+        if (value.isInfinite()) return "Error: Infinity"
+        if (value.isNaN()) return "Error: NaN"
+
+        return if (value == value.toLong().toDouble()) {
+            value.toLong().toString().addThousandsSeparators()
+        } else {
+            String.format(Locale.US, "%.10f", value)
+                .trimEnd('0')
+                .trimEnd('.')
+                .let { formatted ->
+                    if (formatted.contains(".")) {
+                        val parts = formatted.split(".")
+                        val integerPart = parts[0].addThousandsSeparators()
+                        if (parts.size > 1 && parts[1].isNotEmpty()) {
+                            "$integerPart.${parts[1]}"
+                        } else integerPart
+                    } else {
+                        formatted.addThousandsSeparators()
+                    }
+                }
+        }
+    }
+
     fun clearHistory() {
         _history.clear()
         sharedPreferenceManager.clearHistory()
     }
 
-
-    private fun formatResult(value: Double): String {
-        if (value.isInfinite()) {
-            return "Error: Infinity"
-        }
-        if (value.isNaN()) {
-            return "Error: NaN"
-        }
-
-        if (value == value.toLong().toDouble() && !value.toString().contains("E", ignoreCase = true)) {
-            return value.toLong().toString().addThousandsSeparators()
-        }
-
-        val formatted = String.format(Locale.US, "%.10f", value).trimEnd('0').trimEnd('.')
-
-        return if (formatted.contains(".")) {
-            val parts = formatted.split(".")
-            val integerPart = parts[0].addThousandsSeparators()
-            if (parts.size > 1) "$integerPart.${parts[1]}" else integerPart
-        } else {
-            formatted.addThousandsSeparators()
-        }
-    }
     fun toggleScientificMode() {
         isScientificMode = !isScientificMode
     }
@@ -481,7 +475,6 @@ open class CalculatorViewModel(
         ) {
             appendCloseParenthesis()
         }
-
     }
 }
 
