@@ -15,6 +15,8 @@ import com.xenonware.calculator.util.TemperatureUnit
 import com.xenonware.calculator.util.VolumeUnit
 import com.xenonware.calculator.util.WeightUnit
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 class ConverterViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -66,7 +68,7 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
     private val _toWeightUnit = mutableStateOf(WeightUnit.POUNDS)
     val toWeightUnit: State<WeightUnit> = _toWeightUnit
 
-    private val decimalFormat = DecimalFormat("#.######")
+    private val decimalFormat = DecimalFormat("#.######", DecimalFormatSymbols(Locale.US))
 
     fun onConverterTypeChange(newType: ConverterType) {
         _selectedConverterType.value = newType
