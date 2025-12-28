@@ -1,5 +1,6 @@
 package com.xenonware.calculator.ui.layouts.converter
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -69,6 +70,7 @@ import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import kotlin.math.max
 import kotlin.math.roundToInt
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalHazeMaterialsApi::class)
 @Composable
 fun LandscapeCompactConverter(
@@ -230,10 +232,13 @@ fun LandscapeCompactConverter(
                             )
                             XenonTextField(
                                 value = value1,
-                                onValueChange = { newValue ->
-                                    viewModel.onValueChanged(
-                                        newValue, ConverterViewModel.EditedField.FIELD1
-                                    )
+                                onValueChange = { incoming ->
+                                    val processed = incoming.replace(',', '.')
+
+                                    val regex = Regex("^-?\\d*\\.?\\d*$")
+                                    if (processed.matches(regex)) {
+                                        viewModel.onValueChanged(processed, ConverterViewModel.EditedField.FIELD1)
+                                    }
                                 },
                                 placeholder = { Text(stringResource(id = R.string.value_1)) },
                                 singleLine = true,
@@ -329,10 +334,13 @@ fun LandscapeCompactConverter(
                             )
                             XenonTextField(
                                 value = value2,
-                                onValueChange = { newValue ->
-                                    viewModel.onValueChanged(
-                                        newValue, ConverterViewModel.EditedField.FIELD2
-                                    )
+                                onValueChange = { incoming ->
+                                    val processed = incoming.replace(',', '.')
+
+                                    val regex = Regex("^-?\\d*\\.?\\d*$")
+                                    if (processed.matches(regex)) {
+                                        viewModel.onValueChanged(processed, ConverterViewModel.EditedField.FIELD2)
+                                    }
                                 },
                                 placeholder = { Text(stringResource(id = R.string.value_2)) },
                                 singleLine = true,
