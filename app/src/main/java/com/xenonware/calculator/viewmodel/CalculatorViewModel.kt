@@ -416,20 +416,36 @@ open class CalculatorViewModel(
         return when {
             absValue == 0.0 -> "0"
 
-            absValue < 1e10 && absValue >= 1e-4 && absValue == absValue.toLong().toDouble() -> {
+            // Case 1: Exact integer (no decimal part) and within reasonable range
+            absValue < 1e10 && absValue == absValue.toLong().toDouble() -> {
                 (sign + absValue.toLong().toString()).addThousandsSeparators()
             }
 
+            // Case 2: Decimal number, but small enough to display in fixed notation
+            absValue < 1e10 && absValue >= 1e-6 -> {
+                // Use fixed-point formatting with reasonable precision
+                val formatted = String.format(Locale.US, "%.10f", value)
+                    .trimEnd('0')
+                    .trimEnd('.')
+                formatted.addThousandsSeparators()
+            }
+
+            // Case 3: Very large or very small → use scientific notation
             else -> {
                 val sci = String.format(Locale.US, "%.10E", value)
                 val parts = sci.split("E")
-                var mantissa = parts[0].trimEnd('0').trimEnd('.')
+                var mantissa = parts[0]
+                    .trimEnd('0')
+                    .trimEnd('.')
+                val exponent = parts[1]
 
-                sign + mantissa + "E" + parts[1]
+                // Ensure exponent has sign for negative exponents
+                val formattedExponent = if (exponent.startsWith("-")) exponent else "+$exponent"
+
+                sign + mantissa + "E" + formattedExponent
             }
         }
     }
-
     fun clearHistory() {
         _history.clear()
         sharedPreferenceManager.clearHistory()
