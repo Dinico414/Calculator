@@ -359,6 +359,15 @@ open class CalculatorViewModel(
         }
     }
 
+    private fun processPercentages(input: String): String {
+
+        val regex = Regex("""(\d+\.?\d*)\s*%""")
+        return input.replace(regex) { matchResult ->
+            val number = matchResult.groupValues[1]
+            "($number/100)"
+        }
+    }
+
     private fun calculate() {
         if (currentInput.isBlank()) {
             result = ""
@@ -372,11 +381,14 @@ open class CalculatorViewModel(
         openParenthesesCount = 0
 
         try {
-            val expressionString = tempInput
-                .replace("^²", "^2")  // Convert special square marker back to normal power for calculation
+            // First: process % correctly
+            var processedInput = processPercentages(tempInput)
+
+            // Then: convert UI symbols to math symbols
+            val expressionString = processedInput
+                .replace("^²", "^2")
                 .replace("×", "*")
                 .replace("÷", "/")
-                .replace("%", "#")
 
             val expression = Expression(expressionString)
 
@@ -398,7 +410,7 @@ open class CalculatorViewModel(
                     saveHistoryToPreferences()
                 }
             } else {
-                result = "Error: Syntax (${expression.errorMessage})"
+                result = "Error: Syntax (${expression.getErrorMessage()})"
             }
         } catch (e: Exception) {
             result = "Error: Calc"
