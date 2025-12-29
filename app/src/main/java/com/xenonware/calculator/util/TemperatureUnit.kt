@@ -2,8 +2,7 @@ package com.xenonware.calculator.util
 
 enum class TemperatureUnit(
     val displayName: String) {
-    CELSIUS("Celsius"),
-    FAHRENHEIT("Fahrenheit"),
-    KELVIN("Kelvin");
-
+    CELSIUS("°C - Celsius"),
+    FAHRENHEIT("°F - Fahrenheit"),
+    KELVIN("K - Kelvin");
 }

@@ -52,7 +52,7 @@ private val currencyDataMap: Map<String, CurrencyData> = mapOf(
 
 enum class CurrencyUnit {
     USD, EUR, JPY, GBP, AED, AUD, CAD, CHF, CNY, INR, BRL, ZAR, SGD, HKD, NZD, KRW, MXN, TRY,
-    ALL, AMD, AZN, BAM, BGN, BYN, CZK, DKK, GEL, HRK, HUF, ISK, MDL, MKD, NOK, PLN, RON, RSD, RUB, SEK, UAH;
+    ALL, AMD, AZN, BAM, BGN, BYN, CZK, DKK, GEL, HUF, ISK, MDL, MKD, NOK, PLN, RON, RSD, RUB, SEK, UAH;
 
 
     fun getDisplayName(context: Context): String {

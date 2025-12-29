@@ -7,9 +7,12 @@ import com.xenonware.calculator.ui.res.GenericUnitDropdown
 import com.xenonware.calculator.util.AreaUnit
 import com.xenonware.calculator.util.ConverterType
 import com.xenonware.calculator.util.CurrencyUnit
+import com.xenonware.calculator.util.EnergyUnit
 import com.xenonware.calculator.util.LengthUnit
+import com.xenonware.calculator.util.PowerUnit
 import com.xenonware.calculator.util.SpeedUnit
 import com.xenonware.calculator.util.TemperatureUnit
+import com.xenonware.calculator.util.TorqueUnit
 import com.xenonware.calculator.util.VolumeUnit
 import com.xenonware.calculator.util.WeightUnit
 import dev.chrisbanes.haze.HazeState
@@ -30,6 +33,16 @@ fun UnitItems(
 
     selectedSpeedUnit: SpeedUnit,
     onSpeedUnitSelected: (SpeedUnit) -> Unit,
+
+    selectedPowerUnit: PowerUnit,
+    onPowerUnitSelected: (PowerUnit) -> Unit,
+
+    selectedEnergyUnit: EnergyUnit,
+    onEnergyUnitSelected: (EnergyUnit) -> Unit,
+
+    selectedTorqueUnit: TorqueUnit,
+    onTorqueUnitSelected: (TorqueUnit) -> Unit,
+
 
     selectedWeightUnit: WeightUnit,
     onWeightUnitSelected: (WeightUnit) -> Unit,
@@ -91,6 +104,45 @@ fun UnitItems(
                 selectedSpeedUnit,
                 onSpeedUnitSelected,
                 { speedUnit -> speedUnit.getDisplayName(context) },
+                hazeState,
+                modifier
+            )
+        }
+
+        ConverterType.POWER -> {
+            val context = LocalContext.current
+            GenericUnitDropdown(
+                label,
+                PowerUnit.entries.toTypedArray(),
+                selectedPowerUnit,
+                onPowerUnitSelected,
+                { powerUnit -> powerUnit.getDisplayName(context) },
+                hazeState,
+                modifier
+            )
+        }
+
+        ConverterType.ENERGY -> {
+            val context = LocalContext.current
+            GenericUnitDropdown(
+                label,
+                EnergyUnit.entries.toTypedArray(),
+                selectedEnergyUnit,
+                onEnergyUnitSelected,
+                { energyUnit -> energyUnit.getDisplayName(context) },
+                hazeState,
+                modifier
+            )
+        }
+
+        ConverterType.TORQUE -> {
+            val context = LocalContext.current
+            GenericUnitDropdown(
+                label,
+                TorqueUnit.entries.toTypedArray(),
+                selectedTorqueUnit,
+                onTorqueUnitSelected,
+                { torqueUnit -> torqueUnit.getDisplayName(context) },
                 hazeState,
                 modifier
             )

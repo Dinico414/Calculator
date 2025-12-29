@@ -9,9 +9,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.xenonware.calculator.util.AreaUnit
 import com.xenonware.calculator.util.ConverterType
 import com.xenonware.calculator.util.CurrencyUnit
+import com.xenonware.calculator.util.EnergyUnit
 import com.xenonware.calculator.util.LengthUnit
+import com.xenonware.calculator.util.PowerUnit
 import com.xenonware.calculator.util.SpeedUnit
 import com.xenonware.calculator.util.TemperatureUnit
+import com.xenonware.calculator.util.TorqueUnit
 import com.xenonware.calculator.util.VolumeUnit
 import com.xenonware.calculator.util.WeightUnit
 import java.text.DecimalFormat
@@ -53,6 +56,21 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
     private val _toSpeedUnit = mutableStateOf(SpeedUnit.KILOMETERS_PER_HOUR)
     val toSpeedUnit: State<SpeedUnit> = _toSpeedUnit
 
+    private val _fromPowerUnit = mutableStateOf(PowerUnit.WATTS)
+    val fromPowerUnit: State<PowerUnit> = _fromPowerUnit
+    private val _toPowerUnit = mutableStateOf(PowerUnit.KILOWATTS)
+    val toPowerUnit: State<PowerUnit> = _toPowerUnit
+
+    private val _fromEnergyUnit = mutableStateOf(EnergyUnit.JOULES)
+    val fromEnergyUnit: State<EnergyUnit> = _fromEnergyUnit
+    private val _toEnergyUnit = mutableStateOf(EnergyUnit.KILOCALORIES)
+    val toEnergyUnit: State<EnergyUnit> = _toEnergyUnit
+
+    private val _fromTorqueUnit = mutableStateOf(TorqueUnit.NEWTON_METERS)
+    val fromTorqueUnit: State<TorqueUnit> = _fromTorqueUnit
+    private val _toTorqueUnit = mutableStateOf(TorqueUnit.FOOT_POUNDS)
+    val toTorqueUnit: State<TorqueUnit> = _toTorqueUnit
+
     private val _fromTemperatureUnit = mutableStateOf(TemperatureUnit.CELSIUS)
     val fromTemperatureUnit: State<TemperatureUnit> = _fromTemperatureUnit
     private val _toTemperatureUnit = mutableStateOf(TemperatureUnit.FAHRENHEIT)
@@ -68,8 +86,9 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
     private val _toWeightUnit = mutableStateOf(WeightUnit.POUNDS)
     val toWeightUnit: State<WeightUnit> = _toWeightUnit
 
-    private val decimalFormat = DecimalFormat("#.######", DecimalFormatSymbols(Locale.US))
-
+    private val decimalFormat = DecimalFormat("#.########################", DecimalFormatSymbols(Locale.US)).apply {
+        isGroupingUsed = false
+    }
     fun onConverterTypeChange(newType: ConverterType) {
         _selectedConverterType.value = newType
         recalculateOnTypeOrUnitChange()
@@ -126,6 +145,27 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
 
             ConverterType.SPEED -> {
                 if (fromUnit is SpeedUnit && toUnit is SpeedUnit) {
+                    val baseValue = fromUnit.toBase(value)
+                    toUnit.fromBase(baseValue)
+                } else null
+            }
+
+            ConverterType.POWER -> {
+                if (fromUnit is PowerUnit && toUnit is PowerUnit) {
+                    val baseValue = fromUnit.toBase(value)
+                    toUnit.fromBase(baseValue)
+                } else null
+            }
+
+            ConverterType.ENERGY -> {
+                if (fromUnit is EnergyUnit && toUnit is EnergyUnit) {
+                    val baseValue = fromUnit.toBase(value)
+                    toUnit.fromBase(baseValue)
+                } else null
+                }
+
+            ConverterType.TORQUE -> {
+                if (fromUnit is TorqueUnit && toUnit is TorqueUnit) {
                     val baseValue = fromUnit.toBase(value)
                     toUnit.fromBase(baseValue)
                 } else null
@@ -194,6 +234,21 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
             ConverterType.SPEED -> {
                 val temp = _fromSpeedUnit.value; _fromSpeedUnit.value =
                     _toSpeedUnit.value; _toSpeedUnit.value = temp
+            }
+
+            ConverterType.POWER -> {
+                val temp = _fromPowerUnit.value; _fromPowerUnit.value =
+                    _toPowerUnit.value; _toPowerUnit.value = temp
+            }
+
+            ConverterType.ENERGY -> {
+                val temp = _fromEnergyUnit.value; _fromEnergyUnit.value =
+                    _toEnergyUnit.value; _toEnergyUnit.value = temp
+            }
+
+            ConverterType.TORQUE -> {
+                val temp = _fromTorqueUnit.value; _fromTorqueUnit.value =
+                    _toTorqueUnit.value; _toTorqueUnit.value = temp
             }
 
             ConverterType.TEMPERATURE -> {
@@ -346,12 +401,51 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
         recalculateOnTypeOrUnitChange()
     }
 
+    fun onFromPowerUnitChange(newUnit: PowerUnit) {
+        _fromPowerUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
+    }
+
+    fun onToPowerUnitChange(newUnit: PowerUnit) {
+        _toPowerUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
+    }
+
+    fun onFromEnergyUnitChange(newUnit: EnergyUnit) {
+        _fromEnergyUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
+    }
+
+    fun onToEnergyUnitChange(newUnit: EnergyUnit) {
+        _toEnergyUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
+    }
+
+    fun onFromTorqueUnitChange(newUnit: TorqueUnit) {
+        _fromTorqueUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
+    }
+
+    fun onToTorqueUnitChange(newUnit: TorqueUnit) {
+        _toTorqueUnit.value = newUnit
+        lastEditedField = EditedField.FIELD1
+        recalculateOnTypeOrUnitChange()
+    }
+
     private fun getCurrentFromUnit(): Any {
         return when (_selectedConverterType.value) {
             ConverterType.VOLUME -> _fromVolumeUnit.value
             ConverterType.AREA -> _fromAreaUnit.value
             ConverterType.LENGTH -> _fromLengthUnit.value
             ConverterType.SPEED -> _fromSpeedUnit.value
+            ConverterType.POWER -> _fromPowerUnit.value
+            ConverterType.ENERGY -> _fromEnergyUnit.value
+            ConverterType.TORQUE -> _fromTorqueUnit.value
             ConverterType.TEMPERATURE -> _fromTemperatureUnit.value
             ConverterType.CURRENCY -> _fromCurrencyUnit.value
             ConverterType.WEIGHT -> _fromWeightUnit.value
@@ -364,6 +458,9 @@ class ConverterViewModel(application: Application) : AndroidViewModel(applicatio
             ConverterType.AREA -> _toAreaUnit.value
             ConverterType.LENGTH -> _toLengthUnit.value
             ConverterType.SPEED -> _toSpeedUnit.value
+            ConverterType.POWER -> _toPowerUnit.value
+            ConverterType.ENERGY -> _toEnergyUnit.value
+            ConverterType.TORQUE -> _toTorqueUnit.value
             ConverterType.TEMPERATURE -> _toTemperatureUnit.value
             ConverterType.CURRENCY -> _toCurrencyUnit.value
             ConverterType.WEIGHT -> _toWeightUnit.value

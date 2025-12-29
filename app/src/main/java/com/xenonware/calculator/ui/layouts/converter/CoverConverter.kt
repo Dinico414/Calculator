@@ -112,6 +112,15 @@ fun CoverConverter(
     val fromSpeedUnit by viewModel.fromSpeedUnit
     val toSpeedUnit by viewModel.toSpeedUnit
 
+    val fromPowerUnit by viewModel.fromPowerUnit
+    val toPowerUnit by viewModel.toPowerUnit
+
+    val fromEnergyUnit by viewModel.fromEnergyUnit
+    val toEnergyUnit by viewModel.toEnergyUnit
+
+    val fromTorqueUnit by viewModel.fromTorqueUnit
+    val toTorqueUnit by viewModel.toTorqueUnit
+
     val fromAreaUnit by viewModel.fromAreaUnit
     val toAreaUnit by viewModel.toAreaUnit
 
@@ -193,6 +202,27 @@ fun CoverConverter(
                                         unit
                                     )
                                 },
+                                selectedPowerUnit = fromPowerUnit,
+                                onPowerUnitSelected = { unit ->
+                                    viewModel.onFromPowerUnitChange(
+                                        unit
+                                    )
+                                },
+
+                                selectedEnergyUnit = fromEnergyUnit,
+                                onEnergyUnitSelected = { unit ->
+                                    viewModel.onFromEnergyUnitChange(
+                                        unit
+                                    )
+                                },
+
+                                selectedTorqueUnit = fromTorqueUnit,
+                                onTorqueUnitSelected = { unit ->
+                                    viewModel.onFromTorqueUnitChange(
+                                        unit
+                                    )
+                                },
+
                                 selectedWeightUnit = fromWeightUnit,
                                 onWeightUnitSelected = { unit ->
                                     viewModel.onFromWeightUnitChange(
@@ -296,6 +326,28 @@ fun CoverConverter(
                                         unit
                                     )
                                 },
+
+                                selectedPowerUnit = toPowerUnit,
+                                onPowerUnitSelected = { unit ->
+                                    viewModel.onToPowerUnitChange(
+                                        unit
+                                    )
+                                },
+
+                                selectedEnergyUnit = toEnergyUnit,
+                                onEnergyUnitSelected = { unit ->
+                                    viewModel.onToEnergyUnitChange(
+                                        unit
+                                    )
+                                },
+
+                                selectedTorqueUnit = toTorqueUnit,
+                                onTorqueUnitSelected = { unit ->
+                                    viewModel.onToTorqueUnitChange(
+                                        unit
+                                    )
+                                },
+
                                 selectedWeightUnit = toWeightUnit,
                                 onWeightUnitSelected = { unit ->
                                     viewModel.onToWeightUnitChange(

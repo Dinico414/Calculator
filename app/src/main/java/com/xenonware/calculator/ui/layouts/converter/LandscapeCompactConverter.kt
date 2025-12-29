@@ -109,6 +109,15 @@ fun LandscapeCompactConverter(
     val fromSpeedUnit by viewModel.fromSpeedUnit
     val toSpeedUnit by viewModel.toSpeedUnit
 
+    val fromPowerUnit by viewModel.fromPowerUnit
+    val toPowerUnit by viewModel.toPowerUnit
+
+    val fromEnergyUnit by viewModel.fromEnergyUnit
+    val toEnergyUnit by viewModel.toEnergyUnit
+
+    val fromTorqueUnit by viewModel.fromTorqueUnit
+    val toTorqueUnit by viewModel.toTorqueUnit
+
     val fromWeightUnit by viewModel.fromWeightUnit
     val toWeightUnit by viewModel.toWeightUnit
 
@@ -122,8 +131,8 @@ fun LandscapeCompactConverter(
     var accumulatedRotation by remember { mutableFloatStateOf(0f) }
     val rotationAngle by animateFloatAsState(
         targetValue = accumulatedRotation, animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,  // Gives a nice bounce
-            stiffness = Spring.StiffnessLow               // Slower, more playful feel
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
         ), label = "IconRotation"
     )
 
@@ -203,6 +212,27 @@ fun LandscapeCompactConverter(
                                 selectedSpeedUnit = fromSpeedUnit,
                                 onSpeedUnitSelected = { unit ->
                                     viewModel.onFromSpeedUnitChange(
+                                        unit
+                                    )
+                                },
+
+                                selectedPowerUnit = fromPowerUnit,
+                                onPowerUnitSelected = { unit ->
+                                    viewModel.onFromPowerUnitChange(
+                                        unit
+                                    )
+                                },
+
+                                selectedEnergyUnit = fromEnergyUnit,
+                                onEnergyUnitSelected = { unit ->
+                                    viewModel.onFromEnergyUnitChange(
+                                        unit
+                                    )
+                                },
+
+                                selectedTorqueUnit = fromTorqueUnit,
+                                onTorqueUnitSelected = { unit ->
+                                    viewModel.onFromTorqueUnitChange(
                                         unit
                                     )
                                 },
@@ -309,6 +339,28 @@ fun LandscapeCompactConverter(
                                         unit
                                     )
                                 },
+
+                                selectedPowerUnit = toPowerUnit,
+                                onPowerUnitSelected = { unit ->
+                                    viewModel.onToPowerUnitChange(
+                                        unit
+                                    )
+                                },
+
+                                selectedEnergyUnit = toEnergyUnit,
+                                onEnergyUnitSelected = { unit ->
+                                    viewModel.onToEnergyUnitChange(
+                                        unit
+                                    )
+                                },
+
+                                selectedTorqueUnit = toTorqueUnit,
+                                onTorqueUnitSelected = { unit ->
+                                    viewModel.onToTorqueUnitChange(
+                                        unit
+                                    )
+                                },
+
                                 selectedWeightUnit = toWeightUnit,
                                 onWeightUnitSelected = { unit ->
                                     viewModel.onToWeightUnitChange(
