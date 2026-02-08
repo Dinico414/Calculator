@@ -1,10 +1,11 @@
+import com.android.build.api.dsl.ApplicationExtension
+
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
-android {
+configure<ApplicationExtension> {
     namespace = "com.xenonware.calculator"
     compileSdk = 36
 
@@ -21,7 +22,7 @@ android {
     }
 
     buildTypes {
-        debug {
+        getByName("debug") {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-d"
             proguardFiles(
@@ -32,7 +33,7 @@ android {
             buildConfigField("String", "XENON_COMMONS_VERSION", "\"${libs.versions.xenonCommons.get()}\"")
             buildConfigField("String", "XENON_UI_VERSION", "\"${libs.versions.xenonUi.get()}\"")
         }
-        release {
+        getByName("release") {
              isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -50,19 +51,6 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
-    }
-    applicationVariants.all {
-        outputs.all {
-            val outputFileName = if (buildType.name == "release") {
-                "Calculator.apk"
-            } else if (buildType.name == "debug") {
-                "Calculator-${buildType.name}.apk"
-            } else {
-                "Calculator-${buildType.name}.apk"
-            }
-            (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                outputFileName
-        }
     }
 }
 
