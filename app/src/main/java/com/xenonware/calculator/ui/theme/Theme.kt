@@ -29,6 +29,7 @@ data class ExtendedMaterialColorScheme(
     val inverseErrorContainer: Color,
     val inverseOnErrorContainer: Color,
 )
+
 val LocalExtendedMaterialColorScheme = staticCompositionLocalOf<ExtendedMaterialColorScheme> {
     error("No ExtendedMaterialColorScheme provided. Did you forget to wrap your Composable in TodolistTheme?")
 }
@@ -138,6 +139,7 @@ fun ColorScheme.toCoverMode(): ColorScheme {
         background = Color.Black, surfaceContainer = Color.Black, surfaceBright = Color.Black
     )
 }
+
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

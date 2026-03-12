@@ -1,9 +1,8 @@
 package com.xenonware.calculator.ui.layouts
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import com.xenonware.calculator.presentation.sign_in.GoogleAuthUiClient
+import com.xenonware.calculator.presentation.sign_in.SignInState
 import com.xenonware.calculator.ui.layouts.settings.CoverSettings
 import com.xenonware.calculator.ui.layouts.settings.DefaultSettings
 import com.xenonware.calculator.viewmodel.LayoutType
@@ -17,49 +16,40 @@ fun SettingsLayout(
     isLandscape: Boolean,
     layoutType: LayoutType,
     onNavigateToDeveloperOptions: () -> Unit,
-    modifier: Modifier = Modifier,
+    state: SignInState,
+    googleAuthUiClient: GoogleAuthUiClient,
+    onSignInClick: () -> Unit,
+    onSignOutClick: () -> Unit,
+    onConfirmSignOut: () -> Unit,
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
-        when (layoutType) {
-            LayoutType.COVER -> {
-                if (isLandscape) {
-                    CoverSettings(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel,
-                        isLandscape = true,
-                        layoutType = layoutType,
-                        onNavigateToDeveloperOptions = onNavigateToDeveloperOptions
-                    )
-                } else {
-                    CoverSettings(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel,
-                        isLandscape = false,
-                        layoutType = layoutType,
-                        onNavigateToDeveloperOptions = onNavigateToDeveloperOptions
-                    )
-                }
-            }
+    when (layoutType) {
+        LayoutType.COVER -> {
+            CoverSettings(
+                onNavigateBack = onNavigateBack,
+                viewModel = viewModel,
+                onNavigateToDeveloperOptions = onNavigateToDeveloperOptions,
+                state = state,
+                googleAuthUiClient = googleAuthUiClient,
+                onSignInClick = onSignInClick,
+                onSignOutClick = onSignOutClick,
+                onConfirmSignOut = onConfirmSignOut
+            )
 
-            LayoutType.SMALL, LayoutType.COMPACT, LayoutType.MEDIUM, LayoutType.EXPANDED -> {
-                if (isLandscape) {
-                    DefaultSettings(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel,
-                        layoutType = layoutType,
-                        isLandscape = true,
-                        onNavigateToDeveloperOptions = onNavigateToDeveloperOptions
-                    )
-                } else {
-                    DefaultSettings(
-                        onNavigateBack = onNavigateBack,
-                        viewModel = viewModel,
-                        layoutType = layoutType,
-                        isLandscape = false,
-                        onNavigateToDeveloperOptions = onNavigateToDeveloperOptions
-                    )
-                }
-            }
+        }
+
+        LayoutType.SMALL, LayoutType.COMPACT, LayoutType.MEDIUM, LayoutType.EXPANDED -> {
+            DefaultSettings(
+                onNavigateBack = onNavigateBack,
+                viewModel = viewModel,
+                isLandscape = isLandscape,
+                layoutType = layoutType,
+                onNavigateToDeveloperOptions = onNavigateToDeveloperOptions,
+                state = state,
+                googleAuthUiClient = googleAuthUiClient,
+                onSignInClick = onSignInClick,
+                onSignOutClick = onSignOutClick,
+                onConfirmSignOut = onConfirmSignOut
+            )
         }
     }
 }

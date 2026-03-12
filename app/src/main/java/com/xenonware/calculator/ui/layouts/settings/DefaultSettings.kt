@@ -1,6 +1,8 @@
 package com.xenonware.calculator.ui.layouts.settings
 
+import android.annotation.SuppressLint
 import android.os.Build
+import android.text.format.DateFormat
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -30,6 +32,7 @@ import com.xenon.mylibrary.res.DialogClearDataConfirmation
 import com.xenon.mylibrary.res.DialogCoverDisplaySelection
 import com.xenon.mylibrary.res.DialogLanguageSelection
 import com.xenon.mylibrary.res.DialogResetSettingsConfirmation
+import com.xenon.mylibrary.res.DialogSignOut
 import com.xenon.mylibrary.res.DialogThemeSelection
 import com.xenon.mylibrary.res.DialogVersionNumber
 import com.xenon.mylibrary.res.ThemeSetting
@@ -38,6 +41,8 @@ import com.xenon.mylibrary.values.MediumPadding
 import com.xenon.mylibrary.values.NoSpacing
 import com.xenonware.calculator.BuildConfig
 import com.xenonware.calculator.R
+import com.xenonware.calculator.presentation.sign_in.GoogleAuthUiClient
+import com.xenonware.calculator.presentation.sign_in.SignInState
 import com.xenonware.calculator.viewmodel.LayoutType
 import com.xenonware.calculator.viewmodel.SettingsViewModel
 import com.xenonware.calculator.viewmodel.classes.SettingsItems
@@ -45,6 +50,7 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DefaultSettings(
@@ -53,8 +59,14 @@ fun DefaultSettings(
     layoutType: LayoutType,
     isLandscape: Boolean,
     onNavigateToDeveloperOptions: () -> Unit,
-    ) {
+    state: SignInState,
+    googleAuthUiClient: GoogleAuthUiClient,
+    onSignInClick: () -> Unit,
+    onSignOutClick: () -> Unit,
+    onConfirmSignOut: () -> Unit,
+) {
     val context = LocalContext.current
+
     val currentThemeTitle by viewModel.currentThemeTitle.collectAsState()
     val showThemeDialog by viewModel.showThemeDialog.collectAsState()
     val themeOptions = remember { ThemeSetting.entries.toTypedArray() }
@@ -69,6 +81,8 @@ fun DefaultSettings(
     val availableLanguages by viewModel.availableLanguages.collectAsState()
     val selectedLanguageTagInDialog by viewModel.selectedLanguageTagInDialog.collectAsState()
     val showVersionDialog by viewModel.showVersionDialog.collectAsState()
+    val showSignOutDialog by viewModel.showSignOutDialog.collectAsState()
+
 
     val packageManager = context.packageManager
     val packageName = context.packageName
@@ -102,7 +116,9 @@ fun DefaultSettings(
 
     ActivityScreen(
         titleText = stringResource(id = R.string.settings),
+
         expandable = isAppBarExpandable,
+
         navigationIconStartPadding = MediumPadding,
         navigationIconPadding = MediumPadding,
         navigationIconSpacing = NoSpacing,
@@ -137,11 +153,14 @@ fun DefaultSettings(
                     coverThemeEnabled = coverThemeEnabled,
                     currentLanguage = currentLanguage,
                     appVersion = appVersion,
-                    onNavigateToDeveloperOptions = onNavigateToDeveloperOptions
+                    onNavigateToDeveloperOptions = onNavigateToDeveloperOptions,
+                    state = state,
+                    googleAuthUiClient = googleAuthUiClient,
+                    onSignInClick = onSignInClick,
+                    onSignOutClick = onSignOutClick
                 )
             }
-        }
-    )
+        })
 
     if (showThemeDialog) {
         Box(
@@ -243,6 +262,21 @@ fun DefaultSettings(
                 xenonUIVersion = xenonUIVersion,
                 xenonCommonsString = stringResource(id = R.string.xenon_commons_version),
                 xenonCommonsVersion = xenonCommonsVersion
+            )
+        }
+    }
+    if (showSignOutDialog) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .hazeEffect(hazeState)
+        ) {
+            DialogSignOut(
+                onConfirm = onConfirmSignOut,
+                onDismiss = { viewModel.dismissSignOutDialog() },
+                dialogTitle = stringResource(id = R.string.sign_out),
+                confirmText = stringResource(id = R.string.confirm),
+                descriptionText = stringResource(id = R.string.sign_out_description)
             )
         }
     }

@@ -1,11 +1,14 @@
 package com.xenonware.calculator.ui.layouts.settings
 
-
 import android.os.Build
+import android.text.format.DateFormat
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
@@ -30,6 +32,7 @@ import com.xenon.mylibrary.res.DialogClearDataConfirmation
 import com.xenon.mylibrary.res.DialogCoverDisplaySelection
 import com.xenon.mylibrary.res.DialogLanguageSelection
 import com.xenon.mylibrary.res.DialogResetSettingsConfirmation
+import com.xenon.mylibrary.res.DialogSignOut
 import com.xenon.mylibrary.res.DialogThemeSelection
 import com.xenon.mylibrary.res.DialogVersionNumber
 import com.xenon.mylibrary.res.ThemeSetting
@@ -38,7 +41,8 @@ import com.xenon.mylibrary.values.NoCornerRadius
 import com.xenon.mylibrary.values.NoSpacing
 import com.xenonware.calculator.BuildConfig
 import com.xenonware.calculator.R
-import com.xenonware.calculator.viewmodel.LayoutType
+import com.xenonware.calculator.presentation.sign_in.GoogleAuthUiClient
+import com.xenonware.calculator.presentation.sign_in.SignInState
 import com.xenonware.calculator.viewmodel.SettingsViewModel
 import com.xenonware.calculator.viewmodel.classes.SettingsItems
 import dev.chrisbanes.haze.hazeEffect
@@ -50,10 +54,13 @@ import dev.chrisbanes.haze.rememberHazeState
 fun CoverSettings(
     onNavigateBack: () -> Unit,
     viewModel: SettingsViewModel,
-    isLandscape: Boolean,
-    layoutType: LayoutType,
     onNavigateToDeveloperOptions: () -> Unit,
-    ) {
+    state: SignInState,
+    googleAuthUiClient: GoogleAuthUiClient,
+    onSignInClick: () -> Unit,
+    onSignOutClick: () -> Unit,
+    onConfirmSignOut: () -> Unit,
+) {
     val context = LocalContext.current
 
     val currentThemeTitle by viewModel.currentThemeTitle.collectAsState()
@@ -70,6 +77,16 @@ fun CoverSettings(
     val availableLanguages by viewModel.availableLanguages.collectAsState()
     val selectedLanguageTagInDialog by viewModel.selectedLanguageTagInDialog.collectAsState()
     val showVersionDialog by viewModel.showVersionDialog.collectAsState()
+    val showSignOutDialog by viewModel.showSignOutDialog.collectAsState()
+
+    val twentyFourHourTimePattern = "HH:mm"
+    val twelveHourTimePattern = "h:mm a"
+    val systemTimePattern = remember {
+        val is24Hour = DateFormat.is24HourFormat(context)
+        if (is24Hour) twentyFourHourTimePattern else twelveHourTimePattern
+    }
+
+
     val packageManager = context.packageManager
     val packageName = context.packageName
     val packageInfo = remember {
@@ -88,15 +105,6 @@ fun CoverSettings(
         viewModel.applyCoverTheme(containerSize) && coverThemeEnabled
     }
 
-    val configuration = LocalConfiguration.current
-    val appHeight = configuration.screenHeightDp.dp
-    val isAppBarExpandable = when (layoutType) {
-        LayoutType.COVER -> false
-        LayoutType.SMALL -> false
-        LayoutType.COMPACT -> !isLandscape && appHeight >= 460.dp
-        LayoutType.MEDIUM -> true
-        LayoutType.EXPANDED -> true
-    }
 
     val hazeState = rememberHazeState()
 
@@ -105,10 +113,11 @@ fun CoverSettings(
 
     ActivityScreen(
         titleText = stringResource(id = R.string.settings),
-        expandable = isAppBarExpandable,
+
         navigationIconStartPadding = MediumPadding,
         navigationIconPadding = MediumPadding,
         navigationIconSpacing = NoSpacing,
+
         navigationIcon = {
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
@@ -116,6 +125,8 @@ fun CoverSettings(
                 modifier = Modifier.size(24.dp)
             )
         },
+        expandable = false,
+
         onNavigationIconClick = onNavigateBack,
         hasNavigationIconExtraContent = false,
         actions = {},
@@ -129,7 +140,10 @@ fun CoverSettings(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(vertical = MediumPadding)
+                    .padding(
+                        bottom = WindowInsets.safeDrawing.asPaddingValues()
+                            .calculateBottomPadding() + MediumPadding, top = MediumPadding
+                    )
             ) {
                 SettingsItems(
                     viewModel = viewModel,
@@ -145,11 +159,14 @@ fun CoverSettings(
                     tileHorizontalPadding = MediumPadding,
                     tileVerticalPadding = MediumPadding,
                     useGroupStyling = false,
-                    onNavigateToDeveloperOptions = onNavigateToDeveloperOptions
+                    onNavigateToDeveloperOptions = onNavigateToDeveloperOptions,
+                    state = state,
+                    googleAuthUiClient = googleAuthUiClient,
+                    onSignInClick = onSignInClick,
+                    onSignOutClick = onSignOutClick
                 )
             }
         })
-
     if (showThemeDialog) {
         Box(
             modifier = Modifier
@@ -234,6 +251,7 @@ fun CoverSettings(
             )
         }
     }
+
     if (showVersionDialog) {
         Box(
             modifier = Modifier
@@ -253,5 +271,19 @@ fun CoverSettings(
             )
         }
     }
+    if (showSignOutDialog) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .hazeEffect(hazeState)
+        ) {
+            DialogSignOut(
+                onConfirm = onConfirmSignOut,
+                onDismiss = { viewModel.dismissSignOutDialog() },
+                dialogTitle = stringResource(id = R.string.sign_out),
+                confirmText = stringResource(id = R.string.confirm),
+                descriptionText = stringResource(id = R.string.sign_out_description)
+            )
+        }
+    }
 }
-

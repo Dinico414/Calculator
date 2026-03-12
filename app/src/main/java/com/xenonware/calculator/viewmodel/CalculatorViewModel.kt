@@ -1,12 +1,14 @@
 package com.xenonware.calculator.viewmodel
 
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.xenonware.calculator.data.SharedPreferenceManager
 import com.xenonware.calculator.viewmodel.classes.HistoryItem
 import kotlinx.coroutines.launch
@@ -14,15 +16,14 @@ import org.mariuszgromada.math.mxparser.Expression
 import org.mariuszgromada.math.mxparser.mXparser
 import java.util.Locale
 
-open class CalculatorViewModel(
-    private val sharedPreferenceManager: SharedPreferenceManager
-) : ViewModel() {
+class CalculatorViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val prefsManager = SharedPreferenceManager(application.applicationContext)
+    private val auth = FirebaseAuth.getInstance()
 
     var currentInput by mutableStateOf("")
         private set
 
-    // We keep result as the raw formatted string from calculation
-    // The UI will now decide how to display it (full vs scientific)
     var result by mutableStateOf("")
         private set
 
@@ -53,6 +54,12 @@ open class CalculatorViewModel(
 
         return sign + formattedInteger + decimalPart
     }
+
+    fun onSignedIn() {
+        val uid = auth.currentUser?.uid ?: return
+    }
+
+
 
     fun formatExpressionForDisplay(expression: String): String {
         val tokens = mutableListOf<String>()
@@ -348,14 +355,14 @@ open class CalculatorViewModel(
     }
 
     private fun loadHistoryFromPreferences() {
-        val savedHistory = sharedPreferenceManager.loadHistory()
+        val savedHistory = prefsManager.loadHistory()
         _history.clear()
         _history.addAll(savedHistory.takeLast(maxHistorySize))
     }
 
     private fun saveHistoryToPreferences() {
         viewModelScope.launch {
-            sharedPreferenceManager.saveHistory(_history.toList())
+            prefsManager.saveHistory(_history.toList())
         }
     }
 
@@ -460,7 +467,7 @@ open class CalculatorViewModel(
     }
     fun clearHistory() {
         _history.clear()
-        sharedPreferenceManager.clearHistory()
+        prefsManager.clearHistory()
     }
 
     fun toggleScientificMode() {

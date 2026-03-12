@@ -15,18 +15,23 @@ import kotlin.math.min
 class SharedPreferenceManager(context: Context) {
 
     private val prefsName = "CalculatorPrefs"
+    private val isUserLoggedInKey = "is_user_logged_in"
     private val themeKey = "app_theme"
+    private val blackedOutModeKey = "blacked_out_mode_enabled"
     private val coverThemeEnabledKey = "cover_theme_enabled"
     private val coverDisplayDimension1Key = "cover_display_dimension_1"
     private val coverDisplayDimension2Key = "cover_display_dimension_2"
-    private val blackedOutModeKey = "blacked_out_mode_enabled"
+    private val languageTagKey = "app_language_tag"
     private val developerModeKey = "developer_mode_enabled"
-    private val showDummyProfileKey = "show_dummy_profile_enabled"
     private val historyKey = "calculation_history"
     private val gson = Gson()
 
-    private val sharedPreferences: SharedPreferences =
+    val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(prefsName, Context.MODE_PRIVATE)
+
+    var isUserLoggedIn: Boolean
+        get() = sharedPreferences.getBoolean(isUserLoggedInKey, false)
+        set(value) = sharedPreferences.edit { putBoolean(isUserLoggedInKey, value) }
 
     var theme: Int
         get() = sharedPreferences.getInt(themeKey, ThemeSetting.SYSTEM.ordinal)
@@ -37,6 +42,10 @@ class SharedPreferenceManager(context: Context) {
         AppCompatDelegate.MODE_NIGHT_YES,
         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     )
+
+    var blackedOutModeEnabled: Boolean
+        get() = sharedPreferences.getBoolean(blackedOutModeKey, false)
+        set(value) = sharedPreferences.edit { putBoolean(blackedOutModeKey, value) }
 
     var coverThemeEnabled: Boolean
         get() = sharedPreferences.getBoolean(coverThemeEnabledKey, false)
@@ -55,17 +64,13 @@ class SharedPreferenceManager(context: Context) {
             }
         }
 
-    var blackedOutModeEnabled: Boolean
-        get() = sharedPreferences.getBoolean(blackedOutModeKey, false)
-        set(value) = sharedPreferences.edit { putBoolean(blackedOutModeKey, value) }
+    var languageTag: String
+        get() = sharedPreferences.getString(languageTagKey, "") ?: ""
+        set(value) = sharedPreferences.edit { putString(languageTagKey, value) }
 
     var developerModeEnabled: Boolean
         get() = sharedPreferences.getBoolean(developerModeKey, false)
         set(value) = sharedPreferences.edit { putBoolean(developerModeKey, value) }
-
-    var showDummyProfileEnabled: Boolean
-        get() = sharedPreferences.getBoolean(showDummyProfileKey, false)
-        set(value) = sharedPreferences.edit { putBoolean(showDummyProfileKey, value) }
 
     fun saveHistory(history: List<HistoryItem>) {
         val json = gson.toJson(history)
@@ -109,7 +114,6 @@ class SharedPreferenceManager(context: Context) {
             remove(coverDisplayDimension2Key)
             putBoolean(blackedOutModeKey, false)
             putBoolean(developerModeKey, false)
-            putBoolean(showDummyProfileKey, false)
         }
     }
 }

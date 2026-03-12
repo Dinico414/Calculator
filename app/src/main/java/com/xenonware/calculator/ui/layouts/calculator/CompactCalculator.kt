@@ -30,7 +30,6 @@ import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
@@ -76,7 +75,6 @@ import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalHazeMaterialsApi::class,
-    ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
 fun CompactCalculator(

@@ -29,9 +29,9 @@ import com.xenon.mylibrary.values.MediumCornerRadius
 import com.xenon.mylibrary.values.NoCornerRadius
 import com.xenon.mylibrary.values.SmallSpacing
 import com.xenon.mylibrary.values.SmallestCornerRadius
+import com.xenonware.calculator.R
 import com.xenonware.calculator.viewmodel.DevSettingsViewModel
 import com.xenonware.calculator.viewmodel.SettingsViewModel
-import com.xenonware.calculator.R
 
 @Composable
 fun DevSettingsItems(
@@ -53,7 +53,6 @@ fun DevSettingsItems(
 
     ) {
     val isDeveloperModeEnabled by viewModel.devModeToggleState.collectAsState()
-    val isShowDummyProfileEnabled by viewModel.showDummyProfileState.collectAsState()
 
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
@@ -122,26 +121,7 @@ fun DevSettingsItems(
         )
 
         if (isDeveloperModeEnabled) {
-            Spacer(modifier = Modifier.Companion.height(SmallSpacing))
-
-            SettingsSwitchTile(
-                title = stringResource(id = R.string.show_dummy_profile_title),
-                subtitle = "",
-                checked = isShowDummyProfileEnabled,
-                onCheckedChange = { newCheckedState ->
-                    viewModel.setShowDummyProfileEnabled(newCheckedState)
-                },
-                onClick = {
-                    val newCheckedState = !isShowDummyProfileEnabled
-                    viewModel.setShowDummyProfileEnabled(newCheckedState)
-                },
-                shape = tileShapeOverride ?: bottomShape,
-                backgroundColor = tileBackgroundColor,
-                contentColor = tileContentColor,
-                subtitleColor = tileSubtitleColor,
-                horizontalPadding = tileHorizontalPadding,
-                verticalPadding = tileVerticalPadding
-            )
+            Spacer(modifier = Modifier.height(SmallSpacing))
         }
     }
 }

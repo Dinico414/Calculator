@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Rechner</string>
+    <string name="default_web_client_id">8027822132-4gdatq7k92rvsjvmneecvc3ahb1r6jrm.apps.googleusercontent.com</string>
 
     <string name="settings">Einstellungen</string>
     <string name="converter">Umrechner</string>
@@ -240,8 +241,12 @@
     <string name="reset_settings">Alle Einstellungen zurücksetzen</string>
     <string name="reset_settings_dialog_title">Alle Einstellungen zurücksetzen?</string>
     <string name="reset_settings_dialog_description">Bist du sicher, dass du alle Einstellungen zurücksetzen willst?</string>
+    <string name="sign_out">Sign out</string>
+    <string name="sign_out_dialog_description">Are you sure you want to sign out?</string>
+    <string name="profile_picture">Profilepicture</string>
     <string name="more_infos">More infos</string>
     <string name="app_version">App Version</string>
     <string name="xenon_ui_version">Xenon-UI Version</string>
     <string name="xenon_commons_version">Xenon-Commons Version</string>
+    <string name="sign_out_description">Are you sure you want to sign out?</string>
 </resources>

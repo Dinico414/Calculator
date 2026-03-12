@@ -3,6 +3,7 @@ import com.android.build.api.dsl.ApplicationExtension
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 configure<ApplicationExtension> {
@@ -58,9 +59,13 @@ dependencies {
 
     implementation(libs.xenon.commons)
     implementation(libs.androidx.material3.window.size.class1.android)
-    val composeBom = platform("androidx.compose:compose-bom:2025.05.01")
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.play.services.auth)
+    implementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     implementation(libs.haze)
     implementation(libs.haze.materials)
     implementation (libs.accompanist.systemuicontroller)
