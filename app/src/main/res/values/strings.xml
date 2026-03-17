@@ -1,64 +1,112 @@
 <resources>
+    <!-- App Name -->
     <string name="app_name">Calculator</string>
-    <string name="default_web_client_id">8027822132-4gdatq7k92rvsjvmneecvc3ahb1r6jrm.apps.googleusercontent.com</string>
-    <string name="settings">Settings</string>
-    <string name="converter">Converter</string>
 
+    <!-- App Specific Strings -->
+    <string name="converter">Converter</string>
+    <string name="converter_type">Converter Type</string>
+    <string name="converter_type_area">Area</string>
+    <string name="converter_type_currency">Currency</string>
+    <string name="converter_type_energy">Energy</string>
+    <string name="converter_type_length">Length</string>
+    <string name="converter_type_power">Power</string>
+    <string name="converter_type_speed">Speed</string>
+    <string name="converter_type_temperature">Temperature</string>
+    <string name="converter_type_torque">Torque</string>
+    <string name="converter_type_volume">Volume</string>
+    <string name="converter_type_weight">Weight</string>
+    <string name="label_from">From (%s)</string>
+    <string name="label_to">To (%s)</string>
+    <string name="value_1">Value 1</string>
+    <string name="value_2">Value 2</string>
+
+    <!-- Settings -->
+    <string name="settings">Settings</string>
     <string name="theme">Theme</string>
     <string name="cover_screen_mode">Cover Screen Mode</string>
     <string name="language">Language</string>
     <string name="clear_data">Clear all Data</string>
     <string name="version">Version</string>
+    <string name="app_version">App Version</string>
+    <string name="xenon_ui_version">Xenon-UI Version</string>
+    <string name="xenon_commons_version">Xenon-Commons Version</string>
+    <string name="blacked_out">Blacked-out</string>
+    <string name="blacked_out_description">Make Darkmode even darker.</string>
+    <string name="reset_settings">Reset all Settings</string>
+    <string name="sign_out">Sign out</string>
+    <string name="more_infos">More infos</string>
 
-    <string name="current">Current:</string>
+    <!-- Developer Settings -->
+    <string name="developer_options_title">Developer Options</string>
+    <string name="developer_options">Developer Settings</string>
+    <string name="dev_settings_description">Enable Alpha and Beta State Features</string>
+    <string name="already_in_developer_mode">You are already in developer mode</string>
+    <string name="developer_mode_enabled">Developer mode enabled!</string>
+    <string name="taps_remaining_to_developer">You are now %d steps away from being a developer.</string>
+    <string name="show_dummy_profile_title">Enable Fake Google Profile</string>
+    <string name="default_web_client_id">8027822132-4gdatq7k92rvsjvmneecvc3ahb1r6jrm.apps.googleusercontent.com</string>
+
+    <!-- Dialog Titles -->
+    <string name="theme_dialog_title">Select Theme</string>
+    <string name="cover_screen_dialog_title">Is this currently the cover screen?</string>
+    <string name="language_dialog_title">Select Language</string>
+    <string name="clear_data_dialog_title">Clear all data?</string>
+    <string name="reset_settings_dialog_title">Reset all settings?</string>
+
+    <!-- Dialog Content -->
+    <string name="cover_dialog_description">Enable to apply a more compact, borderless layout when you are using the Cover Display.</string>
     <string name="cover_screen_mode_description">Selected Cover Screen </string>
-    <string name="enabled">Active</string>
-    <string name="disabled">Inactive</string>
+    <string name="clear_data_dialog_description">Are you sure you want to clear all data?</string>
     <string name="clear_data_description">Clear app data and cache</string>
+    <string name="reset_settings_dialog_description">Are you sure you want to reset all settings?</string>
+    <string name="sign_out_dialog_description">Are you sure you want to sign out?</string>
+    <string name="sign_out_description">Are you sure you want to sign out?</string>
 
+    <!-- Dialog Buttons -->
     <string name="ok">OK</string>
     <string name="confirm">Confirm</string>
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
     <string name="no">No</string>
+    <string name="reset">Reset</string>
 
+    <!-- Universal Strings -->
+    <string name="current">Current:</string>
+    <string name="enabled">Active</string>
+    <string name="disabled">Inactive</string>
+    <string name="system_default">System</string>
+
+    <!-- Universal Accessibility Strings -->
+    <string name="navigate_back_description">Back Action</string>
+    <string name="switch_units_description">Switch Units</string>
+    <string name="open_navigation_menu">Open navigation menu
+</string>
+    <string name="restart_app_description">restart app</string>
+    <string name="profile_picture">Profilepicture</string>
+
+    <!-- Error Messages -->
     <string name="error_restarting_app">Error restarting app</string>
     <string name="error_clearing_data_failed">Error clearing data</string>
     <string name="error_clearing_data_permission">Permission missing</string>
 
-    <string name="theme_dialog_title">Select Theme</string>
-    <string name="cover_screen_dialog_title">Is this currently the cover screen?</string>
-    <string name="language_dialog_title">Select Language</string>
-    <string name="clear_data_dialog_title">Clear all data?</string>
+    <!-- Area Units -->
+    <string name="area_acres">ac - Acres</string>
+    <string name="area_ar">a - Ar</string>
+    <string name="area_hectares">ha - Hectares</string>
+    <string name="area_square_centimeters">cm² - Square Centimeters</string>
+    <string name="area_square_decameters">dam² - Square Decameters</string>
+    <string name="area_square_decimeters">dm² - Square Decimeters</string>
+    <string name="area_square_feet">ft² - Square Feet</string>
+    <string name="area_square_inches">in² - Square Inches</string>
+    <string name="area_square_kilometers">km² - Square Kilometers</string>
+    <string name="area_square_meters">m² - Square Meters</string>
+    <string name="area_square_micrometers">µm² - Square Micrometers</string>
+    <string name="area_square_millimeters">mm² - Square Millimeters</string>
+    <string name="area_square_miles">mi² - Square Miles</string>
+    <string name="area_square_nanometers">nm² - Square Nanometers</string>
+    <string name="area_square_yards">yd² - Square Yards</string>
 
-    <string name="cover_dialog_description">Enable to apply a more compact, borderless layout when you are using the Cover Display.</string>
-    <string name="clear_data_dialog_description">Are you sure you want to clear all data?</string>
-
-    <string name="label_from">From (%s)</string>
-    <string name="label_to">To (%s)</string>
-    <string name="value_1">Value 1</string>
-    <string name="value_2">Value 2</string>
-    <string name="converter_type">Converter Type</string>
-
-    <string name="converter_type_volume">Volume</string>
-    <string name="converter_type_area">Area</string>
-    <string name="converter_type_length">Length</string>
-    <string name="converter_type_weight">Weight</string>
-    <string name="converter_type_temperature">Temperature</string>
-    <string name="converter_type_currency">Currency</string>
-    <string name="converter_type_speed">Speed</string>
-    <string name="converter_type_power">Power</string>
-    <string name="converter_type_energy">Energy</string>
-    <string name="converter_type_torque">Torque</string>
-
-
-
-    <string name="switch_units_description">Switch Units</string>
-    <string name="navigate_back_description">Back Action</string>
-
-    <string name="system_default">System</string>
-
-<!-- Currency Units -->
+    <!-- Currency Units -->
     <string name="currency_aed">د.إ - United Arab Emirates Dirham</string>
     <string name="currency_all">Lek - Albanian Lek</string>
     <string name="currency_amd">֏ - Armenian Dram</string>
@@ -98,152 +146,111 @@
     <string name="currency_usd">$ - US Dollar</string>
     <string name="currency_zar">R - South African Rand</string>
 
-    <!-- Area Units -->
-    <string name="area_square_kilometers">km² - Square Kilometers</string>
-    <string name="area_square_decameters">dam² - Square Decameters</string>
-    <string name="area_square_meters">m² - Square Meters</string>
-    <string name="area_square_decimeters">dm² - Square Decimeters</string>
-    <string name="area_square_centimeters">cm² - Square Centimeters</string>
-    <string name="area_square_millimeters">mm² - Square Millimeters</string>
-    <string name="area_square_micrometers">µm² - Square Micrometers</string>
-    <string name="area_square_nanometers">nm² - Square Nanometers</string>
-    <string name="area_square_miles">mi² - Square Miles</string>
-    <string name="area_square_yards">yd² - Square Yards</string>
-    <string name="area_square_feet">ft² - Square Feet</string>
-    <string name="area_square_inches">in² - Square Inches</string>
-    <string name="area_hectares">ha - Hectares</string>
-    <string name="area_acres">ac - Acres</string>
-    <string name="area_ar">a - Ar</string>
+    <!-- Energy Units -->
+    <string name="energy_btu">BTU - British thermal units</string>
+    <string name="energy_calories">cal - Calories</string>
+    <string name="energy_electronvolts">eV - Electronvolts</string>
+    <string name="energy_foot_pounds">ft·lbf - Foot-pounds</string>
+    <string name="energy_gigajoules">GJ - Gigajoules</string>
+    <string name="energy_joules">J - Joules</string>
+    <string name="energy_kilocalories">kcal - Kilocalories</string>
+    <string name="energy_kilojoules">kJ - Kilojoules</string>
+    <string name="energy_kilowatthours">kWh - Kilowatt-hours</string>
+    <string name="energy_megajoules">MJ - Megajoules</string>
+    <string name="energy_watthours">Wh - Watt-hours</string>
 
     <!-- Length Units -->
-    <string name="length_nanometers">nm - Nanometers</string>
-    <string name="length_micrometers">µm - Micrometers</string>
-    <string name="length_millimeters">mm - Millimeters</string>
     <string name="length_centimeters">cm - Centimeters</string>
-    <string name="length_decimeters">dm - Decimeters</string>
-    <string name="length_meters">m - Meters</string>
     <string name="length_decameters">dam - Decameters</string>
-    <string name="length_hectometers">hm - Hectometers</string>
-    <string name="length_kilometers">km - Kilometers</string>
-    <string name="length_inches">in - Inches</string>
+    <string name="length_decimeters">dm - Decimeters</string>
     <string name="length_feet">ft - Feet</string>
-    <string name="length_yards">yd - Yards</string>
-    <string name="length_miles">mi - Miles</string>
-    <string name="length_seamiles">nmi - Sea Miles</string>
-    <string name="length_nautical_miles">nmi - Nautical Miles</string>
+    <string name="length_hectometers">hm - Hectometers</string>
+    <string name="length_inches">in - Inches</string>
+    <string name="length_kilometers">km - Kilometers</string>
     <string name="length_light_years">ly - Light Years</string>
+    <string name="length_meters">m - Meters</string>
+    <string name="length_micrometers">µm - Micrometers</string>
+    <string name="length_miles">mi - Miles</string>
+    <string name="length_millimeters">mm - Millimeters</string>
+    <string name="length_nanometers">nm - Nanometers</string>
+    <string name="length_nautical_miles">nmi - Nautical Miles</string>
     <string name="length_parsecs">pc - Parsecs</string>
-
-    <!-- Volume Units -->
-    <string name="volume_milliliters">ml - Milliliters</string>
-    <string name="volume_liters">l - Liters</string>
-    <string name="volume_cubic_meters">m³ - Cubic Meters</string>
-    <string name="volume_cubic_decimeters">dm³ - Cubic Decimeters</string>
-    <string name="volume_cubic_centimeters">cm³ - Cubic Centimeters</string>
-    <string name="volume_cubic_millimeters">mm³ - Cubic Millimeters</string>
-    <string name="volume_cubic_inches">in³ - Cubic Inches</string>
-    <string name="volume_cubic_feet">ft³ - Cubic Feet</string>
-    <string name="volume_gallons_us">gal (US) - US Gallons</string>
-    <string name="volume_gallons_uk">gal (UK) - UK Gallons</string>
-    <string name="volume_quart_us">qt (US) - US Quart</string>
-    <string name="volume_quart_uk">qt (UK) - UK Quarts</string>
-    <string name="volume_teaspoon_us">tsp (US) - US Teaspoon</string>
-    <string name="volume_teaspoon_uk">tsp (UK) - UK Teaspoon</string>
-    <string name="volume_tablespoon_us">tbsp (US) - US Tablespoon</string>
-    <string name="volume_tablespoon_uk">tbsp (UK) - UK Tablespoon</string>
-    <string name="volume_pints_us">pt (US) - US Pints</string>
-    <string name="volume_pints_uk">pt (UK) - UK Pints</string>
-    <string name="volume_cup_us">cup (US) - US Cups</string>
-    <string name="volume_cup_uk">cup (UK) - UK Cups</string>
-    <string name="volume_fluid_ounce_us">fl oz (US) - US Fluid Ounces</string>
-    <string name="volume_fluid_ounce_uk">fl oz (UK) - UK Fluid Ounces</string>
-
-    <!-- Weight Units -->
-    <string name="weight_metric_tonnes">t - Metric Tonnes</string>
-    <string name="weight_kilograms">kg - Kilograms</string>
-    <string name="weight_grams">g - Grams</string>
-    <string name="weight_milligrams">mg - Milligrams</string>
-    <string name="weight_micrograms">µg - Micrograms</string>
-    <string name="weight_nanograms">ng - Nanograms</string>
-    <string name="weight_imperial_tons">t (UK) - Imperial Tons (UK)</string>
-    <string name="weight_us_tons">t (US) - US Tons</string>
-    <string name="weight_pounds">lb - Pounds</string>
-    <string name="weight_ounces">oz - Ounces</string>
-    <string name="weight_grain">gr - Grain</string>
-    <string name="weight_carats">ct - Carats</string>
-    <string name="weight_stones">st - Stones</string>
-
-    <!-- Speed Units -->
-    <string name="speed_meters_per_second">m/s - Meters/second</string>
-    <string name="speed_kilometers_per_hour">km/h - Kilometers/hour</string>
-    <string name="speed_miles_per_hour">mph - Miles/hour</string>
-    <string name="speed_feet_per_second">ft/s - Feet/second</string>
-    <string name="speed_knots">kn - Knots</string>
-    <string name="speed_mach">M - Mach</string>
-    <string name="speed_meters_per_minute">m/min - meters/minute</string>
-    <string name="speed_meters_per_hour">m/h - meters/hour</string>
-    <string name="speed_kilometers_per_second">km/s - kilometers/second</string>
-    <string name="speed_kilometers_per_minute">km/min - kilometers/minute</string>
-    <string name="speed_inches_per_second">in/s - inches/second</string>
-    <string name="speed_yards_per_hour">yd/h - yards/hour</string>
-    <string name="speed_light_speed">c - light speed(m/s)</string>
+    <string name="length_seamiles">nmi - Sea Miles</string>
+    <string name="length_yards">yd - Yards</string>
 
     <!--Power Units -->
-    <string name="power_milliwatts">mW - Milliwatts</string>
-    <string name="power_watts">W - Watts</string>
-    <string name="power_kilowatts">kW - Kilowatts</string>
-    <string name="power_megawatts">MW - Megawatts</string>
+    <string name="power_btu_per_hour">BTU/h - BTU per hour</string>
+    <string name="power_calories_per_second">cal/s - Calories per second</string>
+    <string name="power_foot_pounds_per_second">ft·lbf/s - Foot-pounds per second</string>
     <string name="power_gigawatts">GW - Gigawatts</string>
     <string name="power_horsepower_mechanical">hp - Horsepower (mechanical)</string>
     <string name="power_horsepower_metric">PS - Horsepower (metric)</string>
-    <string name="power_btu_per_hour">BTU/h - BTU per hour</string>
+    <string name="power_kilowatts">kW - Kilowatts</string>
+    <string name="power_megawatts">MW - Megawatts</string>
+    <string name="power_milliwatts">mW - Milliwatts</string>
     <string name="power_tons_of_refrigeration">TR - Tons of refrigeration</string>
-    <string name="power_calories_per_second">cal/s - Calories per second</string>
-    <string name="power_foot_pounds_per_second">ft·lbf/s - Foot-pounds per second</string>
+    <string name="power_watts">W - Watts</string>
 
-    <!-- Energy Units -->
-    <string name="energy_electronvolts">eV - Electronvolts</string>
-    <string name="energy_joules">J - Joules</string>
-    <string name="energy_kilojoules">kJ - Kilojoules</string>
-    <string name="energy_megajoules">MJ - Megajoules</string>
-    <string name="energy_gigajoules">GJ - Gigajoules</string>
-    <string name="energy_calories">cal - Calories</string>
-    <string name="energy_kilocalories">kcal - Kilocalories</string>
-    <string name="energy_watthours">Wh - Watt-hours</string>
-    <string name="energy_kilowatthours">kWh - Kilowatt-hours</string>
-    <string name="energy_btu">BTU - British thermal units</string>
-    <string name="energy_foot_pounds">ft·lbf - Foot-pounds</string>
+    <!-- Speed Units -->
+    <string name="speed_feet_per_second">ft/s - Feet/second</string>
+    <string name="speed_inches_per_second">in/s - inches/second</string>
+    <string name="speed_kilometers_per_hour">km/h - Kilometers/hour</string>
+    <string name="speed_kilometers_per_minute">km/min - kilometers/minute</string>
+    <string name="speed_kilometers_per_second">km/s - kilometers/second</string>
+    <string name="speed_knots">kn - Knots</string>
+    <string name="speed_light_speed">c - light speed(m/s)</string>
+    <string name="speed_mach">M - Mach</string>
+    <string name="speed_meters_per_hour">m/h - meters/hour</string>
+    <string name="speed_meters_per_minute">m/min - meters/minute</string>
+    <string name="speed_meters_per_second">m/s - Meters/second</string>
+    <string name="speed_miles_per_hour">mph - Miles/hour</string>
+    <string name="speed_yards_per_hour">yd/h - yards/hour</string>
 
     <!-- Torque Units -->
+    <string name="torque_foot_pounds">ft/lbf - Foot-pounds</string>
+    <string name="torque_inch_pounds">in/lbf - Inch-pounds</string>
+    <string name="torque_kgf_meters">kgf/m - Kilogram-force meters</string>
+    <string name="torque_kilonewton_meters">kNm - Kilonewton meters</string>
     <string name="torque_millinewton_meters">mNm - Millinewton meters</string>
     <string name="torque_newton_centimeters">Ncm - Newton centimeters</string>
     <string name="torque_newton_meters">Nm - Newton meters</string>
-    <string name="torque_kilonewton_meters">kNm - Kilonewton meters</string>
-    <string name="torque_inch_pounds">in/lbf - Inch-pounds</string>
-    <string name="torque_foot_pounds">ft/lbf - Foot-pounds</string>
-    <string name="torque_kgf_meters">kgf/m - Kilogram-force meters</string>
 
-    <string name="open_navigation_menu">Open navigation menu\n</string>
-    <string name="developer_options_title">Developer Options</string>
-    <string name="dev_settings_description">Enable Alpha and Beta State Features</string>
-    <string name="developer_options">Developer Settings</string>
-    <string name="already_in_developer_mode">You are already in developer mode</string>
-    <string name="developer_mode_enabled">Developer mode enabled!</string>
-    <string name="taps_remaining_to_developer">You are now %d steps away from being a developer.</string>
-    <string name="show_dummy_profile_title">Enable Fake Google Profile</string>
-    <string name="restart_app_description">restart app</string>
-    <string name="blacked_out">Blacked-out</string>
-    <string name="blacked_out_description">Make Darkmode even darker.</string>
-    <string name="reset">Reset</string>
-    <string name="reset_settings">Reset all Settings</string>
-    <string name="reset_settings_dialog_title">Reset all settings?</string>
-    <string name="reset_settings_dialog_description">Are you sure you want to reset all settings?</string>
-    <string name="sign_out">Sign out</string>
-    <string name="sign_out_dialog_description">Are you sure you want to sign out?</string>
-    <string name="profile_picture">Profilepicture</string>
-    <string name="more_infos">More infos</string>
-    <string name="app_version">App Version</string>
-    <string name="xenon_ui_version">Xenon-UI Version</string>
-    <string name="xenon_commons_version">Xenon-Commons Version</string>
-    <string name="sign_out_description">Are you sure you want to sign out?</string>
+    <!-- Volume Units -->
+    <string name="volume_cubic_centimeters">cm³ - Cubic Centimeters</string>
+    <string name="volume_cubic_decimeters">dm³ - Cubic Decimeters</string>
+    <string name="volume_cubic_feet">ft³ - Cubic Feet</string>
+    <string name="volume_cubic_inches">in³ - Cubic Inches</string>
+    <string name="volume_cubic_meters">m³ - Cubic Meters</string>
+    <string name="volume_cubic_millimeters">mm³ - Cubic Millimeters</string>
+    <string name="volume_cup_uk">cup (UK) - UK Cups</string>
+    <string name="volume_cup_us">cup (US) - US Cups</string>
+    <string name="volume_fluid_ounce_uk">fl oz (UK) - UK Fluid Ounces</string>
+    <string name="volume_fluid_ounce_us">fl oz (US) - US Fluid Ounces</string>
+    <string name="volume_gallons_uk">gal (UK) - UK Gallons</string>
+    <string name="volume_gallons_us">gal (US) - US Gallons</string>
+    <string name="volume_liters">l - Liters</string>
+    <string name="volume_milliliters">ml - Milliliters</string>
+    <string name="volume_pints_uk">pt (UK) - UK Pints</string>
+    <string name="volume_pints_us">pt (US) - US Pints</string>
+    <string name="volume_quart_uk">qt (UK) - UK Quarts</string>
+    <string name="volume_quart_us">qt (US) - US Quart</string>
+    <string name="volume_tablespoon_uk">tbsp (UK) - UK Tablespoon</string>
+    <string name="volume_tablespoon_us">tbsp (US) - US Tablespoon</string>
+    <string name="volume_teaspoon_uk">tsp (UK) - UK Teaspoon</string>
+    <string name="volume_teaspoon_us">tsp (US) - US Teaspoon</string>
+
+    <!-- Weight Units -->
+    <string name="weight_carats">ct - Carats</string>
+    <string name="weight_grain">gr - Grain</string>
+    <string name="weight_grams">g - Grams</string>
+    <string name="weight_imperial_tons">t (UK) - Imperial Tons (UK)</string>
+    <string name="weight_kilograms">kg - Kilograms</string>
+    <string name="weight_metric_tonnes">t - Metric Tonnes</string>
+    <string name="weight_micrograms">µg - Micrograms</string>
+    <string name="weight_milligrams">mg - Milligrams</string>
+    <string name="weight_nanograms">ng - Nanograms</string>
+    <string name="weight_ounces">oz - Ounces</string>
+    <string name="weight_pounds">lb - Pounds</string>
+    <string name="weight_stones">st - Stones</string>
+    <string name="weight_us_tons">t (US) - US Tons</string>
 </resources>
