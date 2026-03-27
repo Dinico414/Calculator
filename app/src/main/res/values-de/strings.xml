@@ -34,6 +34,7 @@
     <string name="blacked_out">Ausgeschwärzt</string>
     <string name="blacked_out_description">Dunkelt Darkmode noch mehr ab.</string>
     <string name="reset_settings">Alle Einstellungen zurücksetzen</string>
+    <string name="reset_all_settings_description">Does only effect Settings</string>
     <string name="sign_out">Sign out</string>
     <string name="more_infos">More infos</string>
 
