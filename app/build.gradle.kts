@@ -13,7 +13,7 @@ configure<ApplicationExtension> {
     defaultConfig {
         applicationId = "com.xenonware.calculator"
         minSdk = 29
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 5
         versionName = "1.9.8"
 

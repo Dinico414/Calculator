@@ -1,6 +1,7 @@
 package com.xenonware.calculator.ui.layouts
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.IntSize
 import com.xenonware.calculator.ui.layouts.converter.CompactConverter
 import com.xenonware.calculator.ui.layouts.converter.CoverConverter
 import com.xenonware.calculator.ui.layouts.converter.LandscapeCompactConverter
@@ -13,6 +14,7 @@ fun ConverterLayout(
     onNavigateBack: () -> Unit,
     viewModel: ConverterViewModel,
     isLandscape: Boolean,
+    appSize: IntSize,
     layoutType: LayoutType,
 ) {
         when (layoutType) {
@@ -22,15 +24,17 @@ fun ConverterLayout(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel,
                         layoutType = layoutType,
-                        isLandscape = true
-                    )
+                        isLandscape = true,
+                        appSize = appSize,
+                        )
                 } else {
                     CoverConverter(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel,
                         layoutType = layoutType,
-                        isLandscape = false
-                    )
+                        isLandscape = false,
+                        appSize = appSize,
+                        )
                 }
             }
 
@@ -40,15 +44,17 @@ fun ConverterLayout(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel,
                         layoutType = layoutType,
-                        isLandscape = true
-                    )
+                        isLandscape = true,
+                        appSize = appSize,
+                        )
                 } else {
                     LandscapeCompactConverter(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel,
                         layoutType = layoutType,
-                        isLandscape = false
-                    )
+                        isLandscape = false,
+                        appSize = appSize,
+                        )
                 }
             }
 
@@ -58,15 +64,17 @@ fun ConverterLayout(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel,
                         layoutType = layoutType,
-                        isLandscape = true
-                    )
+                        isLandscape = true,
+                        appSize = appSize,
+                        )
                 } else {
                     CompactConverter(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel,
                         layoutType = layoutType,
-                        isLandscape = false
-                    )
+                        isLandscape = false,
+                        appSize = appSize,
+                        )
                 }
             }
 
@@ -76,15 +84,18 @@ fun ConverterLayout(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel,
                         layoutType = layoutType,
-                        isLandscape = true
-                    )
+                        isLandscape = true,
+                        appSize = appSize,
+
+                        )
                 } else {
                     TabletConverter(
                         onNavigateBack = onNavigateBack,
                         viewModel = viewModel,
                         layoutType = layoutType,
-                        isLandscape = false
-                    )
+                        isLandscape = false,
+                        appSize = appSize,
+                        )
                 }
             }
         }

@@ -62,7 +62,8 @@ class ConverterActivity : ComponentActivity() {
                     viewModel = viewModel,
                     isLandscape = isLandscape,
                     layoutType = layoutType,
-                )
+                    appSize = currentContainerSize,
+                    )
             }
         }
     }

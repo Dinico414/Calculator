@@ -46,9 +46,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.xenon.mylibrary.ActivityScreen
 import com.xenon.mylibrary.res.XenonTextField
+import com.xenon.mylibrary.theme.DeviceConfigProvider
+import com.xenon.mylibrary.theme.LocalDeviceConfig
 import com.xenon.mylibrary.values.MediumPadding
 import com.xenon.mylibrary.values.MediumSpacing
 import com.xenon.mylibrary.values.NoCornerRadius
@@ -71,395 +74,409 @@ fun CoverConverter(
     onNavigateBack: (() -> Unit)? = null,
     viewModel: ConverterViewModel,
     isLandscape: Boolean,
-    layoutType: LayoutType
+    layoutType: LayoutType,
+    appSize: IntSize,
 ) {
-    LocalContext.current
+    DeviceConfigProvider(appSize = appSize) {
 
-    val configuration = LocalConfiguration.current
-    val appHeight = configuration.screenHeightDp.dp
-    val isAppBarExpandable = when (layoutType) {
-        LayoutType.COVER -> false
-        LayoutType.SMALL -> false
-        LayoutType.COMPACT -> !isLandscape && appHeight >= 460.dp
-        LayoutType.MEDIUM -> true
-        LayoutType.EXPANDED -> true
-    }
+        LocalContext.current
 
-    val hazeState = remember { HazeState() }
+        val configuration = LocalConfiguration.current
+        val isCompact =
+            LocalDeviceConfig.current.isCommunicator || LocalDeviceConfig.current.isMindOne
+        val appHeight = configuration.screenHeightDp.dp
 
-    val coverScreenBackgroundColor = Color.Black
-    val coverScreenContentColor = Color.White
+        val isAppBarExpandable = when (layoutType) {
+            LayoutType.COVER -> false
+            LayoutType.SMALL -> false
+            LayoutType.COMPACT -> !isLandscape && !isCompact && appHeight >= 460.dp
+            LayoutType.MEDIUM -> true
+            LayoutType.EXPANDED -> true
+        }
 
-    val selectedType by viewModel.selectedConverterType
-    val value1 by viewModel.value1
-    val value2 by viewModel.value2
+        val hazeState = remember { HazeState() }
 
-    val fromVolumeUnit by viewModel.fromVolumeUnit
-    val toVolumeUnit by viewModel.toVolumeUnit
+        val coverScreenBackgroundColor = Color.Black
+        val coverScreenContentColor = Color.White
 
-    val fromLengthUnit by viewModel.fromLengthUnit
-    val toLengthUnit by viewModel.toLengthUnit
+        val selectedType by viewModel.selectedConverterType
+        val value1 by viewModel.value1
+        val value2 by viewModel.value2
 
-    val fromTemperatureUnit by viewModel.fromTemperatureUnit
-    val toTemperatureUnit by viewModel.toTemperatureUnit
+        val fromVolumeUnit by viewModel.fromVolumeUnit
+        val toVolumeUnit by viewModel.toVolumeUnit
 
-    val fromCurrencyUnit by viewModel.fromCurrencyUnit
-    val toCurrencyUnit by viewModel.toCurrencyUnit
+        val fromLengthUnit by viewModel.fromLengthUnit
+        val toLengthUnit by viewModel.toLengthUnit
 
-    val fromWeightUnit by viewModel.fromWeightUnit
-    val toWeightUnit by viewModel.toWeightUnit
+        val fromTemperatureUnit by viewModel.fromTemperatureUnit
+        val toTemperatureUnit by viewModel.toTemperatureUnit
 
-    val fromSpeedUnit by viewModel.fromSpeedUnit
-    val toSpeedUnit by viewModel.toSpeedUnit
+        val fromCurrencyUnit by viewModel.fromCurrencyUnit
+        val toCurrencyUnit by viewModel.toCurrencyUnit
 
-    val fromPowerUnit by viewModel.fromPowerUnit
-    val toPowerUnit by viewModel.toPowerUnit
+        val fromWeightUnit by viewModel.fromWeightUnit
+        val toWeightUnit by viewModel.toWeightUnit
 
-    val fromEnergyUnit by viewModel.fromEnergyUnit
-    val toEnergyUnit by viewModel.toEnergyUnit
+        val fromSpeedUnit by viewModel.fromSpeedUnit
+        val toSpeedUnit by viewModel.toSpeedUnit
 
-    val fromTorqueUnit by viewModel.fromTorqueUnit
-    val toTorqueUnit by viewModel.toTorqueUnit
+        val fromPowerUnit by viewModel.fromPowerUnit
+        val toPowerUnit by viewModel.toPowerUnit
 
-    val fromAreaUnit by viewModel.fromAreaUnit
-    val toAreaUnit by viewModel.toAreaUnit
+        val fromEnergyUnit by viewModel.fromEnergyUnit
+        val toEnergyUnit by viewModel.toEnergyUnit
 
-    var accumulatedRotation by remember { mutableFloatStateOf(0f) }
-    val rotationAngle by animateFloatAsState(
-        targetValue = accumulatedRotation, animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
-        ), label = "IconRotation"
-    )
+        val fromTorqueUnit by viewModel.fromTorqueUnit
+        val toTorqueUnit by viewModel.toTorqueUnit
 
-    ActivityScreen(
-        titleText = stringResource(id = R.string.converter),
-        expandable = isAppBarExpandable,
-        navigationIconStartPadding = MediumPadding,
-        navigationIconPadding = MediumPadding,
-        navigationIconSpacing = NoSpacing,
-        navigationIcon = {
-            Icon(
-                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                contentDescription = stringResource(R.string.navigate_back_description),
-                modifier = Modifier.size(24.dp)
-            )
-        },
-        onNavigationIconClick = onNavigateBack,
-        hasNavigationIconExtraContent = false,
-        actions = {},
-        screenBackgroundColor = coverScreenBackgroundColor,
-        contentBackgroundColor = coverScreenBackgroundColor,
-        appBarNavigationIconContentColor = coverScreenContentColor,
-        contentCornerRadius = NoCornerRadius,
-        contentModifier = Modifier.hazeSource(hazeState),
-        content = { _ ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(MediumSpacing)
-            ) {
-                ConverterTypeDropdown(
-                    selectedType = selectedType, onTypeSelected = { newType ->
-                        viewModel.onConverterTypeChange(newType)
-                    }, hazeState = hazeState
+        val fromAreaUnit by viewModel.fromAreaUnit
+        val toAreaUnit by viewModel.toAreaUnit
+
+        var accumulatedRotation by remember { mutableFloatStateOf(0f) }
+        val rotationAngle by animateFloatAsState(
+            targetValue = accumulatedRotation, animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
+            ), label = "IconRotation"
+        )
+
+        ActivityScreen(
+            titleText = stringResource(id = R.string.converter),
+            expandable = isAppBarExpandable,
+            navigationIconStartPadding = MediumPadding,
+            navigationIconPadding = MediumPadding,
+            navigationIconSpacing = NoSpacing,
+            navigationIcon = {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                    contentDescription = stringResource(R.string.navigate_back_description),
+                    modifier = Modifier.size(24.dp)
                 )
+            },
+            onNavigationIconClick = onNavigateBack,
+            hasNavigationIconExtraContent = false,
+            actions = {},
+            screenBackgroundColor = coverScreenBackgroundColor,
+            contentBackgroundColor = coverScreenBackgroundColor,
+            appBarNavigationIconContentColor = coverScreenContentColor,
+            contentCornerRadius = NoCornerRadius,
+            contentModifier = Modifier.hazeSource(hazeState),
+            content = { _ ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(MediumSpacing)
+                ) {
+                    ConverterTypeDropdown(
+                        selectedType = selectedType, onTypeSelected = { newType ->
+                            viewModel.onConverterTypeChange(newType)
+                        }, hazeState = hazeState
+                    )
 
-                val spacing = MediumSpacing
-                SubcomposeLayout(modifier = Modifier.fillMaxWidth()) { constraints ->
-                    val subcomposeContent = @Composable {
+                    val spacing = MediumSpacing
+                    SubcomposeLayout(modifier = Modifier.fillMaxWidth()) { constraints ->
+                        val subcomposeContent = @Composable {
 
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(MediumSpacing)
-                        ) {
-                            UnitItems(
-                                label = fromUnitLabel(selectedType),
-                                selectedConverterType = selectedType,
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(MediumSpacing)
+                            ) {
+                                UnitItems(
+                                    label = fromUnitLabel(selectedType),
+                                    selectedConverterType = selectedType,
 
-                                selectedVolumeUnit = fromVolumeUnit,
-                                onVolumeUnitSelected = { unit ->
-                                    viewModel.onFromVolumeUnitChange(
-                                        unit
-                                    )
-                                },
-                                selectedAreaUnit = fromAreaUnit,
-                                onAreaUnitSelected = { unit ->
-                                    viewModel.onFromAreaUnitChange(
-                                        unit
-                                    )
-                                },
-                                selectedLengthUnit = fromLengthUnit,
-                                onLengthUnitSelected = { unit ->
-                                    viewModel.onFromLengthUnitChange(
-                                        unit
-                                    )
-                                },
-                                selectedSpeedUnit = fromSpeedUnit,
-                                onSpeedUnitSelected = { unit ->
-                                    viewModel.onFromSpeedUnitChange(
-                                        unit
-                                    )
-                                },
-                                selectedPowerUnit = fromPowerUnit,
-                                onPowerUnitSelected = { unit ->
-                                    viewModel.onFromPowerUnitChange(
-                                        unit
-                                    )
-                                },
-
-                                selectedEnergyUnit = fromEnergyUnit,
-                                onEnergyUnitSelected = { unit ->
-                                    viewModel.onFromEnergyUnitChange(
-                                        unit
-                                    )
-                                },
-
-                                selectedTorqueUnit = fromTorqueUnit,
-                                onTorqueUnitSelected = { unit ->
-                                    viewModel.onFromTorqueUnitChange(
-                                        unit
-                                    )
-                                },
-
-                                selectedWeightUnit = fromWeightUnit,
-                                onWeightUnitSelected = { unit ->
-                                    viewModel.onFromWeightUnitChange(
-                                        unit
-                                    )
-                                },
-                                selectedTemperatureUnit = fromTemperatureUnit,
-                                onTemperatureUnitSelected = { unit ->
-                                    viewModel.onFromTemperatureUnitChange(
-                                        unit
-                                    )
-                                },
-                                selectedCurrencyUnit = fromCurrencyUnit,
-                                onCurrencyUnitSelected = { unit ->
-                                    viewModel.onFromCurrencyUnitChange(
-                                        unit
-                                    )
-                                },
-
-                                hazeState = hazeState,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                            XenonTextField(
-                                value = value1,
-                                onValueChange = { incoming ->
-                                    val processed = incoming.replace(',', '.')
-
-                                    val regex = Regex("^-?\\d*\\.?\\d*$")
-                                    if (processed.matches(regex)) {
-                                        viewModel.onValueChanged(processed, ConverterViewModel.EditedField.FIELD1)
-                                    }
-                                },
-                                placeholder = { Text(stringResource(id = R.string.value_1)) },
-                                singleLine = true,
-                                shape = RoundedCornerShape(16.dp),
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Decimal,
-                                    imeAction = ImeAction.Done
-                                )
-                            )
-                        }
-
-
-                        val interactionSource = remember { MutableInteractionSource() }
-                        Box(
-                            modifier = Modifier
-                                .height(56.dp)
-                                .width(48.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.tertiary)
-                                .clickable(
-                                    onClick = {
-                                        viewModel.swapUnits()
-                                        accumulatedRotation += 180f
+                                    selectedVolumeUnit = fromVolumeUnit,
+                                    onVolumeUnitSelected = { unit ->
+                                        viewModel.onFromVolumeUnitChange(
+                                            unit
+                                        )
                                     },
-                                    interactionSource = interactionSource,
-                                    indication = LocalIndication.current,
-                                ), contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Sync,
-                                contentDescription = stringResource(R.string.switch_units_description),
-                                tint = MaterialTheme.colorScheme.onTertiary,
-                                modifier = Modifier
-                                    .rotate(45f)
-                                    .rotate(rotationAngle)
-                                    .graphicsLayer(scaleX = -1f)
-                                    .size(24.dp)
-                            )
-                        }
+                                    selectedAreaUnit = fromAreaUnit,
+                                    onAreaUnitSelected = { unit ->
+                                        viewModel.onFromAreaUnitChange(
+                                            unit
+                                        )
+                                    },
+                                    selectedLengthUnit = fromLengthUnit,
+                                    onLengthUnitSelected = { unit ->
+                                        viewModel.onFromLengthUnitChange(
+                                            unit
+                                        )
+                                    },
+                                    selectedSpeedUnit = fromSpeedUnit,
+                                    onSpeedUnitSelected = { unit ->
+                                        viewModel.onFromSpeedUnitChange(
+                                            unit
+                                        )
+                                    },
+                                    selectedPowerUnit = fromPowerUnit,
+                                    onPowerUnitSelected = { unit ->
+                                        viewModel.onFromPowerUnitChange(
+                                            unit
+                                        )
+                                    },
 
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(MediumSpacing)
-                        ) {
-                            UnitItems(
-                                label = toUnitLabel(selectedType),
-                                selectedConverterType = selectedType,
+                                    selectedEnergyUnit = fromEnergyUnit,
+                                    onEnergyUnitSelected = { unit ->
+                                        viewModel.onFromEnergyUnitChange(
+                                            unit
+                                        )
+                                    },
 
-                                selectedVolumeUnit = toVolumeUnit,
-                                onVolumeUnitSelected = { unit ->
-                                    viewModel.onToVolumeUnitChange(
-                                        unit
-                                    )
-                                },
-                                selectedAreaUnit = toAreaUnit,
-                                onAreaUnitSelected = { unit ->
-                                    viewModel.onToAreaUnitChange(
-                                        unit
-                                    )
-                                },
-                                selectedLengthUnit = toLengthUnit,
-                                onLengthUnitSelected = { unit ->
-                                    viewModel.onToLengthUnitChange(
-                                        unit
-                                    )
-                                },
-                                selectedSpeedUnit = toSpeedUnit,
-                                onSpeedUnitSelected = { unit ->
-                                    viewModel.onToSpeedUnitChange(
-                                        unit
-                                    )
-                                },
+                                    selectedTorqueUnit = fromTorqueUnit,
+                                    onTorqueUnitSelected = { unit ->
+                                        viewModel.onFromTorqueUnitChange(
+                                            unit
+                                        )
+                                    },
 
-                                selectedPowerUnit = toPowerUnit,
-                                onPowerUnitSelected = { unit ->
-                                    viewModel.onToPowerUnitChange(
-                                        unit
-                                    )
-                                },
+                                    selectedWeightUnit = fromWeightUnit,
+                                    onWeightUnitSelected = { unit ->
+                                        viewModel.onFromWeightUnitChange(
+                                            unit
+                                        )
+                                    },
+                                    selectedTemperatureUnit = fromTemperatureUnit,
+                                    onTemperatureUnitSelected = { unit ->
+                                        viewModel.onFromTemperatureUnitChange(
+                                            unit
+                                        )
+                                    },
+                                    selectedCurrencyUnit = fromCurrencyUnit,
+                                    onCurrencyUnitSelected = { unit ->
+                                        viewModel.onFromCurrencyUnitChange(
+                                            unit
+                                        )
+                                    },
 
-                                selectedEnergyUnit = toEnergyUnit,
-                                onEnergyUnitSelected = { unit ->
-                                    viewModel.onToEnergyUnitChange(
-                                        unit
-                                    )
-                                },
-
-                                selectedTorqueUnit = toTorqueUnit,
-                                onTorqueUnitSelected = { unit ->
-                                    viewModel.onToTorqueUnitChange(
-                                        unit
-                                    )
-                                },
-
-                                selectedWeightUnit = toWeightUnit,
-                                onWeightUnitSelected = { unit ->
-                                    viewModel.onToWeightUnitChange(
-                                        unit
-                                    )
-                                },
-                                selectedTemperatureUnit = toTemperatureUnit,
-                                onTemperatureUnitSelected = { unit ->
-                                    viewModel.onToTemperatureUnitChange(
-                                        unit
-                                    )
-                                },
-                                selectedCurrencyUnit = toCurrencyUnit,
-                                onCurrencyUnitSelected = { unit ->
-                                    viewModel.onToCurrencyUnitChange(
-                                        unit
-                                    )
-                                },
-                                hazeState = hazeState,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                            XenonTextField(
-                                value = value2,
-                                onValueChange = { incoming ->
-                                    val processed = incoming.replace(',', '.')
-
-                                    val regex = Regex("^-?\\d*\\.?\\d*$")
-                                    if (processed.matches(regex)) {
-                                        viewModel.onValueChanged(processed, ConverterViewModel.EditedField.FIELD2)
-                                    }
-                                },
-                                placeholder = { Text(stringResource(id = R.string.value_2)) },
-                                singleLine = true,
-                                shape = RoundedCornerShape(16.dp),
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Done
+                                    hazeState = hazeState,
+                                    modifier = Modifier.fillMaxWidth()
                                 )
+                                XenonTextField(
+                                    value = value1,
+                                    onValueChange = { incoming ->
+                                        val processed = incoming.replace(',', '.')
+
+                                        val regex = Regex("^-?\\d*\\.?\\d*$")
+                                        if (processed.matches(regex)) {
+                                            viewModel.onValueChanged(
+                                                processed, ConverterViewModel.EditedField.FIELD1
+                                            )
+                                        }
+                                    },
+                                    placeholder = { Text(stringResource(id = R.string.value_1)) },
+                                    singleLine = true,
+                                    shape = RoundedCornerShape(16.dp),
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Decimal,
+                                        imeAction = ImeAction.Done
+                                    )
+                                )
+                            }
+
+
+                            val interactionSource = remember { MutableInteractionSource() }
+                            Box(
+                                modifier = Modifier
+                                    .height(56.dp)
+                                    .width(48.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.tertiary)
+                                    .clickable(
+                                        onClick = {
+                                            viewModel.swapUnits()
+                                            accumulatedRotation += 180f
+                                        },
+                                        interactionSource = interactionSource,
+                                        indication = LocalIndication.current,
+                                    ), contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Sync,
+                                    contentDescription = stringResource(R.string.switch_units_description),
+                                    tint = MaterialTheme.colorScheme.onTertiary,
+                                    modifier = Modifier
+                                        .rotate(45f)
+                                        .rotate(rotationAngle)
+                                        .graphicsLayer(scaleX = -1f)
+                                        .size(24.dp)
+                                )
+                            }
+
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(MediumSpacing)
+                            ) {
+                                UnitItems(
+                                    label = toUnitLabel(selectedType),
+                                    selectedConverterType = selectedType,
+
+                                    selectedVolumeUnit = toVolumeUnit,
+                                    onVolumeUnitSelected = { unit ->
+                                        viewModel.onToVolumeUnitChange(
+                                            unit
+                                        )
+                                    },
+                                    selectedAreaUnit = toAreaUnit,
+                                    onAreaUnitSelected = { unit ->
+                                        viewModel.onToAreaUnitChange(
+                                            unit
+                                        )
+                                    },
+                                    selectedLengthUnit = toLengthUnit,
+                                    onLengthUnitSelected = { unit ->
+                                        viewModel.onToLengthUnitChange(
+                                            unit
+                                        )
+                                    },
+                                    selectedSpeedUnit = toSpeedUnit,
+                                    onSpeedUnitSelected = { unit ->
+                                        viewModel.onToSpeedUnitChange(
+                                            unit
+                                        )
+                                    },
+
+                                    selectedPowerUnit = toPowerUnit,
+                                    onPowerUnitSelected = { unit ->
+                                        viewModel.onToPowerUnitChange(
+                                            unit
+                                        )
+                                    },
+
+                                    selectedEnergyUnit = toEnergyUnit,
+                                    onEnergyUnitSelected = { unit ->
+                                        viewModel.onToEnergyUnitChange(
+                                            unit
+                                        )
+                                    },
+
+                                    selectedTorqueUnit = toTorqueUnit,
+                                    onTorqueUnitSelected = { unit ->
+                                        viewModel.onToTorqueUnitChange(
+                                            unit
+                                        )
+                                    },
+
+                                    selectedWeightUnit = toWeightUnit,
+                                    onWeightUnitSelected = { unit ->
+                                        viewModel.onToWeightUnitChange(
+                                            unit
+                                        )
+                                    },
+                                    selectedTemperatureUnit = toTemperatureUnit,
+                                    onTemperatureUnitSelected = { unit ->
+                                        viewModel.onToTemperatureUnitChange(
+                                            unit
+                                        )
+                                    },
+                                    selectedCurrencyUnit = toCurrencyUnit,
+                                    onCurrencyUnitSelected = { unit ->
+                                        viewModel.onToCurrencyUnitChange(
+                                            unit
+                                        )
+                                    },
+                                    hazeState = hazeState,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                                XenonTextField(
+                                    value = value2,
+                                    onValueChange = { incoming ->
+                                        val processed = incoming.replace(',', '.')
+
+                                        val regex = Regex("^-?\\d*\\.?\\d*$")
+                                        if (processed.matches(regex)) {
+                                            viewModel.onValueChanged(
+                                                processed, ConverterViewModel.EditedField.FIELD2
+                                            )
+                                        }
+                                    },
+                                    placeholder = { Text(stringResource(id = R.string.value_2)) },
+                                    singleLine = true,
+                                    shape = RoundedCornerShape(16.dp),
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Decimal,
+                                        imeAction = ImeAction.Done
+                                    )
+                                )
+                            }
+                        }
+
+                        val measurables = subcompose(0, subcomposeContent)
+
+                        if (measurables.size != 3) {
+                            return@SubcomposeLayout layout(0, 0) {}
+                        }
+
+                        val group1Measurable = measurables[0]
+                        val iconButtonMeasurable = measurables[1]
+                        val group2Measurable = measurables[2]
+
+                        val spacingPx = spacing.toPx().roundToInt()
+
+                        val iconButtonTargetWidth = 64.dp.toPx().roundToInt()
+
+                        val availableWidthForGroups =
+                            (constraints.maxWidth - iconButtonTargetWidth - (2 * spacingPx)).coerceAtLeast(
+                                0
+                            )
+                        val groupWidth =
+                            if (availableWidthForGroups > 0) availableWidthForGroups / 2 else 0
+
+                        val group1Placeable = group1Measurable.measure(
+                            constraints.copy(minWidth = groupWidth, maxWidth = groupWidth)
+                        )
+                        val group2Placeable = group2Measurable.measure(
+                            constraints.copy(minWidth = groupWidth, maxWidth = groupWidth)
+                        )
+
+                        val referenceHeightForIcon =
+                            max(group1Placeable.height, group2Placeable.height)
+                        val iconButtonMinIntrinsicHeight =
+                            iconButtonMeasurable.minIntrinsicHeight(iconButtonTargetWidth)
+                        val iconButtonTargetHeight = (referenceHeightForIcon * 0.5f).roundToInt()
+                            .coerceAtLeast(iconButtonMinIntrinsicHeight)
+                            .coerceAtMost(referenceHeightForIcon)
+
+
+                        val iconButtonPlaceable = iconButtonMeasurable.measure(
+                            Constraints(
+                                minWidth = iconButtonTargetWidth,
+                                maxWidth = iconButtonTargetWidth,
+                                minHeight = iconButtonTargetHeight,
+                                maxHeight = iconButtonTargetHeight
+                            )
+                        )
+                        val totalWidth =
+                            group1Placeable.width + spacingPx + iconButtonPlaceable.width + spacingPx + group2Placeable.width
+                        val maxHeight = max(
+                            group1Placeable.height,
+                            max(iconButtonPlaceable.height, group2Placeable.height)
+                        )
+
+
+                        layout(totalWidth, maxHeight) {
+                            var currentX = 0
+                            group1Placeable.placeRelative(
+                                currentX, (maxHeight - group1Placeable.height) / 2
+                            )
+                            currentX += group1Placeable.width + spacingPx
+
+                            iconButtonPlaceable.placeRelative(
+                                currentX, (maxHeight - iconButtonPlaceable.height) / 2
+                            )
+                            currentX += iconButtonPlaceable.width + spacingPx
+
+                            group2Placeable.placeRelative(
+                                currentX, (maxHeight - group2Placeable.height) / 2
                             )
                         }
-                    }
-
-                    val measurables = subcompose(0, subcomposeContent)
-
-                    if (measurables.size != 3) {
-                        return@SubcomposeLayout layout(0, 0) {}
-                    }
-
-                    val group1Measurable = measurables[0]
-                    val iconButtonMeasurable = measurables[1]
-                    val group2Measurable = measurables[2]
-
-                    val spacingPx = spacing.toPx().roundToInt()
-
-                    val iconButtonTargetWidth = 64.dp.toPx().roundToInt()
-
-                    val availableWidthForGroups =
-                        (constraints.maxWidth - iconButtonTargetWidth - (2 * spacingPx)).coerceAtLeast(
-                            0
-                        )
-                    val groupWidth =
-                        if (availableWidthForGroups > 0) availableWidthForGroups / 2 else 0
-
-                    val group1Placeable = group1Measurable.measure(
-                        constraints.copy(minWidth = groupWidth, maxWidth = groupWidth)
-                    )
-                    val group2Placeable = group2Measurable.measure(
-                        constraints.copy(minWidth = groupWidth, maxWidth = groupWidth)
-                    )
-
-                    val referenceHeightForIcon = max(group1Placeable.height, group2Placeable.height)
-                    val iconButtonMinIntrinsicHeight =
-                        iconButtonMeasurable.minIntrinsicHeight(iconButtonTargetWidth)
-                    val iconButtonTargetHeight = (referenceHeightForIcon * 0.5f).roundToInt()
-                        .coerceAtLeast(iconButtonMinIntrinsicHeight)
-                        .coerceAtMost(referenceHeightForIcon)
-
-
-                    val iconButtonPlaceable = iconButtonMeasurable.measure(
-                        Constraints(
-                            minWidth = iconButtonTargetWidth,
-                            maxWidth = iconButtonTargetWidth,
-                            minHeight = iconButtonTargetHeight,
-                            maxHeight = iconButtonTargetHeight
-                        )
-                    )
-                    val totalWidth =
-                        group1Placeable.width + spacingPx + iconButtonPlaceable.width + spacingPx + group2Placeable.width
-                    val maxHeight = max(
-                        group1Placeable.height,
-                        max(iconButtonPlaceable.height, group2Placeable.height)
-                    )
-
-
-                    layout(totalWidth, maxHeight) {
-                        var currentX = 0
-                        group1Placeable.placeRelative(
-                            currentX, (maxHeight - group1Placeable.height) / 2
-                        )
-                        currentX += group1Placeable.width + spacingPx
-
-                        iconButtonPlaceable.placeRelative(
-                            currentX, (maxHeight - iconButtonPlaceable.height) / 2
-                        )
-                        currentX += iconButtonPlaceable.width + spacingPx
-
-                        group2Placeable.placeRelative(
-                            currentX, (maxHeight - group2Placeable.height) / 2
-                        )
                     }
                 }
             }
-        }
-        // dialogs = { }
-    )
+            // dialogs = { }
+        )
+    }
 }
+
