@@ -156,7 +156,8 @@ class SettingsActivity : ComponentActivity() {
                                     settingsViewModel.dismissSignOutDialog()
                                     signInViewModel.resetState()
                                 }
-                            }
+                            },
+                            appSize = containerSize
                         )
                     }
                 }
